@@ -29,6 +29,7 @@ libzzip_la_headers = \
 	lib.h \
 	zzip.h \
 	format.h \
+        info.h \
 	conf.h \
 	_config.h \
         _msvc.h
