@@ -30,6 +30,16 @@
 #define O_BINARY 0
 #endif
 
+#if __GNUC__+0 >= 3 && __GNUC_MINOR__+0 >= 3
+# ifdef DEBUG
+# warning suppress a warning where the compiler should have optimized instead.
+# endif
+#define I_(_T,_L,_R) do { _T _l = (_T) _L; \
+                          _l _R; _L = (typeof(_L)) _l; } while(0)
+#else
+#define I_(_T,_L,_R) _L _R
+#endif
+
 int main(int argc, char ** argv)
 {
     ZZIP_DIR * dir;
@@ -82,7 +92,7 @@ int main(int argc, char ** argv)
                 printf("filename: %s\n\n", hdr->d_name);
     
                 if (hdr->d_reclen == 0) break;
-                (char *)hdr += hdr->d_reclen;
+                I_(char *, hdr, += hdr->d_reclen);
                 sleep(1);
             }
         }

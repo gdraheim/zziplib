@@ -1,4 +1,4 @@
-dnl acinclude.m4 generated automatically by ac-archive's acinclude 0.5.56
+dnl acinclude.m4 generated automatically by ac-archive's acinclude 0.5.60
 
 dnl Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
@@ -1060,7 +1060,7 @@ dnl copy the tarball from the builddir to the sourcedir (or $(PUB))
 dnl for reason of convenience.
 dnl
 dnl @author Guido Draheim
-dnl @version %Id: ax_enable_builddir.m4,v 1.13 2003/10/12 06:27:40 guidod Exp %
+dnl @version %Id: ax_enable_builddir.m4,v 1.14 2004/12/29 05:22:31 guidod Exp %
 dnl
 AC_DEFUN([AX_ENABLE_BUILDDIR],[AC_REQUIRE([AC_CANONICAL_HOST])[]dnl
 AC_BEFORE([$0],[AM_INIT_AUTOMAKE])dnl
@@ -1068,44 +1068,45 @@ AS_VAR_PUSHDEF([SUB],[ax_enable_builddir])dnl
 AS_VAR_PUSHDEF([AUX],[ax_enable_builddir_auxdir])dnl
 AS_VAR_PUSHDEF([SED],[ax_enable_builddir_sed])dnl
 SUB="."
+AC_ARG_ENABLE([builddir], AC_HELP_STRING(
+  [--disable-builddir],[disable automatic build in subdir of sources])
+  ,[SUB="$enableval"], [SUB="yes"])
 if test ".$ac_srcdir_defaulted" != ".no" ; then
-  if test ".$srcdir" = ".." ; then
-    AC_PATH_PROG(SED,gsed sed, sed)
-    AC_ARG_ENABLE([builddir], AC_HELP_STRING(
-   [--disable-builddir],[disable automatic build in subdir of sources])
-    ,[SUB="$withval"], [SUB="."])
-    test ".$SUB" = ".." && SUB=`$SED -V 2>&1 |$SED -e '/GNU/!d' -e 's/.*/yes/'`
+if test ".$srcdir" = ".." ; then
+  if test -f config.status ; then 
+    AC_MSG_NOTICE(toplevel srcdir already configured... skipping subdir build)
+  else
     test ".$SUB" = "."  && SUB="."
     test ".$SUB" = ".no"  && SUB="."
+    test ".$TARGET" = "." && TARGET="$target"
+    test ".$SUB" = ".yes" && SUB="m4_ifval([$1], [$1],[$TARGET])"
     if test ".$SUB" != ".." ; then    # we know where to go and
-    if test ! -f config.status ; then # srcdir not yet configured
-      test ".$HOST" = "." && HOST="$host"
-      test ".$SUB" = ".yes" && SUB="m4_ifval([$1], [$1],[$HOST])"
       AS_MKDIR_P([$SUB])
       echo __.$SUB.__ > $SUB/conftest.tmp
       cd $SUB
       if grep __.$SUB.__ conftest.tmp >/dev/null 2>/dev/null ; then
         rm conftest.tmp
-        AC_MSG_RESULT([continue configure in default builddir ./$SUB])
+        AC_MSG_RESULT([continue configure in default builddir "./$SUB"])
       else
-        AC_MSG_ERROR([could not change to default builddir ./$SUB])
+        AC_MSG_ERROR([could not change to default builddir "./$SUB"])
       fi
-      srcdir=`echo "$SUB" |
-              $SED -e 's,^\./,,;s,[[^/]]$,&/,;s,[[^/]]*/,../,g;s,[[/]]$,,;'`
-      AUX="$ac_aux_dir"
-      test ".$ac_aux_dir" != "."      &&    ac_aux_dir="$srcdir/$ac_aux_dir"
-      test ".$ac_install_sh" != "."   && ac_install_sh="$srcdir/$ac_install_sh"
-      ac_config_guess="$SHELL $ac_aux_dir/config.guess"
-      ac_config_sub="$SHELL $ac_aux_dir/config.sub"
-      ac_configure="$SHELL $ac_aux_dir/configure" # Cygnus configure
-
+      srcdir=`echo "$SUB" | 
+              sed -e 's,^\./,,;s,[[^/]]$,&/,;s,[[^/]]*/,../,g;s,[[/]]$,,;'`
+      # going to restart from subdirectory location
       test -f $srcdir/config.log   && mv $srcdir/config.log   .
       test -f $srcdir/confdefs.h   && mv $srcdir/confdefs.h   .
       test -f $srcdir/conftest.log && mv $srcdir/conftest.log .
       test -f $srcdir/$cache_file  && mv $srcdir/$cache_file  .
-    fi fi
+      AC_MSG_RESULT(....exec $SHELL $srcdir/[$]0 "--srcdir=$srcdir" "--enable-builddir=$SUB" ${1+"[$]@"})
+      case "[$]0" in # restart
+       [/\\]) exec $SHELL [$]0 "--srcdir=$srcdir" "--enable-builddir=$SUB" ${1+"[$]@"} ;; 
+       *) exec $SHELL $srcdir/[$]0 "--srcdir=$srcdir" "--enable-builddir=$SUB" ${1+"[$]@"} ;;
+      esac 
+    fi
   fi
-fi
+fi fi
+dnl ac_path_prog uses "set dummy" to override $@ which would defeat the "exec"
+AC_PATH_PROG(SED,gsed sed, sed)
 AS_VAR_POPDEF([SED])dnl
 AS_VAR_POPDEF([AUX])dnl
 AS_VAR_POPDEF([SUB])dnl
@@ -1117,8 +1118,6 @@ AS_VAR_PUSHDEF([AUX],[ax_enable_builddir_auxdir])dnl
 AS_VAR_PUSHDEF([SED],[ax_enable_builddir_sed])dnl
 pushdef([END],[Makefile.mk])dnl
 pushdef([_ALL],[ifelse([$3],,[-all],[$3])])dnl
-  SUB=`grep "continue configure in default builddir " config.log |
-    $SED -e "s/.*continue configure in default builddir //"`
   SRC="$ax_enable_builddir_srcdir"
   if test ".$SUB" = "." ; then
     if test -f "$TOP/Makefile" ; then
@@ -1898,30 +1897,6 @@ AS_VAR_POPDEF([PKGCONFIG_src_libdir])dnl
 AS_VAR_POPDEF([PKGCONFIG_src_headers])dnl
 ])
 
-dnl ______ /usr/share/aclocal/guidod/ax_dirname.m4 ______
-dnl @* AX_DIRNAME(PATHNAME)
-dnl
-dnl Parts of the implementation have been taken from AS_DIRNAME from the
-dnl main autoconf package in generation 2.5x. However, we do only use 
-dnl "sed" to cut out the dirname, and we do additionally clean up some 
-dnl dir/.. parts in the resulting pattern.
-dnl
-dnl this macro may be used in autoconf 2.13 scripts as well.
-dnl
-dnl @%Id: ax_dirname.m4,v 1.1 2003/07/02 23:42:59 guidod Exp %
-
-AC_DEFUN([AX_DIRNAME],
-[echo X[]$1 |
-    sed ['s/\/[^\/:][^\/:]*\/..\//\//g
-          s/\/[^\/:][^\/:]*\/..\//\//g
-          s/\/[^\/:][^\/:]*\/..\//\//g
-          s/\/[^\/:][^\/:]*\/..\//\//g
-          /^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{ s//\1/; q; }
-          /^X\(\/\/\)[^/].*/{ s//\1/; q; }
-          /^X\(\/\/\)$/{ s//\1/; q; }
-          /^X\(\/\).*/{ s//\1/; q; }
-          s/.*/./; q']])
-
 dnl ______ /usr/share/aclocal/guidod/ax_prefix_config_h.m4 ______
 dnl @synopsis AX_PREFIX_CONFIG_H [(OUTPUT-HEADER [,PREFIX [,ORIG-HEADER]])]
 dnl
@@ -2091,6 +2066,30 @@ AS_VAR_POPDEF([_PKG])dnl
 AS_VAR_POPDEF([_DEF])dnl
 AS_VAR_POPDEF([_OUT])dnl
 ],[PACKAGE="$PACKAGE"])])
+
+dnl ______ /usr/share/aclocal/guidod/ax_dirname.m4 ______
+dnl @* AX_DIRNAME(PATHNAME)
+dnl
+dnl Parts of the implementation have been taken from AS_DIRNAME from the
+dnl main autoconf package in generation 2.5x. However, we do only use 
+dnl "sed" to cut out the dirname, and we do additionally clean up some 
+dnl dir/.. parts in the resulting pattern.
+dnl
+dnl this macro may be used in autoconf 2.13 scripts as well.
+dnl
+dnl @%Id: ax_dirname.m4,v 1.1 2003/07/02 23:42:59 guidod Exp %
+
+AC_DEFUN([AX_DIRNAME],
+[echo X[]$1 |
+    sed ['s/\/[^\/:][^\/:]*\/..\//\//g
+          s/\/[^\/:][^\/:]*\/..\//\//g
+          s/\/[^\/:][^\/:]*\/..\//\//g
+          s/\/[^\/:][^\/:]*\/..\//\//g
+          /^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{ s//\1/; q; }
+          /^X\(\/\/\)[^/].*/{ s//\1/; q; }
+          /^X\(\/\/\)$/{ s//\1/; q; }
+          /^X\(\/\).*/{ s//\1/; q; }
+          s/.*/./; q']])
 
 dnl ______ /usr/share/aclocal/guidod/ax_not_enable_frame_pointer.m4 ______
 dnl @* AX_NOT_ENABLE_FRAME_POINTER ([shellvar])

@@ -33,6 +33,14 @@
 /* per default, we use a little hack to correct bad z_rootseek parts */
 #define ZZIP_CORRECT_ROOTSEEK 1
 
+#if __GNUC__ >= 3 && __GNUC_MINOR__ >= 3
+# ifdef DEBUG
+# warning suppress a warning where the compiler should have optimized instead.
+# endif
+#define _255 254
+#else
+#define _255 255
+#endif
 
 /* ---------------------------  internals  -------------------------------- */
 /* internal functions of zziplib, avoid at all cost, changes w/o warning.
@@ -376,7 +384,7 @@ __zzip_parse_root_directory(int fd,
         hdr->d_usize = zzip_disk_entry_get_usize (d);
         hdr->d_off   = zzip_disk_entry_get_offset (d);
         hdr->d_compr = zzip_disk_entry_get_compr (d);
-        if (hdr->d_compr > 255) hdr->d_compr = 255;
+	if (hdr->d_compr > _255) hdr->d_compr = 255;
 
 	if (offset+sizeof(*d) + u_namlen > u_rootsize)
 	{ FAIL2("%i's name stretches beyond root directory", entries); break;}

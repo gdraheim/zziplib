@@ -1,3 +1,14 @@
+2004-12-27
+ * updating to latest autoconf/automake/libtool stuff in Suse92
+ * required a rewrite of ax_enable_builddir.m4 in ac-archive
+ * adding two macros to silence down bogus depracation warnings
+	from the latest gcc 3.3.5
+
+2004-11-27
+ * harveyandsu:yahoo:com reported an api mismatch for SDL rwops
+	usage and the implementation in the SDL_rwops_zzip example.
+ *
+	
 2004-05-11
  * documenting zzip-cryptoid handling
  * update mksite.sh

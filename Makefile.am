@@ -7,7 +7,7 @@ SUBDIRS =      zzip zzipwrap bins test docs @SDL@
 
 # see Makefile.mk for the "make rpm" target
 rpm2: dist-bzip2 $(PACKAGE).spec
-	rpm -ta $(PACKAGE)-$(VERSION).tar.bz2
+	rpmbuild -ta $(PACKAGE)-$(VERSION).tar.bz2
 
 zzip.html zzip.xml zzip.pdf \
 doc docu clean-doc clean-docs clean-docu \
