@@ -1,3 +1,7 @@
+2004-03-08
+ * add link in docs/history.htm to the new appnote.txt whitepaper
+	on zip file format specification.
+	
 2004-02-19
  * a test run on solaris did show that fetch.* needs to be linked
 	to the new lib*.la stuff - to convert endianess-dependent
