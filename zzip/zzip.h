@@ -63,6 +63,7 @@ typedef enum
 #define ZZIP_ONLYZIP            (1<<16) /* try _only_ zipped file, skip real*/
 #define ZZIP_FACTORY            (1<<17) /* old file handle is not closed */
 #define ZZIP_ALLOWREAL          (1<<18) /* real files use default_io (magic) */
+#define ZZIP_THREADED           (1<<19) /* try to be safe for multithreading */
 
 /*
  * zzip largefile renames
@@ -221,6 +222,10 @@ zzip_off_t      zzip_tell(ZZIP_FILE * fp);
 _zzip_export
 int		zzip_dir_stat(ZZIP_DIR * dir, zzip_char_t* name, 
 			      ZZIP_STAT * zs, int flags);
+_zzip_export
+int		zzip_file_stat(ZZIP_FILE * fp, ZZIP_STAT * zs);
+_zzip_export
+int		zzip_fstat(ZZIP_FILE * fp, ZZIP_STAT * zs);
 
 #ifdef ZZIP_LARGEFILE_RENAME
 #define zzip_open_shared_io  zzip_open_shared_io64
