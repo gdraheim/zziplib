@@ -1,3 +1,9 @@
+#! /usr/local/bin/perl
+# this file converts simple html text into a docbook xml variant. 
+# The mapping of markups and links is far from perfect. But all we
+# want is the docbook-to-pdf converter and similar technology being
+# present in the world of docbook-to-anything converters.
+
 use strict;
 
 my %o;

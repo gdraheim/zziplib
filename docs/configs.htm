@@ -63,6 +63,7 @@
    zzipwrap              zzipwrap - Callback Wrappers for ZZipLib
    zzip-zlib-config      zzip-zlib-config - ZLib Config (for ZZipLib)
    </pre>
+</P><P>
    The two entries like "zzip-sdl-config" and "zzip-zlib-config"
    happen to be ".pc" files for the libz.so and libSDL.so that
    were seen at configure-time of zziplib - you may want to reuse
@@ -136,11 +137,13 @@
   combine the flags of a list of library modules that you
   want to have. If it is only zziplib, than you could simply
   use this in your configure.ac:
-  <pre>
-  PKG_CHECK_MODULES([ZZIP],[zziplib >= 0.10.75])
+<pre>
+  <b>PKG_CHECK_MODULES</b>([<b>ZZIP</b>],[zziplib >= 0.10.75])
   </pre>
+</P><P>
   which will provide you with two autoconf/automake variables
-  named ZZIP_CFLAGS and ZZIP_LIBS respectivly.
+  named <b><code>ZZIP_CFLAGS</code></b> and <b><code>ZZIP_LIBS</code></b> 
+  respectivly.
 </P>
 <P>
   Up to 2004, the macro in zziplib.m4 will be however carry
@@ -148,8 +151,9 @@
   dependency for your software project. The macro is called
   like shown above PKG_CHECK_ZZIPLIB and you would call it
   like
-  <pre>PKG_CHECK_ZZIPLIB([ZZIP],[0.10.75])</pre>
+<br><code>&nbsp;&nbsp;&nbsp;&nbsp;
+  PKG_CHECK_ZZIPLIB([ZZIP],[0.10.75])</code><br>
   which will give you the two autoconf/automake variables
-  as well, ZZIP_CFLAGS and ZZIP_LIBS.
+  as well,  <code>ZZIP_CFLAGS</code> and <code>ZZIP_LIBS</code>
 </P>
 
