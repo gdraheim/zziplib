@@ -1,3 +1,10 @@
+2003-12-21
+ * Nigel Stewart hints on some MSVC 6 issues, thanks.
+	
+2003-12-20
+ * implant *Reset instead of Deinit/Init in zzip_rewind - the latter
+	is supposed to make for a memory leak (see problem report).
+	
 2003-12-10
  * add zzip_rewind fix by glenn = Glenn Maynard (www.stepmania.com)
  * fix dirsep_casecmp buglet noted by glenn
