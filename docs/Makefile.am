@@ -5,7 +5,7 @@ doc_FILES = README.MSVC6 README.SDL COPYING.MPL COPYING.LIB COPYING.ZLIB \
 	zziplib.html 
 htm_FILES = zzip-index.htm zzip-zip.htm zzip-file.htm zzip-sdl-rwops.htm \
             zzip-extio.htm zzip-xor.htm zzip-crypt.htm \
-            zzip-api.htm  zzip-parse.htm \
+            zzip-api.htm  zzip-basics.htm zzip-extras.htm zzip-parse.htm \
             64on32.htm future.htm configs.htm sfx-make.htm \
             history.htm referentials.htm  copying.htm  manpages.ar
 SDL = @top_srcdir@/SDL
@@ -17,6 +17,10 @@ EXTRA_DIST = make-doc.py $(doc_FILES) $(htm_FILES) $(SDL_RWOPS) \
              make-doc.pl make-dbk.pl   mksite.sh site.htm
 CLEANFILES = *.pc *.omf
 DISTCLEANFILES = zziplib.spec manpages.ar htmpages.ar *.html *.xml
+
+html_FILES = $(htm_FILES:.htm=.html) \
+             $(htm_FILES:.htm=.print.html) 
+             site.html site.print.html
 
 default : doc
 clean-doc clean-docs : clean-unpack
@@ -62,9 +66,9 @@ DOCEXAMPLES = $(bins)/zzdir.c $(bins)/zzcat.c \
               $(bins)/zzxordir.c $(bins)/zzxorcat.c \
 	      $(bins)/zzxorcopy.c        $(SDL_RWOPS)
 
-install-docu: $(doc_FILES) $(htm_FILES:.htm=.html) $(PACKAGE)-doc.omf
+install-docu: $(doc_FILES) site.html $(PACKAGE)-doc.omf
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
-	for i in $(htm_FILES) ; do cat $${i}l \
+	for i in $(html_FILES) ; do cat $$i \
 	| sed -e 's:--START-->:-- :' -e 's:<!--ENDS--: --:' \
 	-e "s:\\(href=\"[^/\"]*\\)[.]html\":\\1.htm\":" \
 	-e "s:\\(href=\"[^/\"]*\\)[.]html\#:\\1.htm\#:" \
@@ -77,9 +81,9 @@ install-docu: $(doc_FILES) $(htm_FILES:.htm=.html) $(PACKAGE)-doc.omf
 	$(INSTALL_DATA) $(PACKAGE)-doc.omf $(DESTDIR)$(pkgomfdir)/
 	- test ".$(DESTDIR)" != "." || scrollkeeper-update
 
-install-sfnet: $(doc_FILES) $(htm_FILES:.htm=.html) htmpages.ar
+install-sfnet: $(doc_FILES) site.html htmpages.ar
 	$(mkinstalldirs) $(DESTDIR)$(SFNETDOC)
-	$(INSTALL_DATA) $(htm_FILES:.htm=.html) $(DESTDIR)$(SFNETDOC)
+	$(INSTALL_DATA) $(html_FILES) $(DESTDIR)$(SFNETDOC)
 	for i in $(doc_FILES) $(DOCEXAMPLES) $(changelog) $(srcdir)/README.* \
 	; do $(INSTALL_DATA) `test -f $$i || echo $(srcdir)/`$$i \
 	  $(DESTDIR)$(SFNETDOC) ; done

@@ -20,7 +20,7 @@
 #    2. Altered source versions must be plainly marked as such, and must not
 #       be misrepresented as being the original software.
 #    3. This notice may not be removed or altered from any source distribution.
-# $Id: mksite.sh,v 1.1 2004-05-08 17:52:52 guidod Exp $
+# $Id: mksite.sh,v 1.2 2004-05-08 19:37:52 guidod Exp $
 
 # initialize some defaults
 test ".$SITEFILE" = "." && test -f site.htm  && SITEFILE=site.htm
@@ -926,41 +926,107 @@ body_for_emailfooter ()
 # marks all interesting lines so they can be checked later
 # with an sed anchor of <!--sect[$NN]--> (or <!--sect[$AZ]-->)
 S="\\&nbsp\\;"
-Hr="<hr>"
-He="<hr><em>"
-Hs="<strong>"
-Br="<br>"
-Pr="<br>$S"
-Rr="<br><>"
-Bs="<br><small>"
-Ps="<br>$S<small>"
-Rs="<br><><small>"
-Be="<br><em>"
-Pe="<br>$S<em>"
-Re="<br><><em>"
-Eu="<u>"
-Es="<small>"
-echo     "/^$Hr[-|[]*<a href=/s/^/<!--sect1-->/"      > $MK.gets.tmp
-echo     "/^$He[-|[]*<a href=/s/^/<!--sect1-->/"     >> $MK.gets.tmp
-echo     "/^$Hs[-|[]*<a href=/s/^/<!--sect1-->/"     >> $MK.gets.tmp
-echo     "/^$Br[*=][*=]*<a href=/s/^/<!--sect1-->/"  >> $MK.gets.tmp
-echo     "/^$Br[-|][-|]*<a href=/s/^/<!--sect2-->/"  >> $MK.gets.tmp
-echo     "/^$Br[/:][/:]*<a href=/s/^/<!--sect3-->/"  >> $MK.gets.tmp
-echo     "/^$Es[/:,[]*<a href=/s/^/<!--sect3-->/"    >> $MK.gets.tmp
-echo     "/^$Br[-|[]*<a href=/s/^/<!--sect2-->/"     >> $MK.gets.tmp
-echo     "/^$Bs[-|[]*<a href=/s/^/<!--sect2-->/"     >> $MK.gets.tmp
-echo     "/^$Be[-|[]*<a href=/s/^/<!--sect2-->/"     >> $MK.gets.tmp
-echo     "/^$Eu[-|[]*<a href=/s/^/<!--sect2-->/"     >> $MK.gets.tmp
-echo     "/^$Br[\\/:]*<a href=/s/^/<!--sect3-->/"    >> $MK.gets.tmp
-echo     "/^$Pr[\\/:]*<a href=/s/^/<!--sect3-->/"    >> $MK.gets.tmp
-echo     "/^$Rr[\\/:]*<a href=/s/^/<!--sect3-->/"    >> $MK.gets.tmp
-echo     "/^$Bs[\\/:]*<a href=/s/^/<!--sect3-->/"    >> $MK.gets.tmp
-echo     "/^$Ps[\\/:]*<a href=/s/^/<!--sect3-->/"    >> $MK.gets.tmp
-echo     "/^$Rs[\\/:]*<a href=/s/^/<!--sect3-->/"    >> $MK.gets.tmp
-echo     "/^$Be[\\/:]*<a href=/s/^/<!--sect3-->/"    >> $MK.gets.tmp
-echo     "/^$Pe[\\/:]*<a href=/s/^/<!--sect3-->/"    >> $MK.gets.tmp
-echo     "/^$Re[\\/:]*<a href=/s/^/<!--sect3-->/"    >> $MK.gets.tmp
-echo     "/^$Es[\\/:,[]*<a href=/s/^/<!--sect3-->/"  >> $MK.gets.tmp
+HR1="<hr>"
+HR2="$S<hr>"
+HR3="<><hr>"
+HE1="<hr><em>"
+HE2="$S<hr><em>"
+HE3="<><hr><em>"
+HS1="<hr><strong>"
+HS2="$S<hr><strong>"
+HS3="<><hr><strong>"
+BR1="<br>"
+BR2="$S<br>"
+BR3="<><br>"
+BE1="<br><em>"
+BE2="$S<br><em>"
+BE3="<><br><em>"
+QE1="<em>"
+QE2="$S<em>"
+QE3="<><em>"
+BU1="<br><u>"
+BU2="$S<br><u>"
+BU3="<><br><u>"
+QU1="<u>"
+QU2="$S<u>"
+QU3="<><u>"
+BL1="<br><small>"
+BL2="$S<br><small>"
+BL3="<><br><small>"
+QL1="<small>"
+QL2="$S<small>"
+QL3="<><small>"
+QR0=""
+QR2="$S"
+QR3="<>"
+h1="[-|[]"
+h1m="$S"
+h1n="<>"
+b1="[*=]"
+b2="[-|[]"
+b3="[\\/:]"
+b3m="$S"
+b3n="<>"
+q3="[\\/:,[]"
+q3m="$S"
+q3n="<>"
+echo     "/^$HR1$h1n<a href=/s/^/<!--sect1-->/"        > $MK.gets.tmp
+echo     "/^$HR1$h1m<a href=/s/^/<!--sect1-->/"       >> $MK.gets.tmp
+echo     "/^$HR1$h1*<a href=/s/^/<!--sect1-->/"       >> $MK.gets.tmp
+echo     "/^$HR2$h1*<a href=/s/^/<!--sect1-->/"       >> $MK.gets.tmp
+echo     "/^$HR3$h1*<a href=/s/^/<!--sect1-->/"       >> $MK.gets.tmp
+echo     "/^$HE1$h1*<a href=/s/^/<!--sect1-->/"       >> $MK.gets.tmp
+echo     "/^$HE2$h1*<a href=/s/^/<!--sect1-->/"       >> $MK.gets.tmp
+echo     "/^$HE3$h1*<a href=/s/^/<!--sect1-->/"       >> $MK.gets.tmp
+echo     "/^$HS1$h1*<a href=/s/^/<!--sect1-->/"       >> $MK.gets.tmp
+echo     "/^$HS2$h1*<a href=/s/^/<!--sect1-->/"       >> $MK.gets.tmp
+echo     "/^$HS3$h1*<a href=/s/^/<!--sect1-->/"       >> $MK.gets.tmp
+echo     "/^$BR1$b1$b1*<a href=/s/^/<!--sect1-->/"    >> $MK.gets.tmp
+echo     "/^$BR2$b1$b1*<a href=/s/^/<!--sect1-->/"    >> $MK.gets.tmp
+echo     "/^$BR3$b1$b1*<a href=/s/^/<!--sect1-->/"    >> $MK.gets.tmp
+echo     "/^$BR1$b2$b2*<a href=/s/^/<!--sect2-->/"    >> $MK.gets.tmp
+echo     "/^$BR2$b2$b2*<a href=/s/^/<!--sect2-->/"    >> $MK.gets.tmp
+echo     "/^$BR3$b2$b2*<a href=/s/^/<!--sect2-->/"    >> $MK.gets.tmp
+echo     "/^$BR1$b3$b3*<a href=/s/^/<!--sect3-->/"    >> $MK.gets.tmp
+echo     "/^$BR2$b3$b3*<a href=/s/^/<!--sect3-->/"    >> $MK.gets.tmp
+echo     "/^$BR3$b3$b3*<a href=/s/^/<!--sect3-->/"    >> $MK.gets.tmp
+echo     "/^$QR0$b2$b2*<a href=/s/^/<!--sect2-->/"    >> $MK.gets.tmp
+echo     "/^$QR2$b2$b2*<a href=/s/^/<!--sect2-->/"    >> $MK.gets.tmp
+echo     "/^$QR3$b2$b2*<a href=/s/^/<!--sect2-->/"    >> $MK.gets.tmp
+echo     "/^$QR0$b3$b3*<a href=/s/^/<!--sect3-->/"    >> $MK.gets.tmp
+echo     "/^$QR2$b3$b3*<a href=/s/^/<!--sect3-->/"    >> $MK.gets.tmp
+echo     "/^$QR3$b3$b3*<a href=/s/^/<!--sect3-->/"    >> $MK.gets.tmp
+echo     "/^$QE1$q3*<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
+echo     "/^$QE2$q3*<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
+echo     "/^$QE3$q3*<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
+echo     "/^$BR1$b2*<a href=/s/^/<!--sect2-->/"       >> $MK.gets.tmp
+echo     "/^$BR2$b2*<a href=/s/^/<!--sect2-->/"       >> $MK.gets.tmp
+echo     "/^$BR3$b2*<a href=/s/^/<!--sect2-->/"       >> $MK.gets.tmp
+echo     "/^$BL1$b2*<a href=/s/^/<!--sect2-->/"       >> $MK.gets.tmp
+echo     "/^$BL2$b2*<a href=/s/^/<!--sect2-->/"       >> $MK.gets.tmp
+echo     "/^$BL3$b2*<a href=/s/^/<!--sect2-->/"       >> $MK.gets.tmp
+echo     "/^$BE1$b2*<a href=/s/^/<!--sect2-->/"       >> $MK.gets.tmp
+echo     "/^$BE2$b2*<a href=/s/^/<!--sect2-->/"       >> $MK.gets.tmp
+echo     "/^$BE3$b2*<a href=/s/^/<!--sect2-->/"       >> $MK.gets.tmp
+echo     "/^$QU1$b2*<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
+echo     "/^$QU2$b2*<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
+echo     "/^$QU3$b2*<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
+echo     "/^$BR1$b3n<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
+echo     "/^$BR1$b3m<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
+echo     "/^$BR1$b3*<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
+echo     "/^$BR2$b3*<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
+echo     "/^$BR3$b3*<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
+echo     "/^$QR2$b3*<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
+echo     "/^$QR3$b3*<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
+echo     "/^$BL1$b3*<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
+echo     "/^$BL2$b3*<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
+echo     "/^$BL3$b3*<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
+echo     "/^$BE1$b3*<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
+echo     "/^$BE2$b3*<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
+echo     "/^$BE3$b3*<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
+echo     "/^$QE1$q3*<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
+echo     "/^$QE2$q3*<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
+echo     "/^$QE3$q3*<a href=/s/^/<!--sect3-->/"       >> $MK.gets.tmp
 $SED -e "s/>\\[/> *[/" ./$MK.gets.tmp > $MK.puts.tmp
 # the .puts.tmp variant is used to <b><a href=..></b> some hrefs which
 # shall not be used otherwise for being generated - this is nice for

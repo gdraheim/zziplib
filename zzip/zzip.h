@@ -3,7 +3,7 @@
  *	Guido Draheim <guidod@gmx.de>
  *	Tomi Ollila <Tomi.Ollila@iki.fi>
  *
- *	Copyright (c) 1999,2000,2001,2002,2003 Guido Draheim
+ *	Copyright (c) 1999,2000,2001,2002,2003,2004 Guido Draheim
  * 	    All rights reserved, 
  *          usage allowed under the restrictions of the
  *	    Lesser GNU General Public License 
@@ -171,7 +171,7 @@ void	 	zzip_seekdir(ZZIP_DIR * dir, zzip_off_t offset);
  * zzip/file.c
  */
 _zzip_export
-ZZIP_FILE * 	zzip_file_open(ZZIP_DIR * dir, zzip_char_t* name, int modes);
+ZZIP_FILE * 	zzip_file_open(ZZIP_DIR * dir, zzip_char_t* name, int flags);
 _zzip_export
 int  		zzip_file_close(ZZIP_FILE * fp);
 _zzip_export
@@ -248,14 +248,11 @@ ZZIP_DIR *  zzip_opendir_ext_io(zzip_char_t* name, int o_modes,
 				zzip_strings_t* ext, zzip_plugin_io_t io);
 
 _zzip_export
-ZZIP_FILE * zzip_file_open_ext_io(ZZIP_DIR * dir, 
-				  zzip_char_t* name, int flags,
-				  zzip_strings_t* ext, zzip_plugin_io_t io);
-
-_zzip_export
 ZZIP_DIR *  zzip_dir_open_ext_io(zzip_char_t* filename,
 				 zzip_error_t* errcode_p,
 				 zzip_strings_t* ext, zzip_plugin_io_t io);
+
+/* zzip_file_open_ext_io => zzip_dir_open_ext_io + zzip_file_open */
 
 #if defined _ZZIP_WRITE_SOURCE
 /* ........................................................................
