@@ -1,7 +1,7 @@
 /*
  * Author: 
  *	Guido Draheim <guidod@gmx.de>
- *      Mike Nordell <tamlin@algonet.se>
+ *      Mike Nordell <tamlin-@-algonet-se>
  *
  * Copyright (c) 2002,2003 Guido Draheim
  * 	    All rights reserved,
