@@ -7,6 +7,7 @@
 
 #include <zzip/fseeko.h>
 #include <stdlib.h>
+#include <string.h>
 
 #ifdef ZZIP_HAVE_FNMATCH_H
 #include <fnmatch.h>
@@ -56,10 +57,15 @@ main (int argc, char ** argv)
     int argn;
     FILE* disk;
 
-    if (argc <= 1)
+    if (argc <= 1 || ! strcmp (argv[1], "--help"))
     {
         printf (usage);
-        exit(0);
+	return 0;
+    }
+    if (! strcmp (argv[1], "--version"))
+    {
+	printf (__FILE__" version "ZZIP_PACKAGE" "ZZIP_VERSION"\n");
+	return 0;
     }
 
     disk = fopen (argv[1], "r");

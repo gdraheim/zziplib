@@ -4,6 +4,7 @@
  * fix bugs for decompression on the latter as well
    it seems the one has to use inflateInit2 (..., -MAX_WBITS)
  * added bins/unzzipshow for an example binary
+ * added "--help" and "--version" to all bins examples
 
 2003-12-24
  * added libzzipmmap.la with a simplified interface to zip archives

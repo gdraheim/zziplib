@@ -59,10 +59,15 @@ static const char usage[] =
 int 
 main (int argc, char* argv[])
 {
-    if (argc <= 1 || argc > 3)
+    if (argc <= 1 || argc > 3 || ! strcmp (argv[1], "--help"))
     {
         printf (usage);
-        exit (0);
+        return 0;
+    }
+    if (! strcmp (argv[1], "--version"))
+    {
+	printf (__FILE__" version "ZZIP_PACKAGE" "ZZIP_VERSION"\n");
+	return 0;
     }
 
     if (strlen(argv[1]) > 128) {

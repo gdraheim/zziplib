@@ -5,9 +5,9 @@
  *      This file is used as an example to clarify zzip api usage.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <zzip/zzip.h>
+#include <stdio.h>
+#include <string.h>
 
 #ifdef ZZIP_HAVE_UNISTD_H
 #include <unistd.h>
@@ -33,17 +33,22 @@ main (int argc, char ** argv)
     int exitcode = 0;
     zzip_error_t error;
 
-    if (argc <= 1)
+    if (argc <= 1 || ! strcmp (argv[1], "--help"))
     {
         printf (usage);
-        exit(0);
+        return 0;
     }
-    
+    if (! strcmp (argv[1], "--version"))
+    {
+	printf (__FILE__" version "ZZIP_PACKAGE" "ZZIP_VERSION"\n");
+	return 0;
+    }
+  
     for (argn=1; argn < argc; argn++)
     {
         ZZIP_DIR * dir;
         ZZIP_DIRENT d;
-  
+
         dir = zzip_dir_open(argv[argn], &error);
         if (! dir)
         {

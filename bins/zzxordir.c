@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <ctype.h>
 
 #include <zzip/zzip.h>
@@ -56,10 +57,15 @@ main (int argc, char ** argv)
     int exitcode = 0; 
     xor_value = 0x55;
 
-    if (argc <= 1)
+    if (argc <= 1 || ! strcmp (argv[1], "--help"))
     {
         printf (usage);
-        exit(0);
+        return 0;
+    }
+    if (! strcmp (argv[1], "--version"))
+    {
+	printf (__FILE__" version "ZZIP_PACKAGE" "ZZIP_VERSION"\n");
+	return 0;
     }
 
     zzip_init_io (&xor_handlers, 0); xor_handlers.fd.read = &xor_read;

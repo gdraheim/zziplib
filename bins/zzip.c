@@ -8,9 +8,9 @@
 
 #define _ZZIP_WRITE_SOURCE
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <zzip/zzip.h>
+#include <stdio.h>
+#include <string.h>
 
 #ifdef ZZIP_HAVE_UNISTD_H
 #include <unistd.h>
@@ -35,10 +35,15 @@ main (int argc, char ** argv)
     int argn;
     int exitcode = 0;
 
-    if (argc <= 1)
+    if (argc <= 1 || ! strcmp (argv[1], "--help"))
     {
         printf (usage);
-        exit(0);
+        return 0;
+    }
+    if (! strcmp (argv[1], "--version"))
+    {
+	printf (__FILE__" version "ZZIP_PACKAGE" "ZZIP_VERSION"\n");
+	return 0;
     }
 
     ZZIP_DIR * dir;

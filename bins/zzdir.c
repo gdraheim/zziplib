@@ -3,9 +3,9 @@
  *      Use freely under the restrictions of the ZLIB license.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <zzip/zzip.h>
+#include <stdio.h>
+#include <string.h>
 
 #ifndef O_BINARY
 #define O_BINARY 0
@@ -25,12 +25,18 @@ main (int argc, char ** argv)
 {
     int argn;
     int exitcode = 0; 
-    if (argc <= 1)
+    
+    if (argc <= 1 || ! strcmp (argv[1], "--help"))
     {
         printf (usage);
-        exit(0);
+        return 0;
     }
-    
+    if (! strcmp (argv[1], "--version"))
+    {
+	printf (__FILE__" version "ZZIP_PACKAGE" "ZZIP_VERSION"\n");
+	return 0;
+    }
+
     for (argn=1; argn < argc; argn++)
     {
         ZZIP_DIR * dir;

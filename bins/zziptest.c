@@ -12,6 +12,7 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 
 #if defined _MSC_VER /* Win32*/
 #define WIN32_LEAN_AND_MEAN
@@ -38,8 +39,16 @@ int main(int argc, char ** argv)
   
     if (argc > 1 && argv[1] != NULL)
     {
-        name = argv[1];
-        argv++; argc--;
+	if (! strcmp (argv[1], "--help")) {
+	    printf ("zziptest [testfile]\n - selftest defaults to 'test.zip'");
+	    return 0;
+	}else if (! strcmp (argv[1], "--version")) {
+	    printf (__FILE__" version "ZZIP_PACKAGE" "ZZIP_VERSION"\n");
+	    return 0;
+	}else{
+	    name = argv[1];
+	    argv++; argc--;
+	}
     }
 
     printf("Opening zip file `%s'... ", name);
