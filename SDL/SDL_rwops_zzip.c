@@ -22,7 +22,7 @@ static int _zzip_seek(SDL_RWops *context, int offset, int whence)
 
 static int _zzip_read(SDL_RWops *context, void *ptr, int size, int maxnum)
 {
-    return zzip_read(SDL_RWOPS_ZZIP_FILE(context), ptr, size*maxnum);
+    return zzip_read(SDL_RWOPS_ZZIP_FILE(context), ptr, size*maxnum) / size;
 }
 
 static int _zzip_write(SDL_RWops *context, const void *ptr, int size, int num)
