@@ -1,3 +1,8 @@
+2003-12-24
+ * added libzzipmmap.la with a simplified interface to zip archives
+ * added bins unzzipdir and unzzipcat to show usage of libzzipmmap.la
+ * introduce zzip/types.h to allow easier inclusion to zzip/mmapped.*
+
 2003-12-22
  * add AC_C_BIGENDIAN and
  * move out ZZIP_GET to zzip/fetch.h where we also specify access

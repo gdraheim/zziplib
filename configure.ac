@@ -1,7 +1,7 @@
 AC_INIT(zziplib.spec)
 AC_PREREQ(2.49)
 AC_COPYRIGHT([Guido Draheim <guido@gmx.de> for ZZipLib.SF.net])
-AC_REVISION($Revision: 1.2 $)
+AC_REVISION($Revision: 1.3 $)
 AC_CONFIG_AUX_DIR(uses)
 # =======================================================================
 AC_CANONICAL_SYSTEM
@@ -75,7 +75,7 @@ AX_SET_VERSION_INFO
 AC_MSG_RESULT([creating zzip/_msvc.in via zzip/_msvc.sed of config.h.in])
 test -d zzip || mkdir zzip
 sed -f $srcdir/zzip/_msvc.sed $srcdir/config.h.in >zzip/_msvc.in
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADER(config.h)
 AX_PREFIX_CONFIG_H([zzip/_config.h],[zzip],[config.h])
 AX_PREFIX_CONFIG_H([zzip/_msvc.h],[zzip],[zzip/_msvc.in])
 AM_MAINTAINER_MODE
@@ -90,12 +90,14 @@ AC_PATH_PROGS(XMLTO, xmlto, :)
 
 AC_C_INLINE
 AC_C_CONST
+ACX_C_RESTRICT
 AC_STDC_HEADERS
 AC_HEADER_DIRENT
 AC_CHECK_HEADERS(stdint.h unistd.h windows.h winnt.h winbase.h sys/int_types.h)
 AC_CHECK_HEADERS(sys/types.h sys/mman.h sys/stat.h sys/param.h) dnl posix'ish
 AC_CHECK_HEADERS(io.h direct.h zlib.h byteswap.h)
-AC_CHECK_FUNCS( strcasecmp )
+AC_CHECK_HEADERS(fnmatch.h)
+AC_CHECK_FUNCS( strcasecmp strndup )
 
 AC_TYPE_OFF_T
 AC_TYPE_SIZE_T
