@@ -64,7 +64,7 @@ def html(text):
 def cdata1(text):
     return string.replace(text, "&",  "&amp;")
 def cdata31(text):
-    return string.replace(string.replace(text, "<","&gt;"), ">","&lt;")
+    return string.replace(string.replace(text, "<","&lt;"), ">","&gt;")
 def cdata3(text):
     return cdata31(cdata1(text))
 def cdata43(text):
@@ -82,7 +82,7 @@ def file_comment2section(text):
     return ("<para>\n"+
             s(s(s(s(s(s(s(text,
                           r"(?s){<([\w\.\-]+\@[\w\.\-]+\w\w)>",
-                          r"&lt;\1&lt;"),
+                          r"&lt;\1&gt;"),
                         r"(?mx) ^\s?\s?\s? ([^\*\s]+ .*) $",
                         lambda x : markup_as_screen41 (x.group(1))),
                       r"(?mx) ^\s*[*]\s* $", r" \n</para><para>\n"),
@@ -154,10 +154,10 @@ class File:
         self.mainheader = o.mainheader
         self.authors = ""
         self.copyright = ""
-    def __floordiv__(self, name):
-        """ obj//"name" will check for a non-empty member attribute """
-        if not self.__dict__.has_key(name): return None
-        return self.__dict__[name]
+    def __getattr__(self, name):
+        """ defend against program to break on uninited members """
+        if self.__dict__.has_key(name): return self.__dict__[name]
+        warn("no such member: "+name); return None
     def set_author(self, text):
         if self.authors:
             self.authors += "\n"
@@ -192,7 +192,7 @@ class InputFiles:
         func = FuncDeclaration()
         func.file = self.file
         func.comment = s(comment, # need to take out email-style markups
-                         r"<([\w\.\-]+\@[\w\.\-]+\w\w)>", r"&lt;\1&lt;")
+                         r"<([\w\.\-]+\@[\w\.\-]+\w\w)>", r"&lt;\1&gt;")
         func.prototype = prototype
         func.id = all.next_id()
         self.funcs.append(func)
@@ -289,10 +289,10 @@ class Function:
 #        name = defines.keys()[0]
 #        self.__dict__[name] += defines[name]
 #        return ""
-    def __floordiv__(self, name):
-        """ obj//"name" will check for a non-empty member attribute """
-        if not self.__dict__.has_key(name): return None
-        return self.__dict__[name]
+    def __getattr__(self, name):
+        """ defend against program exit on members being not inited """
+        if self.__dict__.has_key(name): return self.__dict__[name]
+        warn("no such member: "+name); return None
     def dict(self):
         return self.__dict__
     def dict_sorted_keys(self):
@@ -336,11 +336,14 @@ def parse_all_functions(func_list): # list of FunctionDeclarations
         list.append(function)
 
         function.body = markup_link_syntax(func.comment)
-
-        # cut comment in first-line and only keep the rest in comment body
-        function.head = s(function.body,  r"(?sx) ^([^\n]*\n).*",r"\1",1)
-        function.body = s(function.body,  r"(?sx)  ^[^\n]*\n",   r"",  1)
-        if m(function.head, r"(?sx) ^\s*$ "): # all empty...
+        if "\n" not in function.body: # single-line comment is the head
+            function.head = function.body
+            function.body = ""
+        else: # cut comment in first-line and only keep the rest as descr body
+            function.head = s(function.body,  r"(?sx) ^([^\n]*\n).*",r"\1",1)
+            function.body = s(function.body,  r"(?sx)  ^[^\n]*\n",   r"",  1)
+        #fi
+        if m(function.head, r"(?sx) ^\s*$ "): # empty head line, autofill here
             function.head = s("("+func.file.name+")", r"[.][.][/]", r"")
 
         function.body = func_comment2section(function.body)
@@ -357,6 +360,8 @@ def examine_head_anchors(func_list):
         page and that this func should add its descriptions over there. """
     for function in func_list:
         function.into = None
+        function.seealso = None
+        
         found = m(function.head, r"(?sx) ^ \s* <link>(\w[\w.]*\w)<\/link>")
         # if found and found.group(1) in func_list.names:
         if found and found.group(1):
@@ -367,7 +372,7 @@ def examine_head_anchors(func_list):
             return value
         function.head = s(function.head, r"(.*)also:(.*)", lambda x
                           : set_seealso(function, x.group(2)) and x.group(1))
-        if function//"seealso" and None:
+        if function.seealso and None:
             print "function[",function.name,"].seealso=",function.seealso
 examine_head_anchors(function_list)
 
@@ -561,7 +566,7 @@ class RefPage:
         self.copyright_list = []
         self.seealso = None
         self.seealso_list = []
-        if  func//"seealso":
+        if  func.seealso:
             self.seealso_list.append(func.seealso)
         # func.func references
         self.func = func
@@ -569,7 +574,7 @@ class RefPage:
         if  func.src.file.authors:
             self.file_authors = func.src.file.authors
         self.file_copyright = None
-        if  func.src.file//"copyright":
+        if  func.src.file.copyright:
             self.file_copyright = func.src.file.copyright
     #fu
     def refentryinfo_text(page):
@@ -595,12 +600,12 @@ class RefPage:
             return page.refmeta
         if page.manvolnum and page.refentrytitle:
             return (
-                "\n <manvolnum>"+page.manvolnum+"</manvolnum>"+
-                "\n <refentrytitle>"+page.refentrytitle+"</refentrytitle>")
+                "\n <refentrytitle>"+page.refentrytitle+"</refentrytitle>"+
+                "\n <manvolnum>"+page.manvolnum+"</manvolnum>")
         if page.manvolnum and page.func.name:
             return (
-                "\n <manvolnum>"+page.manvolnum+"</manvolnum>"+
-                "\n <refentrytitle>"+page.func.name+"</refentrytitle>")
+                "\n <refentrytitle>"+page.func.name+"</refentrytitle>"+
+                "\n <manvolnum>"+page.manvolnum+"</manvolnum>")
         return ""
     def refnamediv_text(page):
         """ the manvol formatter prints a header line with a <refpurpose> line
@@ -610,12 +615,13 @@ class RefPage:
         if page.refnamediv:
             return page.refnamediv
         if page.refpurpose and page.refname:
-            return ("\n <refpurpose>"+page.refpurpose+" </refpurpose>"+
-                    "\n <refname>"+page.refname+'</refname>')
+            return ("\n <refname>"+page.refname+'</refname>'+
+                    "\n <refpurpose>"+page.refpurpose+" </refpurpose>")
         if page.refpurpose and page.refname_list:
-            T = "\n <refpurpose>"+page.refpurpose+" </refpurpose>"
+            T = ""
             for refname in page.refname_list:
                 T += "\n <refname>"+refname+'</refname>'
+            T += "\n <refpurpose>"+page.refpurpose+" </refpurpose>"
             return T
         return ""
     def funcsynopsisdiv_text(page):
@@ -623,24 +629,20 @@ class RefPage:
             and the reference page description blocks """
         T=""
         if page.funcsynopsis:
+            T += "\n<funcsynopsis>"
             if page.funcsynopsisinfo:
                 T += "\n<funcsynopsisinfo>"+    page.funcsynopsisinfo + \
                      "\n</funcsynopsisinfo>\n"
-            T += "\n<funcsynopsis>" +           page.funcsynopsis + \
+            T += page.funcsynopsis + \
                  "\n</funcsynopsis>\n"
         if page.funcsynopsis_list:
+            T += "\n<funcsynopsis>"
             if page.funcsynopsisinfo:
                 T += "\n<funcsynopsisinfo>"+    page.funcsynopsisinfo + \
                      "\n</funcsynopsisinfo>\n"
-            if 0: # is this one right?
-                for funcsynopsis in page.funcsynopsis_list:
-                    T += "\n<funcsynopsis>" +            funcsynopsis + \
-                         "\n</funcsynopsis>\n"
-            else: # this one is what is used up to now:
-                T += "\n<funcsynopsis>"
-                for funcsynopsis in page.funcsynopsis_list:
-                    T += funcsynopsis
-                T += "\n</funcsynopsis>\n"
+            for funcsynopsis in page.funcsynopsis_list:
+                T += funcsynopsis
+            T += "\n</funcsynopsis>\n"
         #fi
         return T
     def description_text(page):
@@ -731,8 +733,8 @@ class RefPage:
             T += "\n<refsect1><title>Copyright</title> " + \
                  page.copyright_text() + "\n</refsect1>\n"
         if page.seealso_text():
-            T += "\n<refsect1><title>See Also</title> " + \
-                 page.seealso_text() + "\n</refsect1>\n"
+            T += "\n<refsect1><title>See Also</title><para> " + \
+                 page.seealso_text() + "\n</para></refsect1>\n"
 
         T +=  "\n</refentry>\n"
         return T
@@ -954,8 +956,8 @@ def docbook_refpages_perheader(page_list): # headerlist
             if found:
                 header[file].description = found.group(1)
             elif not header[file].description:
-                header[file].description = (page.refentry_productname + 
-                                           " library")
+                header[file].description = "<para>" + (
+                    page.refentry_productname + " library") + "</para>";
             #fi
         #fi
     #od
@@ -981,7 +983,7 @@ doctype += "\n     "
 doctype += '"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">'+"\n"
 
 try:
-    F = open(o.docbookfile+"X","w")
+    F = open(o.docbookfile,"w")
 except IOError, error:
     warn("can not open docbook output file: "+o.docbookfile, error)
 else:
@@ -1012,7 +1014,7 @@ else:
         print >> F, "<fn id=\""+name+"\">"+"<!-- FOR \""+name+"\" -->\n"
         for H in sorted_keys(func.dict()):
             print >> F, "<"+H+" name=\""+name+"\">",
-            print >> F, str(func//H),
+            print >> F, str(func.dict()[H]),
             print >> F, "</"+H+">"
         #od
         print >> F, "</fn><!-- END \""+name+"\" -->\n\n";
