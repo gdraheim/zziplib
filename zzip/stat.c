@@ -18,7 +18,12 @@
  */
 
 #include <zzip/lib.h>                                   /* exported...*/
+#include <zzip/file.h>
 #include <string.h>
+#include <sys/stat.h>
+
+#define ZZIP_USE_INTERNAL
+#include <zzip/info.h>
 
 /**
  * obtain information about a filename in an opened zip-archive without 
@@ -67,6 +72,44 @@ zzip_dir_stat(ZZIP_DIR * dir, zzip_char_t* name, ZZIP_STAT * zs, int flags)
     zs->d_name  = hdr->d_name;
 
     return 0;
+}
+
+/** => zzip_dir_stat
+ * This function will obtain information about a opened file _within_ a 
+ * zip-archive. The file is supposed to be open (otherwise -1 is returned). 
+ * The st_size stat-member contains the uncompressed size. The optional 
+ * d_name is never set here. 
+ */
+int zzip_file_stat (ZZIP_FILE* file, ZZIP_STAT* zs)
+{
+    if (! file) return -1;
+    zs->d_compr = file->method;
+    zs->d_csize = file->csize;
+    zs->st_size = file->usize;
+    zs->d_name  = 0;
+    return 0;
+}
+
+/** => zzip_dir_stat
+ * This function will obtain information about a opened file which may be
+ * either real/zipped. The file is supposed to be open (otherwise -1 is 
+ * returned). The st_size stat-member contains the uncompressed size. 
+ * The optional d_name is never set here. For a real file, we do set the
+ * d_csize := st_size and d_compr := 0 for meaningful defaults.
+ */
+int zzip_fstat (ZZIP_FILE* file, ZZIP_STAT* zs)
+{
+    if (ZZIP_file_real(file))
+    {
+	struct stat st;
+	if (fstat (file->fd, &st) < 0) return -1;
+	zs->st_size = st.st_size;
+	zs->d_csize = st.st_size;
+	zs->d_compr = 0;
+	return 0;
+    }else{
+	return zzip_file_stat (file, zs);
+    }
 }
 
 /* 
