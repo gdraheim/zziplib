@@ -1,6 +1,6 @@
-# aclocal.m4 generated automatically by aclocal 1.5
+# aclocal.m4 generated automatically by aclocal 1.6.3 -*- Autoconf -*-
 
-# Copyright 1996, 1997, 1998, 1999, 2000, 2001
+# Copyright 1996, 1997, 1998, 1999, 2000, 2001, 2002
 # Free Software Foundation, Inc.
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -11,7 +11,7 @@
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
 
-dnl acinclude.m4 generated automatically by ac-archive's acinclude 0.5.53
+dnl acinclude.m4 generated automatically by ac-archive's acinclude 0.5.56
 
 dnl Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 dnl This file is free software; the Free Software Foundation
@@ -23,443 +23,102 @@ dnl but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 dnl even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 dnl PARTICULAR PURPOSE.
 
-dnl ______ /usr/share/aclocal/guidod/ax_cflags_gcc_option.m4 ______
-dnl @synopsis AX_CFLAGS_GCC_OPTION ([shellvar], optionflag [,A/NA])
+dnl ______ /usr/share/aclocal/guidod/ax_spec_file.m4 ______
+dnl @* AX_SPEC_FILE [(rpmspecfile [,subdirpath])]
 dnl
-dnl AX_CFLAGS_GCC_OPTION(-fvomit-frame) would show a message as like
-dnl "checking CFLAGS for gcc -fvomit-frame ... yes" and adds
-dnl the optionflag to CFLAGS if it is understood. You can override
-dnl the shellvar-default of CFLAGS of course. The order of arguments
-dnl stems from the explicit macros like AX_CFLAGS_WARN_ALL.
+dnl set the specfile - if no argument has been given then check whether
+dnl the ac_unique_file looks like a .spec file and use it. This macro
+dnl is ac_REQUIRED by many AX_SPEC_ routines.
 dnl
-dnl The cousin AX_CXXFLAGS_GCC_OPTION would check for an option to add
-dnl to CXXFLAGS - and it uses the autoconf setup for C++ instead of C
-dnl (since it is possible to use different compilers for C and C++).
+dnl the AX_SPEC_EXTRACT macro is a helper used by many AX_SPEC_
+dnl routines and therefore placed here to be automatically included
+dnl in the macro set of (older) aclocal/acinclude.
 dnl
-dnl The macro is a lot simpler than any special AX_CFLAGS_* macro (or
-dnl ac_cxx_rtti.m4 macro) but allows to check for arbitrary options.
-dnl However, if you use this macro in a few places, it would be great
-dnl if you would make up a new function-macro and submit it to the
-dnl ac-archive.
+dnl AX_SPEC_EXTRACT(shellvar [,specvar [,defaultvalue]])
 dnl
-dnl   - $1 shell-variable-to-add-to : CFLAGS
-dnl   - $2 option-to-check-for : required ("-option" as non-value)
-dnl   - $3 action-if-found : add value to shellvariable
-dnl   - $4 action-if-not-found : nothing
-dnl
-dnl @, untested, experimental
-dnl @version %Id: ax_cflags_gcc_option.m4,v 1.2 2003/06/04 23:54:23 guidod Exp %
+dnl @version %Id: ax_spec_file.m4,v 1.1 2003/10/18 23:38:41 guidod Exp %
 dnl @author Guido Draheim <guidod@gmx.de>
-dnl
-AC_DEFUN([AX_CFLAGS_GCC_OPTION], [dnl
-AS_VAR_PUSHDEF([FLAGS],[CFLAGS])dnl
-AS_VAR_PUSHDEF([VAR],[ac_cv_cflags_gcc_option_$2])dnl
-AC_CACHE_CHECK([m4_ifval($1,$1,FLAGS) for gcc m4_ifval($2,$2,-option)],
-VAR,[VAR="no, unknown"
- AC_LANG_SAVE
- AC_LANG_C
- ac_save_[]FLAGS="$[]FLAGS"
-for ac_arg dnl
-in "-pedantic  % m4_ifval($2,$2,-option)"  dnl   GCC
-   #
-do FLAGS="$ac_save_[]FLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
-   AC_TRY_COMPILE([],[return 0;],
-   [VAR=`echo $ac_arg | sed -e 's,.*% *,,'` ; break])
-done
- FLAGS="$ac_save_[]FLAGS"
- AC_LANG_RESTORE
-])
-case ".$VAR" in
-     .ok|.ok,*) m4_ifvaln($3,$3) ;;
-   .|.no|.no,*) m4_ifvaln($4,$4) ;;
-   *) m4_ifvaln($3,$3,[
-   if echo " $[]m4_ifval($1,$1,FLAGS) " | grep " $VAR " 2>&1 >/dev/null
-   then AC_RUN_LOG([: m4_ifval($1,$1,FLAGS) does contain $VAR])
-   else AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"])
-                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"
-   fi ]) ;;
-esac
-AS_VAR_POPDEF([VAR])dnl
-AS_VAR_POPDEF([FLAGS])dnl
-])
 
-
-dnl the only difference - the LANG selection... and the default FLAGS
-
-AC_DEFUN([AX_CXXFLAGS_GCC_OPTION], [dnl
-AS_VAR_PUSHDEF([FLAGS],[CXXFLAGS])dnl
-AS_VAR_PUSHDEF([VAR],[ac_cv_cxxflags_gcc_option_$2])dnl
-AC_CACHE_CHECK([m4_ifval($1,$1,FLAGS) for gcc m4_ifval($2,$2,-option)],
-VAR,[VAR="no, unknown"
- AC_LANG_SAVE
- AC_LANG_CXX
- ac_save_[]FLAGS="$[]FLAGS"
-for ac_arg dnl
-in "-pedantic  % m4_ifval($2,$2,-option)"  dnl   GCC
-   #
-do FLAGS="$ac_save_[]FLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
-   AC_TRY_COMPILE([],[return 0;],
-   [VAR=`echo $ac_arg | sed -e 's,.*% *,,'` ; break])
-done
- FLAGS="$ac_save_[]FLAGS"
- AC_LANG_RESTORE
-])
-case ".$VAR" in
-     .ok|.ok,*) m4_ifvaln($3,$3) ;;
-   .|.no|.no,*) m4_ifvaln($4,$4) ;;
-   *) m4_ifvaln($3,$3,[
-   if echo " $[]m4_ifval($1,$1,FLAGS) " | grep " $VAR " 2>&1 >/dev/null
-   then AC_RUN_LOG([: m4_ifval($1,$1,FLAGS) does contain $VAR])
-   else AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"])
-                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"
-   fi ]) ;;
-esac
-AS_VAR_POPDEF([VAR])dnl
-AS_VAR_POPDEF([FLAGS])dnl
-])
-
-dnl ______  ______
-
-dnl ______ /usr/share/aclocal/guidod/patch_libtool_sys_lib_search_path_spec.m4 ______
-dnl @* PATCH_LIBTOOL_SYS_LIB_SEARCH_PATH_SPEC
-dnl
-dnl Cross-compiling to win32 from a unix system reveals a bug - the
-dnl path-separator has been set to ";" depending on the target system.
-dnl However, the crossgcc search_path_spec works in a unix-environment
-dnl with unix-style directories and unix-stylish path_separator. The
-dnl result: the search_path_spec is a single word still containing the
-dnl ":" separators.
-dnl
-dnl This macro fixes the situation: when we see the libtool PATH_SEP
-dnl to be ":" and search_path_spec to contain ":" characters, then
-dnl these are replaced with spaces to let the resulting string work
-dnl as a for-loop argument in libtool scripts that resolve -no-undefined
-dnl libraries.
-dnl
-dnl Later libtool generations have fixed the situation with using
-dnl $PATH_SEPARATOR in the first place as the original path delimiter
-dnl that will be scanned for and replaced into spaces.
-dnl
-dnl @= guidod@gmx.de
-dnl @%Id: patch_libtool_sys_lib_search_path_spec.m4,v 1.3 2003/03/23 13:20:27 guidod Exp %
-
-AC_DEFUN([PATCH_LIBTOOL_SYS_LIB_SEARCH_PATH_SPEC],
-[# patch libtool to fix sys_lib_search_path (e.g. crosscompiling a win32 dll)
-if test "_$PATH_SEPARATOR" = "_:" ; then
-  if grep "^sys_lib_search_path_spec.*:" libtool >/dev/null ; then
-AC_MSG_RESULT(patching libtool to fix sys_lib_search_path_spec)
-    test -f libtool.old || (mv libtool libtool.old && cp libtool.old libtool)
-    sed -e "/^sys_lib_search_path_spec/s/:/ /g" libtool >libtool.new
-    (test -s libtool.new || rm libtool.new) 2>/dev/null
-    test -f libtool.new && mv libtool.new libtool # not 2>/dev/null !!
-    test -f libtool     || mv libtool.old libtool
-  fi
-fi
-])
-dnl ______ /usr/share/aclocal/guidod/ax_warning_default_aclocaldir.m4 ______
-dnl @* AX_WARNING_DEFAULT_ACLOCALDIR [(dirvariable [,defsetting])]
-dnl
-dnl print a warning message if the $(datadir)/aclocal directory
-dnl is not in the dirlist searched by the aclocal tool. This macro
-dnl is useful if some `make install` would target $(datadir)/aclocal
-dnl to install an autoconf m4 file of your project to be picked up
-dnl by other projects.
-dnl
-dnl  default $1 dirvariable = aclocaldir
-dnl  default $2 defsetting  = ${datadir}/aclocal
-dnl  (the defsetting is not placed in dirvariable nor is it ac_subst'ed)
-dnl
-dnl @: guidod@gmx.de
-dnl @%Id: %
-
-AC_DEFUN([AX_WARNING_DEFAULT_ACLOCALDIR],[dnl
-AC_REQUIRE([AX_EXPAND_PREFIX])dnl
-AS_VAR_PUSHDEF([DIR],[ax_warning_default_aclocal_dir])dnl
-AS_VAR_PUSHDEF([BIN],[ax_warning_default_aclocal_bin])dnl
-AS_VAR_PUSHDEF([LOC],[ax_warning_default_aclocal_loc])dnl
-if test ".$ACLOCAL" = "." ; then
-   AC_PATH_PROG([ACLOCAL],[aclocal],[:])
-fi
-LOC='m4_if([$2],,[${datadir}/aclocal],[$2])'
-m4_ifval([$1],[test ".$[]$1" != "." && LOC="$[]$1"])
-BIN="$ACLOCAL"
-test ".$BIN" = "." && BIN="aclocal" 
-DIR=`test ".$SHELL" = "." && SHELL="'sh'" ; eval "$BIN --print-ac-dir"`
-test ".$DIR" = "." && test -d "/usr/share/aclocal" && DIR="/usr/share/aclocal"
-test ".$DIR" = "." && DIR="/"
-DIR=`eval "echo $DIR"`  # we need to expand 
-DIR=`eval "echo $DIR"`
-LOC=`eval "echo $LOC"`
-LOC=`eval "echo $LOC"`
-AC_RUN_LOG([: test "$LOC" = "$DIR"])
-if test "$LOC" != "$DIR" ; then
-   if test -f "$DIR/dirlist" ; then
-      for DIR in `cat $DIR/dirlist` $DIR ; do
-          AC_RUN_LOG([: test "$LOC" = "$DIR"])
-          test "$LOC" = "$DIR" && break
-      done
-   fi
-   if test "$LOC" != "$DIR" ; then
-      AC_MSG_NOTICE([warning: m4_if([$1],,[aclocaldir],[$1])=$LOC dnl
-(see config.log)])
-   AC_MSG_NOTICE([perhaps: make install m4_if([$1],,[aclocaldir],[$1])=$DIR])
+AC_DEFUN([AX_SPEC_FILE],
+[ AC_MSG_CHECKING([rpm spec file])
+  if test ".$1" != "." ; then
+    ax_spec_file_="$1"
+    ax_spec_file=`basename $1`
+  else
+    case ".$ac_unique_file" in
+      *.spec) ax_spec_file="$ac_unique_file" 
+              ax_spec_file_="$ac_unique_file" ;;
+      *) ax_spec_file="TODO"
+         if test ".$PACKAGE" != "." 
+         then ax_spec_file_="$PACKAGE.spec"
+         else ax_spec_file_="README"
+         fi
    cat m4_ifset([AS_MESSAGE_LOG_FD],[>&AS_MESSAGE_LOG_FD],[>>config.log]) <<EOF
-  aclocaldir:   the m4_if([$1],,[default aclocaldir],[$1 value]) of $LOC
-  aclocaldir:   is not listed in the dirlist where aclocal will look
-  aclocaldir:   for macros - you can override the install-path using
-  aclocaldir:   make install aclocaldir=$DIR
-  aclocaldir:   or append the directory to aclocal reconfigures later as
-  aclocaldir:   aclocal -I $LOC
-  aclocaldir:   when an autoconf macro is needed from that directory
+         no ax_spec_file argument has been given, using defaults of
+         (1) $ax_spec_file_ 
+         (2) $ax_spec_file
 EOF
-   fi
-fi
-AS_VAR_POPDEF([LOC])dnl
-AS_VAR_POPDEF([BIN])dnl
-AS_VAR_POPDEF([DIR])dnl
+         ;;
+    esac
+  fi
+  # find specfile
+  for i in ifelse($2,,,$2) . $srcdir $srcdir/.. .. ; do
+    if test -f "$i/$ax_spec_file_" ; then
+      ax_spec_dir="$i"
+      ax_spec_file="$ax_spec_dir/$ax_spec_file_"
+      break
+    fi
+    if test -f "$i/$ax_spec_file" ; then
+      ax_spec_dir="$i"
+      ax_spec_file="$ax_spec_dir/$ax_spec_file"
+      break
+    fi
+  done
+  case "$ax_spec_file" in
+   ./*) if test "$ax_spec_file" = "./$ax_spec_file_" ; then
+          ax_spec_file="$ax_spec_file_"
+        fi
+        AC_MSG_RESULT([$ax_spec_file]) ;;
+   */*) AC_MSG_RESULT([$ax_spec_file]) ;;
+   *)   AC_MSG_ERROR([no rpm spec file found]) ;;
+  esac
+  m4_define([m4_ax_spec_file],[ax_spec_file])
 ])
 
-dnl ______ /usr/share/aclocal/guidod/ax_cflags_warn_all.m4 ______
-dnl @synopsis AX_CFLAGS_WARN_ALL [(shellvar [,default, [A/NA]])]
-dnl
-dnl Try to find a compiler option that enables most reasonable warnings.
-dnl This macro is directly derived from VL_PROG_CC_WARNINGS which is
-dnl split up into two AX_CFLAGS_WARN_ALL and AX_CFLAGS_WARN_ALL_ANSI
-dnl
-dnl For the GNU CC compiler it will be -Wall (and -ansi -pedantic)
-dnl The result is added to the shellvar being CFLAGS by default.
-dnl
-dnl Currently this macro knows about GCC, Solaris C compiler,
-dnl Digital Unix C compiler, C for AIX Compiler, HP-UX C compiler,
-dnl IRIX C compiler, NEC SX-5 (Super-UX 10) C compiler, and Cray J90
-dnl (Unicos 10.0.0.8) C compiler.
-dnl
-dnl - $1 shell-variable-to-add-to : CFLAGS
-dnl - $2 add-value-if-not-found : nothing 
-dnl - $3 action-if-found : add value to shellvariable
-dnl - $4 action-if-not-found : nothing 
-dnl
-dnl @version %Id: ax_cflags_warn_all.m4,v 1.1 2003/01/06 00:51:33 guidod Exp %
-dnl @author Guido Draheim <guidod@gmx.de>
-dnl
-AC_DEFUN([AX_CFLAGS_WARN_ALL],[dnl
-AS_VAR_PUSHDEF([FLAGS],[CFLAGS])dnl
-AS_VAR_PUSHDEF([VAR],[ac_cv_cflags_warn_all])dnl
-AC_CACHE_CHECK([m4_ifval($1,$1,FLAGS) for maximum warnings],
-VAR,[VAR="no, unknown"
- AC_LANG_SAVE
- AC_LANG_C
- ac_save_[]FLAGS="$[]FLAGS"
-for ac_arg dnl
-in "-pedantic  % -Wall"       dnl   GCC
-   "-xstrconst % -v"          dnl Solaris C 
-   "-std1      % -verbose -w0 -warnprotos" dnl Digital Unix 
-   "-qlanglvl=ansi % -qsrcmsg -qinfo=all:noppt:noppc:noobs:nocnd" dnl AIX
-   "-ansi -ansiE % -fullwarn" dnl IRIX
-   "+ESlit     % +w1"         dnl HP-UX C 
-   "-Xc        % -pvctl[,]fullmsg" dnl NEC SX-5 (Super-UX 10)
-   "-h conform % -h msglevel 2" dnl Cray C (Unicos)
-   # 
-do FLAGS="$ac_save_[]FLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
-   AC_TRY_COMPILE([],[return 0;],
-   [VAR=`echo $ac_arg | sed -e 's,.*% *,,'` ; break])
-done
- FLAGS="$ac_save_[]FLAGS"
- AC_LANG_RESTORE
-])
-case ".$VAR" in
-     .ok|.ok,*) m4_ifvaln($3,$3) ;;
-   .|.no|.no,*) m4_ifvaln($4,$4,[m4_ifval($2,[
-        AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])
-                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])]) ;;
-   *) m4_ifvaln($3,$3,[
-   if echo " $[]m4_ifval($1,$1,FLAGS) " | grep " $VAR " 2>&1 >/dev/null
-   then AC_RUN_LOG([: m4_ifval($1,$1,FLAGS) does contain $VAR])
-   else AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"])
-                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"
-   fi ]) ;;
-esac
-AS_VAR_POPDEF([VAR])dnl
-AS_VAR_POPDEF([FLAGS])dnl
-])
+dnl AX_SPEC_EXTRACT(shellvar [,specvar [,defaultvalue]])
 
-dnl the only difference - the LANG selection... and the default FLAGS
-
-AC_DEFUN([AX_CXXFLAGS_WARN_ALL],[dnl
-AS_VAR_PUSHDEF([FLAGS],[CXXFLAGS])dnl
-AS_VAR_PUSHDEF([VAR],[ac_cv_cxxflags_warn_all])dnl
-AC_CACHE_CHECK([m4_ifval($1,$1,FLAGS) for maximum warnings],
-VAR,[VAR="no, unknown"
- AC_LANG_SAVE
- AC_LANG_CXX
- ac_save_[]FLAGS="$[]FLAGS"
-for ac_arg dnl
-in "-pedantic  % -Wall"       dnl   GCC
-   "-xstrconst % -v"          dnl Solaris C 
-   "-std1      % -verbose -w0 -warnprotos" dnl Digital Unix 
-   "-qlanglvl=ansi % -qsrcmsg -qinfo=all:noppt:noppc:noobs:nocnd" dnl AIX
-   "-ansi -ansiE % -fullwarn" dnl IRIX
-   "+ESlit     % +w1"         dnl HP-UX C 
-   "-Xc        % -pvctl[,]fullmsg" dnl NEC SX-5 (Super-UX 10)
-   "-h conform % -h msglevel 2" dnl Cray C (Unicos)
-   # 
-do FLAGS="$ac_save_[]FLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
-   AC_TRY_COMPILE([],[return 0;],
-   [VAR=`echo $ac_arg | sed -e 's,.*% *,,'` ; break])
-done
- FLAGS="$ac_save_[]FLAGS"
- AC_LANG_RESTORE
-])
-case ".$VAR" in
-     .ok|.ok,*) m4_ifvaln($3,$3) ;;
-   .|.no|.no,*) m4_ifvaln($4,$4,[m4_ifval($2,[
-        AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])
-                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])]) ;;
-   *) m4_ifvaln($3,$3,[
-   if echo " $[]m4_ifval($1,$1,FLAGS) " | grep " $VAR " 2>&1 >/dev/null
-   then AC_RUN_LOG([: m4_ifval($1,$1,FLAGS) does contain $VAR])
-   else AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"])
-                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"
-   fi ]) ;;
-esac
-AS_VAR_POPDEF([VAR])dnl
-AS_VAR_POPDEF([FLAGS])dnl
-])
-
-dnl  implementation tactics:
-dnl   the for-argument contains a list of options. The first part of
-dnl   these does only exist to detect the compiler - usually it is
-dnl   a global option to enable -ansi or -extrawarnings. All other
-dnl   compilers will fail about it. That was needed since a lot of
-dnl   compilers will give false positives for some option-syntax
-dnl   like -Woption or -Xoption as they think of it is a pass-through
-dnl   to later compile stages or something. The "%" is used as a
-dnl   delimimiter. A non-option comment can be given after "%%" marks.
-
-
-dnl ______ /usr/share/aclocal/guidod/ax_cflags_strict_prototypes.m4 ______
-dnl @synopsis AX_CFLAGS_STRICT_PROTOTYPES [(shellvar [,default, [A/NA]]
-dnl
-dnl Try to find a compiler option that requires strict prototypes.
-dnl
-dnl The sanity check is done by looking at sys/signal.h which has a set
-dnl of macro-definitions SIG_DFL and SIG_IGN that are cast to the local
-dnl signal-handler type. If that signal-handler type is not fully
-dnl qualified then the system headers are not seen as strictly prototype clean.
-dnl
-dnl For the GNU CC compiler it will be -fstrict-prototypes -Wstrict-prototypes
-dnl The result is added to the shellvar being CFLAGS by default.
-dnl
-dnl DEFAULTS:
-dnl
-dnl  - $1 shell-variable-to-add-to : CFLAGS
-dnl  - $2 add-value-if-not-found : nothing
-dnl  - $3 action-if-found : add value to shellvariable
-dnl  - $4 action-if-not-found : nothing
-dnl
-dnl @version %Id: ax_cflags_strict_prototypes.m4,v 1.7 2003/06/05 00:52:22 guidod Exp %
-dnl @author Guido Draheim <guidod@gmx.de>
-dnl
-AC_DEFUN([AX_CFLAGS_STRICT_PROTOTYPES],[dnl
-AS_VAR_PUSHDEF([FLAGS],[CFLAGS])dnl
-AS_VAR_PUSHDEF([VAR],[ac_cv_cflags_strict_prototypes])dnl
-AC_CACHE_CHECK([m4_ifval($1,$1,FLAGS) for strict prototypes],
-VAR,[VAR="no, unknown"
- AC_LANG_SAVE
- AC_LANG_C
- ac_save_[]FLAGS="$[]FLAGS"
-for ac_arg dnl
-in "-Wall     % -fstrict-prototypes -Wstrict-prototypes" dnl   GCC
-   "-Wall     % -Wstrict-prototypes" dnl try to warn atleast
-   #
-do FLAGS="$ac_save_[]FLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
-   AC_TRY_COMPILE([],[return 0;],
-   [VAR=`echo $ac_arg | sed -e 's,.*% *,,'` ; break])
-done
-case ".$VAR" in
-   .|.no|.no,*) ;;
-   *) # sanity check with signal() from sys/signal.h
-    cp config.log config.tmp
-    AC_TRY_COMPILE([#include <signal.h>],[
-    if (signal (SIGINT, SIG_IGN) == SIG_DFL) return 1;
-    if (signal (SIGINT, SIG_IGN) != SIG_DFL) return 2;],
-    dnl the original did use test -n `$CC testprogram.c`
-    [if test `diff config.log config.tmp | grep -i warning | wc -l` != 0
-then if test `diff config.log config.tmp | grep -i warning | wc -l` != 1
-then VAR="no, suppressed, signal.h," ; fi ; fi],
-    [VAR="no, suppressed, signal.h"])
-    rm config.tmp
-  ;;
-esac
- FLAGS="$ac_save_[]FLAGS"
- AC_LANG_RESTORE
-])
-case ".$VAR" in
-     .ok|.ok,*) m4_ifvaln($3,$3) ;;
-   .|.no|.no,*) m4_ifvaln($4,$4,[m4_ifval($2,[
-        AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])
-                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])]) ;;
-   *) m4_ifvaln($3,$3,[
-   if echo " $[]m4_ifval($1,$1,FLAGS) " | grep " $VAR " 2>&1 >/dev/null
-   then AC_RUN_LOG([: m4_ifval($1,$1,FLAGS) does contain $VAR])
-   else AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"])
-                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"
-   fi ]) ;;
-esac
-AS_VAR_POPDEF([VAR])dnl
-AS_VAR_POPDEF([FLAGS])dnl
-])
-
-dnl the only difference - the LANG selection... and the default FLAGS
-
-AC_DEFUN([AX_CXXFLAGS_STRICT_PROTOTYPES],[dnl
-AS_VAR_PUSHDEF([FLAGS],[CXXFLAGS])dnl
-AS_VAR_PUSHDEF([VAR],[ac_cv_cxxflags_strict_prototypes])dnl
-AC_CACHE_CHECK([m4_ifval($1,$1,FLAGS) for strict prototypes],
-VAR,[VAR="no, unknown"
- AC_LANG_SAVE
- AC_LANG_CXX
- ac_save_[]FLAGS="$[]FLAGS"
-for ac_arg dnl
-in "-Wall     % -fstrict-prototypes -Wstrict-prototypes" dnl   GCC
-   "-Wall     % -Wstrict-prototypes" dnl try to warn atleast
-   #
-do FLAGS="$ac_save_[]FLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
-   AC_TRY_COMPILE([],[return 0;],
-   [VAR=`echo $ac_arg | sed -e 's,.*% *,,'` ; break])
-done
-case ".$VAR" in
-   .|.no|.no,*) ;;
-   *) # sanity check with signal() from sys/signal.h
-    cp config.log config.tmp
-    AC_TRY_COMPILE([#include <signal.h>],[
-    if (signal (SIGINT, SIG_IGN) == SIG_DFL) return 1;
-    if (signal (SIGINT, SIG_IGN) != SIG_DFL) return 2;],
-    dnl the original did use test -n `$CC testprogram.c`
-    [if test `diff config.log config.tmp | grep -i warning | wc -l` != 0
-then if test `diff config.log config.tmp | grep -i warning | wc -l` != 1
-then VAR="no, suppressed, signal.h," ; fi ; fi],
-    [VAR="no, suppressed, signal.h"])
-    rm config.tmp
-  ;;
-esac
- FLAGS="$ac_save_[]FLAGS"
- AC_LANG_RESTORE
-])
-case ".$VAR" in
-     .ok|.ok,*) m4_ifvaln($3,$3) ;;
-   .|.no|.no,*) m4_ifvaln($4,$4,[m4_ifval($2,[
-        AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])
-                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])]) ;;
-   *) m4_ifvaln($3,$3,[
-   if echo " $[]m4_ifval($1,$1,FLAGS) " | grep " $VAR " 2>&1 >/dev/null
-   then AC_RUN_LOG([: m4_ifval($1,$1,FLAGS) does contain $VAR])
-   else AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"])
-                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"
-   fi ]) ;;
-esac
-AS_VAR_POPDEF([VAR])dnl
-AS_VAR_POPDEF([FLAGS])dnl
+AC_DEFUN([AX_SPEC_EXTRACT],
+[ 
+    if test ".$[]$1" = "." ; then
+    $1=`grep -i '^[[ 	]]*m4_ifval([$2],[$2],[$1])[[ 	]]*:' dnl
+  "$ax_spec_file" | sed -e 's/.*:[[ 	]]*//' dnl
+    -e 's/[[ 	]][[ 	]]*/ /g' -e 's/^ //' -e 's/ $[]//' -e 'q'`
+    if test ".$[]$1" = "." ; then
+  for $1 in $2 $1 m4_tolower([$1]) ; do
+    $1=`echo "$[]$1" | sed -e 's/^%//g'` 
+    $1=`sed dnl
+    -e  "/^%[[ 	]]*def[]ine[[ 	]][[ 	]]*$[]$1[[ 	]]/!d"  dnl
+    -e "s/^%[[ 	]]*def[]ine[[ 	]][[ 	]]*$[]$1[[ 	]]*//" dnl
+    -e 's/[[ 	]][[ 	]]*/ /' -e 's/ $[]//' -e 'q' $ax_spec_file`
+    test ".$1" != "." && break 
+  done
+    fi 
+  case ".$[]$1" in
+    .%{*) 
+    $1=`echo "$[]$1" | sed -e 's/%{//' -e 's/}$[]//'`
+    $1=`sed dnl
+   -e  "/^%[[ 	]]*def[]ine[[ 	]][[ 	]]*$[]$1[[ 	]]/!d"  dnl
+   -e "s/^%[[ 	]]*def[]ine[[ 	]][[ 	]]*$[]$1[[ 	]]*//" dnl
+   -e 's/[[ 	]][[ 	]]*/ /' -e 's/ $[]//' -e 'q' $ax_spec_file` ;;
+    .%*) 
+    $1=`echo "$[]$1" | sed -e 's/%//'` 
+    $1=`sed dnl
+    -e  "/^%[[ 	]]*def[]ine[[ 	]][[ 	]]*$[]$1[[ 	]]/!d"  dnl
+    -e "s/^%[[ 	]]*def[]ine[[ 	]][[ 	]]*$[]$1[[ 	]]*//" dnl
+    -e 's/[[ 	]][[ 	]]*/ /' -e 's/ $[]//' -e 'q' $ax_spec_file` ;;
+  esac 
+  m4_ifval([$3],[test ".$[]$1" = "." && $1="$3"])
+    fi # test ".$[]$1" = "."
 ])
 
 dnl ______ /usr/share/aclocal/guidod/ax_spec_package_version.m4 ______
@@ -509,7 +168,7 @@ dnl
 dnl the final AX_SPEC_INIT(specfile) will initialize all variables to
 dnl its defaults according to the spec file given.
 dnl
-dnl @version %Id: %
+dnl @version %Id: ax_spec_package_version.m4,v 1.1 2003/10/18 23:38:41 guidod Exp %
 dnl @author Guido Draheim <guidod@gmx.de>
 
 AC_DEFUN([AX_SPEC_PACKAGE_LICENSE],[AC_REQUIRE([AX_SPEC_FILE])dnl
@@ -687,173 +346,555 @@ AC_DEFUN([AX_SPEC_DEFAULTS],[
   AX_SPEC_PACKAGE_ICON
 ])
 
-dnl ______ /usr/share/aclocal/guidod/ax_set_version_info.m4 ______
-dnl AX_SET_VERSION_INFO [(VERSION  [,PREFIX])]      -*- m4 -*-
-dnl   default $1 = $PACKAGE_VERSION
-dnl   default $2 = <none>
-dnl 
-dnl This macro is the successor of AC_SET_RELEASEINFO_VERSIONINFO but
-dnl it can be used in parallel because it uses all different variables.
+dnl ______ /usr/share/aclocal/guidod/ax_cflags_gcc_option.m4 ______
+dnl @synopsis AX_CFLAGS_GCC_OPTION (optionflag [,[shellvar][,[A][,[NA]]])
 dnl
-dnl check the $VERSION number and cut the two last digit-sequences off
-dnl which will form a -version-info in a @VERSION_INFO@ ac_subst while
-dnl the rest is going to the -release name in a @RELEASE_INFO@ ac_subst.
+dnl AX_CFLAGS_GCC_OPTION(-fvomit-frame) would show a message as like
+dnl "checking CFLAGS for gcc -fvomit-frame ... yes" and adds
+dnl the optionflag to CFLAGS if it is understood. You can override
+dnl the shellvar-default of CFLAGS of course. The order of arguments
+dnl stems from the explicit macros like AX_CFLAGS_WARN_ALL.
 dnl
-dnl you should keep these two seperate - the release-name may contain
-dnl alpha-characters and can be modified later with extra release-hints
-dnl e.g. RELEASE_INFO="$RELEASE_INFO-debug" for a debug version 
-dnl of your lib. The $VERSION_INFO however should not be touched.
+dnl The cousin AX_CXXFLAGS_GCC_OPTION would check for an option to add
+dnl to CXXFLAGS - and it uses the autoconf setup for C++ instead of C
+dnl (since it is possible to use different compilers for C and C++).
 dnl
-dnl example: a VERSION="2.4.18" will be transformed into
-dnl    RELEASE_INFO = -release 2
-dnl    VERSION_INFO = -versioninfo 4:18
-dnl then use these two variables and push them to your libtool linker
-dnl    libtest_la_LIBADD = @RELEASE_INFO@ @VERSION_INFO@
-dnl and for a linux-target this will tell libtool to install the lib as
-dnl           libmy.so libmy.la libmy.a libmy-2.so.4 libmy-2.so.4.0.18
-dnl and executables will get link-resolve-infos for libmy-2.so.4 - therefore
-dnl the patch-level is ignored during ldso linking, and ldso will use the
-dnl one with the highest patchlevel. Using just "-release $(VERSION)"
-dnl during libtool-linking would not do that - omitting the -version-info
-dnl will libtool install libmy.so libmy.la libmy.a libmy-2.4.18.so and
-dnl executables would get hardlinked with the 2.4.18 version of your lib.
+dnl The macro is a lot simpler than any special AX_CFLAGS_* macro (or
+dnl ac_cxx_rtti.m4 macro) but allows to check for arbitrary options.
+dnl However, if you use this macro in a few places, it would be great
+dnl if you would make up a new function-macro and submit it to the
+dnl ac-archive.
 dnl
-dnl This background does also explain the default dll name for a win32
-dnl target : libtool will choose to make up libmy-2-4.dll for this 
-dnl version spec.
+dnl   - $1 option-to-check-for : required ("-option" as non-value)
+dnl   - $2 shell-variable-to-add-to : CFLAGS (or CXXFLAGS in the other case)
+dnl   - $3 action-if-found : add value to shellvariable
+dnl   - $4 action-if-not-found : nothing
 dnl
-dnl this macro does also set the usual three parts of a version spec
-dnl $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION but does not ac_subst 
-dnl for the plain AX_SET_VERSION_INFO macro. Use instead one of the numbered
-dnl macros AX_SET_VERSION_INFO1 (use first number for release part) or
-dnl that AX_SET_VERSION_INFO2 (use the first two numbers for release part).
-dnl 
-dnl You may add sublevel parts like "1.4.2-ac5" where the sublevel is 
-dnl just killed from these version/release substvars. That allows to grab
-dnl the version off a .spec file like with AX_SPEC_PACKAGE_VERSION where 
-dnl the $VERSION is used to name a tarball or distpack like mylib-2.2.9pre4
+dnl note: in earlier versions, $1-$2 were swapped. We try to detect the
+dnl situation and accept a $2=~/-/ as being the old option-to-check-for.
 dnl
-dnl Unlike earlier macros, you can use this one to break up different
-dnl VERSIONs and put them into different variables, just hint with
-dnl PREFIX-setting - i.e. _VERSION(2.4.5,TEST) will set variables named
-dnl TEST_MAJOR_VERSION=2... and of course $TEST_RELEASE_INFO etc.
-dnl (for the moment, it needs to be a literal prefix *sigh*)
+dnl also: there are other variants that emerged from the original macro
+dnl variant which did just test an option to be possibly added. However,
+dnl some compilers accept an option silently, or possibly for just
+dnl another option that was not intended. Therefore, we have to do a
+dnl generic test for a compiler family. For gcc we check "-pedantic"
+dnl being accepted which is also understood by compilers who just want
+dnl to be compatible with gcc even when not being made from gcc sources.
 dnl
-dnl @version %Id: ax_set_version_info.m4,v 1.1 2003/07/02 23:41:42 guidod Exp %
+dnl see also:
+dnl       AX_CFLAGS_SUN_OPTION               AX_CFLAGS_HPUX_OPTION
+dnl       AX_CFLAGS_AIX_OPTION               AX_CFLAGS_IRIX_OPTION
+dnl
+dnl @, tested, experimental
+dnl @version %Id: ax_cflags_gcc_option.m4,v 1.2 2003/10/28 23:57:38 guidod Exp %
 dnl @author Guido Draheim <guidod@gmx.de>
-
-AC_DEFUN([AX_SET_VERSION_INFO1],[dnl
-AS_VAR_PUSHDEF([MAJOR],ifelse($2,,[MAJOR_VERSION],[$2_MAJOR_VERSION]))dnl
-AS_VAR_PUSHDEF([MINOR],ifelse($2,,[MINOR_VERSION],[$2_MINOR_VERSION]))dnl
-AS_VAR_PUSHDEF([MICRO],ifelse($2,,[MICRO_VERSION],[$2_MICRO_VERSION]))dnl
-AS_VAR_PUSHDEF([PATCH],ifelse($2,,[PATCH_VERSION],[$2_PATCH_VERSION]))dnl
-AS_VAR_PUSHDEF([LTREL],ifelse($2,,[RELEASE_INFO],[$2_RELEASE_INFO]))dnl
-AS_VAR_PUSHDEF([LTVER],ifelse($2,,[VERSION_INFO],[$2_VERSION_INFO]))dnl
-test ".$PACKAGE_VERSION" = "." && PACKAGE_VERSION="$VERSION"
-AC_MSG_CHECKING(ifelse($2,,,[$2 ])out linker version info dnl
-ifelse($1,,$PACKAGE_VERSION,$1) )
-  MINOR=`echo ifelse( $1, , $PACKAGE_VERSION, $1 )`
-  MAJOR=`echo "$MINOR" | sed -e 's/[[.]].*//'` 
-  MINOR=`echo "$MINOR" | sed -e "s/^$MAJOR//" -e 's/^.//'` 
-  MICRO="$MINOR"
-  MINOR=`echo "$MICRO" | sed -e 's/[[.]].*//'`
-  MICRO=`echo "$MICRO" | sed -e "s/^$MINOR//" -e 's/^.//'`
-  PATCH="$MICRO"
-  MICRO=`echo "$PATCH" | sed -e 's/[[^0-9]].*//'` 
-  PATCH=`echo "$PATCH" | sed -e "s/^$MICRO//" -e 's/^[[-.]]//'`
-  if test "_$MICRO" = "_" ; then MICRO="0" ; fi
-  if test "_$MINOR" = "_" ; then MINOR="$MAJOR" ; MAJOR="0" ; fi
-  MINOR=`echo "$MINOR" | sed -e 's/[[^0-9]].*//'`
-  LTREL="-release $MAJOR"
-  LTVER="-version-info $MINOR:$MICRO"
-AC_MSG_RESULT([/$MAJOR/$MINOR:$MICRO (-$MAJOR.so.$MINOR.0.$MICRO)])
-AC_SUBST(MAJOR)
-AC_SUBST(MINOR)
-AC_SUBST(MICRO)
-AC_SUBST(PATCH)
-AC_SUBST(LTREL)
-AC_SUBST(LTVER)
-AS_VAR_POPDEF([LTVER])dnl
-AS_VAR_POPDEF([LTREL])dnl
-AS_VAR_POPDEF([PATCH])dnl
-AS_VAR_POPDEF([MICRO])dnl
-AS_VAR_POPDEF([MINOR])dnl
-AS_VAR_POPDEF([MAJOR])dnl
+dnl
+AC_DEFUN([AX_CFLAGS_GCC_OPTION_OLD], [dnl
+AS_VAR_PUSHDEF([FLAGS],[CFLAGS])dnl
+AS_VAR_PUSHDEF([VAR],[ac_cv_cflags_gcc_option_$2])dnl
+AC_CACHE_CHECK([m4_ifval($1,$1,FLAGS) for gcc m4_ifval($2,$2,-option)],
+VAR,[VAR="no, unknown"
+ AC_LANG_SAVE
+ AC_LANG_C
+ ac_save_[]FLAGS="$[]FLAGS"
+for ac_arg dnl
+in "-pedantic  % m4_ifval($2,$2,-option)"  dnl   GCC
+   #
+do FLAGS="$ac_save_[]FLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
+   AC_TRY_COMPILE([],[return 0;],
+   [VAR=`echo $ac_arg | sed -e 's,.*% *,,'` ; break])
+done
+ FLAGS="$ac_save_[]FLAGS"
+ AC_LANG_RESTORE
+])
+case ".$VAR" in
+     .ok|.ok,*) m4_ifvaln($3,$3) ;;
+   .|.no|.no,*) m4_ifvaln($4,$4) ;;
+   *) m4_ifvaln($3,$3,[
+   if echo " $[]m4_ifval($1,$1,FLAGS) " | grep " $VAR " 2>&1 >/dev/null
+   then AC_RUN_LOG([: m4_ifval($1,$1,FLAGS) does contain $VAR])
+   else AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"])
+                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"
+   fi ]) ;;
+esac
+AS_VAR_POPDEF([VAR])dnl
+AS_VAR_POPDEF([FLAGS])dnl
 ])
 
-AC_DEFUN([AX_SET_VERSION_INFO2],[dnl
-AS_VAR_PUSHDEF([MAJOR],ifelse($2,,[MAJOR_VERSION],[$2_MAJOR_VERSION]))dnl
-AS_VAR_PUSHDEF([MINOR],ifelse($2,,[MINOR_VERSION],[$2_MINOR_VERSION]))dnl
-AS_VAR_PUSHDEF([MICRO],ifelse($2,,[MICRO_VERSION],[$2_MICRO_VERSION]))dnl
-AS_VAR_PUSHDEF([PATCH],ifelse($2,,[PATCH_VERSION],[$2_PATCH_VERSION]))dnl
-AS_VAR_PUSHDEF([LTREL],ifelse($2,,[RELEASE_INFO],[$2_RELEASE_INFO]))dnl
-AS_VAR_PUSHDEF([LTVER],ifelse($2,,[VERSION_INFO],[$2_VERSION_INFO]))dnl
-test ".$PACKAGE_VERSION" = "." && PACKAGE_VERSION="$VERSION"
-AC_MSG_CHECKING(ifelse($2,,,[$2 ])out linker version info dnl
-ifelse($1,,$PACKAGE_VERSION,$1) )
-  MINOR=`echo ifelse( $1, , $PACKAGE_VERSION, $1 )`
-  MAJOR=`echo "$MINOR" | sed -e 's/[[.]].*//'` 
-  MINOR=`echo "$MINOR" | sed -e "s/^$MAJOR//" -e 's/^.//'` 
-  MICRO="$MINOR"
-  MINOR=`echo "$MICRO" | sed -e 's/[[.]].*//'`
-  MICRO=`echo "$MICRO" | sed -e "s/^$MINOR//" -e 's/^.//'`
-  PATCH="$MICRO"
-  MICRO=`echo "$PATCH" | sed -e 's/[[^0-9]].*//'` 
-  PATCH=`echo "$PATCH" | sed -e "s/^$MICRO//" -e 's/^[[-.]]//'`
-  test "_$MICRO" != "_" || MICRO="0"
-  if test "_$MINOR" != "_" ; then MINOR="$MAJOR" ; MAJOR="0" ; fi
-  MINOR=`echo "$MINOR" | sed -e 's/[[^0-9]].*//'`
-  LTREL="-release $MAJOR.$MINOR"
-  LTVER="-version-info 0:$MICRO"
-AC_MSG_RESULT([/$MAJOR/$MINOR:$MICRO (-$MAJOR.so.$MINOR.0.$MICRO)])
-AC_SUBST(MAJOR)
-AC_SUBST(MINOR)
-AC_SUBST(MICRO)
-AC_SUBST(PATCH)
-AC_SUBST(LTREL)
-AC_SUBST(LTVER)
-AS_VAR_POPDEF([LTVER])dnl
-AS_VAR_POPDEF([LTREL])dnl
-AS_VAR_POPDEF([PATCH])dnl
-AS_VAR_POPDEF([MICRO])dnl
-AS_VAR_POPDEF([MINOR])dnl
-AS_VAR_POPDEF([MAJOR])dnl
+
+dnl the only difference - the LANG selection... and the default FLAGS
+
+AC_DEFUN([AX_CXXFLAGS_GCC_OPTION_OLD], [dnl
+AS_VAR_PUSHDEF([FLAGS],[CXXFLAGS])dnl
+AS_VAR_PUSHDEF([VAR],[ac_cv_cxxflags_gcc_option_$2])dnl
+AC_CACHE_CHECK([m4_ifval($1,$1,FLAGS) for gcc m4_ifval($2,$2,-option)],
+VAR,[VAR="no, unknown"
+ AC_LANG_SAVE
+ AC_LANG_CXX
+ ac_save_[]FLAGS="$[]FLAGS"
+for ac_arg dnl
+in "-pedantic  % m4_ifval($2,$2,-option)"  dnl   GCC
+   #
+do FLAGS="$ac_save_[]FLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
+   AC_TRY_COMPILE([],[return 0;],
+   [VAR=`echo $ac_arg | sed -e 's,.*% *,,'` ; break])
+done
+ FLAGS="$ac_save_[]FLAGS"
+ AC_LANG_RESTORE
+])
+case ".$VAR" in
+     .ok|.ok,*) m4_ifvaln($3,$3) ;;
+   .|.no|.no,*) m4_ifvaln($4,$4) ;;
+   *) m4_ifvaln($3,$3,[
+   if echo " $[]m4_ifval($1,$1,FLAGS) " | grep " $VAR " 2>&1 >/dev/null
+   then AC_RUN_LOG([: m4_ifval($1,$1,FLAGS) does contain $VAR])
+   else AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"])
+                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"
+   fi ]) ;;
+esac
+AS_VAR_POPDEF([VAR])dnl
+AS_VAR_POPDEF([FLAGS])dnl
 ])
 
-AC_DEFUN([AX_SET_VERSION_INFO],[dnl
-AS_VAR_PUSHDEF([MAJOR],ifelse($2,,[MAJOR_VERSION],[$2_MAJOR_VERSION]))dnl
-AS_VAR_PUSHDEF([MINOR],ifelse($2,,[MINOR_VERSION],[$2_MINOR_VERSION]))dnl
-AS_VAR_PUSHDEF([MICRO],ifelse($2,,[MICRO_VERSION],[$2_MICRO_VERSION]))dnl
-AS_VAR_PUSHDEF([PATCH],ifelse($2,,[PATCH_VERSION],[$2_PATCH_VERSION]))dnl
-AS_VAR_PUSHDEF([LTREL],ifelse($2,,[RELEASE_INFO],[$2_RELEASE_INFO]))dnl
-AS_VAR_PUSHDEF([LTVER],ifelse($2,,[VERSION_INFO],[$2_VERSION_INFO]))dnl
-test ".$PACKAGE_VERSION" = "." && PACKAGE_VERSION="$VERSION"
-AC_MSG_CHECKING(ifelse($2,,,[$2 ])out linker version info dnl
-ifelse($1,,$PACKAGE_VERSION,$1) )
-  MINOR=`echo ifelse( $1, , $PACKAGE_VERSION, $1 )`
-  MAJOR=`echo "$MINOR" | sed -e 's/[[.]].*//'` 
-  MINOR=`echo "$MINOR" | sed -e "s/^$MAJOR//" -e 's/^.//'` 
-  MICRO="$MINOR"
-  MINOR=`echo "$MICRO" | sed -e 's/[[.]].*//'`
-  MICRO=`echo "$MICRO" | sed -e "s/^$MINOR//" -e 's/^.//'`
-  PATCH="$MICRO"
-  MICRO=`echo "$PATCH" | sed -e 's/[[^0-9]].*//'` 
-  PATCH=`echo "$PATCH" | sed -e "s/^$MICRO//" -e 's/[[-.]]//'`
-  if test "_$MICRO" = "_" ; then MICRO="0" ; fi
-  if test "_$MINOR" = "_" ; then MINOR="$MAJOR" ; MAJOR="0" ; fi
-  MINOR=`echo "$MINOR" | sed -e 's/[[^0-9]].*//'`
-  LTREL="-release $MAJOR"
-  LTVER="-version-info $MINOR:$MICRO"
-AC_MSG_RESULT([/$MAJOR/$MINOR:$MICRO (-$MAJOR.so.$MINOR.0.$MICRO)])
-AC_SUBST(LTREL)
-AC_SUBST(LTVER)
-AS_VAR_POPDEF([LTVER])dnl
-AS_VAR_POPDEF([LTREL])dnl
-AS_VAR_POPDEF([PATCH])dnl
-AS_VAR_POPDEF([MICRO])dnl
-AS_VAR_POPDEF([MINOR])dnl
-AS_VAR_POPDEF([MAJOR])dnl
+dnl -------------------------------------------------------------------------
+
+AC_DEFUN([AX_CFLAGS_GCC_OPTION_NEW], [dnl
+AS_VAR_PUSHDEF([FLAGS],[CFLAGS])dnl
+AS_VAR_PUSHDEF([VAR],[ac_cv_cflags_gcc_option_$1])dnl
+AC_CACHE_CHECK([m4_ifval($2,$2,FLAGS) for gcc m4_ifval($1,$1,-option)],
+VAR,[VAR="no, unknown"
+ AC_LANG_SAVE
+ AC_LANG_C
+ ac_save_[]FLAGS="$[]FLAGS"
+for ac_arg dnl
+in "-pedantic  % m4_ifval($1,$1,-option)"  dnl   GCC
+   #
+do FLAGS="$ac_save_[]FLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
+   AC_TRY_COMPILE([],[return 0;],
+   [VAR=`echo $ac_arg | sed -e 's,.*% *,,'` ; break])
+done
+ FLAGS="$ac_save_[]FLAGS"
+ AC_LANG_RESTORE
 ])
+case ".$VAR" in
+     .ok|.ok,*) m4_ifvaln($3,$3) ;;
+   .|.no|.no,*) m4_ifvaln($4,$4) ;;
+   *) m4_ifvaln($3,$3,[
+   if echo " $[]m4_ifval($2,$2,FLAGS) " | grep " $VAR " 2>&1 >/dev/null
+   then AC_RUN_LOG([: m4_ifval($2,$2,FLAGS) does contain $VAR])
+   else AC_RUN_LOG([: m4_ifval($2,$2,FLAGS)="$m4_ifval($2,$2,FLAGS) $VAR"])
+                      m4_ifval($2,$2,FLAGS)="$m4_ifval($2,$2,FLAGS) $VAR"
+   fi ]) ;;
+esac
+AS_VAR_POPDEF([VAR])dnl
+AS_VAR_POPDEF([FLAGS])dnl
+])
+
+
+dnl the only difference - the LANG selection... and the default FLAGS
+
+AC_DEFUN([AX_CXXFLAGS_GCC_OPTION_NEW], [dnl
+AS_VAR_PUSHDEF([FLAGS],[CXXFLAGS])dnl
+AS_VAR_PUSHDEF([VAR],[ac_cv_cxxflags_gcc_option_$1])dnl
+AC_CACHE_CHECK([m4_ifval($2,$2,FLAGS) for gcc m4_ifval($1,$1,-option)],
+VAR,[VAR="no, unknown"
+ AC_LANG_SAVE
+ AC_LANG_CXX
+ ac_save_[]FLAGS="$[]FLAGS"
+for ac_arg dnl
+in "-pedantic  % m4_ifval($1,$1,-option)"  dnl   GCC
+   #
+do FLAGS="$ac_save_[]FLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
+   AC_TRY_COMPILE([],[return 0;],
+   [VAR=`echo $ac_arg | sed -e 's,.*% *,,'` ; break])
+done
+ FLAGS="$ac_save_[]FLAGS"
+ AC_LANG_RESTORE
+])
+case ".$VAR" in
+     .ok|.ok,*) m4_ifvaln($3,$3) ;;
+   .|.no|.no,*) m4_ifvaln($4,$4) ;;
+   *) m4_ifvaln($3,$3,[
+   if echo " $[]m4_ifval($2,$2,FLAGS) " | grep " $VAR " 2>&1 >/dev/null
+   then AC_RUN_LOG([: m4_ifval($2,$2,FLAGS) does contain $VAR])
+   else AC_RUN_LOG([: m4_ifval($2,$2,FLAGS)="$m4_ifval($2,$2,FLAGS) $VAR"])
+                      m4_ifval($2,$2,FLAGS)="$m4_ifval($2,$2,FLAGS) $VAR"
+   fi ]) ;;
+esac
+AS_VAR_POPDEF([VAR])dnl
+AS_VAR_POPDEF([FLAGS])dnl
+])
+
+AC_DEFUN([AX_CFLAGS_GCC_OPTION],[ifelse(m4_bregexp([$2],[-]),-1,
+[AX_CFLAGS_GCC_OPTION_NEW($@)],[AX_CFLAGS_GCC_OPTION_OLD($@)])])
+
+AC_DEFUN([AX_CXXFLAGS_GCC_OPTION],[ifelse(m4_bregexp([$2],[-]),-1,
+[AX_CXXFLAGS_GCC_OPTION_NEW($@)],[AX_CXXFLAGS_GCC_OPTION_OLD($@)])])
+
+dnl ______ /usr/share/aclocal/guidod/ax_maintainer_mode_auto_silent.m4 ______
+dnl @* AX_MAINTAINER_MODE_AUTO_SILENT
+dnl
+dnl Set autotools to error/sleep settings so that they are not run when
+dnl being errornously triggered. Likewise make libtool-silent when 
+dnl libtool has been used.
+dnl
+dnl I am using the macro quite a lot since some automake versions had the
+dnl tendency to try to rerun some autotools on a mere make even when not
+dnl quite in --maintainer-mode. That is very annoying. Likewise, a user
+dnl who installs from source does not want to see doubled compiler messages.
+dnl
+dnl I did not put an AC-REQUIRE(MAINTAINER_MODE) in here - should I?
+dnl
+dnl @: guidod@gmx.de
+dnl @%Id: ax_maintainer_mode_auto_silent.m4,v 1.1 2003/10/19 00:12:45 guidod Exp %
+
+AC_DEFUN([AX_MAINTAINER_MODE_AUTO_SILENT],[dnl
+dnl ac_REQUIRE([am_MAINTAINER_MODE])dn
+AC_MSG_CHECKING(auto silent in maintainer mode)
+if test "$USE_MAINTAINER_MODE" = "no" ; then
+   test ".$TIMEOUT" = "." && TIMEOUT="9"
+   AUTOHEADER="sleep $TIMEOUT ; true || autoheader || skipped"
+   AUTOMAKE="sleep $TIMEOUT ; true || automake || skipped"
+   AUTOCONF="sleep $TIMEOUT ; true || autoconf || skipped"
+   if test ".$LIBTOOL" != "." ; then
+      LIBTOOL="$LIBTOOL --silent"
+      AC_MSG_RESULT([libtool-silent, auto-sleep-9])
+   else
+      AC_MSG_RESULT([auto-sleep-9])
+   fi
+else
+      AC_MSG_RESULT([no])
+fi
+])
+
+dnl ______ /usr/share/aclocal/guidod/patch_libtool_to_add_host_cc.m4 ______
+dnl @* PATCH_LIBTOOL_TO_ADD_HOST_CC
+dnl
+dnl The libtool 1.4.x processing (and patched 1.3.5) uses a little
+dnl "impgen" tool to turn a "*.dll" into an import "*.lib" as it is
+dnl needed for win32 targets. However, this little tool is not shipped
+dnl by binutils, it is not even a command option of dlltool or dllwrap.
+dnl It happens to be a C source snippet implanted into the libtool
+dnl sources - it gets written to ".libs", compiled into a binary 
+dnl on-the-fly, and executed right away on the "dll" file to create
+dnl the import-lib (dll.a files in gcc-speak).
+dnl
+dnl This mode works fine for a native build within mingw or cygwin,
+dnl but it does not work in cross-compile mode since CC is a
+dnl crosscompiler - it will create an .exe file on a non-win32
+dnl system, and as a result an impgen.exe is created on-the-fly
+dnl that can not be executed on-the-fly. Luckily, the actual
+dnl libtool snippet uses HOST_CC to compile the sources which
+dnl has a fallback to CC when the HOST_CC variable was not set.
+dnl
+dnl this ac-macro is trying to detect a valid HOST_CC which is not
+dnl a cross-compiler. This is done by looking into the $PATH for
+dnl a "cc" and the result is patched into libtool a HOST_CC, iow
+dnl it adds another configured variable at the top of the libtool
+dnl script.
+dnl
+dnl In discussions on the libtool mailinglist it occurred that
+dnl later gcc/binutils generations are able to link with dlls 
+dnl directly, i.e. there is no import-lib needed anymore. The
+dnl import-table is created within the linker itself (in-memory)
+dnl and bound to the .exe/.dll currently in the making. The
+dnl whole stuff of impgen exe and compiling it on-the-fly, well,
+dnl it is superflouos then. 
+dnl
+dnl Since mingw crosscompilers tend to be quite a fresh development
+dnl it was agreed to remove the impgen stuff completly from
+dnl libtool sources. Still however, this macro does not hurt
+dnl since it does not patch impgen cmds but it just adds HOST_CC
+dnl which might be useful in other cross-compiling cases as well.
+dnl Therefore, you can leave it in for maximum compatibility and
+dnl portability.
+dnl
+dnl @= guidod@gmx.de
+dnl @%Id: patch_libtool_to_add_host_cc.m4,v 1.3 2003/03/23 13:20:27 guidod Exp %
+
+AC_DEFUN([PATCH_LIBTOOL_TO_ADD_HOST_CC],
+[# patch libtool to add HOST_CC sometimes needed in crosscompiling a win32 dll
+if grep "HOST_CC" libtool >/dev/null; then
+  if test "$build" != "$host" ; then
+    if test "_$HOST_CC" = "_" ; then
+      HOST_CC="false"
+      for i in `echo $PATH | sed 's,:, ,g'` ; do
+      test -x $i/cc && HOST_CC=$i/cc
+      done
+    fi
+AC_MSG_RESULT(patching libtool to add HOST_CC=$HOST_CC)
+    test -f libtool.old || (mv libtool libtool.old && cp libtool.old libtool)
+    sed -e "/BEGIN.*LIBTOOL.*CONFIG/a\\
+HOST_CC=$HOST_CC" libtool >libtool.new
+    (test -s libtool.new || rm libtool.new) 2>/dev/null
+    test -f libtool.new && mv libtool.new libtool # not 2>/dev/null !!
+    test -f libtool     || mv libtool.old libtool
+  fi
+fi
+])
+dnl ______ /usr/share/aclocal/guidod/patch_libtool_sys_lib_search_path_spec.m4 ______
+dnl @* PATCH_LIBTOOL_SYS_LIB_SEARCH_PATH_SPEC
+dnl
+dnl Cross-compiling to win32 from a unix system reveals a bug - the
+dnl path-separator has been set to ";" depending on the target system.
+dnl However, the crossgcc search_path_spec works in a unix-environment
+dnl with unix-style directories and unix-stylish path_separator. The
+dnl result: the search_path_spec is a single word still containing the
+dnl ":" separators.
+dnl
+dnl This macro fixes the situation: when we see the libtool PATH_SEP
+dnl to be ":" and search_path_spec to contain ":" characters, then
+dnl these are replaced with spaces to let the resulting string work
+dnl as a for-loop argument in libtool scripts that resolve -no-undefined
+dnl libraries.
+dnl
+dnl Later libtool generations have fixed the situation with using
+dnl $PATH_SEPARATOR in the first place as the original path delimiter
+dnl that will be scanned for and replaced into spaces.
+dnl
+dnl @= guidod@gmx.de
+dnl @%Id: patch_libtool_sys_lib_search_path_spec.m4,v 1.3 2003/03/23 13:20:27 guidod Exp %
+
+AC_DEFUN([PATCH_LIBTOOL_SYS_LIB_SEARCH_PATH_SPEC],
+[# patch libtool to fix sys_lib_search_path (e.g. crosscompiling a win32 dll)
+if test "_$PATH_SEPARATOR" = "_:" ; then
+  if grep "^sys_lib_search_path_spec.*:" libtool >/dev/null ; then
+AC_MSG_RESULT(patching libtool to fix sys_lib_search_path_spec)
+    test -f libtool.old || (mv libtool libtool.old && cp libtool.old libtool)
+    sed -e "/^sys_lib_search_path_spec/s/:/ /g" libtool >libtool.new
+    (test -s libtool.new || rm libtool.new) 2>/dev/null
+    test -f libtool.new && mv libtool.new libtool # not 2>/dev/null !!
+    test -f libtool     || mv libtool.old libtool
+  fi
+fi
+])
+dnl ______ /usr/share/aclocal/guidod/ax_cflags_strict_prototypes.m4 ______
+dnl @synopsis AX_CFLAGS_STRICT_PROTOTYPES [(shellvar [,default, [A/NA]]
+dnl
+dnl Try to find a compiler option that requires strict prototypes.
+dnl
+dnl The sanity check is done by looking at sys/signal.h which has a set
+dnl of macro-definitions SIG_DFL and SIG_IGN that are cast to the local
+dnl signal-handler type. If that signal-handler type is not fully
+dnl qualified then the system headers are not seen as strictly prototype clean.
+dnl
+dnl For the GNU CC compiler it will be -fstrict-prototypes -Wstrict-prototypes
+dnl The result is added to the shellvar being CFLAGS by default.
+dnl
+dnl DEFAULTS:
+dnl
+dnl  - $1 shell-variable-to-add-to : CFLAGS
+dnl  - $2 add-value-if-not-found : nothing
+dnl  - $3 action-if-found : add value to shellvariable
+dnl  - $4 action-if-not-found : nothing
+dnl
+dnl @version %Id: ax_cflags_strict_prototypes.m4,v 1.7 2003/06/05 00:52:22 guidod Exp %
+dnl @author Guido Draheim <guidod@gmx.de>
+dnl
+AC_DEFUN([AX_CFLAGS_STRICT_PROTOTYPES],[dnl
+AS_VAR_PUSHDEF([FLAGS],[CFLAGS])dnl
+AS_VAR_PUSHDEF([VAR],[ac_cv_cflags_strict_prototypes])dnl
+AC_CACHE_CHECK([m4_ifval($1,$1,FLAGS) for strict prototypes],
+VAR,[VAR="no, unknown"
+ AC_LANG_SAVE
+ AC_LANG_C
+ ac_save_[]FLAGS="$[]FLAGS"
+for ac_arg dnl
+in "-Wall     % -fstrict-prototypes -Wstrict-prototypes" dnl   GCC
+   "-Wall     % -Wstrict-prototypes" dnl try to warn atleast
+   #
+do FLAGS="$ac_save_[]FLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
+   AC_TRY_COMPILE([],[return 0;],
+   [VAR=`echo $ac_arg | sed -e 's,.*% *,,'` ; break])
+done
+case ".$VAR" in
+   .|.no|.no,*) ;;
+   *) # sanity check with signal() from sys/signal.h
+    cp config.log config.tmp
+    AC_TRY_COMPILE([#include <signal.h>],[
+    if (signal (SIGINT, SIG_IGN) == SIG_DFL) return 1;
+    if (signal (SIGINT, SIG_IGN) != SIG_DFL) return 2;],
+    dnl the original did use test -n `$CC testprogram.c`
+    [if test `diff config.log config.tmp | grep -i warning | wc -l` != 0
+then if test `diff config.log config.tmp | grep -i warning | wc -l` != 1
+then VAR="no, suppressed, signal.h," ; fi ; fi],
+    [VAR="no, suppressed, signal.h"])
+    rm config.tmp
+  ;;
+esac
+ FLAGS="$ac_save_[]FLAGS"
+ AC_LANG_RESTORE
+])
+case ".$VAR" in
+     .ok|.ok,*) m4_ifvaln($3,$3) ;;
+   .|.no|.no,*) m4_ifvaln($4,$4,[m4_ifval($2,[
+        AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])
+                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])]) ;;
+   *) m4_ifvaln($3,$3,[
+   if echo " $[]m4_ifval($1,$1,FLAGS) " | grep " $VAR " 2>&1 >/dev/null
+   then AC_RUN_LOG([: m4_ifval($1,$1,FLAGS) does contain $VAR])
+   else AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"])
+                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"
+   fi ]) ;;
+esac
+AS_VAR_POPDEF([VAR])dnl
+AS_VAR_POPDEF([FLAGS])dnl
+])
+
+dnl the only difference - the LANG selection... and the default FLAGS
+
+AC_DEFUN([AX_CXXFLAGS_STRICT_PROTOTYPES],[dnl
+AS_VAR_PUSHDEF([FLAGS],[CXXFLAGS])dnl
+AS_VAR_PUSHDEF([VAR],[ac_cv_cxxflags_strict_prototypes])dnl
+AC_CACHE_CHECK([m4_ifval($1,$1,FLAGS) for strict prototypes],
+VAR,[VAR="no, unknown"
+ AC_LANG_SAVE
+ AC_LANG_CXX
+ ac_save_[]FLAGS="$[]FLAGS"
+for ac_arg dnl
+in "-Wall     % -fstrict-prototypes -Wstrict-prototypes" dnl   GCC
+   "-Wall     % -Wstrict-prototypes" dnl try to warn atleast
+   #
+do FLAGS="$ac_save_[]FLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
+   AC_TRY_COMPILE([],[return 0;],
+   [VAR=`echo $ac_arg | sed -e 's,.*% *,,'` ; break])
+done
+case ".$VAR" in
+   .|.no|.no,*) ;;
+   *) # sanity check with signal() from sys/signal.h
+    cp config.log config.tmp
+    AC_TRY_COMPILE([#include <signal.h>],[
+    if (signal (SIGINT, SIG_IGN) == SIG_DFL) return 1;
+    if (signal (SIGINT, SIG_IGN) != SIG_DFL) return 2;],
+    dnl the original did use test -n `$CC testprogram.c`
+    [if test `diff config.log config.tmp | grep -i warning | wc -l` != 0
+then if test `diff config.log config.tmp | grep -i warning | wc -l` != 1
+then VAR="no, suppressed, signal.h," ; fi ; fi],
+    [VAR="no, suppressed, signal.h"])
+    rm config.tmp
+  ;;
+esac
+ FLAGS="$ac_save_[]FLAGS"
+ AC_LANG_RESTORE
+])
+case ".$VAR" in
+     .ok|.ok,*) m4_ifvaln($3,$3) ;;
+   .|.no|.no,*) m4_ifvaln($4,$4,[m4_ifval($2,[
+        AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])
+                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])]) ;;
+   *) m4_ifvaln($3,$3,[
+   if echo " $[]m4_ifval($1,$1,FLAGS) " | grep " $VAR " 2>&1 >/dev/null
+   then AC_RUN_LOG([: m4_ifval($1,$1,FLAGS) does contain $VAR])
+   else AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"])
+                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"
+   fi ]) ;;
+esac
+AS_VAR_POPDEF([VAR])dnl
+AS_VAR_POPDEF([FLAGS])dnl
+])
+
+dnl ______ /usr/share/aclocal/guidod/ac_set_default_paths_system.m4 ______
+dnl @synopsis AC_SET_DEFAULT_PATHS_SYSTEM
+dnl
+dnl the most interesting changes go about windows-targets - where the
+dnl default_prefix is set to /programs, and quite some directories
+dnl are aliased: sbindir := libdir := bindir  and the docprefix-defaults
+dnl are also a bit different, even on FHS2-compliant systems where the
+dnl mandir is going to $prefix/man only if prefix=/usr, otherwise they
+dnl shall go to $datadir/man. We use an extra docprefix to express it
+dnl which is either defined as being prefix or datadir. not SUBSTed here.
+dnl
+dnl @, (very useful)
+dnl @version %Id: ac_set_default_paths_system.m4,v 1.5 2003/02/02 19:32:30 guidod Exp %
+dnl @author Guido Draheim <guidod@gmx.de>
+AC_DEFUN([AC_SET_DEFAULT_PATHS_SYSTEM],
+[AC_REQUIRE([AC_CANONICAL_HOST]) # --------------------------------------------
+case "$prefix:$ac_default_prefix" in
+  NONE:/usr/local)
+    result=""
+    AC_MSG_CHECKING(default prefix path)
+    case "${target_os}" in
+      *cygwin* | *mingw* | *uwin* | *djgpp | *emx* )
+	if test "${host_os}" = "${target_os}" ; then
+           ac_default_prefix="/programs"
+           result="(win/dos target)"
+        else
+           case "$PATH" in
+              *:/usr/local/cross-tools/$target_alias/bin:*)
+	          ac_default_prefix="/usr/local/cross-tools/$target_alias" ;;
+              *:/usr/local/$target_alias/bin:*)
+	          ac_default_prefix="/usr/local/$target_alias" ;;
+              *:/usr/local/$target_cpu-$target_os/bin:*)
+	          ac_default_prefix="/usr/local/$target_cpu-$target_os" ;;
+              *)  
+                  ac_default_prefix="/programs" ;;
+           esac
+           result="(win/dos cross-compiler)"
+        fi
+    ;;
+    esac
+    AC_MSG_RESULT($ac_default_prefix $result)
+  ;;
+esac
+AC_MSG_CHECKING(default prefix system)
+result="$prefix" ; test "$result" = "NONE" && result="$ac_default_prefix"
+case ${result} in
+  /programs | /programs/*) result="is win-/programs"
+     # on win/dos, .exe .dll and .cfg live in the same directory
+     libdir=`echo $libdir |sed -e 's:^..exec_prefix./lib$:${bindir}:'`
+     sbindir=`echo $sbindir |sed -e 's:^..exec_prefix./sbin$:${libdir}:'`
+     sysconfdir=`echo $sysconfdir |sed -e 's:^..prefix./etc$:${sbindir}:'`
+     libexecdir=`echo $libexecdir |sed -e 's:/libexec$:/system:'`
+     # help-files shall be set with --infodir, docprefix is datadir
+     docprefix="${datadir}"
+     mandir=`echo $mandir \
+	                     |sed -e 's:^..prefix./man$:${datadir}/info:'`
+     includedir=`echo $includedir \
+                |sed -e 's:^..prefix./include$:${datadir}/include:'`
+     # other state files (but /etc) are moved to datadir
+     sharedstatedir=`echo $sharedstatedir \
+                     |sed -e 's:^..prefix./com$:${datadir}/default:'`
+     localstatedir=`echo $localstatedir \
+                     |sed -e 's:^..prefix./var$:${datadir}/current:'`
+  ;;
+  /usr) result="is /usr-shipped"
+     # doc files are left at prefix
+     docprefix="${prefix}"
+     # state files go under /top
+     sysconfdir=`echo $sysconfdir |sed -e 's:^..prefix./etc$:/etc:'`
+     sharedstatedir=`echo $sharedstatedir \
+                     |sed -e 's:^..prefix./com$:/etc/default:'`
+     # $prefix/var is going to end up in /var/lib
+     localstatedir=`echo $localstatedir \
+                     |sed -e 's:^..prefix./var$:/var/lib:'`
+  ;;
+  /opt | /opt/*) result="is /opt-package"
+     # state files go under /top/prefix
+     sysconfdir=`echo $sysconfdir \
+                     |sed -e 's:^..prefix./etc$:/etc${prefix}:'`
+     sharedstatedir=`echo $sharedstatedir \
+                     |sed -e 's:^..prefix./com$:/etc/default${prefix}:'`
+     # $prefix/var is going to to be /var$prefix... once again
+     localstatedir=`echo $localstatedir \
+                     |sed -e 's:^..prefix./var$:/var${prefix}:'`
+     # doc files are left at prefix
+     docprefix="${prefix}"
+  ;;
+  *) result="is /local-package"
+     # doc files are moved from prefix down to datadir
+     docprefix="${datadir}"
+     mandir=`echo $mandir \
+                     |sed -e 's:^..prefix./man$:${datadir}/man:'`
+     infodir=`echo $infodir \
+                     |sed -e 's:^..prefix./infodir$:${datadir}/info:'`
+     # never use $prefix/com - that is no good idea
+     sharedstatedir=`echo $sharedstatedir \
+                     |sed -e 's:^..prefix./com$:${sysconfdir}/default:'`
+  ;;
+esac
+AC_MSG_RESULT($result)
+# -------------------------------------------------------- 
+])     
 
 dnl ______ /usr/share/aclocal/guidod/ax_enable_builddir.m4 ______
 dnl @synopsis AX_ENABLE_BUILDDIR [(dirstring-or-command [,Makefile.mk [,-all]])]
@@ -900,7 +941,7 @@ dnl copy the tarball from the builddir to the sourcedir (or $(PUB))
 dnl for reason of convenience.
 dnl
 dnl @author Guido Draheim
-dnl @version %Id: ax_enable_builddir.m4,v 1.12 2003/06/05 00:52:29 guidod Exp %
+dnl @version %Id: ax_enable_builddir.m4,v 1.13 2003/10/12 06:27:40 guidod Exp %
 dnl
 AC_DEFUN([AX_ENABLE_BUILDDIR],[AC_REQUIRE([AC_CANONICAL_HOST])[]dnl
 AC_BEFORE([$0],[AM_INIT_AUTOMAKE])dnl
@@ -1097,8 +1138,40 @@ ax_enable_builddir="$ax_enable_builddir"               # $SUB
 ])dnl
 ])
 
+dnl ______ /usr/share/aclocal/guidod/ax_not_enable_frame_pointer.m4 ______
+dnl @* AX_NOT_ENABLE_FRAME_POINTER ([shellvar])
+dnl
+dnl add --enable-frame-pointer option, the default will add the gcc
+dnl --fomit-frame-pointer option to the shellvar (per default CFLAGS)
+dnl and remove the " -g " debuginfo option from it. In other words,
+dnl the default is "--disable-frame-pointer"
+dnl
+dnl @: guidod@gmx.de
+dnl @%Id: %
+
+AC_DEFUN([AX_NOT_ENABLE_FRAME_POINTER],[dnl
+AS_VAR_PUSHDEF([VAR],[enable_frame_pointer])dnl
+AC_MSG_CHECKING([m4_ifval($1,$1,CFLAGS) frame-pointer])
+AC_ARG_ENABLE([frame-pointer], AC_HELP_STRING(
+  [--enable-frame-pointer],[enable callframe generation for debugging]))
+case ".$VAR" in
+  .|.no|.no,*) test ".$VAR" = "." && VAR="no"
+     m4_ifval($1,$1,CFLAGS)=`echo dnl
+  " $m4_ifval($1,$1,CFLAGS) " | sed -e 's/ -g / /'`
+     if test ".$GCC" = ".yes" ; then
+        m4_ifval($1,$1,CFLAGS)="$m4_ifval($1,$1,CFLAGS) -fomit-frame-pointer" 
+        AC_MSG_RESULT([$VAR, -fomit-frame-pointer added]) 
+     else
+        AC_MSG_RESULT([$VAR, -g removed])
+     fi  ;;
+   *)  AC_MSG_RESULT([$VAR, kept]) ;;
+esac
+AS_VAR_POPDEF([VAR])dnl
+])
+
 dnl ______ /usr/share/aclocal/guidod/ax_warning_default_pkgconfig.m4 ______
-dnl @* AX_WARNING_DEFAULT_PKGCONFIGDIR [(dirvariable [,defsetting])]
+dnl @* AX_WARNING_DEFAULT_PKGCONFIGDIR [(dirvariable [,[defsetting][,[A][,[N/A]]]])]
+dnl @* AX_ENABLE_DEFAULT_PKGCONFIGDIR [(dirvariable [,defsetting])]
 dnl
 dnl print a warning message if the $(datadir)/aclocal directory
 dnl is not in the dirlist searched by the aclocal tool. This macro
@@ -1108,39 +1181,55 @@ dnl by other projects.
 dnl
 dnl  default $1 dirvariable = pkgconfigdir
 dnl  default $2 defsetting  = ${libdir}/pkgconfig
-dnl  (the defsetting is not placed in dirvariable nor is it ac_subst'ed)
+dnl  default $3 action = nothing to do
+dnl  default $4 action = warn the user about mismatch
+dnl
+dnl In the _WARNING_ variant, the defsetting is not placed in 
+dnl dirvariable nor is it ac_subst'ed in any way. The default 
+dnl fail-action $4 is to send a warning message to the user,
+dnl and the default accept-action $3 is nothing. It is expected that
+dnl a Makefile is generated with pkgconfigdir=${libdir}/pkgconfig
+dnl
+dnl The _ENABLE_ variant however will set not only the $pkgconfigdir shell
+dnl var of the script, but it is also AC-SUBST'ed on default - and 
+dnl furthermore a configure option "--enable-default-pkgconfigdir" is 
+dnl provided. Only if that option is set then $2 default is not set to 
+dnl the canonic default in the a $prefix subpath but instead $2 default
+dnl is set to the primary path where `pkg-config` looks for .pc files. The
+dnl user may also override the default on the command line.
 dnl 
 dnl @: guidod@gmx.de
-dnl @%Id: %
+dnl @%Id: ax_warning_default_pkgconfig.m4,v 1.1 2003/10/18 02:57:13 guidod Exp %
 
 AC_DEFUN([AX_WARNING_DEFAULT_PKGCONFIGDIR],[dnl
 AC_REQUIRE([AX_EXPAND_PREFIX])dnl
 AS_VAR_PUSHDEF([DIR],[ax_warning_default_pkgconfig_dir])dnl
 AS_VAR_PUSHDEF([BIN],[ax_warning_default_pkgconfig_bin])dnl
 AS_VAR_PUSHDEF([LOC],[ax_warning_default_pkgconfig_loc])dnl
-if test ".$PKG_CONFIG" = "." ; then # we use the same default as in pkg.m4
-   AC_PATH_PROG([PKG_CONFIG],[pkg-config],[no])
-fi
 LOC='m4_if([$2],,[${libdir}/pkgconfig],[$2])'
 m4_ifval([$1],[test ".$[]$1" != "." && LOC="$[]$1"])
-if test "$PKG_CONFIG" = "no"
-then DIR="/" ; test -d "/usr/lib/pkgconfig" && DIR="/usr/lib/pkgconfig"
-else BIN=`AS_DIRNAME(["$DIR"])` ;
-     if test -d "$BIN/lib/pkgconfig" ; then
+ if test ".$PKG_CONFIG" = "." ; then # we use the same default as in pkg.m4
+    AC_PATH_PROG([PKG_CONFIG],[pkg-config],[no])
+ fi
+ if test "$PKG_CONFIG" = "no"
+ then DIR="/" ; test -d "/usr/lib/pkgconfig" && DIR="/usr/lib/pkgconfig"
+ else BIN=`AS_DIRNAME(["$DIR"])` ;
+      if test -d "$BIN/lib/pkgconfig" ; then
           DIR="$BIN/lib/pkgconfig"
-     else BIN=`AS_DIRNAME(["$DIR"])` 
-     if test -d "$BIN/lib/pkgconfig" ; then
+      else BIN=`AS_DIRNAME(["$DIR"])` 
+      if test -d "$BIN/lib/pkgconfig" ; then
           DIR="$BIN/lib/pkgconfig"
-     else
-     if test -d "/usr/lib/pkgconfig" ; then
+      else
+      if test -d "/usr/lib/pkgconfig" ; then
           DIR="/usr/lib/pkgconfig"
-     else
+      else
           DIR="/"
-     fi fi fi
-fi
+      fi fi fi
+ fi
 AC_RUN_LOG([: last pkgconfig dir is assumed as "$DIR"])
 DIR=`eval "echo $DIR"`
 DIR=`eval "echo $DIR"`
+LOC=`eval "echo $LOC"`
 LOC=`eval "echo $LOC"`
 LOC=`eval "echo $LOC"`
 LOC=`eval "echo $LOC"`
@@ -1149,7 +1238,8 @@ for DIR in `echo "$PKG_CONFIG_PATH:$DIR" | sed -e 's,:, ,g'` ; do
     test ".$LOC" = ".$DIR" && break
 done
 if  test "$LOC" != "$DIR" ; then
-   AC_MSG_NOTICE([warning: m4_if([$1],,[pkgconfigdir],[$1])=$LOC dnl
+        m4_ifval([$4],[$4],[dnl
+ AC_MSG_NOTICE([warning: m4_if([$1],,[pkgconfigdir],[$1])=$LOC dnl
 (see config.log)])
    AC_MSG_NOTICE([perhaps: make install m4_if([$1],,[pkgconfigdir],[$1])=$DIR])
    cat m4_ifset([AS_MESSAGE_LOG_FD],[>&AS_MESSAGE_LOG_FD],[>>config.log]) <<EOF
@@ -1160,10 +1250,871 @@ if  test "$LOC" != "$DIR" ; then
  pkgconfigdir:  or set/append the directory to the environment variable
  pkgconfigdir:  PKG_CONFIG_PATH="$LOC"
 EOF
+   m4_ifvaln([$5],[$5])])dnl
+   m4_ifvaln([$3],[else $3])dnl
 fi
 AS_VAR_POPDEF([LOC])dnl
 AS_VAR_POPDEF([BIN])dnl
 AS_VAR_POPDEF([DIR])dnl
+])
+
+AC_DEFUN([AX_ENABLE_DEFAULT_PKGCONFIGDIR],[dnl
+AS_VAR_PUSHDEF([BIN],[ax_warning_default_pkgconfig_bin])dnl
+AS_VAR_PUSHDEF([DIR],[ax_warning_default_pkgconfig_def])dnl
+AS_VAR_PUSHDEF([DEF],[ax_warning_default_pkgconfig_def])dnl
+AC_ARG_ENABLE([enable-default-pkgconfigdir],
+[  --enable-default-pkgconfigdir(=PATH) override the libdir/pkgconfig default])
+test ".$enable_default_pkgconfigdir" = "." && enable_default_pkgconfigdir="no"
+case ".$enable_default_pkgconfigdir" in
+  .no) DIR='m4_if([$2],,[${libdir}/pkgconfig],[$2])' ;;
+  .yes) # autodetect
+ if test ".$PKG_CONFIG" = "." ; then # we use the same default as in pkg.m4
+    AC_PATH_PROG([PKG_CONFIG],[pkg-config],[no])
+ fi
+ if test "$PKG_CONFIG" = "no"
+ then DIR="/tmp" ; test -d "/usr/lib/pkgconfig" && DIR="/usr/lib/pkgconfig"
+ else BIN=`AS_DIRNAME(["$DIR"])` ;
+      if test -d "$BIN/lib/pkgconfig" ; then
+          DIR="$BIN/lib/pkgconfig"
+      else BIN=`AS_DIRNAME(["$DIR"])` 
+      if test -d "$BIN/lib/pkgconfig" ; then
+          DIR="$BIN/lib/pkgconfig"
+      else
+      if test -d "/usr/lib/pkgconfig" ; then
+          DIR="/usr/lib/pkgconfig"
+      else
+          DIR="/tmp"
+      fi fi fi
+ fi ;;
+  *) DIR="$enable_default_pkgconfigdir" ;;
+esac
+AX_WARNING_DEFAULT_PKGCONFIGDIR([$1],[$DEF],[$3],[$4],[$5])
+m4_if([$1],,[pkgconfigdir],[$1])="$ax_warning_default_pkgconfig_dir"
+AC_SUBST(m4_if([$1],,[pkgconfigdir],[$1]))
+AS_VAR_POPDEF([DEF])dnl
+AS_VAR_POPDEF([DIR])dnl
+AS_VAR_POPDEF([BIN])dnl
+])
+
+dnl ______ /usr/share/aclocal/guidod/ac_sys_largefile_sensitive.m4 ______
+dnl @synopsis AC_SYS_LARGEFILE_SENSITIVE
+dnl
+dnl checker whether the current system is sensitive to -Ddefines
+dnl making off_t having different types/sizes. Automatically define
+dnl a config.h symbol LARGEFILE_SENSITIVE if that is the case,
+dnl otherwise leave everything as is. 
+dnl
+dnl This macro builds on top of AC_SYS_LARGEFILE to detect whether
+dnl special options are neede to make the code use 64bit off_t - in
+dnl many setups this will also make the code use 64bit off_t immediatly.
+dnl
+dnl The common use of a LARGEFILE_SENSITIVE config.h-define is to rename
+dnl exported functions, usually adding a 64 to the original function name.
+dnl Such renamings are only needed on systems being both (a) 32bit off_t
+dnl by default and (b) implementing large.file extensions (as for unix98).
+dnl
+dnl a renaming section could look like this:
+dnl  #if defined LARGEFILE_SENSITIVE && _FILE_OFFSET_BITS+0 == 64
+dnl  #define zzip_open zzip_open64
+dnl  #define zzip_seek zzip_seek64
+dnl  #endif
+dnl
+dnl for libraries, it is best to take advantage of the prefix-config.h
+dnl macro, otherwise you want to export a renamed LARGEFILE_SENSITIVE
+dnl in an installed header file. -> see AX_PREFIX_CONFIG_H
+dnl
+dnl @, System Headers
+dnl @Author Guido Draheim <guidod@gmx.de>
+dnl @Version %Id: ac_sys_largefile_sensitive.m4,v 1.2 2003/05/13 18:46:22 guidod Exp %
+
+AC_DEFUN([AC_SYS_LARGEFILE_SENSITIVE],[dnl
+AC_REQUIRE([AC_SYS_LARGEFILE])dnl
+# we know about some internals of ac_sys_largefile here...
+AC_MSG_CHECKING(whether system differentiates 64bit off_t by defines)
+ac_cv_sys_largefile_sensitive="no"
+if test ".$ac_cv_sys_file_offset_bits$ac_cv_sys_large_files" != ".nono"
+then ac_cv_sys_largefile_sensitive="yes" 
+  AC_DEFINE(LARGEFILE_SENSITIVE, 1,
+  [whether the system defaults to 32bit off_t but can do 64bit when requested])
+fi
+AC_MSG_RESULT([$ac_cv_sys_largefile_sensitive])
+])
+
+dnl ______ /usr/share/aclocal/guidod/ax_warning_default_aclocaldir.m4 ______
+dnl @* AX_WARNING_DEFAULT_ACLOCALDIR [(dirvariable [,[defsetting][,[A][,[N/A]]]])]
+dnl @* AX_ENABLE_DEFAULT_ACLOCALDIR [(dirvariable [,defsetting])]
+dnl
+dnl print a warning message if the $(datadir)/aclocal directory
+dnl is not in the dirlist searched by the aclocal tool. This macro
+dnl is useful if some `make install` would target $(datadir)/aclocal
+dnl to install an autoconf m4 file of your project to be picked up
+dnl by other projects.
+dnl
+dnl  default $1 dirvariable = aclocaldir
+dnl  default $2 defsetting  = ${datadir}/aclocal
+dnl  default $3 action = nothing to do
+dnl  default $4 action = warn the user about mismatch
+dnl
+dnl In the _WARNING_ variant, the defsetting is not placed in 
+dnl dirvariable nor is it ac_subst'ed in any way. The default 
+dnl fail-action $4 is to send a warning message to the user,
+dnl and the default accept-action $3 is nothing. It is expected that
+dnl a Makefile is generated with aclocaldir=${datadir}/aclocal
+dnl
+dnl The _ENABLE_ variant however will set not only the $aclocaldir shell
+dnl var of the script, but it is also AC-SUBST'ed on default - and 
+dnl furthermore a configure option "--enable-default-aclocaldir" is 
+dnl provided. Only if that option is set then $2 default is not set to 
+dnl the canonic default in the a $prefix subpath but instead $2 default
+dnl is set to the primary path where `aclocal` looks for macros. The
+dnl user may also override the default on the command line.
+dnl
+dnl @: guidod@gmx.de
+dnl @%Id: ax_warning_default_aclocaldir.m4,v 1.1 2003/10/18 02:57:12 guidod Exp %
+
+AC_DEFUN([AX_WARNING_DEFAULT_ACLOCALDIR],[dnl
+AC_REQUIRE([AX_EXPAND_PREFIX])dnl
+AS_VAR_PUSHDEF([DIR],[ax_warning_default_aclocal_dir])dnl
+AS_VAR_PUSHDEF([BIN],[ax_warning_default_aclocal_bin])dnl
+AS_VAR_PUSHDEF([LOC],[ax_warning_default_aclocal_loc])dnl
+LOC='m4_if([$2],,[${datadir}/aclocal],[$2])'
+m4_ifval([$1],[test ".$[]$1" != "." && LOC="$[]$1"])
+ if test ".$ACLOCAL" = "." ; then
+    AC_PATH_PROG([ACLOCAL],[aclocal],[:])
+ fi
+ BIN="$ACLOCAL"
+ test ".$BIN" = "." && BIN="aclocal" 
+ DIR=`test ".$SHELL" = "." && SHELL="'sh'" ; eval "$BIN --print-ac-dir"`
+ test ".$DIR" = "." && test -d "/usr/share/aclocal" && DIR="/usr/share/aclocal"
+ test ".$DIR" = "." && DIR="/tmp"
+DIR=`eval "echo $DIR"`  # we need to expand 
+DIR=`eval "echo $DIR"`
+LOC=`eval "echo $LOC"`
+LOC=`eval "echo $LOC"`
+LOC=`eval "echo $LOC"`
+LOC=`eval "echo $LOC"`
+AC_RUN_LOG([: test "$LOC" = "$DIR"])
+if test "$LOC" != "$DIR" ; then
+   if test -f "$DIR/dirlist" ; then
+      for DIR in `cat $DIR/dirlist` $DIR ; do
+          AC_RUN_LOG([: test "$LOC" = "$DIR"])
+          test "$LOC" = "$DIR" && break
+      done
+   fi
+   if test "$LOC" != "$DIR" ; then
+      m4_ifval([$4],[$4],[dnl
+      AC_MSG_NOTICE([warning: m4_if([$1],,[aclocaldir],[$1])=$LOC dnl
+(see config.log)])
+   AC_MSG_NOTICE([perhaps: make install m4_if([$1],,[aclocaldir],[$1])=$DIR])
+   cat m4_ifset([AS_MESSAGE_LOG_FD],[>&AS_MESSAGE_LOG_FD],[>>config.log]) <<EOF
+  aclocaldir:   the m4_if([$1],,[default aclocaldir],[$1 value]) of $LOC
+  aclocaldir:   is not listed in the dirlist where aclocal will look
+  aclocaldir:   for macros - you can override the install-path using
+  aclocaldir:   make install aclocaldir=$DIR
+  aclocaldir:   or append the directory to aclocal reconfigures later as
+  aclocaldir:   aclocal -I $LOC
+  aclocaldir:   when an autoconf macro is needed from that directory
+EOF
+   m4_ifvaln([$5],[$5])])dnl
+   m4_ifvaln([$3],[else $3])dnl
+   fi
+fi
+AS_VAR_POPDEF([LOC])dnl
+AS_VAR_POPDEF([BIN])dnl
+AS_VAR_POPDEF([DIR])dnl
+])
+
+AC_DEFUN([AX_ENABLE_DEFAULT_ACLOCALDIR],[dnl
+AS_VAR_PUSHDEF([BIN],[ax_warning_default_aclocal_bin])dnl
+AS_VAR_PUSHDEF([DIR],[ax_warning_default_aclocal_def])dnl
+AS_VAR_PUSHDEF([DEF],[ax_warning_default_aclocal_def])dnl
+AC_ARG_ENABLE([enable-default-aclocaldir],
+[  --enable-default-aclocaldir(=PATH)   override the datadir/aclocal default])
+test ".$enable_default_aclocaldir" = "." && enable_default_aclocaldir="no"
+case ".$enable_default_aclocaldir" in
+  .no) DIR='m4_if([$2],,[${datadir}/aclocal],[$2])' ;;
+  .yes) # autodetect
+ if test ".$ACLOCAL" = "." ; then
+    AC_PATH_PROG([ACLOCAL],[aclocal],[:])
+ fi
+ BIN="$ACLOCAL"
+ test ".$BIN" = "." && BIN="aclocal" 
+ DIR=`test ".$SHELL" = "." && SHELL="'sh'" ; eval "$BIN --print-ac-dir"`
+ test ".$DIR" = "." && test -d "/usr/share/aclocal" && DIR="/usr/share/aclocal"
+ test ".$DIR" = "." && DIR="/tmp" ;;
+  *) DIR="$enable_default_aclocaldir" ;;
+esac
+AX_WARNING_DEFAULT_ACLOCALDIR([$1],[$DEF],[$3],[$4],[$5])
+m4_if([$1],,[aclocaldir],[$1])="$ax_warning_default_aclocal_dir"
+AC_SUBST(m4_if([$1],,[aclocaldir],[$1]))
+AS_VAR_POPDEF([DEF])dnl
+AS_VAR_POPDEF([DIR])dnl
+AS_VAR_POPDEF([BIN])dnl
+])
+
+dnl ______ /usr/share/aclocal/guidod/ax_prefix_config_h.m4 ______
+dnl @synopsis AX_PREFIX_CONFIG_H [(OUTPUT-HEADER [,PREFIX [,ORIG-HEADER]])]
+dnl
+dnl This is a new variant from ac_prefix_config_ this one will use a
+dnl lowercase-prefix if the config-define was starting with a
+dnl lowercase-char, e.g. "#define const", "#define restrict", or
+dnl "#define off_t", (and this one can live in another directory, e.g.
+dnl testpkg/config.h therefore I decided to move the output-header to
+dnl be the first arg)
+dnl
+dnl takes the usual config.h generated header file; looks for each of
+dnl the generated "#define SOMEDEF" lines, and prefixes the defined name
+dnl (ie. makes it "#define PREFIX_SOMEDEF". The result is written to
+dnl the output config.header file. The PREFIX is converted to uppercase
+dnl for the conversions.
+dnl
+dnl Defaults:
+dnl
+dnl   OUTPUT-HEADER = $PACKAGE-config.h
+dnl   PREFIX = $PACKAGE
+dnl   ORIG-HEADER, from AM_CONFIG_HEADER(config.h)
+dnl
+dnl Your configure.ac script should contain both macros in this order,
+dnl and unlike the earlier variations of this prefix-macro it is okay to
+dnl place the AX_PREFIX_CONFIG_H call before the AC_OUTPUT invokation.
+dnl
+dnl Example:
+dnl
+dnl   AC_INIT(config.h.in)        # config.h.in as created by "autoheader"
+dnl   AM_INIT_AUTOMAKE(testpkg, 0.1.1)    # makes #undef VERSION and PACKAGE
+dnl   AM_CONFIG_HEADER(config.h)          # prep config.h from config.h.in
+dnl   AX_PREFIX_CONFIG_H(mylib/_config.h) # prep mylib/_config.h from it..
+dnl   AC_MEMORY_H                         # makes "#undef NEED_MEMORY_H"
+dnl   AC_C_CONST_H                        # makes "#undef const"
+dnl   AC_OUTPUT(Makefile)                 # creates the "config.h" now
+dnl                                       # and also mylib/_config.h
+dnl
+dnl if the argument to AX_PREFIX_CONFIG_H would have been omitted then the
+dnl default outputfile would have been called simply "testpkg-config.h", but
+dnl even under the name "mylib/_config.h" it contains prefix-defines like
+dnl
+dnl   #ifndef TESTPKG_VERSION
+dnl   #define TESTPKG_VERSION "0.1.1"
+dnl   #endif
+dnl   #ifndef TESTPKG_NEED_MEMORY_H
+dnl   #define TESTPKG_NEED_MEMORY_H 1
+dnl   #endif
+dnl   #ifndef _testpkg_const
+dnl   #define _testpkg_const _const
+dnl   #endif
+dnl
+dnl and this "mylib/_config.h" can be installed along with other
+dnl header-files, which is most convenient when creating a shared
+dnl library (that has some headers) where some functionality is
+dnl dependent on the OS-features detected at compile-time. No
+dnl need to invent some "mylib-confdefs.h.in" manually. :-)
+dnl
+dnl Note that some AC_DEFINEs that end up in the config.h file are
+dnl actually self-referential - e.g. AC_C_INLINE, AC_C_CONST, and the
+dnl AC_TYPE_OFF_T say that they "will define inline|const|off_t if the
+dnl system does not do it by itself". You might want to clean up about
+dnl these - consider an extra mylib/conf.h that reads something like:
+dnl
+dnl    #include <mylib/_config.h>
+dnl    #ifndef _testpkg_const
+dnl    #define _testpkg_const const
+dnl    #endif
+dnl
+dnl and then start using _testpkg_const in the header files. That is
+dnl also a good thing to differentiate whether some library-user has
+dnl starting to take up with a different compiler, so perhaps it could
+dnl read something like this:
+dnl
+dnl   #ifdef _MSC_VER
+dnl   #include <mylib/_msvc.h>
+dnl   #else
+dnl   #include <mylib/_config.h>
+dnl   #endif
+dnl   #ifndef _testpkg_const
+dnl   #define _testpkg_const const
+dnl   #endif
+dnl
+dnl @version %Id: ax_prefix_config_h.m4,v 1.5 2003/07/02 23:29:23 guidod Exp %
+dnl @author  Guiodo Draheim <guidod@gmx.de>
+dnl
+AC_DEFUN([AX_PREFIX_CONFIG_H],[AC_REQUIRE([AC_CONFIG_HEADER])
+AC_CONFIG_COMMANDS([ifelse($1,,$PACKAGE-config.h,$1)],[dnl
+AS_VAR_PUSHDEF([_OUT],[ac_prefix_conf_OUT])dnl
+AS_VAR_PUSHDEF([_DEF],[ac_prefix_conf_DEF])dnl
+AS_VAR_PUSHDEF([_PKG],[ac_prefix_conf_PKG])dnl
+AS_VAR_PUSHDEF([_LOW],[ac_prefix_conf_LOW])dnl
+AS_VAR_PUSHDEF([_UPP],[ac_prefix_conf_UPP])dnl
+AS_VAR_PUSHDEF([_INP],[ac_prefix_conf_INP])dnl
+m4_pushdef([_script],[conftest.prefix])dnl
+m4_pushdef([_symbol],[m4_cr_Letters[]m4_cr_digits[]_])dnl
+_OUT=`echo ifelse($1, , $PACKAGE-config.h, $1)`
+_DEF=`echo _$_OUT | sed -e "y:m4_cr_letters:m4_cr_LETTERS[]:" -e "s/@<:@^m4_cr_Letters@:>@/_/g"`
+_PKG=`echo ifelse($2, , $PACKAGE, $2)`
+_LOW=`echo _$_PKG | sed -e "y:m4_cr_LETTERS-:m4_cr_letters[]_:"`
+_UPP=`echo $_PKG | sed -e "y:m4_cr_letters-:m4_cr_LETTERS[]_:"  -e "/^@<:@m4_cr_digits@:>@/s/^/_/"`
+_INP=`echo "ifelse($3,,,$3)" | sed -e 's/ *//'`
+if test ".$_INP" = "."; then
+   for ac_file in : $CONFIG_HEADERS; do test "_$ac_file" = _: && continue
+     case "$ac_file" in
+        *.h) _INP=$ac_file ;;
+        *)
+     esac
+     test ".$_INP" != "." && break
+   done
+fi
+if test ".$_INP" = "."; then
+   case "$_OUT" in
+      */*) _INP=`basename "$_OUT"`
+      ;;
+      *-*) _INP=`echo "$_OUT" | sed -e "s/@<:@_symbol@:>@*-//"`
+      ;;
+      *) _INP=config.h
+      ;;
+   esac
+fi
+if test -z "$_PKG" ; then
+   AC_MSG_ERROR([no prefix for _PREFIX_PKG_CONFIG_H])
+else
+  if test ! -f "$_INP" ; then if test -f "$srcdir/$_INP" ; then
+     _INP="$srcdir/$_INP"
+  fi fi
+  AC_MSG_NOTICE(creating $_OUT - prefix $_UPP for $_INP defines)
+  if test -f $_INP ; then
+    echo "s/@%:@undef  *\\(@<:@m4_cr_LETTERS[]_@:>@\\)/@%:@undef $_UPP""_\\1/" > _script
+    echo "s/@%:@undef  *\\(@<:@m4_cr_letters@:>@\\)/@%:@undef $_LOW""_\\1/" >> _script
+    echo "s/@%:@def[]ine  *\\(@<:@m4_cr_LETTERS[]_@:>@@<:@_symbol@:>@*\\)\\(.*\\)/@%:@ifndef $_UPP""_\\1 \\" >> _script
+    echo "@%:@def[]ine $_UPP""_\\1 \\2 \\" >> _script
+    echo "@%:@endif/" >>_script
+    echo "s/@%:@def[]ine  *\\(@<:@m4_cr_letters@:>@@<:@_symbol@:>@*\\)\\(.*\\)/@%:@ifndef $_LOW""_\\1 \\" >> _script
+    echo "@%:@define $_LOW""_\\1 \\2 \\" >> _script
+    echo "@%:@endif/" >> _script
+    # now executing _script on _DEF input to create _OUT output file
+    echo "@%:@ifndef $_DEF"      >$tmp/pconfig.h
+    echo "@%:@def[]ine $_DEF 1" >>$tmp/pconfig.h
+    echo ' ' >>$tmp/pconfig.h
+    echo /'*' $_OUT. Generated automatically at end of configure. '*'/ >>$tmp/pconfig.h
+
+    sed -f _script $_INP >>$tmp/pconfig.h
+    echo ' ' >>$tmp/pconfig.h
+    echo '/* once:' $_DEF '*/' >>$tmp/pconfig.h
+    echo "@%:@endif" >>$tmp/pconfig.h
+    if cmp -s $_OUT $tmp/pconfig.h 2>/dev/null; then
+      AC_MSG_NOTICE([$_OUT is unchanged])
+    else
+      ac_dir=`AS_DIRNAME(["$_OUT"])`
+      AS_MKDIR_P(["$ac_dir"])
+      rm -f "$_OUT"
+      mv $tmp/pconfig.h "$_OUT"
+    fi
+    cp _script _configs.sed
+  else
+    AC_MSG_ERROR([input file $_INP does not exist - skip generating $_OUT])
+  fi
+  rm -f conftest.*
+fi
+m4_popdef([_symbol])dnl
+m4_popdef([_script])dnl
+AS_VAR_POPDEF([_INP])dnl
+AS_VAR_POPDEF([_UPP])dnl
+AS_VAR_POPDEF([_LOW])dnl
+AS_VAR_POPDEF([_PKG])dnl
+AS_VAR_POPDEF([_DEF])dnl
+AS_VAR_POPDEF([_OUT])dnl
+],[PACKAGE="$PACKAGE"])])
+
+dnl ______ /usr/share/aclocal/guidod/ax_cflags_no_writable_strings.m4 ______
+dnl @synopsis AX_CFLAGS_NO_WRITABLE_STRINGS [(shellvar [,default, [A/NA]])]
+dnl
+dnl Try to find a compiler option that makes all stringliteral readonly.
+dnl
+dnl The sanity check is done by looking at string.h which has a set
+dnl of strcpy definitions that should be defined with const-modifiers
+dnl to not emit a warning in all so many places.
+dnl
+dnl For the GNU CC compiler it will be -fno-writable-strings -Wwrite-strings
+dnl The result is added to the shellvar being CFLAGS by default.
+dnl
+dnl DEFAULTS:
+dnl
+dnl  - $1 shell-variable-to-add-to : CFLAGS
+dnl  - $2 add-value-if-not-found : nothing
+dnl  - $3 action-if-found : add value to shellvariable
+dnl  - $4 action-if-not-found : nothing
+dnl
+dnl @version %Id: ax_cflags_no_writable_strings.m4,v 1.6 2003/06/05 00:52:15 guidod Exp %
+dnl @author Guido Draheim <guidod@gmx.de>
+dnl
+AC_DEFUN([AX_CFLAGS_NO_WRITABLE_STRINGS],[dnl
+AS_VAR_PUSHDEF([FLAGS],[CFLAGS])dnl
+AS_VAR_PUSHDEF([VAR],[ac_cv_cflags_no_writable_strings])dnl
+AC_CACHE_CHECK([m4_ifval([$1],[$1],FLAGS) making strings readonly],
+VAR,[VAR="no, unknown"
+ AC_LANG_SAVE
+ AC_LANG_C
+ ac_save_[]FLAGS="$[]FLAGS"
+# IRIX C compiler:
+#      -use_readonly_const is the default for IRIX C,
+#       puts them into .rodata, but they are copied later.
+#       need to be "-G0 -rdatashared" for strictmode but
+#       I am not sure what effect that has really.         - guidod
+for ac_arg dnl
+in "-Wall     % -fno-writable-strings -Wwrite-strings" dnl   GCC
+   "-v -Xc    % -xstrconst" dnl Solaris C - strings go into readonly segment
+   "+w1 -Aa   % +ESlit"      dnl HP-UX C - strings go into readonly segment
+   "-w0 -std1 % -readonly_strings" dnl Digital Unix - again readonly segment
+   "-fullwarn -use_readonly_const %% ok, its the default" dnl IRIX C
+   #
+do FLAGS="$ac_save_[]FLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
+   AC_TRY_COMPILE([],[return 0;],
+   [VAR=`echo $ac_arg | sed -e 's,.*% *,,'` ; break])
+done
+case ".$VAR" in
+   .|.no|.no,*) ;;
+   *) # sanity check - testing strcpy() from string.h
+      cp config.log config.tmp
+      AC_TRY_COMPILE([#include <string.h>],[
+      char test[16];
+      if (strcpy (test, "test")) return 1;],
+      dnl the original did use test -n `$CC testprogram.c`
+      [if test `diff config.log config.tmp | grep -i warning | wc -l` != 0
+  then VAR="no, suppressed, string.h," ; fi],
+      [VAR="no, suppressed, string.h"])
+      rm config.tmp
+   ;;
+esac
+   FLAGS="$ac_save_[]FLAGS"
+   AC_LANG_RESTORE
+])
+case ".$VAR" in
+     .ok|.ok,*) m4_ifvaln($3,$3) ;;
+   .|.no|.no,*) m4_ifvaln($4,$4,[m4_ifval($2,[
+        AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])
+                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])]) ;;
+   *) m4_ifvaln($3,$3,[
+   if echo " $[]m4_ifval($1,$1,FLAGS) " | grep " $VAR " 2>&1 >/dev/null
+   then AC_RUN_LOG([: m4_ifval($1,$1,FLAGS) does contain $VAR])
+   else AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"])
+                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"
+   fi ]) ;;
+esac
+AS_VAR_POPDEF([VAR])dnl
+AS_VAR_POPDEF([FLAGS])dnl
+])
+
+dnl the only difference - the LANG selection... and the default FLAGS
+
+AC_DEFUN([AX_CXXFLAGS_NO_WRITABLE_STRINGS],[dnl
+AS_VAR_PUSHDEF([FLAGS],[CXXFLAGS])dnl
+AS_VAR_PUSHDEF([VAR],[ac_cv_cxxflags_no_writable_strings])dnl
+AC_CACHE_CHECK([m4_ifval($1,$1,FLAGS) making strings readonly],
+VAR,[VAR="no, unknown"
+ AC_LANG_SAVE
+ AC_LANG_CXX
+ ac_save_[]FLAGS="$[]FLAGS"
+# IRIX C compiler:
+#      -use_readonly_const is the default for IRIX C,
+#       puts them into .rodata, but they are copied later.
+#       need to be "-G0 -rdatashared" for strictmode but
+#       I am not sure what effect that has really.         - guidod
+for ac_arg dnl
+in "-Wall     % -fno-writable-strings -Wwrite-strings" dnl   GCC
+   "-v -Xc    % -xstrconst" dnl Solaris C - strings go into readonly segment
+   "+w1 -Aa   % +ESlit"      dnl HP-UX C - strings go into readonly segment
+   "-w0 -std1 % -readonly_strings" dnl Digital Unix - again readonly segment
+   "-fullwarn -use_readonly_const %% ok, its the default" dnl IRIX C
+   #
+do FLAGS="$ac_save_[]FLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
+   AC_TRY_COMPILE([],[return 0;],
+   [VAR=`echo $ac_arg | sed -e 's,.*% *,,'` ; break])
+done
+case ".$VAR" in
+   .|.no|.no,*) ;;
+   *) # sanity check - testing strcpy() from string.h
+      cp config.log config.tmp
+      AC_TRY_COMPILE([#include <string.h>],[[
+      char test[16];
+      if (strcpy (test, "test")) return 1;]],
+      dnl the original did use test -n `$CC testprogram.c`
+      [if test `diff config.log config.tmp | grep -i warning | wc -l` != 0
+  then VAR="no, suppressed, string.h," ; fi],
+      [VAR="no, suppressed, string.h"])
+      rm config.tmp
+   ;;
+esac
+ FLAGS="$ac_save_[]FLAGS"
+ AC_LANG_RESTORE
+])
+case ".$VAR" in
+     .ok|.ok,*) m4_ifvaln($3,$3) ;;
+   .|.no|.no,*) m4_ifvaln($4,$4,[m4_ifval($2,[
+        AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"])
+                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])]) ;;
+   *) m4_ifvaln($3,$3,[
+   if echo " $[]m4_ifval($1,$1,FLAGS) " | grep " $VAR " 2>&1 >/dev/null
+   then AC_RUN_LOG([: m4_ifval($1,$1,FLAGS) does contain $VAR])
+   else AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"])
+                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"
+   fi ]) ;;
+esac
+AS_VAR_POPDEF([VAR])dnl
+AS_VAR_POPDEF([FLAGS])dnl
+])
+
+dnl ______ /usr/share/aclocal/guidod/patch_libtool_on_darwin_zsh_overquoting.m4 ______
+dnl @* PATCH_LIBTOOL_ON_DARWIN_ZSH_OVERQUOTING
+dnl
+dnl libtool 1.4.x has a bug on darwin where the "zsh" is installed
+dnl as the bourne shell replacement. Of course, the zsh is called in
+dnl a compatibility mode but there is a common problem with it,
+dnl probably a bug of zsh. Newer darwin systems have a "bash"
+dnl installed now, but the configure-default will be "zsh" in most
+dnl systems still.
+dnl
+dnl The bug revelas itself as an overquoted statement in the
+dnl libtool cmds-spec for sharedlib creation on testing for
+dnl "module" builds. Later libtool has gone rid of it by simply
+dnl removing the quotes at that point . Here we maintain the 
+dnl original style and simply remove the extra escape character,
+dnl i.e. we look for "archive_cmds" and replace a sequence of
+dnl triple-backslash-and-doublequote with single-backslash-and-doublequote.
+dnl 
+dnl @= guidod@gmx.de
+dnl %Id: patch_libtool_on_darwin_zsh_overquoting.m4,v 1.4 2003/03/24 16:58:21 guidod Exp %
+
+AC_DEFUN([PATCH_LIBTOOL_ON_DARWIN_ZSH_OVERQUOTING],
+[# libtool-1.4 specific, on zsh target the final requoting does one too much
+case "$host_os" in
+  darwin*)
+    if grep "1.92" libtool >/dev/null ; then
+AC_MSG_RESULT(patching libtool on .so-sharedlib creation (zsh overquoting))
+      test -f libtool.old || (mv libtool libtool.old && cp libtool.old libtool)
+      sed -e '/archive_cmds=/s:[[\\]][[\\]][[\\]]*":\\":g' libtool >libtool.new
+      (test -s libtool.new || rm libtool.new) 2>/dev/null
+      test -f libtool.new && mv libtool.new libtool # not 2>/dev/null !!
+      test -f libtool     || mv libtool.old libtool
+    fi
+  ;;
+esac
+])
+dnl ______  ______
+
+dnl ______ /usr/share/aclocal/guidod/ax_set_version_info.m4 ______
+dnl AX_SET_VERSION_INFO [(VERSION  [,PREFIX])]      -*- m4 -*-
+dnl   default $1 = $PACKAGE_VERSION
+dnl   default $2 = <none>
+dnl 
+dnl This macro is the successor of AC_SET_RELEASEINFO_VERSIONINFO but
+dnl it can be used in parallel because it uses all different variables.
+dnl
+dnl check the $VERSION number and cut the two last digit-sequences off
+dnl which will form a -version-info in a @VERSION_INFO@ ac_subst while
+dnl the rest is going to the -release name in a @RELEASE_INFO@ ac_subst.
+dnl
+dnl you should keep these two seperate - the release-name may contain
+dnl alpha-characters and can be modified later with extra release-hints
+dnl e.g. RELEASE_INFO="$RELEASE_INFO-debug" for a debug version 
+dnl of your lib. The $VERSION_INFO however should not be touched.
+dnl
+dnl example: a VERSION="2.4.18" will be transformed into
+dnl    RELEASE_INFO = -release 2
+dnl    VERSION_INFO = -versioninfo 4:18
+dnl then use these two variables and push them to your libtool linker
+dnl    libtest_la_LIBADD = @RELEASE_INFO@ @VERSION_INFO@
+dnl and for a linux-target this will tell libtool to install the lib as
+dnl           libmy.so libmy.la libmy.a libmy-2.so.4 libmy-2.so.4.0.18
+dnl and executables will get link-resolve-infos for libmy-2.so.4 - therefore
+dnl the patch-level is ignored during ldso linking, and ldso will use the
+dnl one with the highest patchlevel. Using just "-release $(VERSION)"
+dnl during libtool-linking would not do that - omitting the -version-info
+dnl will libtool install libmy.so libmy.la libmy.a libmy-2.4.18.so and
+dnl executables would get hardlinked with the 2.4.18 version of your lib.
+dnl
+dnl This background does also explain the default dll name for a win32
+dnl target : libtool will choose to make up libmy-2-4.dll for this 
+dnl version spec.
+dnl
+dnl this macro does also set the usual three parts of a version spec
+dnl $MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION but does not ac_subst 
+dnl for the plain AX_SET_VERSION_INFO macro. Use instead one of the numbered
+dnl macros AX_SET_VERSION_INFO1 (use first number for release part) or
+dnl that AX_SET_VERSION_INFO2 (use the first two numbers for release part).
+dnl 
+dnl You may add sublevel parts like "1.4.2-ac5" where the sublevel is 
+dnl just killed from these version/release substvars. That allows to grab
+dnl the version off a .spec file like with AX_SPEC_PACKAGE_VERSION where 
+dnl the $VERSION is used to name a tarball or distpack like mylib-2.2.9pre4
+dnl
+dnl Unlike earlier macros, you can use this one to break up different
+dnl VERSIONs and put them into different variables, just hint with
+dnl PREFIX-setting - i.e. _VERSION(2.4.5,TEST) will set variables named
+dnl TEST_MAJOR_VERSION=2... and of course $TEST_RELEASE_INFO etc.
+dnl (for the moment, it needs to be a literal prefix *sigh*)
+dnl
+dnl @version %Id: ax_set_version_info.m4,v 1.1 2003/07/02 23:41:42 guidod Exp %
+dnl @author Guido Draheim <guidod@gmx.de>
+
+AC_DEFUN([AX_SET_VERSION_INFO1],[dnl
+AS_VAR_PUSHDEF([MAJOR],ifelse($2,,[MAJOR_VERSION],[$2_MAJOR_VERSION]))dnl
+AS_VAR_PUSHDEF([MINOR],ifelse($2,,[MINOR_VERSION],[$2_MINOR_VERSION]))dnl
+AS_VAR_PUSHDEF([MICRO],ifelse($2,,[MICRO_VERSION],[$2_MICRO_VERSION]))dnl
+AS_VAR_PUSHDEF([PATCH],ifelse($2,,[PATCH_VERSION],[$2_PATCH_VERSION]))dnl
+AS_VAR_PUSHDEF([LTREL],ifelse($2,,[RELEASE_INFO],[$2_RELEASE_INFO]))dnl
+AS_VAR_PUSHDEF([LTVER],ifelse($2,,[VERSION_INFO],[$2_VERSION_INFO]))dnl
+test ".$PACKAGE_VERSION" = "." && PACKAGE_VERSION="$VERSION"
+AC_MSG_CHECKING(ifelse($2,,,[$2 ])out linker version info dnl
+ifelse($1,,$PACKAGE_VERSION,$1) )
+  MINOR=`echo ifelse( $1, , $PACKAGE_VERSION, $1 )`
+  MAJOR=`echo "$MINOR" | sed -e 's/[[.]].*//'` 
+  MINOR=`echo "$MINOR" | sed -e "s/^$MAJOR//" -e 's/^.//'` 
+  MICRO="$MINOR"
+  MINOR=`echo "$MICRO" | sed -e 's/[[.]].*//'`
+  MICRO=`echo "$MICRO" | sed -e "s/^$MINOR//" -e 's/^.//'`
+  PATCH="$MICRO"
+  MICRO=`echo "$PATCH" | sed -e 's/[[^0-9]].*//'` 
+  PATCH=`echo "$PATCH" | sed -e "s/^$MICRO//" -e 's/^[[-.]]//'`
+  if test "_$MICRO" = "_" ; then MICRO="0" ; fi
+  if test "_$MINOR" = "_" ; then MINOR="$MAJOR" ; MAJOR="0" ; fi
+  MINOR=`echo "$MINOR" | sed -e 's/[[^0-9]].*//'`
+  LTREL="-release $MAJOR"
+  LTVER="-version-info $MINOR:$MICRO"
+AC_MSG_RESULT([/$MAJOR/$MINOR:$MICRO (-$MAJOR.so.$MINOR.0.$MICRO)])
+AC_SUBST(MAJOR)
+AC_SUBST(MINOR)
+AC_SUBST(MICRO)
+AC_SUBST(PATCH)
+AC_SUBST(LTREL)
+AC_SUBST(LTVER)
+AS_VAR_POPDEF([LTVER])dnl
+AS_VAR_POPDEF([LTREL])dnl
+AS_VAR_POPDEF([PATCH])dnl
+AS_VAR_POPDEF([MICRO])dnl
+AS_VAR_POPDEF([MINOR])dnl
+AS_VAR_POPDEF([MAJOR])dnl
+])
+
+AC_DEFUN([AX_SET_VERSION_INFO2],[dnl
+AS_VAR_PUSHDEF([MAJOR],ifelse($2,,[MAJOR_VERSION],[$2_MAJOR_VERSION]))dnl
+AS_VAR_PUSHDEF([MINOR],ifelse($2,,[MINOR_VERSION],[$2_MINOR_VERSION]))dnl
+AS_VAR_PUSHDEF([MICRO],ifelse($2,,[MICRO_VERSION],[$2_MICRO_VERSION]))dnl
+AS_VAR_PUSHDEF([PATCH],ifelse($2,,[PATCH_VERSION],[$2_PATCH_VERSION]))dnl
+AS_VAR_PUSHDEF([LTREL],ifelse($2,,[RELEASE_INFO],[$2_RELEASE_INFO]))dnl
+AS_VAR_PUSHDEF([LTVER],ifelse($2,,[VERSION_INFO],[$2_VERSION_INFO]))dnl
+test ".$PACKAGE_VERSION" = "." && PACKAGE_VERSION="$VERSION"
+AC_MSG_CHECKING(ifelse($2,,,[$2 ])out linker version info dnl
+ifelse($1,,$PACKAGE_VERSION,$1) )
+  MINOR=`echo ifelse( $1, , $PACKAGE_VERSION, $1 )`
+  MAJOR=`echo "$MINOR" | sed -e 's/[[.]].*//'` 
+  MINOR=`echo "$MINOR" | sed -e "s/^$MAJOR//" -e 's/^.//'` 
+  MICRO="$MINOR"
+  MINOR=`echo "$MICRO" | sed -e 's/[[.]].*//'`
+  MICRO=`echo "$MICRO" | sed -e "s/^$MINOR//" -e 's/^.//'`
+  PATCH="$MICRO"
+  MICRO=`echo "$PATCH" | sed -e 's/[[^0-9]].*//'` 
+  PATCH=`echo "$PATCH" | sed -e "s/^$MICRO//" -e 's/^[[-.]]//'`
+  test "_$MICRO" != "_" || MICRO="0"
+  if test "_$MINOR" != "_" ; then MINOR="$MAJOR" ; MAJOR="0" ; fi
+  MINOR=`echo "$MINOR" | sed -e 's/[[^0-9]].*//'`
+  LTREL="-release $MAJOR.$MINOR"
+  LTVER="-version-info 0:$MICRO"
+AC_MSG_RESULT([/$MAJOR/$MINOR:$MICRO (-$MAJOR.so.$MINOR.0.$MICRO)])
+AC_SUBST(MAJOR)
+AC_SUBST(MINOR)
+AC_SUBST(MICRO)
+AC_SUBST(PATCH)
+AC_SUBST(LTREL)
+AC_SUBST(LTVER)
+AS_VAR_POPDEF([LTVER])dnl
+AS_VAR_POPDEF([LTREL])dnl
+AS_VAR_POPDEF([PATCH])dnl
+AS_VAR_POPDEF([MICRO])dnl
+AS_VAR_POPDEF([MINOR])dnl
+AS_VAR_POPDEF([MAJOR])dnl
+])
+
+AC_DEFUN([AX_SET_VERSION_INFO],[dnl
+AS_VAR_PUSHDEF([MAJOR],ifelse($2,,[MAJOR_VERSION],[$2_MAJOR_VERSION]))dnl
+AS_VAR_PUSHDEF([MINOR],ifelse($2,,[MINOR_VERSION],[$2_MINOR_VERSION]))dnl
+AS_VAR_PUSHDEF([MICRO],ifelse($2,,[MICRO_VERSION],[$2_MICRO_VERSION]))dnl
+AS_VAR_PUSHDEF([PATCH],ifelse($2,,[PATCH_VERSION],[$2_PATCH_VERSION]))dnl
+AS_VAR_PUSHDEF([LTREL],ifelse($2,,[RELEASE_INFO],[$2_RELEASE_INFO]))dnl
+AS_VAR_PUSHDEF([LTVER],ifelse($2,,[VERSION_INFO],[$2_VERSION_INFO]))dnl
+test ".$PACKAGE_VERSION" = "." && PACKAGE_VERSION="$VERSION"
+AC_MSG_CHECKING(ifelse($2,,,[$2 ])out linker version info dnl
+ifelse($1,,$PACKAGE_VERSION,$1) )
+  MINOR=`echo ifelse( $1, , $PACKAGE_VERSION, $1 )`
+  MAJOR=`echo "$MINOR" | sed -e 's/[[.]].*//'` 
+  MINOR=`echo "$MINOR" | sed -e "s/^$MAJOR//" -e 's/^.//'` 
+  MICRO="$MINOR"
+  MINOR=`echo "$MICRO" | sed -e 's/[[.]].*//'`
+  MICRO=`echo "$MICRO" | sed -e "s/^$MINOR//" -e 's/^.//'`
+  PATCH="$MICRO"
+  MICRO=`echo "$PATCH" | sed -e 's/[[^0-9]].*//'` 
+  PATCH=`echo "$PATCH" | sed -e "s/^$MICRO//" -e 's/[[-.]]//'`
+  if test "_$MICRO" = "_" ; then MICRO="0" ; fi
+  if test "_$MINOR" = "_" ; then MINOR="$MAJOR" ; MAJOR="0" ; fi
+  MINOR=`echo "$MINOR" | sed -e 's/[[^0-9]].*//'`
+  LTREL="-release $MAJOR"
+  LTVER="-version-info $MINOR:$MICRO"
+AC_MSG_RESULT([/$MAJOR/$MINOR:$MICRO (-$MAJOR.so.$MINOR.0.$MICRO)])
+AC_SUBST(LTREL)
+AC_SUBST(LTVER)
+AS_VAR_POPDEF([LTVER])dnl
+AS_VAR_POPDEF([LTREL])dnl
+AS_VAR_POPDEF([PATCH])dnl
+AS_VAR_POPDEF([MICRO])dnl
+AS_VAR_POPDEF([MINOR])dnl
+AS_VAR_POPDEF([MAJOR])dnl
+])
+
+dnl ______ /usr/share/aclocal/guidod/ax_cflags_warn_all.m4 ______
+dnl @synopsis AX_CFLAGS_WARN_ALL [(shellvar [,default, [A/NA]])]
+dnl
+dnl Try to find a compiler option that enables most reasonable warnings.
+dnl This macro is directly derived from VL_PROG_CC_WARNINGS which is
+dnl split up into two AX_CFLAGS_WARN_ALL and AX_CFLAGS_WARN_ALL_ANSI
+dnl
+dnl For the GNU CC compiler it will be -Wall (and -ansi -pedantic)
+dnl The result is added to the shellvar being CFLAGS by default.
+dnl
+dnl Currently this macro knows about GCC, Solaris C compiler,
+dnl Digital Unix C compiler, C for AIX Compiler, HP-UX C compiler,
+dnl IRIX C compiler, NEC SX-5 (Super-UX 10) C compiler, and Cray J90
+dnl (Unicos 10.0.0.8) C compiler.
+dnl
+dnl - $1 shell-variable-to-add-to : CFLAGS
+dnl - $2 add-value-if-not-found : nothing 
+dnl - $3 action-if-found : add value to shellvariable
+dnl - $4 action-if-not-found : nothing 
+dnl
+dnl @version %Id: ax_cflags_warn_all.m4,v 1.2 2003/10/12 14:56:07 guidod Exp %
+dnl @author Guido Draheim <guidod@gmx.de>
+dnl
+AC_DEFUN([AX_CFLAGS_WARN_ALL],[dnl
+AS_VAR_PUSHDEF([FLAGS],[CFLAGS])dnl
+AS_VAR_PUSHDEF([VAR],[ac_cv_cflags_warn_all])dnl
+AC_CACHE_CHECK([m4_ifval($1,$1,FLAGS) for maximum warnings],
+VAR,[VAR="no, unknown"
+ AC_LANG_SAVE
+ AC_LANG_C
+ ac_save_[]FLAGS="$[]FLAGS"
+for ac_arg dnl
+in "-pedantic  % -Wall"       dnl   GCC
+   "-xstrconst % -v"          dnl Solaris C 
+   "-std1      % -verbose -w0 -warnprotos" dnl Digital Unix 
+   "-qlanglvl=ansi % -qsrcmsg -qinfo=all:noppt:noppc:noobs:nocnd" dnl AIX
+   "-ansi -ansiE % -fullwarn" dnl IRIX
+   "+ESlit     % +w1"         dnl HP-UX C 
+   "-Xc        % -pvctl[,]fullmsg" dnl NEC SX-5 (Super-UX 10)
+   "-h conform % -h msglevel 2" dnl Cray C (Unicos)
+   # 
+do FLAGS="$ac_save_[]FLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
+   AC_TRY_COMPILE([],[return 0;],
+   [VAR=`echo $ac_arg | sed -e 's,.*% *,,'` ; break])
+done
+ FLAGS="$ac_save_[]FLAGS"
+ AC_LANG_RESTORE
+])
+case ".$VAR" in
+     .ok|.ok,*) m4_ifvaln($3,$3) ;;
+   .|.no|.no,*) m4_ifvaln($4,$4,[m4_ifval($2,[
+        AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])
+                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])]) ;;
+   *) m4_ifvaln($3,$3,[
+   if echo " $[]m4_ifval($1,$1,FLAGS) " | grep " $VAR " 2>&1 >/dev/null
+   then AC_RUN_LOG([: m4_ifval($1,$1,FLAGS) does contain $VAR])
+   else AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"])
+                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"
+   fi ]) ;;
+esac
+AS_VAR_POPDEF([VAR])dnl
+AS_VAR_POPDEF([FLAGS])dnl
+])
+
+dnl the only difference - the LANG selection... and the default FLAGS
+
+AC_DEFUN([AX_CXXFLAGS_WARN_ALL],[dnl
+AS_VAR_PUSHDEF([FLAGS],[CXXFLAGS])dnl
+AS_VAR_PUSHDEF([VAR],[ac_cv_cxxflags_warn_all])dnl
+AC_CACHE_CHECK([m4_ifval($1,$1,FLAGS) for maximum warnings],
+VAR,[VAR="no, unknown"
+ AC_LANG_SAVE
+ AC_LANG_CXX
+ ac_save_[]FLAGS="$[]FLAGS"
+for ac_arg dnl
+in "-pedantic  % -Wall"       dnl   GCC
+   "-xstrconst % -v"          dnl Solaris C 
+   "-std1      % -verbose -w0 -warnprotos" dnl Digital Unix 
+   "-qlanglvl=ansi % -qsrcmsg -qinfo=all:noppt:noppc:noobs:nocnd" dnl AIX
+   "-ansi -ansiE % -fullwarn" dnl IRIX
+   "+ESlit     % +w1"         dnl HP-UX C 
+   "-Xc        % -pvctl[,]fullmsg" dnl NEC SX-5 (Super-UX 10)
+   "-h conform % -h msglevel 2" dnl Cray C (Unicos)
+   # 
+do FLAGS="$ac_save_[]FLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
+   AC_TRY_COMPILE([],[return 0;],
+   [VAR=`echo $ac_arg | sed -e 's,.*% *,,'` ; break])
+done
+ FLAGS="$ac_save_[]FLAGS"
+ AC_LANG_RESTORE
+])
+case ".$VAR" in
+     .ok|.ok,*) m4_ifvaln($3,$3) ;;
+   .|.no|.no,*) m4_ifvaln($4,$4,[m4_ifval($2,[
+        AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])
+                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])]) ;;
+   *) m4_ifvaln($3,$3,[
+   if echo " $[]m4_ifval($1,$1,FLAGS) " | grep " $VAR " 2>&1 >/dev/null
+   then AC_RUN_LOG([: m4_ifval($1,$1,FLAGS) does contain $VAR])
+   else AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"])
+                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"
+   fi ]) ;;
+esac
+AS_VAR_POPDEF([VAR])dnl
+AS_VAR_POPDEF([FLAGS])dnl
+])
+
+dnl  implementation tactics:
+dnl   the for-argument contains a list of options. The first part of
+dnl   these does only exist to detect the compiler - usually it is
+dnl   a global option to enable -ansi or -extrawarnings. All other
+dnl   compilers will fail about it. That was needed since a lot of
+dnl   compilers will give false positives for some option-syntax
+dnl   like -Woption or -Xoption as they think of it is a pass-through
+dnl   to later compile stages or something. The "%" is used as a
+dnl   delimimiter. A non-option comment can be given after "%%" marks.
+
+
+dnl ______ /usr/share/aclocal/guidod/ax_expand_prefix.m4 ______
+dnl @* AX_EXPAND_PREFIX
+dnl
+dnl when $prefix and $exec_prefix are still set to NONE then set them
+dnl to the usual default values - being based on $ac_default_prefix.
+dnl - this macro can be AC_REQUIREd by other macros that need to
+dnl compute values for installation directories. It has been observed
+dnl that it was done wrong over and over again, so this is a bit
+dnl more safe to do.
+dnl
+dnl remember - setting exec_prefix='${prefix}' needs you interpolate
+dnl directories multiple times, it is not sufficient to just say
+dnl MYVAR="${datadir}/putter" but you do have to run `eval` a few 
+dnl times, sth. like MYVAR=`eval "echo \"$MYVAR\""` done atleast
+dnl two times.
+dnl 
+dnl The implementation of this macro simply picks up the lines that
+dnl would be run at the start of AC_OUTPUT anyway to set the
+dnl prefix/exec_prefix defaults. Between AC_INIT and the first
+dnl command to AC_REQUIRE this macro you can set the two variables
+dnl to something explicit instead. Probably, any command to compute
+dnl installation directories should be run _after_ AM_INIT_AUTOMAKE
+dnl
+dnl @: guidod@gmx.de
+dnl @%Id: ax_expand_prefix.m4,v 1.1 2003/10/19 00:05:18 guidod Exp %
+
+AC_DEFUN([AX_EXPAND_PREFIX],[dnl
+  # The prefix default can be set in configure.ac (otherwise it is /usr/local)
+  test "x$prefix" = xNONE && prefix=$ac_default_prefix
+  # Let make expand exec_prefix. Allows to override the makevar 'prefix' later
+  test "x$exec_prefix" = xNONE && exec_prefix='${prefix}'
 ])
 
 dnl ______ /usr/share/aclocal/Miscellaneous/ac_compile_check_sizeof.m4 ______
@@ -1244,212 +2195,29 @@ undefine([AC_TYPE_NAME])dnl
 undefine([AC_CV_NAME])dnl
 ])
 
-dnl ______ /usr/share/aclocal/guidod/patch_libtool_to_add_host_cc.m4 ______
-dnl @* PATCH_LIBTOOL_TO_ADD_HOST_CC
+dnl ______ /usr/share/aclocal/guidod/ax_dirname.m4 ______
+dnl @* AX_DIRNAME(PATHNAME)
 dnl
-dnl The libtool 1.4.x processing (and patched 1.3.5) uses a little
-dnl "impgen" tool to turn a "*.dll" into an import "*.lib" as it is
-dnl needed for win32 targets. However, this little tool is not shipped
-dnl by binutils, it is not even a command option of dlltool or dllwrap.
-dnl It happens to be a C source snippet implanted into the libtool
-dnl sources - it gets written to ".libs", compiled into a binary 
-dnl on-the-fly, and executed right away on the "dll" file to create
-dnl the import-lib (dll.a files in gcc-speak).
+dnl Parts of the implementation have been taken from AS_DIRNAME from the
+dnl main autoconf package in generation 2.5x. However, we do only use 
+dnl "sed" to cut out the dirname, and we do additionally clean up some 
+dnl dir/.. parts in the resulting pattern.
 dnl
-dnl This mode works fine for a native build within mingw or cygwin,
-dnl but it does not work in cross-compile mode since CC is a
-dnl crosscompiler - it will create an .exe file on a non-win32
-dnl system, and as a result an impgen.exe is created on-the-fly
-dnl that can not be executed on-the-fly. Luckily, the actual
-dnl libtool snippet uses HOST_CC to compile the sources which
-dnl has a fallback to CC when the HOST_CC variable was not set.
+dnl this macro may be used in autoconf 2.13 scripts as well.
 dnl
-dnl this ac-macro is trying to detect a valid HOST_CC which is not
-dnl a cross-compiler. This is done by looking into the $PATH for
-dnl a "cc" and the result is patched into libtool a HOST_CC, iow
-dnl it adds another configured variable at the top of the libtool
-dnl script.
-dnl
-dnl In discussions on the libtool mailinglist it occurred that
-dnl later gcc/binutils generations are able to link with dlls 
-dnl directly, i.e. there is no import-lib needed anymore. The
-dnl import-table is created within the linker itself (in-memory)
-dnl and bound to the .exe/.dll currently in the making. The
-dnl whole stuff of impgen exe and compiling it on-the-fly, well,
-dnl it is superflouos then. 
-dnl
-dnl Since mingw crosscompilers tend to be quite a fresh development
-dnl it was agreed to remove the impgen stuff completly from
-dnl libtool sources. Still however, this macro does not hurt
-dnl since it does not patch impgen cmds but it just adds HOST_CC
-dnl which might be useful in other cross-compiling cases as well.
-dnl Therefore, you can leave it in for maximum compatibility and
-dnl portability.
-dnl
-dnl @= guidod@gmx.de
-dnl @%Id: patch_libtool_to_add_host_cc.m4,v 1.3 2003/03/23 13:20:27 guidod Exp %
+dnl @%Id: ax_dirname.m4,v 1.1 2003/07/02 23:42:59 guidod Exp %
 
-AC_DEFUN([PATCH_LIBTOOL_TO_ADD_HOST_CC],
-[# patch libtool to add HOST_CC sometimes needed in crosscompiling a win32 dll
-if grep "HOST_CC" libtool >/dev/null; then
-  if test "$build" != "$host" ; then
-    if test "_$HOST_CC" = "_" ; then
-      HOST_CC="false"
-      for i in `echo $PATH | sed 's,:, ,g'` ; do
-      test -x $i/cc && HOST_CC=$i/cc
-      done
-    fi
-AC_MSG_RESULT(patching libtool to add HOST_CC=$HOST_CC)
-    test -f libtool.old || (mv libtool libtool.old && cp libtool.old libtool)
-    sed -e "/BEGIN.*LIBTOOL.*CONFIG/a\\
-HOST_CC=$HOST_CC" libtool >libtool.new
-    (test -s libtool.new || rm libtool.new) 2>/dev/null
-    test -f libtool.new && mv libtool.new libtool # not 2>/dev/null !!
-    test -f libtool     || mv libtool.old libtool
-  fi
-fi
-])
-dnl ______ /usr/share/aclocal/guidod/patch_libtool_on_darwin_zsh_overquoting.m4 ______
-dnl @* PATCH_LIBTOOL_ON_DARWIN_ZSH_OVERQUOTING
-dnl
-dnl libtool 1.4.x has a bug on darwin where the "zsh" is installed
-dnl as the bourne shell replacement. Of course, the zsh is called in
-dnl a compatibility mode but there is a common problem with it,
-dnl probably a bug of zsh. Newer darwin systems have a "bash"
-dnl installed now, but the configure-default will be "zsh" in most
-dnl systems still.
-dnl
-dnl The bug revelas itself as an overquoted statement in the
-dnl libtool cmds-spec for sharedlib creation on testing for
-dnl "module" builds. Later libtool has gone rid of it by simply
-dnl removing the quotes at that point . Here we maintain the 
-dnl original style and simply remove the extra escape character,
-dnl i.e. we look for "archive_cmds" and replace a sequence of
-dnl triple-backslash-and-doublequote with single-backslash-and-doublequote.
-dnl 
-dnl @= guidod@gmx.de
-dnl %Id: patch_libtool_on_darwin_zsh_overquoting.m4,v 1.4 2003/03/24 16:58:21 guidod Exp %
-
-AC_DEFUN([PATCH_LIBTOOL_ON_DARWIN_ZSH_OVERQUOTING],
-[# libtool-1.4 specific, on zsh target the final requoting does one too much
-case "$host_os" in
-  darwin*)
-    if grep "1.92" libtool >/dev/null ; then
-AC_MSG_RESULT(patching libtool on .so-sharedlib creation (zsh overquoting))
-      test -f libtool.old || (mv libtool libtool.old && cp libtool.old libtool)
-      sed -e '/archive_cmds=/s:[[\\]][[\\]][[\\]]*":\\":g' libtool >libtool.new
-      (test -s libtool.new || rm libtool.new) 2>/dev/null
-      test -f libtool.new && mv libtool.new libtool # not 2>/dev/null !!
-      test -f libtool     || mv libtool.old libtool
-    fi
-  ;;
-esac
-])
-dnl ______ /usr/share/aclocal/guidod/ac_sys_largefile_sensitive.m4 ______
-dnl @synopsis AC_SYS_LARGEFILE_SENSITIVE
-dnl
-dnl checker whether the current system is sensitive to -Ddefines
-dnl making off_t having different types/sizes. Automatically define
-dnl a config.h symbol LARGEFILE_SENSITIVE if that is the case,
-dnl otherwise leave everything as is. 
-dnl
-dnl This macro builds on top of AC_SYS_LARGEFILE to detect whether
-dnl special options are neede to make the code use 64bit off_t - in
-dnl many setups this will also make the code use 64bit off_t immediatly.
-dnl
-dnl The common use of a LARGEFILE_SENSITIVE config.h-define is to rename
-dnl exported functions, usually adding a 64 to the original function name.
-dnl Such renamings are only needed on systems being both (a) 32bit off_t
-dnl by default and (b) implementing large.file extensions (as for unix98).
-dnl
-dnl a renaming section could look like this:
-dnl  #if defined LARGEFILE_SENSITIVE && _FILE_OFFSET_BITS+0 == 64
-dnl  #define zzip_open zzip_open64
-dnl  #define zzip_seek zzip_seek64
-dnl  #endif
-dnl
-dnl for libraries, it is best to take advantage of the prefix-config.h
-dnl macro, otherwise you want to export a renamed LARGEFILE_SENSITIVE
-dnl in an installed header file. -> see AX_PREFIX_CONFIG_H
-dnl
-dnl @, System Headers
-dnl @Author Guido Draheim <guidod@gmx.de>
-dnl @Version %Id: ac_sys_largefile_sensitive.m4,v 1.2 2003/05/13 18:46:22 guidod Exp %
-
-AC_DEFUN([AC_SYS_LARGEFILE_SENSITIVE],[dnl
-AC_REQUIRE([AC_SYS_LARGEFILE])dnl
-# we know about some internals of ac_sys_largefile here...
-AC_MSG_CHECKING(whether system differentiates 64bit off_t by defines)
-ac_cv_sys_largefile_sensitive="no"
-if test ".$ac_cv_sys_file_offset_bits$ac_cv_sys_large_files" != ".nono"
-then ac_cv_sys_largefile_sensitive="yes" 
-  AC_DEFINE(LARGEFILE_SENSITIVE, 1,
-  [whether the system defaults to 32bit off_t but can do 64bit when requested])
-fi
-AC_MSG_RESULT([$ac_cv_sys_largefile_sensitive])
-])
-
-dnl ______ /usr/share/aclocal/guidod/ax_maintainer_mode_auto_silent.m4 ______
-dnl @* AX_MAINTAINER_MODE_AUTO_SILENT
-dnl
-dnl Set autotools to error/sleep settings so that they are not run when
-dnl being errornously triggered. Likewise make libtool-silent when 
-dnl libtool has been used.
-dnl
-dnl @: guidod@gmx.de
-dnl @%Id: %
-
-AC_DEFUN([AX_MAINTAINER_MODE_AUTO_SILENT],[dnl
-dnl ac_REQUIRE([am_MAINTAINER_MODE])dn
-AC_MSG_CHECKING(auto silent in maintainer mode)
-if test "$USE_MAINTAINER_MODE" = "no" ; then
-   test ".$TIMEOUT" = "." && TIMEOUT="9"
-   AUTOHEADER="sleep $TIMEOUT ; true || autoheader || skipped"
-   AUTOMAKE="sleep $TIMEOUT ; true || automake || skipped"
-   AUTOCONF="sleep $TIMEOUT ; true || autoconf || skipped"
-   if test ".$LIBTOOL" != "." ; then
-      LIBTOOL="$LIBTOOL --silent"
-      AC_MSG_RESULT([libtool-silent, auto-sleep-9])
-   else
-      AC_MSG_RESULT([auto-sleep-9])
-   fi
-else
-      AC_MSG_RESULT([no])
-fi
-])
-
-dnl ______ /usr/share/aclocal/guidod/ax_expand_prefix.m4 ______
-dnl @* AX_EXPAND_PREFIX
-dnl
-dnl when $prefix and $exec_prefix are still set to NONE then set them
-dnl to the usual default values - being based on $ac_default_prefix.
-dnl - this macro can be AC_REQUIREd by other macros that need to
-dnl compute values for installation directories. It has been observed
-dnl that it was done wrong over and over again, so this is a bit
-dnl more safe to do.
-dnl
-dnl remember - setting exec_prefix='${prefix}' needs you interpolate
-dnl directories multiple times, it is not sufficient to just say
-dnl MYVAR="${datadir}/putter" but you do have to run `eval` a few 
-dnl times, sth. like MYVAR=`eval "echo \"$MYVAR\""` done atleast
-dnl two times.
-dnl 
-dnl The implementation of this macro simply picks up the lines that
-dnl would be run at the start of AC_OUTPUT anyway to set the
-dnl prefix/exec_prefix defaults. Between AC_INIT and the first
-dnl command to AC_REQUIRE this macro you can set the two variables
-dnl to something explicit instead. Probably, any command to compute
-dnl installation directories should be run _after_ AM_INIT_AUTOMAKE
-dnl
-dnl @: guidod@gmx.de
-dnl @%Id: %
-
-AC_DEFUN([AX_EXPAND_PREFIX],[dnl
-  # The prefix default can be set in configure.ac (otherwise it is /usr/local)
-  test "x$prefix" = xNONE && prefix=$ac_default_prefix
-  # Let make expand exec_prefix. Allows to override the makevar 'prefix' later
-  test "x$exec_prefix" = xNONE && exec_prefix='${prefix}'
-])
+AC_DEFUN([AX_DIRNAME],
+[echo X[]$1 |
+    sed ['s/\/[^\/:][^\/:]*\/..\//\//g
+          s/\/[^\/:][^\/:]*\/..\//\//g
+          s/\/[^\/:][^\/:]*\/..\//\//g
+          s/\/[^\/:][^\/:]*\/..\//\//g
+          /^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{ s//\1/; q; }
+          /^X\(\/\/\)[^/].*/{ s//\1/; q; }
+          /^X\(\/\/\)$/{ s//\1/; q; }
+          /^X\(\/\).*/{ s//\1/; q; }
+          s/.*/./; q']])
 
 dnl ______ /usr/share/aclocal/guidod/ax_create_pkgconfig_info.m4 ______
 dnl @* AX_CREATE_PKGCONFIG_INFO [(outputfile, [requires [,libs [,summary]]])]
@@ -1465,7 +2233,12 @@ dnl   PACKAGE_LIBS defaults to -l$PACKAGE_NAME if not set.
 dnl
 dnl the resulting file is called $PACKAGE.pc.in / $PACKAGE.pc
 dnl
-dnl @%Id: %
+dnl You will find this macro most useful in conjunction with ax_spec_defaults
+dnl that can read good initializers from the .spec file. In consequencd, most
+dnl of the generatable installable stuff can be made from information being
+dnl updated in a single place for the whole project.
+dnl
+dnl @%Id: ax_create_pkgconfig_info.m4,v 1.1 2003/10/19 00:08:51 guidod Exp %
 
 AC_DEFUN([AX_CREATE_PKGCONFIG_INFO],[dnl
 AS_VAR_PUSHDEF([PKGCONFIG_libdir],[ax_create_pkgconfig_libdir])dnl
@@ -1668,576 +2441,31 @@ AS_VAR_POPDEF([PKGCONFIG_src_libdir])dnl
 AS_VAR_POPDEF([PKGCONFIG_src_headers])dnl
 ])
 
-dnl ______ /usr/share/aclocal/guidod/ax_dirname.m4 ______
-dnl @* AX_DIRNAME(PATHNAME)
-dnl
-dnl Parts of the implementation have been taken from AS_DIRNAME from the
-dnl main autoconf package in generation 2.5x. However, we do only use 
-dnl "sed" to cut out the dirname, and we do additionally clean up some 
-dnl dir/.. parts in the resulting pattern.
-dnl
-dnl this macro may be used in autoconf 2.13 scripts as well.
-dnl
-dnl @%Id: ax_dirname.m4,v 1.1 2003/07/02 23:42:59 guidod Exp %
 
-AC_DEFUN([AX_DIRNAME],
-[echo X[]$1 |
-    sed ['s/\/[^\/:][^\/:]*\/..\//\//g
-          s/\/[^\/:][^\/:]*\/..\//\//g
-          s/\/[^\/:][^\/:]*\/..\//\//g
-          s/\/[^\/:][^\/:]*\/..\//\//g
-          /^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{ s//\1/; q; }
-          /^X\(\/\/\)[^/].*/{ s//\1/; q; }
-          /^X\(\/\/\)$/{ s//\1/; q; }
-          /^X\(\/\).*/{ s//\1/; q; }
-          s/.*/./; q']])
+# Do all the work for Automake.                            -*- Autoconf -*-
 
-dnl ______ /usr/share/aclocal/guidod/ax_prefix_config_h.m4 ______
-dnl @synopsis AX_PREFIX_CONFIG_H [(OUTPUT-HEADER [,PREFIX [,ORIG-HEADER]])]
-dnl
-dnl This is a new variant from ac_prefix_config_ this one will use a
-dnl lowercase-prefix if the config-define was starting with a
-dnl lowercase-char, e.g. "#define const", "#define restrict", or
-dnl "#define off_t", (and this one can live in another directory, e.g.
-dnl testpkg/config.h therefore I decided to move the output-header to
-dnl be the first arg)
-dnl
-dnl takes the usual config.h generated header file; looks for each of
-dnl the generated "#define SOMEDEF" lines, and prefixes the defined name
-dnl (ie. makes it "#define PREFIX_SOMEDEF". The result is written to
-dnl the output config.header file. The PREFIX is converted to uppercase
-dnl for the conversions.
-dnl
-dnl Defaults:
-dnl
-dnl   OUTPUT-HEADER = $PACKAGE-config.h
-dnl   PREFIX = $PACKAGE
-dnl   ORIG-HEADER, from AM_CONFIG_HEADER(config.h)
-dnl
-dnl Your configure.ac script should contain both macros in this order,
-dnl and unlike the earlier variations of this prefix-macro it is okay to
-dnl place the AX_PREFIX_CONFIG_H call before the AC_OUTPUT invokation.
-dnl
-dnl Example:
-dnl
-dnl   AC_INIT(config.h.in)        # config.h.in as created by "autoheader"
-dnl   AM_INIT_AUTOMAKE(testpkg, 0.1.1)    # makes #undef VERSION and PACKAGE
-dnl   AM_CONFIG_HEADER(config.h)          # prep config.h from config.h.in
-dnl   AX_PREFIX_CONFIG_H(mylib/_config.h) # prep mylib/_config.h from it..
-dnl   AC_MEMORY_H                         # makes "#undef NEED_MEMORY_H"
-dnl   AC_C_CONST_H                        # makes "#undef const"
-dnl   AC_OUTPUT(Makefile)                 # creates the "config.h" now
-dnl                                       # and also mylib/_config.h
-dnl
-dnl if the argument to AX_PREFIX_CONFIG_H would have been omitted then the
-dnl default outputfile would have been called simply "testpkg-config.h", but
-dnl even under the name "mylib/_config.h" it contains prefix-defines like
-dnl
-dnl   #ifndef TESTPKG_VERSION
-dnl   #define TESTPKG_VERSION "0.1.1"
-dnl   #endif
-dnl   #ifndef TESTPKG_NEED_MEMORY_H
-dnl   #define TESTPKG_NEED_MEMORY_H 1
-dnl   #endif
-dnl   #ifndef _testpkg_const
-dnl   #define _testpkg_const _const
-dnl   #endif
-dnl
-dnl and this "mylib/_config.h" can be installed along with other
-dnl header-files, which is most convenient when creating a shared
-dnl library (that has some headers) where some functionality is
-dnl dependent on the OS-features detected at compile-time. No
-dnl need to invent some "mylib-confdefs.h.in" manually. :-)
-dnl
-dnl Note that some AC_DEFINEs that end up in the config.h file are
-dnl actually self-referential - e.g. AC_C_INLINE, AC_C_CONST, and the
-dnl AC_TYPE_OFF_T say that they "will define inline|const|off_t if the
-dnl system does not do it by itself". You might want to clean up about
-dnl these - consider an extra mylib/conf.h that reads something like:
-dnl
-dnl    #include <mylib/_config.h>
-dnl    #ifndef _testpkg_const
-dnl    #define _testpkg_const const
-dnl    #endif
-dnl
-dnl and then start using _testpkg_const in the header files. That is
-dnl also a good thing to differentiate whether some library-user has
-dnl starting to take up with a different compiler, so perhaps it could
-dnl read something like this:
-dnl
-dnl   #ifdef _MSC_VER
-dnl   #include <mylib/_msvc.h>
-dnl   #else
-dnl   #include <mylib/_config.h>
-dnl   #endif
-dnl   #ifndef _testpkg_const
-dnl   #define _testpkg_const const
-dnl   #endif
-dnl
-dnl @version %Id: ax_prefix_config_h.m4,v 1.5 2003/07/02 23:29:23 guidod Exp %
-dnl @author  Guiodo Draheim <guidod@gmx.de>
-dnl
-AC_DEFUN([AX_PREFIX_CONFIG_H],[AC_REQUIRE([AC_CONFIG_HEADER])
-AC_CONFIG_COMMANDS([ifelse($1,,$PACKAGE-config.h,$1)],[dnl
-AS_VAR_PUSHDEF([_OUT],[ac_prefix_conf_OUT])dnl
-AS_VAR_PUSHDEF([_DEF],[ac_prefix_conf_DEF])dnl
-AS_VAR_PUSHDEF([_PKG],[ac_prefix_conf_PKG])dnl
-AS_VAR_PUSHDEF([_LOW],[ac_prefix_conf_LOW])dnl
-AS_VAR_PUSHDEF([_UPP],[ac_prefix_conf_UPP])dnl
-AS_VAR_PUSHDEF([_INP],[ac_prefix_conf_INP])dnl
-m4_pushdef([_script],[conftest.prefix])dnl
-m4_pushdef([_symbol],[m4_cr_Letters[]m4_cr_digits[]_])dnl
-_OUT=`echo ifelse($1, , $PACKAGE-config.h, $1)`
-_DEF=`echo _$_OUT | sed -e "y:m4_cr_letters:m4_cr_LETTERS[]:" -e "s/@<:@^m4_cr_Letters@:>@/_/g"`
-_PKG=`echo ifelse($2, , $PACKAGE, $2)`
-_LOW=`echo _$_PKG | sed -e "y:m4_cr_LETTERS-:m4_cr_letters[]_:"`
-_UPP=`echo $_PKG | sed -e "y:m4_cr_letters-:m4_cr_LETTERS[]_:"  -e "/^@<:@m4_cr_digits@:>@/s/^/_/"`
-_INP=`echo "ifelse($3,,,$3)" | sed -e 's/ *//'`
-if test ".$_INP" = "."; then
-   for ac_file in : $CONFIG_HEADERS; do test "_$ac_file" = _: && continue
-     case "$ac_file" in
-        *.h) _INP=$ac_file ;;
-        *)
-     esac
-     test ".$_INP" != "." && break
-   done
-fi
-if test ".$_INP" = "."; then
-   case "$_OUT" in
-      */*) _INP=`basename "$_OUT"`
-      ;;
-      *-*) _INP=`echo "$_OUT" | sed -e "s/@<:@_symbol@:>@*-//"`
-      ;;
-      *) _INP=config.h
-      ;;
-   esac
-fi
-if test -z "$_PKG" ; then
-   AC_MSG_ERROR([no prefix for _PREFIX_PKG_CONFIG_H])
-else
-  if test ! -f "$_INP" ; then if test -f "$srcdir/$_INP" ; then
-     _INP="$srcdir/$_INP"
-  fi fi
-  AC_MSG_NOTICE(creating $_OUT - prefix $_UPP for $_INP defines)
-  if test -f $_INP ; then
-    echo "s/@%:@undef  *\\(@<:@m4_cr_LETTERS[]_@:>@\\)/@%:@undef $_UPP""_\\1/" > _script
-    echo "s/@%:@undef  *\\(@<:@m4_cr_letters@:>@\\)/@%:@undef $_LOW""_\\1/" >> _script
-    echo "s/@%:@def[]ine  *\\(@<:@m4_cr_LETTERS[]_@:>@@<:@_symbol@:>@*\\)\\(.*\\)/@%:@ifndef $_UPP""_\\1 \\" >> _script
-    echo "@%:@def[]ine $_UPP""_\\1 \\2 \\" >> _script
-    echo "@%:@endif/" >>_script
-    echo "s/@%:@def[]ine  *\\(@<:@m4_cr_letters@:>@@<:@_symbol@:>@*\\)\\(.*\\)/@%:@ifndef $_LOW""_\\1 \\" >> _script
-    echo "@%:@define $_LOW""_\\1 \\2 \\" >> _script
-    echo "@%:@endif/" >> _script
-    # now executing _script on _DEF input to create _OUT output file
-    echo "@%:@ifndef $_DEF"      >$tmp/pconfig.h
-    echo "@%:@def[]ine $_DEF 1" >>$tmp/pconfig.h
-    echo ' ' >>$tmp/pconfig.h
-    echo /'*' $_OUT. Generated automatically at end of configure. '*'/ >>$tmp/pconfig.h
+# This macro actually does too much some checks are only needed if
+# your package does certain things.  But this isn't really a big deal.
 
-    sed -f _script $_INP >>$tmp/pconfig.h
-    echo ' ' >>$tmp/pconfig.h
-    echo '/* once:' $_DEF '*/' >>$tmp/pconfig.h
-    echo "@%:@endif" >>$tmp/pconfig.h
-    if cmp -s $_OUT $tmp/pconfig.h 2>/dev/null; then
-      AC_MSG_NOTICE([$_OUT is unchanged])
-    else
-      ac_dir=`AS_DIRNAME(["$_OUT"])`
-      AS_MKDIR_P(["$ac_dir"])
-      rm -f "$_OUT"
-      mv $tmp/pconfig.h "$_OUT"
-    fi
-    cp _script _configs.sed
-  else
-    AC_MSG_ERROR([input file $_INP does not exist - skip generating $_OUT])
-  fi
-  rm -f conftest.*
-fi
-m4_popdef([_symbol])dnl
-m4_popdef([_script])dnl
-AS_VAR_POPDEF([_INP])dnl
-AS_VAR_POPDEF([_UPP])dnl
-AS_VAR_POPDEF([_LOW])dnl
-AS_VAR_POPDEF([_PKG])dnl
-AS_VAR_POPDEF([_DEF])dnl
-AS_VAR_POPDEF([_OUT])dnl
-],[PACKAGE="$PACKAGE"])])
+# Copyright 1996, 1997, 1998, 1999, 2000, 2001, 2002
+# Free Software Foundation, Inc.
 
-dnl ______ /usr/share/aclocal/guidod/ax_not_enable_frame_pointer.m4 ______
-dnl @* AX_NOT_ENABLE_FRAME_POINTER ([shellvar])
-dnl
-dnl add --enable-frame-pointer option, the default will add the gcc
-dnl --fomit-frame-pointer option to the shellvar (per default CFLAGS)
-dnl and remove the " -g " debuginfo option from it. In other words,
-dnl the default is "--disable-frame-pointer"
-dnl
-dnl @: guidod@gmx.de
-dnl @%Id: %
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
 
-AC_DEFUN([AX_NOT_ENABLE_FRAME_POINTER],[dnl
-AS_VAR_PUSHDEF([VAR],[enable_frame_pointer])dnl
-AC_MSG_CHECKING([m4_ifval($1,$1,CFLAGS) frame-pointer])
-AC_ARG_ENABLE([frame-pointer], AC_HELP_STRING(
-  [--enable-frame-pointer],[enable callframe generation for debugging]))
-case ".$VAR" in
-  .|.no|.no,*) test ".$VAR" = "." && VAR="no"
-     m4_ifval($1,$1,CFLAGS)=`echo dnl
-  " $m4_ifval($1,$1,CFLAGS) " | sed -e 's/ -g / /'`
-     if test ".$GCC" = ".yes" ; then
-        m4_ifval($1,$1,CFLAGS)="$m4_ifval($1,$1,CFLAGS) -fomit-frame-pointer" 
-        AC_MSG_RESULT([$VAR, -fomit-frame-pointer added]) 
-     else
-        AC_MSG_RESULT([$VAR, -g removed])
-     fi  ;;
-   *)  AC_MSG_RESULT([$VAR, kept]) ;;
-esac
-AS_VAR_POPDEF([VAR])dnl
-])
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-dnl ______ /usr/share/aclocal/guidod/ac_set_default_paths_system.m4 ______
-dnl @synopsis AC_SET_DEFAULT_PATHS_SYSTEM
-dnl
-dnl the most interesting changes go about windows-targets - where the
-dnl default_prefix is set to /programs, and quite some directories
-dnl are aliased: sbindir := libdir := bindir  and the docprefix-defaults
-dnl are also a bit different, even on FHS2-compliant systems where the
-dnl mandir is going to $prefix/man only if prefix=/usr, otherwise they
-dnl shall go to $datadir/man. We use an extra docprefix to express it
-dnl which is either defined as being prefix or datadir. not SUBSTed here.
-dnl
-dnl @, (very useful)
-dnl @version %Id: ac_set_default_paths_system.m4,v 1.5 2003/02/02 19:32:30 guidod Exp %
-dnl @author Guido Draheim <guidod@gmx.de>
-AC_DEFUN([AC_SET_DEFAULT_PATHS_SYSTEM],
-[AC_REQUIRE([AC_CANONICAL_HOST]) # --------------------------------------------
-case "$prefix:$ac_default_prefix" in
-  NONE:/usr/local)
-    result=""
-    AC_MSG_CHECKING(default prefix path)
-    case "${target_os}" in
-      *cygwin* | *mingw* | *uwin* | *djgpp | *emx* )
-	if test "${host_os}" = "${target_os}" ; then
-           ac_default_prefix="/programs"
-           result="(win/dos target)"
-        else
-           case "$PATH" in
-              *:/usr/local/cross-tools/$target_alias/bin:*)
-	          ac_default_prefix="/usr/local/cross-tools/$target_alias" ;;
-              *:/usr/local/$target_alias/bin:*)
-	          ac_default_prefix="/usr/local/$target_alias" ;;
-              *:/usr/local/$target_cpu-$target_os/bin:*)
-	          ac_default_prefix="/usr/local/$target_cpu-$target_os" ;;
-              *)  
-                  ac_default_prefix="/programs" ;;
-           esac
-           result="(win/dos cross-compiler)"
-        fi
-    ;;
-    esac
-    AC_MSG_RESULT($ac_default_prefix $result)
-  ;;
-esac
-AC_MSG_CHECKING(default prefix system)
-result="$prefix" ; test "$result" = "NONE" && result="$ac_default_prefix"
-case ${result} in
-  /programs | /programs/*) result="is win-/programs"
-     # on win/dos, .exe .dll and .cfg live in the same directory
-     libdir=`echo $libdir |sed -e 's:^..exec_prefix./lib$:${bindir}:'`
-     sbindir=`echo $sbindir |sed -e 's:^..exec_prefix./sbin$:${libdir}:'`
-     sysconfdir=`echo $sysconfdir |sed -e 's:^..prefix./etc$:${sbindir}:'`
-     libexecdir=`echo $libexecdir |sed -e 's:/libexec$:/system:'`
-     # help-files shall be set with --infodir, docprefix is datadir
-     docprefix="${datadir}"
-     mandir=`echo $mandir \
-	                     |sed -e 's:^..prefix./man$:${datadir}/info:'`
-     includedir=`echo $includedir \
-                |sed -e 's:^..prefix./include$:${datadir}/include:'`
-     # other state files (but /etc) are moved to datadir
-     sharedstatedir=`echo $sharedstatedir \
-                     |sed -e 's:^..prefix./com$:${datadir}/default:'`
-     localstatedir=`echo $localstatedir \
-                     |sed -e 's:^..prefix./var$:${datadir}/current:'`
-  ;;
-  /usr) result="is /usr-shipped"
-     # doc files are left at prefix
-     docprefix="${prefix}"
-     # state files go under /top
-     sysconfdir=`echo $sysconfdir |sed -e 's:^..prefix./etc$:/etc:'`
-     sharedstatedir=`echo $sharedstatedir \
-                     |sed -e 's:^..prefix./com$:/etc/default:'`
-     # $prefix/var is going to end up in /var/lib
-     localstatedir=`echo $localstatedir \
-                     |sed -e 's:^..prefix./var$:/var/lib:'`
-  ;;
-  /opt | /opt/*) result="is /opt-package"
-     # state files go under /top/prefix
-     sysconfdir=`echo $sysconfdir \
-                     |sed -e 's:^..prefix./etc$:/etc${prefix}:'`
-     sharedstatedir=`echo $sharedstatedir \
-                     |sed -e 's:^..prefix./com$:/etc/default${prefix}:'`
-     # $prefix/var is going to to be /var$prefix... once again
-     localstatedir=`echo $localstatedir \
-                     |sed -e 's:^..prefix./var$:/var${prefix}:'`
-     # doc files are left at prefix
-     docprefix="${prefix}"
-  ;;
-  *) result="is /local-package"
-     # doc files are moved from prefix down to datadir
-     docprefix="${datadir}"
-     mandir=`echo $mandir \
-                     |sed -e 's:^..prefix./man$:${datadir}/man:'`
-     infodir=`echo $infodir \
-                     |sed -e 's:^..prefix./infodir$:${datadir}/info:'`
-     # never use $prefix/com - that is no good idea
-     sharedstatedir=`echo $sharedstatedir \
-                     |sed -e 's:^..prefix./com$:${sysconfdir}/default:'`
-  ;;
-esac
-AC_MSG_RESULT($result)
-# -------------------------------------------------------- 
-])     
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
 
-dnl ______ /usr/share/aclocal/guidod/ax_cflags_no_writable_strings.m4 ______
-dnl @synopsis AX_CFLAGS_NO_WRITABLE_STRINGS [(shellvar [,default, [A/NA]])]
-dnl
-dnl Try to find a compiler option that makes all stringliteral readonly.
-dnl
-dnl The sanity check is done by looking at string.h which has a set
-dnl of strcpy definitions that should be defined with const-modifiers
-dnl to not emit a warning in all so many places.
-dnl
-dnl For the GNU CC compiler it will be -fno-writable-strings -Wwrite-strings
-dnl The result is added to the shellvar being CFLAGS by default.
-dnl
-dnl DEFAULTS:
-dnl
-dnl  - $1 shell-variable-to-add-to : CFLAGS
-dnl  - $2 add-value-if-not-found : nothing
-dnl  - $3 action-if-found : add value to shellvariable
-dnl  - $4 action-if-not-found : nothing
-dnl
-dnl @version %Id: ax_cflags_no_writable_strings.m4,v 1.6 2003/06/05 00:52:15 guidod Exp %
-dnl @author Guido Draheim <guidod@gmx.de>
-dnl
-AC_DEFUN([AX_CFLAGS_NO_WRITABLE_STRINGS],[dnl
-AS_VAR_PUSHDEF([FLAGS],[CFLAGS])dnl
-AS_VAR_PUSHDEF([VAR],[ac_cv_cflags_no_writable_strings])dnl
-AC_CACHE_CHECK([m4_ifval([$1],[$1],FLAGS) making strings readonly],
-VAR,[VAR="no, unknown"
- AC_LANG_SAVE
- AC_LANG_C
- ac_save_[]FLAGS="$[]FLAGS"
-# IRIX C compiler:
-#      -use_readonly_const is the default for IRIX C,
-#       puts them into .rodata, but they are copied later.
-#       need to be "-G0 -rdatashared" for strictmode but
-#       I am not sure what effect that has really.         - guidod
-for ac_arg dnl
-in "-Wall     % -fno-writable-strings -Wwrite-strings" dnl   GCC
-   "-v -Xc    % -xstrconst" dnl Solaris C - strings go into readonly segment
-   "+w1 -Aa   % +ESlit"      dnl HP-UX C - strings go into readonly segment
-   "-w0 -std1 % -readonly_strings" dnl Digital Unix - again readonly segment
-   "-fullwarn -use_readonly_const %% ok, its the default" dnl IRIX C
-   #
-do FLAGS="$ac_save_[]FLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
-   AC_TRY_COMPILE([],[return 0;],
-   [VAR=`echo $ac_arg | sed -e 's,.*% *,,'` ; break])
-done
-case ".$VAR" in
-   .|.no|.no,*) ;;
-   *) # sanity check - testing strcpy() from string.h
-      cp config.log config.tmp
-      AC_TRY_COMPILE([#include <string.h>],[
-      char test[16];
-      if (strcpy (test, "test")) return 1;],
-      dnl the original did use test -n `$CC testprogram.c`
-      [if test `diff config.log config.tmp | grep -i warning | wc -l` != 0
-  then VAR="no, suppressed, string.h," ; fi],
-      [VAR="no, suppressed, string.h"])
-      rm config.tmp
-   ;;
-esac
-   FLAGS="$ac_save_[]FLAGS"
-   AC_LANG_RESTORE
-])
-case ".$VAR" in
-     .ok|.ok,*) m4_ifvaln($3,$3) ;;
-   .|.no|.no,*) m4_ifvaln($4,$4,[m4_ifval($2,[
-        AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])
-                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])]) ;;
-   *) m4_ifvaln($3,$3,[
-   if echo " $[]m4_ifval($1,$1,FLAGS) " | grep " $VAR " 2>&1 >/dev/null
-   then AC_RUN_LOG([: m4_ifval($1,$1,FLAGS) does contain $VAR])
-   else AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"])
-                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"
-   fi ]) ;;
-esac
-AS_VAR_POPDEF([VAR])dnl
-AS_VAR_POPDEF([FLAGS])dnl
-])
-
-dnl the only difference - the LANG selection... and the default FLAGS
-
-AC_DEFUN([AX_CXXFLAGS_NO_WRITABLE_STRINGS],[dnl
-AS_VAR_PUSHDEF([FLAGS],[CXXFLAGS])dnl
-AS_VAR_PUSHDEF([VAR],[ac_cv_cxxflags_no_writable_strings])dnl
-AC_CACHE_CHECK([m4_ifval($1,$1,FLAGS) making strings readonly],
-VAR,[VAR="no, unknown"
- AC_LANG_SAVE
- AC_LANG_CXX
- ac_save_[]FLAGS="$[]FLAGS"
-# IRIX C compiler:
-#      -use_readonly_const is the default for IRIX C,
-#       puts them into .rodata, but they are copied later.
-#       need to be "-G0 -rdatashared" for strictmode but
-#       I am not sure what effect that has really.         - guidod
-for ac_arg dnl
-in "-Wall     % -fno-writable-strings -Wwrite-strings" dnl   GCC
-   "-v -Xc    % -xstrconst" dnl Solaris C - strings go into readonly segment
-   "+w1 -Aa   % +ESlit"      dnl HP-UX C - strings go into readonly segment
-   "-w0 -std1 % -readonly_strings" dnl Digital Unix - again readonly segment
-   "-fullwarn -use_readonly_const %% ok, its the default" dnl IRIX C
-   #
-do FLAGS="$ac_save_[]FLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
-   AC_TRY_COMPILE([],[return 0;],
-   [VAR=`echo $ac_arg | sed -e 's,.*% *,,'` ; break])
-done
-case ".$VAR" in
-   .|.no|.no,*) ;;
-   *) # sanity check - testing strcpy() from string.h
-      cp config.log config.tmp
-      AC_TRY_COMPILE([#include <string.h>],[[
-      char test[16];
-      if (strcpy (test, "test")) return 1;]],
-      dnl the original did use test -n `$CC testprogram.c`
-      [if test `diff config.log config.tmp | grep -i warning | wc -l` != 0
-  then VAR="no, suppressed, string.h," ; fi],
-      [VAR="no, suppressed, string.h"])
-      rm config.tmp
-   ;;
-esac
- FLAGS="$ac_save_[]FLAGS"
- AC_LANG_RESTORE
-])
-case ".$VAR" in
-     .ok|.ok,*) m4_ifvaln($3,$3) ;;
-   .|.no|.no,*) m4_ifvaln($4,$4,[m4_ifval($2,[
-        AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"])
-                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $2"])]) ;;
-   *) m4_ifvaln($3,$3,[
-   if echo " $[]m4_ifval($1,$1,FLAGS) " | grep " $VAR " 2>&1 >/dev/null
-   then AC_RUN_LOG([: m4_ifval($1,$1,FLAGS) does contain $VAR])
-   else AC_RUN_LOG([: m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"])
-                      m4_ifval($1,$1,FLAGS)="$m4_ifval($1,$1,FLAGS) $VAR"
-   fi ]) ;;
-esac
-AS_VAR_POPDEF([VAR])dnl
-AS_VAR_POPDEF([FLAGS])dnl
-])
-
-dnl ______ /usr/share/aclocal/guidod/ax_spec_file.m4 ______
-dnl @* AX_SPEC_FILE [(rpmspecfile [,subdirpath])]
-dnl
-dnl set the specfile - if no argument has been given then check whether
-dnl the ac_unique_file looks like a .spec file and use it. This macro
-dnl is ac_REQUIRED by many AX_SPEC_ routines.
-dnl
-dnl the AX_SPEC_EXTRACT macro is a helper used by many AX_SPEC_
-dnl routines and therefore placed here to be automatically included
-dnl in the macro set of (older) aclocal/acinclude.
-dnl
-dnl AX_SPEC_EXTRACT(shellvar [,specvar [,defaultvalue]])
-dnl
-dnl @version %Id: %
-dnl @author Guido Draheim <guidod@gmx.de>
-
-AC_DEFUN([AX_SPEC_FILE],
-[ AC_MSG_CHECKING([rpm spec file])
-  if test ".$1" != "." ; then
-    ax_spec_file_="$1"
-    ax_spec_file=`basename $1`
-  else
-    case ".$ac_unique_file" in
-      *.spec) ax_spec_file="$ac_unique_file" 
-              ax_spec_file_="$ac_unique_file" ;;
-      *) ax_spec_file="TODO"
-         if test ".$PACKAGE" != "." 
-         then ax_spec_file_="$PACKAGE.spec"
-         else ax_spec_file_="README"
-         fi
-   cat m4_ifset([AS_MESSAGE_LOG_FD],[>&AS_MESSAGE_LOG_FD],[>>config.log]) <<EOF
-         no ax_spec_file argument has been given, using defaults of
-         (1) $ax_spec_file_ 
-         (2) $ax_spec_file
-EOF
-         ;;
-    esac
-  fi
-  # find specfile
-  for i in ifelse($2,,,$2) . $srcdir $srcdir/.. .. ; do
-    if test -f "$i/$ax_spec_file_" ; then
-      ax_spec_dir="$i"
-      ax_spec_file="$ax_spec_dir/$ax_spec_file_"
-      break
-    fi
-    if test -f "$i/$ax_spec_file" ; then
-      ax_spec_dir="$i"
-      ax_spec_file="$ax_spec_dir/$ax_spec_file"
-      break
-    fi
-  done
-  case "$ax_spec_file" in
-   ./*) if test "$ax_spec_file" = "./$ax_spec_file_" ; then
-          ax_spec_file="$ax_spec_file_"
-        fi
-        AC_MSG_RESULT([$ax_spec_file]) ;;
-   */*) AC_MSG_RESULT([$ax_spec_file]) ;;
-   *)   AC_MSG_ERROR([no rpm spec file found]) ;;
-  esac
-  m4_define([m4_ax_spec_file],[ax_spec_file])
-])
-
-dnl AX_SPEC_EXTRACT(shellvar [,specvar [,defaultvalue]])
-
-AC_DEFUN([AX_SPEC_EXTRACT],
-[ 
-    if test ".$[]$1" = "." ; then
-    $1=`grep -i '^[[ 	]]*m4_ifval([$2],[$2],[$1])[[ 	]]*:' dnl
-  "$ax_spec_file" | sed -e 's/.*:[[ 	]]*//' dnl
-    -e 's/[[ 	]][[ 	]]*/ /g' -e 's/^ //' -e 's/ $[]//' -e 'q'`
-    if test ".$[]$1" = "." ; then
-  for $1 in $2 $1 m4_tolower([$1]) ; do
-    $1=`echo "$[]$1" | sed -e 's/^%//g'` 
-    $1=`sed dnl
-    -e  "/^%[[ 	]]*def[]ine[[ 	]][[ 	]]*$[]$1[[ 	]]/!d"  dnl
-    -e "s/^%[[ 	]]*def[]ine[[ 	]][[ 	]]*$[]$1[[ 	]]*//" dnl
-    -e 's/[[ 	]][[ 	]]*/ /' -e 's/ $[]//' -e 'q' $ax_spec_file`
-    test ".$1" != "." && break 
-  done
-    fi 
-  case ".$[]$1" in
-    .%{*) 
-    $1=`echo "$[]$1" | sed -e 's/%{//' -e 's/}$[]//'`
-    $1=`sed dnl
-   -e  "/^%[[ 	]]*def[]ine[[ 	]][[ 	]]*$[]$1[[ 	]]/!d"  dnl
-   -e "s/^%[[ 	]]*def[]ine[[ 	]][[ 	]]*$[]$1[[ 	]]*//" dnl
-   -e 's/[[ 	]][[ 	]]*/ /' -e 's/ $[]//' -e 'q' $ax_spec_file` ;;
-    .%*) 
-    $1=`echo "$[]$1" | sed -e 's/%//'` 
-    $1=`sed dnl
-    -e  "/^%[[ 	]]*def[]ine[[ 	]][[ 	]]*$[]$1[[ 	]]/!d"  dnl
-    -e "s/^%[[ 	]]*def[]ine[[ 	]][[ 	]]*$[]$1[[ 	]]*//" dnl
-    -e 's/[[ 	]][[ 	]]*/ /' -e 's/ $[]//' -e 'q' $ax_spec_file` ;;
-  esac 
-  m4_ifval([$3],[test ".$[]$1" = "." && $1="$3"])
-    fi # test ".$[]$1" = "."
-])
-
-
-# Do all the work for Automake.  This macro actually does too much --
-# some checks are only needed if your package does certain things.
-# But this isn't really a big deal.
-
-# serial 5
+# serial 8
 
 # There are a few dirty hacks below to avoid letting `AC_PROG_CC' be
 # written in clear, in which case automake, when reading aclocal.m4,
@@ -2246,62 +2474,52 @@ AC_DEFUN([AX_SPEC_EXTRACT],
 # CC etc. in the Makefile, will ask for an AC_PROG_CC use...
 
 
-# We require 2.13 because we rely on SHELL being computed by configure.
-AC_PREREQ([2.13])
-
-# AC_PROVIDE_IFELSE(MACRO-NAME, IF-PROVIDED, IF-NOT-PROVIDED)
-# -----------------------------------------------------------
-# If MACRO-NAME is provided do IF-PROVIDED, else IF-NOT-PROVIDED.
-# The purpose of this macro is to provide the user with a means to
-# check macros which are provided without letting her know how the
-# information is coded.
-# If this macro is not defined by Autoconf, define it here.
-ifdef([AC_PROVIDE_IFELSE],
-      [],
-      [define([AC_PROVIDE_IFELSE],
-              [ifdef([AC_PROVIDE_$1],
-                     [$2], [$3])])])
-
-
-# AM_INIT_AUTOMAKE(PACKAGE,VERSION, [NO-DEFINE])
-# ----------------------------------------------
-AC_DEFUN([AM_INIT_AUTOMAKE],
-[AC_REQUIRE([AC_PROG_INSTALL])dnl
-# test to see if srcdir already configured
-if test "`CDPATH=:; cd $srcdir && pwd`" != "`pwd`" &&
-   test -f $srcdir/config.status; then
-  AC_MSG_ERROR([source directory already configured; run \"make distclean\" there first])
-fi
-
-# Define the identity of the package.
-PACKAGE=$1
-AC_SUBST(PACKAGE)dnl
-VERSION=$2
-AC_SUBST(VERSION)dnl
-ifelse([$3],,
-[AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE", [Name of package])
-AC_DEFINE_UNQUOTED(VERSION, "$VERSION", [Version number of package])])
+AC_PREREQ([2.52])
 
 # Autoconf 2.50 wants to disallow AM_ names.  We explicitly allow
 # the ones we care about.
-ifdef([m4_pattern_allow],
-      [m4_pattern_allow([^AM_[A-Z]+FLAGS])])dnl
+m4_pattern_allow([^AM_[A-Z]+FLAGS$])dnl
 
-# Autoconf 2.50 always computes EXEEXT.  However we need to be
-# compatible with 2.13, for now.  So we always define EXEEXT, but we
-# don't compute it.
-AC_SUBST(EXEEXT)
-# Similar for OBJEXT -- only we only use OBJEXT if the user actually
-# requests that it be used.  This is a bit dumb.
-: ${OBJEXT=o}
-AC_SUBST(OBJEXT)
+# AM_INIT_AUTOMAKE(PACKAGE, VERSION, [NO-DEFINE])
+# AM_INIT_AUTOMAKE([OPTIONS])
+# -----------------------------------------------
+# The call with PACKAGE and VERSION arguments is the old style
+# call (pre autoconf-2.50), which is being phased out.  PACKAGE
+# and VERSION should now be passed to AC_INIT and removed from
+# the call to AM_INIT_AUTOMAKE.
+# We support both call styles for the transition.  After
+# the next Automake release, Autoconf can make the AC_INIT
+# arguments mandatory, and then we can depend on a new Autoconf
+# release and drop the old call support.
+AC_DEFUN([AM_INIT_AUTOMAKE],
+[AC_REQUIRE([AM_SET_CURRENT_AUTOMAKE_VERSION])dnl
+ AC_REQUIRE([AC_PROG_INSTALL])dnl
+# test to see if srcdir already configured
+if test "`cd $srcdir && pwd`" != "`pwd`" &&
+   test -f $srcdir/config.status; then
+  AC_MSG_ERROR([source directory already configured; run "make distclean" there first])
+fi
+
+# Define the identity of the package.
+dnl Distinguish between old-style and new-style calls.
+m4_ifval([$2],
+[m4_ifval([$3], [_AM_SET_OPTION([no-define])])dnl
+ AC_SUBST([PACKAGE], [$1])dnl
+ AC_SUBST([VERSION], [$2])],
+[_AM_SET_OPTIONS([$1])dnl
+ AC_SUBST([PACKAGE], [AC_PACKAGE_TARNAME])dnl
+ AC_SUBST([VERSION], [AC_PACKAGE_VERSION])])dnl
+
+_AM_IF_OPTION([no-define],,
+[AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE", [Name of package])
+ AC_DEFINE_UNQUOTED(VERSION, "$VERSION", [Version number of package])])dnl
 
 # Some tools Automake needs.
 AC_REQUIRE([AM_SANITY_CHECK])dnl
 AC_REQUIRE([AC_ARG_PROGRAM])dnl
-AM_MISSING_PROG(ACLOCAL, aclocal)
+AM_MISSING_PROG(ACLOCAL, aclocal-${am__api_version})
 AM_MISSING_PROG(AUTOCONF, autoconf)
-AM_MISSING_PROG(AUTOMAKE, automake)
+AM_MISSING_PROG(AUTOMAKE, automake-${am__api_version})
 AM_MISSING_PROG(AUTOHEADER, autoheader)
 AM_MISSING_PROG(MAKEINFO, makeinfo)
 AM_MISSING_PROG(AMTAR, tar)
@@ -2311,9 +2529,9 @@ AM_PROG_INSTALL_STRIP
 # some platforms.
 AC_REQUIRE([AC_PROG_AWK])dnl
 AC_REQUIRE([AC_PROG_MAKE_SET])dnl
-AC_REQUIRE([AM_DEP_TRACK])dnl
-AC_REQUIRE([AM_SET_DEPDIR])dnl
-AC_PROVIDE_IFELSE([AC_PROG_][CC],
+
+_AM_IF_OPTION([no-dependencies],,
+[AC_PROVIDE_IFELSE([AC_PROG_][CC],
                   [_AM_DEPENDENCIES(CC)],
                   [define([AC_PROG_][CC],
                           defn([AC_PROG_][CC])[_AM_DEPENDENCIES(CC)])])dnl
@@ -2322,10 +2540,101 @@ AC_PROVIDE_IFELSE([AC_PROG_][CXX],
                   [define([AC_PROG_][CXX],
                           defn([AC_PROG_][CXX])[_AM_DEPENDENCIES(CXX)])])dnl
 ])
+])
+
+# Copyright 2002  Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+
+# AM_AUTOMAKE_VERSION(VERSION)
+# ----------------------------
+# Automake X.Y traces this macro to ensure aclocal.m4 has been
+# generated from the m4 files accompanying Automake X.Y.
+AC_DEFUN([AM_AUTOMAKE_VERSION],[am__api_version="1.6"])
+
+# AM_SET_CURRENT_AUTOMAKE_VERSION
+# -------------------------------
+# Call AM_AUTOMAKE_VERSION so it can be traced.
+# This function is AC_REQUIREd by AC_INIT_AUTOMAKE.
+AC_DEFUN([AM_SET_CURRENT_AUTOMAKE_VERSION],
+	 [AM_AUTOMAKE_VERSION([1.6.3])])
+
+# Helper functions for option handling.                    -*- Autoconf -*-
+
+# Copyright 2001, 2002  Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# serial 2
+
+# _AM_MANGLE_OPTION(NAME)
+# -----------------------
+AC_DEFUN([_AM_MANGLE_OPTION],
+[[_AM_OPTION_]m4_bpatsubst($1, [[^a-zA-Z0-9_]], [_])])
+
+# _AM_SET_OPTION(NAME)
+# ------------------------------
+# Set option NAME.  Presently that only means defining a flag for this option.
+AC_DEFUN([_AM_SET_OPTION],
+[m4_define(_AM_MANGLE_OPTION([$1]), 1)])
+
+# _AM_SET_OPTIONS(OPTIONS)
+# ----------------------------------
+# OPTIONS is a space-separated list of Automake options.
+AC_DEFUN([_AM_SET_OPTIONS],
+[AC_FOREACH([_AM_Option], [$1], [_AM_SET_OPTION(_AM_Option)])])
+
+# _AM_IF_OPTION(OPTION, IF-SET, [IF-NOT-SET])
+# -------------------------------------------
+# Execute IF-SET if OPTION is set, IF-NOT-SET otherwise.
+AC_DEFUN([_AM_IF_OPTION],
+[m4_ifset(_AM_MANGLE_OPTION([$1]), [$2], [$3])])
 
 #
 # Check to make sure that the build environment is sane.
 #
+
+# Copyright 1996, 1997, 2000, 2001 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
 
 # serial 3
 
@@ -2370,8 +2679,27 @@ Check your system clock])
 fi
 AC_MSG_RESULT(yes)])
 
+#  -*- Autoconf -*-
 
-# serial 2
+
+# Copyright 1997, 1999, 2000, 2001 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# serial 3
 
 # AM_MISSING_PROG(NAME, PROGRAM)
 # ------------------------------
@@ -2393,12 +2721,28 @@ if eval "$MISSING --run true"; then
   am_missing_run="$MISSING --run "
 else
   am_missing_run=
-  am_backtick='`'
-  AC_MSG_WARN([${am_backtick}missing' script is too old or missing])
+  AC_MSG_WARN([`missing' script is too old or missing])
 fi
 ])
 
 # AM_AUX_DIR_EXPAND
+
+# Copyright 2001 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
 
 # For projects using AC_CONFIG_AUX_DIR([foo]), Autoconf sets
 # $ac_aux_dir to `$srcdir/foo'.  In other projects, it is set to
@@ -2438,18 +2782,58 @@ fi
 # absolute PATH.  The drawback is that using absolute paths prevent a
 # configured tree to be moved without reconfiguration.
 
+# Rely on autoconf to set up CDPATH properly.
+AC_PREREQ([2.50])
+
 AC_DEFUN([AM_AUX_DIR_EXPAND], [
 # expand $ac_aux_dir to an absolute path
-am_aux_dir=`CDPATH=:; cd $ac_aux_dir && pwd`
+am_aux_dir=`cd $ac_aux_dir && pwd`
 ])
 
 # AM_PROG_INSTALL_SH
 # ------------------
 # Define $install_sh.
+
+# Copyright 2001 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
 AC_DEFUN([AM_PROG_INSTALL_SH],
 [AC_REQUIRE([AM_AUX_DIR_EXPAND])dnl
 install_sh=${install_sh-"$am_aux_dir/install-sh"}
 AC_SUBST(install_sh)])
+
+# AM_PROG_INSTALL_STRIP
+
+# Copyright 2001 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
 
 # One issue with vendor `install' (even GNU) is that you can't
 # specify the program used to strip binaries.  This is especially
@@ -2460,11 +2844,35 @@ AC_SUBST(install_sh)])
 # STRIPPROG with the value of the STRIP variable (set by the user).
 AC_DEFUN([AM_PROG_INSTALL_STRIP],
 [AC_REQUIRE([AM_PROG_INSTALL_SH])dnl
+# Installed binaries are usually stripped using `strip' when the user
+# run `make install-strip'.  However `strip' might not be the right
+# tool to use in cross-compilation environments, therefore Automake
+# will honor the `STRIP' environment variable to overrule this program.
+dnl Don't test for $cross_compiling = yes, because it might be `maybe'.
+if test "$cross_compiling" != no; then
+  AC_CHECK_TOOL([STRIP], [strip], :)
+fi
 INSTALL_STRIP_PROGRAM="\${SHELL} \$(install_sh) -c -s"
 AC_SUBST([INSTALL_STRIP_PROGRAM])])
 
 # serial 4						-*- Autoconf -*-
 
+# Copyright 1999, 2000, 2001 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
 
 
 # There are a few dirty hacks below to avoid letting `AC_PROG_CC' be
@@ -2476,9 +2884,9 @@ AC_SUBST([INSTALL_STRIP_PROGRAM])])
 
 
 # _AM_DEPENDENCIES(NAME)
-# ---------------------
+# ----------------------
 # See how the compiler implements dependency checking.
-# NAME is "CC", "CXX" or "OBJC".
+# NAME is "CC", "CXX", "GCJ", or "OBJC".
 # We try a few techniques and use that to set a single cache variable.
 #
 # We don't AC_REQUIRE the corresponding AC_PROG_CC since the latter was
@@ -2493,7 +2901,7 @@ AC_REQUIRE([AM_DEP_TRACK])dnl
 
 ifelse([$1], CC,   [depcc="$CC"   am_compiler_list=],
        [$1], CXX,  [depcc="$CXX"  am_compiler_list=],
-       [$1], OBJC, [depcc="$OBJC" am_compiler_list='gcc3 gcc']
+       [$1], OBJC, [depcc="$OBJC" am_compiler_list='gcc3 gcc'],
        [$1], GCJ,  [depcc="$GCJ"  am_compiler_list='gcc3 gcc'],
                    [depcc="$$1"   am_compiler_list=])
 
@@ -2555,8 +2963,7 @@ else
   am_cv_$1_dependencies_compiler_type=none
 fi
 ])
-$1DEPMODE="depmode=$am_cv_$1_dependencies_compiler_type"
-AC_SUBST([$1DEPMODE])
+AC_SUBST([$1DEPMODE], [depmode=$am_cv_$1_dependencies_compiler_type])
 ])
 
 
@@ -2574,7 +2981,7 @@ else
   DEPDIR=_deps
 fi
 rmdir .deps 2>/dev/null
-AC_SUBST(DEPDIR)
+AC_SUBST([DEPDIR])
 ])
 
 
@@ -2589,30 +2996,48 @@ if test "x$enable_dependency_tracking" != xno; then
   AMDEPBACKSLASH='\'
 fi
 AM_CONDITIONAL([AMDEP], [test "x$enable_dependency_tracking" != xno])
-pushdef([subst], defn([AC_SUBST]))
-subst(AMDEPBACKSLASH)
-popdef([subst])
+AC_SUBST([AMDEPBACKSLASH])
 ])
 
-# Generate code to set up dependency tracking.
-# This macro should only be invoked once -- use via AC_REQUIRE.
-# Usage:
-# AM_OUTPUT_DEPENDENCY_COMMANDS
+# Generate code to set up dependency tracking.   -*- Autoconf -*-
 
-#
-# This code is only required when automatic dependency tracking
-# is enabled.  FIXME.  This creates each `.P' file that we will
-# need in order to bootstrap the dependency handling code.
-AC_DEFUN([AM_OUTPUT_DEPENDENCY_COMMANDS],[
-AC_OUTPUT_COMMANDS([
-test x"$AMDEP_TRUE" != x"" ||
-for mf in $CONFIG_FILES; do
-  case "$mf" in
-  Makefile) dirpart=.;;
-  */Makefile) dirpart=`echo "$mf" | sed -e 's|/[^/]*$||'`;;
-  *) continue;;
-  esac
-  grep '^DEP_FILES *= *[^ #]' < "$mf" > /dev/null || continue
+# Copyright 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+#serial 2
+
+# _AM_OUTPUT_DEPENDENCY_COMMANDS
+# ------------------------------
+AC_DEFUN([_AM_OUTPUT_DEPENDENCY_COMMANDS],
+[for mf in $CONFIG_FILES; do
+  # Strip MF so we end up with the name of the file.
+  mf=`echo "$mf" | sed -e 's/:.*$//'`
+  # Check whether this is an Automake generated Makefile or not.
+  # We used to match only the files named `Makefile.in', but
+  # some people rename them; so instead we look at the file content.
+  # Grep'ing the first line is not enough: some people post-process
+  # each Makefile.in and add a new line on top of each file to say so.
+  # So let's grep whole file.
+  if grep '^#.*generated by automake' $mf > /dev/null 2>&1; then
+    dirpart=`AS_DIRNAME("$mf")`
+  else
+    continue
+  fi
+  grep '^DEP_FILES *= *[[^ @%:@]]' < "$mf" > /dev/null || continue
   # Extract the definition of DEP_FILES from the Makefile without
   # running `make'.
   DEPDIR=`sed -n -e '/^DEPDIR = / s///p' < "$mf"`
@@ -2636,14 +3061,46 @@ for mf in $CONFIG_FILES; do
        sed -e 's/\$(DEPDIR)/'"$DEPDIR"'/g' -e 's/\$U/'"$U"'/g'`; do
     # Make sure the directory exists.
     test -f "$dirpart/$file" && continue
-    fdir=`echo "$file" | sed -e 's|/[^/]*$||'`
-    $ac_aux_dir/mkinstalldirs "$dirpart/$fdir" > /dev/null 2>&1
+    fdir=`AS_DIRNAME(["$file"])`
+    AS_MKDIR_P([$dirpart/$fdir])
     # echo "creating $dirpart/$file"
     echo '# dummy' > "$dirpart/$file"
   done
 done
-], [AMDEP_TRUE="$AMDEP_TRUE"
-ac_aux_dir="$ac_aux_dir"])])
+])# _AM_OUTPUT_DEPENDENCY_COMMANDS
+
+
+# AM_OUTPUT_DEPENDENCY_COMMANDS
+# -----------------------------
+# This macro should only be invoked once -- use via AC_REQUIRE.
+#
+# This code is only required when automatic dependency tracking
+# is enabled.  FIXME.  This creates each `.P' file that we will
+# need in order to bootstrap the dependency handling code.
+AC_DEFUN([AM_OUTPUT_DEPENDENCY_COMMANDS],
+[AC_CONFIG_COMMANDS([depfiles],
+     [test x"$AMDEP_TRUE" != x"" || _AM_OUTPUT_DEPENDENCY_COMMANDS],
+     [AMDEP_TRUE="$AMDEP_TRUE" ac_aux_dir="$ac_aux_dir"])
+])
+
+# Copyright 2001 Free Software Foundation, Inc.             -*- Autoconf -*-
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# serial 2
 
 # AM_MAKE_INCLUDE()
 # -----------------
@@ -2656,7 +3113,7 @@ doit:
 END
 # If we don't find an include directive, just comment out the code.
 AC_MSG_CHECKING([for style of include used by $am_make])
-am__include='#'
+am__include="#"
 am__quote=
 _am_result=none
 # First try GNU make style include.
@@ -2676,7 +3133,7 @@ if test "$am__include" = "#"; then
    echo '.include "confinc"' > confmf
    if test "`$am_make -s -f confmf 2> /dev/null`" = "done"; then
       am__include=.include
-      am__quote='"'
+      am__quote="\""
       _am_result=BSD
    fi
 fi
@@ -2686,23 +3143,35 @@ AC_MSG_RESULT($_am_result)
 rm -f confinc confmf
 ])
 
-# serial 3
+# AM_CONDITIONAL                                              -*- Autoconf -*-
+
+# Copyright 1997, 2000, 2001 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+# serial 5
+
+AC_PREREQ(2.52)
 
 # AM_CONDITIONAL(NAME, SHELL-CONDITION)
 # -------------------------------------
 # Define a conditional.
-#
-# FIXME: Once using 2.50, use this:
-# m4_match([$1], [^TRUE\|FALSE$], [AC_FATAL([$0: invalid condition: $1])])dnl
 AC_DEFUN([AM_CONDITIONAL],
-[ifelse([$1], [TRUE],
-        [errprint(__file__:__line__: [$0: invalid condition: $1
-])dnl
-m4exit(1)])dnl
-ifelse([$1], [FALSE],
-       [errprint(__file__:__line__: [$0: invalid condition: $1
-])dnl
-m4exit(1)])dnl
+[ifelse([$1], [TRUE],  [AC_FATAL([$0: invalid condition: $1])],
+        [$1], [FALSE], [AC_FATAL([$0: invalid condition: $1])])dnl
 AC_SUBST([$1_TRUE])
 AC_SUBST([$1_FALSE])
 if $2; then
@@ -2711,7 +3180,12 @@ if $2; then
 else
   $1_TRUE='#'
   $1_FALSE=
-fi])
+fi
+AC_CONFIG_COMMANDS_PRE(
+[if test -z "${$1_TRUE}" && test -z "${$1_FALSE}"; then
+  AC_MSG_ERROR([conditional \"$1\" was never defined.
+Usually this means the macro was only invoked conditionally.])
+fi])])
 
 # libtool.m4 - Configure libtool for the host system. -*-Shell-script-*-
 
@@ -6355,75 +6829,103 @@ fi
 AC_MSG_RESULT([$SED])
 ])
 
-# Like AC_CONFIG_HEADER, but automatically create stamp file.
+# Like AC_CONFIG_HEADER, but automatically create stamp file. -*- Autoconf -*-
 
-# serial 3
+# Copyright 1996, 1997, 2000, 2001 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
+
+AC_PREREQ([2.52])
+
+# serial 6
 
 # When config.status generates a header, we must update the stamp-h file.
 # This file resides in the same directory as the config header
 # that is generated.  We must strip everything past the first ":",
 # and everything past the last "/".
 
-AC_PREREQ([2.12])
-
-AC_DEFUN([AM_CONFIG_HEADER],
-[ifdef([AC_FOREACH],dnl
-	 [dnl init our file count if it isn't already
-	 m4_ifndef([_AM_Config_Header_Index], m4_define([_AM_Config_Header_Index], [0]))
-	 dnl prepare to store our destination file list for use in config.status
-	 AC_FOREACH([_AM_File], [$1],
-		    [m4_pushdef([_AM_Dest], m4_patsubst(_AM_File, [:.*]))
-		    m4_define([_AM_Config_Header_Index], m4_incr(_AM_Config_Header_Index))
-		    dnl and add it to the list of files AC keeps track of, along
-		    dnl with our hook
-		    AC_CONFIG_HEADERS(_AM_File,
-dnl COMMANDS, [, INIT-CMDS]
-[# update the timestamp
-echo timestamp >"AS_ESCAPE(_AM_DIRNAME(]_AM_Dest[))/stamp-h]_AM_Config_Header_Index["
-][$2]m4_ifval([$3], [, [$3]]))dnl AC_CONFIG_HEADERS
-		    m4_popdef([_AM_Dest])])],dnl
-[AC_CONFIG_HEADER([$1])
-  AC_OUTPUT_COMMANDS(
-   ifelse(patsubst([$1], [[^ ]], []),
-	  [],
-	  [test -z "$CONFIG_HEADERS" || echo timestamp >dnl
-	   patsubst([$1], [^\([^:]*/\)?.*], [\1])stamp-h]),dnl
-[am_indx=1
-for am_file in $1; do
-  case " \$CONFIG_HEADERS " in
-  *" \$am_file "*)
-    am_dir=\`echo \$am_file |sed 's%:.*%%;s%[^/]*\$%%'\`
-    if test -n "\$am_dir"; then
-      am_tmpdir=\`echo \$am_dir |sed 's%^\(/*\).*\$%\1%'\`
-      for am_subdir in \`echo \$am_dir |sed 's%/% %'\`; do
-        am_tmpdir=\$am_tmpdir\$am_subdir/
-        if test ! -d \$am_tmpdir; then
-          mkdir \$am_tmpdir
-        fi
-      done
-    fi
-    echo timestamp > "\$am_dir"stamp-h\$am_indx
-    ;;
-  esac
-  am_indx=\`expr \$am_indx + 1\`
-done])
-])]) # AM_CONFIG_HEADER
-
 # _AM_DIRNAME(PATH)
 # -----------------
 # Like AS_DIRNAME, only do it during macro expansion
 AC_DEFUN([_AM_DIRNAME],
-       [m4_if(m4_regexp([$1], [^.*[^/]//*[^/][^/]*/*$]), -1,
-	      m4_if(m4_regexp([$1], [^//\([^/]\|$\)]), -1,
-		    m4_if(m4_regexp([$1], [^/.*]), -1,
+       [m4_if(regexp([$1], [^.*[^/]//*[^/][^/]*/*$]), -1,
+	      m4_if(regexp([$1], [^//\([^/]\|$\)]), -1,
+		    m4_if(regexp([$1], [^/.*]), -1,
 			  [.],
-			  m4_patsubst([$1], [^\(/\).*], [\1])),
-		    m4_patsubst([$1], [^\(//\)\([^/].*\|$\)], [\1])),
-	      m4_patsubst([$1], [^\(.*[^/]\)//*[^/][^/]*/*$], [\1]))[]dnl
-]) # _AM_DIRNAME
+			  patsubst([$1], [^\(/\).*], [\1])),
+		    patsubst([$1], [^\(//\)\([^/].*\|$\)], [\1])),
+	      patsubst([$1], [^\(.*[^/]\)//*[^/][^/]*/*$], [\1]))[]dnl
+])# _AM_DIRNAME
+
+
+# The stamp files are numbered to have different names.
+# We could number them on a directory basis, but that's additional
+# complications, let's have a unique counter.
+m4_define([_AM_STAMP_Count], [0])
+
+
+# _AM_STAMP(HEADER)
+# -----------------
+# The name of the stamp file for HEADER.
+AC_DEFUN([_AM_STAMP],
+[m4_define([_AM_STAMP_Count], m4_incr(_AM_STAMP_Count))dnl
+AS_ESCAPE(_AM_DIRNAME(patsubst([$1],
+                               [:.*])))/stamp-h[]_AM_STAMP_Count])
+
+
+# _AM_CONFIG_HEADER(HEADER[:SOURCES], COMMANDS, INIT-COMMANDS)
+# ------------------------------------------------------------
+# We used to try to get a real timestamp in stamp-h.  But the fear is that
+# that will cause unnecessary cvs conflicts.
+AC_DEFUN([_AM_CONFIG_HEADER],
+[# Add the stamp file to the list of files AC keeps track of,
+# along with our hook.
+AC_CONFIG_HEADERS([$1],
+                  [# update the timestamp
+echo 'timestamp for $1' >"_AM_STAMP([$1])"
+$2],
+                  [$3])
+])# _AM_CONFIG_HEADER
+
+
+# AM_CONFIG_HEADER(HEADER[:SOURCES]..., COMMANDS, INIT-COMMANDS)
+# --------------------------------------------------------------
+AC_DEFUN([AM_CONFIG_HEADER],
+[AC_FOREACH([_AM_File], [$1], [_AM_CONFIG_HEADER(_AM_File, [$2], [$3])])
+])# AM_CONFIG_HEADER
 
 # Add --enable-maintainer-mode option to configure.
 # From Jim Meyering
+
+# Copyright 1996, 1998, 2000, 2001 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+# 02111-1307, USA.
 
 # serial 1
 

@@ -1,7 +1,7 @@
 %define lib   lib010
 Summary:      ZZipLib - libZ-based ZIP-access Library
 Name:         zziplib
-Version:      0.13.23
+Version:      0.13.24
 Release:      1mdk
 Serial:       1
 Copyright:    LGPL
@@ -137,9 +137,9 @@ rm -rf %{buildroot}
 %dir  %{_datadir}/omf/%{name}
       %{_datadir}/omf/%{name}/*
 %post doc
-test ! -f /usr/bin/scrollkeeper-update || /usr/bin/scrollkeeper-update
+test ! -f %_bindir/scrollkeeper-update || %_bindir/scrollkeeper-update
 %postun doc
-test ! -f /usr/bin/scrollkeeper-update || /usr/bin/scrollkeeper-update
+test ! -f %_bindir/scrollkeeper-update || %_bindir/scrollkeeper-update
 
 %files devel
       %defattr(-,root,root)

@@ -1,3 +1,14 @@
+2003-12-10
+ * add zzip_rewind fix by glenn = Glenn Maynard (www.stepmania.com)
+ * fix dirsep_casecmp buglet noted by glenn
+ * glenn did ask for zzip_fstat, and here it is.
+ * but glenn's file_dup is not as easy and skipped here.
+ * otherwise, glenn noted that zziplib is not fully ready for multithreading,
+	the reason seems to be mostly in the reshared 32k buffer where the
+	access is not synchronized completely :-( ... effectivly, in MT
+	all ZZIP_FILE*s need to have a dedicated ZZIP_DIR*buffer.
+ * update make-doc.py with newest version
+
 2003-08-18
  * changing license to dual MPL / LGPL
  * bumping version code 12.83 = 13.23 which are actually the very

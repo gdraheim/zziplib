@@ -6,7 +6,7 @@ includedir=${prefix}/include
 
 Name: zziplib
 Description: ZZipLib - libZ-based ZIP-access Library
-Version: 0.13.23
+Version: 0.13.24
 Requires: zzip-zlib-config
 Libs: -L${libdir} -lzzip
 Cflags: -I${includedir} 

@@ -1,5 +1,6 @@
 AUTOMAKE_OPTIONS = 1.4 foreign dist-bzip2
-AUTOTOOL_VERSION=autoconf-2.52 automake-1.5 libtool-1.4.2
+WANT_AUTOMAKE = 1.6
+WANT_AUTOCONF = 2.52
 
 DIST_SUBDIRS = zzip zzipwrap bins test docs  SDL
 SUBDIRS =      zzip zzipwrap bins test docs @SDL@
