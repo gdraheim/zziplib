@@ -19,11 +19,7 @@
 #ifndef _ZZIP_ZZIP_H /* zziplib.h */
 #define _ZZIP_ZZIP_H
 
-#include <zzip/conf.h>
-
-#include <fcntl.h>
-#include <stddef.h> /* size_t and friends */
-/* msvc6 has neither ssize_t (we assume "int") nor off_t (assume "long") */
+#include <zzip/types.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -79,9 +75,6 @@ typedef enum
 /* zzip_strings_t ext[] = { ".zip", ".jar", ".pk3", 0 } */
 typedef  char _zzip_const * _zzip_const zzip_strings_t;
 typedef  char _zzip_const       zzip_char_t;
-typedef       _zzip_off_t       zzip_off_t;
-typedef       _zzip_size_t      zzip_size_t;
-typedef       _zzip_ssize_t     zzip_ssize_t;
 typedef struct zzip_dir		ZZIP_DIR;
 typedef struct zzip_file	ZZIP_FILE;
 typedef struct zzip_dirent 	ZZIP_DIRENT;

@@ -1,7 +1,7 @@
 #ifndef _ZZIP_FORMATS_H
 #define _ZZIP_FORMATS_H
 
-#include <zzip/conf.h>
+#include <zzip/types.h>
 #include <zzip/format.h> 
 
 /* linux knows "byteswap.h" giving us an optimized variant */
@@ -139,8 +139,10 @@ extern void     __zzip_set16(unsigned char * s, uint16_t v);
         zzip_file_header_get_extras(__p))
 #define zzip_file_header_sizeof_tail(__p) ((zzip_size_t) \
         zzip_file_header_sizeof_tails(__p))
-#define zzip_file_header_skiptoend(__p)   ((zzip_size_t) \
-        (zzip_file_header_sizeof_tail(__p) + zzip_file_header_headerlength)
+#define zzip_file_header_sizeto_end(__p)   ((zzip_size_t) \
+        (zzip_file_header_sizeof_tail(__p) + zzip_file_header_headerlength))
+#define zzip_file_header_skipto_end(__p)   ((char*) (__p) + \
+        (zzip_file_header_sizeof_tail(__p) + zzip_file_header_headerlength))
 
 #define zzip_file_header_to_filename(__p)   ((char*) \
         ((char*)(__p) + zzip_file_header_headerlength))
@@ -158,8 +160,10 @@ extern void     __zzip_set16(unsigned char * s, uint16_t v);
         zzip_file_trailer_get_usize(__p))
 #define zzip_file_trailer_sizeof_tail(__p) ((zzip_size_t) \
         zzip_file_trailer_sizeof_tails(__p))
-#define zzip_file_trailer_skiptoend(__p)   ((zzip_size_t) \
-        (zzip_file_trailer_sizeof_tail(__p) + zzip_file_trailer_headerlength)
+#define zzip_file_trailer_sizeto_end(__p)   ((zzip_size_t) \
+        (zzip_file_trailer_sizeof_tail(__p) + zzip_file_trailer_headerlength))
+#define zzip_file_trailer_skipto_end(__p)   ((char*) (__p) + \
+        (zzip_file_trailer_sizeof_tail(__p) + zzip_file_trailer_headerlength))
 
 /* zzip_disk_entry (currently named zzip_root_dirent) */
 #define zzip_disk_entry_csize(__p)   ((zzip_size_t) \
@@ -182,8 +186,10 @@ extern void     __zzip_set16(unsigned char * s, uint16_t v);
         zzip_disk_entry_get_offset(__p))
 #define zzip_disk_entry_sizeof_tail(__p) ((zzip_size_t) \
         zzip_disk_entry_sizeof_tails(__p))
-#define zzip_disk_entry_skiptoend(__p)   ((zzip_size_t) \
-        (zzip_disk_entry_sizeof_tail(__p) + zzip_disk_entry_headerlength)
+#define zzip_disk_entry_sizeto_end(__p)   ((zzip_size_t) \
+        (zzip_disk_entry_sizeof_tail(__p) + zzip_disk_entry_headerlength))
+#define zzip_disk_entry_skipto_end(__p)   ((char*) (__p) + \
+        (zzip_disk_entry_sizeof_tail(__p) + zzip_disk_entry_headerlength))
 
 #define zzip_disk_entry_to_filename(__p)   ((char*) \
         ((char*)(__p) + zzip_disk_entry_headerlength))
@@ -211,8 +217,10 @@ extern void     __zzip_set16(unsigned char * s, uint16_t v);
         zzip_disk_trailer_get_comment(__p))
 #define zzip_disk_trailer_sizeof_tail(__p) ((zzip_size_t) \
         zzip_disk_trailer_sizeof_tails(__p))
-#define zzip_disk_trailer_skiptoend(__p)   ((zzip_size_t) \
-        (zzip_disk_trailer_sizeof_tail(__p) + zzip_disk_trailer_headerlength)
+#define zzip_disk_trailer_sizeto_end(__p)   ((zzip_size_t) \
+        (zzip_disk_trailer_sizeof_tail(__p) + zzip_disk_trailer_headerlength))
+#define zzip_disk_trailer_skipto_end(__p)   ((char*) (__p) \
+        (zzip_disk_trailer_sizeof_tail(__p) + zzip_disk_trailer_headerlength))
 
 #define zzip_disk_trailer_to_comment(__p)   ((char*) \
         ((char*)(__p) + zzip_disk_trailer_headerlength))
@@ -222,8 +230,10 @@ extern void     __zzip_set16(unsigned char * s, uint16_t v);
 /* extra field should be type + size + data + type + size + data ... */
 #define zzip_extra_block_sizeof_tail(__p)  ((zzip_size_t) \
         (zzip_extra_block_get_datasize(__p))
-#define zzip_extra_block_skiptoend(__p)    ((zzip_size_t) \
-        (zzip_extra_block_sizeof_tail(__p) + zzip_extra_block_headerlength)
+#define zzip_extra_block_sizeto_end(__p)    ((zzip_size_t) \
+        (zzip_extra_block_sizeof_tail(__p) + zzip_extra_block_headerlength))
+#define zzip_extra_block_skipto_end(__p)    ((char*) (__p) \
+        (zzip_extra_block_sizeof_tail(__p) + zzip_extra_block_headerlength))
 
 /* ................... and put these to the next level ................ */
 

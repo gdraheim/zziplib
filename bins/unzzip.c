@@ -23,7 +23,7 @@
 static const char usage[] = 
 {
     "unzzip <dir>.. \n"
-    "  - unzzip the files contained in a zip archive."
+    "  - unzzip the files contained in a zip archive.\n"
 };
 
 int 

@@ -34,13 +34,13 @@ struct zzip_version
 { 
     char   version[1]; 
     char   ostype[1]; 
-} __attribute__((packed));
+} __zzip_attribute__((packed));
 
 struct zzip_dostime 
 { 
     char   time[2]; 
     char   date[2]; 
-} __attribute__((packed)); 
+} __zzip_attribute__((packed)); 
 
 #ifdef ZZIP_NEED_PACKED
 /* if your compiler does interesting things about struct packing... */
@@ -74,7 +74,7 @@ struct zzip_file_header
     char   z_extras[2]; /* extra field length */
     /* followed by filename (of variable size) */
     /* followed by extra field (of variable size) */
-} __attribute__((packed));
+} __zzip_attribute__((packed));
 #define zzip_file_header_headerlength (4+2+2+2+4+4+4+4+2+2)
 
 /* B. data descriptor 
@@ -90,7 +90,7 @@ struct zzip_file_trailer
     char   z_crc32[4]; /* crc-32 */
     char   z_csize[4]; /* compressed size */
     char   z_usize[4]; /* uncompressed size */
-} __attribute__((packed));
+} __zzip_attribute__((packed));
 #define zzip_file_trailer_headerlength (4+4+4+4)
 
 /* C. central directory structure:
@@ -124,8 +124,8 @@ struct zzip_disk_entry
     /* followed by filename (of variable size) */
     /* followed by extra field (of variable size) */
     /* followed by file comment (of variable size) */
-} __attribute__((packed)); 
-#define zzip_disk_entry_headerlength (4+2+2++2+2+4+4+4+4+2+2+2+2+2+4+4)
+} __zzip_attribute__((packed)); 
+#define zzip_disk_entry_headerlength (4+2+2+2+2+4+4+4+4+2+2+2+2+2+4+4)
 
 
 struct zzip_root_dirent
@@ -139,7 +139,7 @@ struct zzip_root_dirent
     char  z_namlen[2];     char  z_extras[2];     char  z_comment[2];    
     char  z_diskstart[2];  char  z_filetype[2];   char  z_filemode[4];
     char  z_off[4];
-} __attribute__((packed)); 
+} __zzip_attribute__((packed)); 
 
 
 /* end of central dir record */
@@ -157,7 +157,7 @@ struct zzip_disk_trailer
                           * the starting disk number */
     char  z_comment[2];  /* zipfile comment length */
     /* followed by zipfile comment (of variable size) */
-} __attribute__((packed));
+} __zzip_attribute__((packed));
 #define zzip_disk_trailer_headerlength (4+2+2+2+2+4+4+2)
 
 /* extra field should be type + size + data + type + size + data ... */
@@ -165,7 +165,7 @@ struct zzip_extra_block
 {                              /* fetch.h macros do not need this struct */
     char  z_datatype[2];       /* as input type - a mere <char*> is okay */
     char  z_datasize[2];       /* being returned by xx_to_extras usually */
-} __attribute__((packed));
+} __zzip_attribute__((packed));
 #define zzip_extra_block_headerlength (2+2)
 
 /* z_flags */

@@ -1,6 +1,6 @@
 #ifndef __ZZIP_INTERNAL_MMAP_H
 #define __ZZIP_INTERNAL_MMAP_H
-#include <zzip/conf.h>
+#include <zzip/types.h>
 
 /*
  * DO NOT USE THIS CODE.

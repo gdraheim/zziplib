@@ -1,8 +1,16 @@
 /*
+ * Here we postprocess autoconf generated prefix-config.h entries.
+ * This is generally for things like "off_t" which is left undefined
+ * in plain config.h if the host system does already have it but we do
+ * need the prefix variant - so we add here a #define _zzip_off_t off_t
+ *
+ * This file is supposed to only carry '#define's. 
+ * See <zzip/types.h> for definitions that might be seen by the compiler.
+ *
  * Author: 
  *      Guido Draheim <guidod@gmx.de>
  *
- *      Copyright (c) 2001,2002,2003 Guido Draheim
+ *      Copyright (c) 2001,2002,2003,2004 Guido Draheim
  *          All rights reserved,
  *          use under the restrictions of the
  *          Lesser GNU General Public License
@@ -53,6 +61,13 @@
 #define _zzip_inline ZZIP_inline
 #else
 #define _zzip_inline inline
+#endif
+#endif
+#ifndef _zzip_restrict
+#ifdef   ZZIP_restrict
+#define _zzip_restrict ZZIP_restrict
+#else
+#define _zzip_restrict restrict
 #endif
 #endif
 #ifndef _zzip_size_t
@@ -136,11 +151,11 @@
 #  ifndef _zzip_write
 #  define _zzip_write _write
 #  endif
-/*
+#      if 0
 #  ifndef _zzip_stat
 #  define _zzip_stat _stat
 #  endif
-*/
+#      endif
 # endif /* !__STDC__ */
 #endif
   /*MSVC*/
@@ -163,15 +178,17 @@
 #  define _zzip_write  write
 #  endif
 
-/*
+#      if 0
 #  ifndef _zzip_stat
 #  define _zzip_stat  stat
 #  endif
-*/
+#     endif
 
 
-#if !defined __GNUC__ && !defined __attribute__
-#define __attribute__(X) 
+#if defined __GNUC__ || defined __attribute__
+#define __zzip_attribute__(X) __attribute__(X)
+#else
+#define __zzip_attribute__(X) 
 #endif
 
 #if defined ZZIP_EXPORTS || defined ZZIPLIB_EXPORTS

@@ -17,6 +17,7 @@ s:undef *STDC_HEADERS *$:define STDC_HEADERS 1:
 s:undef *inline *$:define inline __inline:
 s:undef *off_t *$:define off_t long:
 s:undef *ssize_t *$:define ssize_t int:
+s:undef restrict *$:define restrict:
 s:^ *# *undef.*$:/* & */:
 /Generated automatically .* by autoheader/a\
 /* config values have been automatically set by zzip/_msvc.sed */
