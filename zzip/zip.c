@@ -526,7 +526,7 @@ zzip_dir_free(ZZIP_DIR * dir)
     return 0;
 }
 
-/**
+/** => zzip_dir_free
  * It will also => free(2) the => ZZIP_DIR-handle given. 
  * the counterpart for => zzip_dir_open
  * see also => zzip_dir_free
@@ -543,7 +543,7 @@ zzip_dir_close(ZZIP_DIR * dir)
  * zip-archive as specified with the fd which points to an
  * already openend file. This function then search and parse
  * the zip's central directory.
- * <p> 
+ *  
  * NOTE: refcount is zero, so an _open/_close pair will also delete 
  *       this _dirhandle 
  */
@@ -682,10 +682,10 @@ zzip_dir_open_ext_io(zzip_char_t* filename, zzip_error_t* e,
     }
 }
 
-/**
+/** => zzip_dir_open
  * fills the dirent-argument with the values and 
  * increments the read-pointer of the dir-argument.
- * <p>
+ * 
  * returns 0 if there no entry (anymore).
  */
 int

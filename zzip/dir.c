@@ -195,12 +195,12 @@ void   zzip_seekdir(ZZIP_DIR* dir, long offset)
 
 /**
  * This function is the equivalent of => opendir(3) for a realdir or zipfile.
- * <p>
+ * 
  * This function has some magic - if the given argument-path
  * is a directory, it will wrap a real => opendir(3) into the ZZIP_DIR
  * structure. Otherwise it will divert to => zzip_dir_open which 
  * can also attach a ".zip" extension if needed to find the archive.
- * <p>
+ * 
  * the error-code is mapped to => errno(3).
  */
 ZZIP_DIR* 
@@ -260,7 +260,7 @@ zzip_opendir_ext_io(zzip_char_t* filename, int o_modes,
 
 /**
  * This function is the equivalent of => closedir(3) for a realdir or zipfile.
- * <p>
+ * 
  * This function is magic - if the given arg-ZZIP_DIR
  * is a real directory, it will call the real => closedir(3) and then
  * free the wrapping ZZIP_DIR structure. Otherwise it will divert 
