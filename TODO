@@ -2,7 +2,13 @@
 - Check the CRC value at the end of read... and add more error codes.
 
 - Do more test. Currently use only with tested "friendly" archives.
-  inflate interface code needs most testing.
+  This is also related to usages of zziplib in virus detection
+  code which should better have a hardened library code. That does
+  also include inflate interface code to need the most testing.
+
+- the buffer reusage code was not strictly multithreading. It should
+  be fixed by now but it would be better to have an automatic test
+  routine to check reentrancy/multithreaded functionality.
 
 - Sligthly More documentation. With the generation of man pages and
   multiple pages for the website, it does already look acceptable.
@@ -46,5 +52,3 @@ i386-ms-win32/msvc6
 i386-ms-win32/msvc7
 i386-ms-win32/mingw+msys
 ... and probably a lot of others not known to the maintainer.
-
-* 10.82 - wrapwrap autodected disabled, the ssize_t usage should do it now.

@@ -1,3 +1,7 @@
+2005-01-04
+ * remember TODO multithreading tests and hardening the code.
+ http://www.idefense.com/application/poi/display?id=153&type=vulnerabilities
+
 2004-12-27
  * updating to latest autoconf/automake/libtool stuff in Suse92
  * required a rewrite of ax_enable_builddir.m4 in ac-archive

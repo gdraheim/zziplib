@@ -13,9 +13,9 @@ BuildRoot:    /var/tmp/%{name}-%{version}-%{release}
 
 Distribution: Original
 Packager:     Guido Draheim <guidod@gmx.de>
-Requires:      zlib1
-BuildRequires: zlib1-devel
-BuildRequires: libSDL1.2-devel
+Requires:      zlib
+BuildRequires: zlib-devel
+BuildRequires: SDL-devel
 
 #Begin3
 # Author1:        too@iki.fi (Tomi Ollila)
