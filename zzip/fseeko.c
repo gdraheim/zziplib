@@ -228,7 +228,7 @@ zzip_entry_findfirst(FILE* disk)
     {
 	fseeko (disk, mapoffs, SEEK_SET);
 	fread (buffer, 1, mapsize, disk);
-	char* p = buffer + mapsize - sizeof(struct zzip_disk_trailer);
+	___ char* p = buffer + mapsize - sizeof(struct zzip_disk_trailer);
 	for (; p >= buffer ; p--)
 	{
 	    if (! zzip_disk_trailer_check_magic(p)) continue;
@@ -260,7 +260,7 @@ zzip_entry_findfirst(FILE* disk)
 		return entry; ____;
 	    }
 	    ____;
-	}
+	} ____;
 	if (! mapoffs) break;             assert (mapsize >= pagesize/2);
 	mapoffs -= pagesize/2;            /* mapsize += pagesize/2; */
 	mapsize = pagesize;               /* if (mapsize > pagesize) ... */
@@ -453,7 +453,7 @@ zzip_entry_fopen (ZZIP_ENTRY* entry, int takeover)
 	memcpy (found->tail, entry->tail, entry->tailalloc);
 	entry = found;
     }
-    ZZIP_ENTRY_FILE* file = malloc(sizeof(*file));
+    ___ ZZIP_ENTRY_FILE* file = malloc(sizeof(*file));
     if (! file) goto fail1;
     file->entry = entry;
     if (! zzip_entry_fread_file_header (entry, &file->header))
@@ -487,7 +487,7 @@ zzip_entry_fopen (ZZIP_ENTRY* entry, int takeover)
     free (file);
  fail1:
     zzip_entry_free (entry);
-    return 0;
+    return 0; ____;
 }
 
 /** => zzip_entry_fopen

@@ -34,6 +34,7 @@ main (int argc, char ** argv)
 {
     int argn;
     int exitcode = 0;
+    ZZIP_DIR * dir;
 
     if (argc <= 1 || ! strcmp (argv[1], "--help"))
     {
@@ -46,7 +47,6 @@ main (int argc, char ** argv)
 	return 0;
     }
 
-    ZZIP_DIR * dir;
     dir = zzip_dir_creat(argv[1], 0755);
     if (! dir)
     {
