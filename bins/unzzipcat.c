@@ -52,8 +52,10 @@ static void zzip_disk_cat_file(ZZIP_DISK* disk, char* name, FILE* out)
     if (file) 
     {
 	char buffer[1024]; int len;
-	while ((len = zzip_disk_fread (buffer, 1024, 1, file)))
-	    fwrite (buffer, len, 1, out);
+	while ((len = zzip_disk_fread (buffer, 1, 1024, file))) 
+	{
+	    fwrite (buffer, 1, len, out);
+	}
 	
 	zzip_disk_fclose (file);
     }

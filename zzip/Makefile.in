@@ -156,9 +156,12 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 AUTOTOOL_VERSION = autoconf-2.52 automake-1.5 libtool-1.4.2
 DEFAULT_INCLUDES = # nothing - no default of -I. -I$(srcdir)
 
-lib_LTLIBRARIES = libzzip.la libzzipmmap.la
+lib_LTLIBRARIES = libzzip.la libzzipmmapped.la libzzipfseeko.la
 zzipdir = ${includedir}/zzip
-zzip_HEADERS = $(libzzip_la_headers) $(libzzipmmap_la_headers)
+zzip_HEADERS = $(libzzip_la_headers) \
+               $(libzzipmmapped_la_headers) \
+               $(libzzipfseeko_la_headers)
+
 noinst_HEADERS = __debug.h __hints.h __mmap.h __dirent.h
 
 #
@@ -193,16 +196,19 @@ libzzip_la_LDFLAGS = @ZZIPLIB_LDFLAGS@ $(RELEASE_INFO) $(VERSION_INFO) \
 
 libzzip_la_LIBADD = -lz @RESOLVES@
 
-libzzipmmap_la_SOURCES = \
-        mmapped.c
-
-libzzipmmap_la_headers = \
-        mmapped.h
-
-libzzipmmap_la_LDFLAGS = @ZZIPLIB_LDFLAGS@ $(RELEASE_INFO) $(VERSION_INFO) \
+libzzipmmapped_la_SOURCES = mmapped.c
+libzzipmmapped_la_headers = mmapped.h
+libzzipmmapped_la_LDFLAGS = @ZZIPLIB_LDFLAGS@ $(RELEASE_INFO) $(VERSION_INFO) \
                     $(THREAD_SAFE)
 
-libzzipmmap_la_LIBADD = -lz @RESOLVES@
+libzzipmmapped_la_LIBADD = -lz @RESOLVES@
+
+libzzipfseeko_la_SOURCES = fseeko.c
+libzzipfseeko_la_headers = fseeko.h
+libzzipfseeko_la_LDFLAGS = @ZZIPLIB_LDFLAGS@ $(RELEASE_INFO) $(VERSION_INFO) \
+                    $(THREAD_SAFE)
+
+libzzipfseeko_la_LIBADD = -lz @RESOLVES@
 
 WCC10_DIST = zziplib.wpj
 WCC10_CLEAN = *.obj *.lk1 *.mk1 *.mk *.sym *.tgt
@@ -211,7 +217,9 @@ EXTRA_DIST = $(WCC10_DIST) _msvc.sed
 CONFIG_CLEAN_FILES = _config.h 
 MAINTAINERCLEANFILES = _msvc.h
 CLEANFILES = $(WCC10_CLEAN)  *.pc *.omf
-pkgconfig_HEADERS = zzip-zlib-config.pc zziplib.pc zzipmmap.pc
+pkgconfig_HEADERS = zzip-zlib-config.pc zziplib.pc \
+                    zzipmmapped.pc zzipfseeko.pc
+
 subdir = zzip
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/uses/mkinstalldirs
@@ -222,16 +230,20 @@ libzzip_la_DEPENDENCIES =
 am_libzzip_la_OBJECTS = zip.lo file.lo dir.lo stat.lo info.lo err.lo \
 	plugin.lo write.lo fetch.lo
 libzzip_la_OBJECTS = $(am_libzzip_la_OBJECTS)
-libzzipmmap_la_DEPENDENCIES =
-am_libzzipmmap_la_OBJECTS = mmapped.lo
-libzzipmmap_la_OBJECTS = $(am_libzzipmmap_la_OBJECTS)
+libzzipfseeko_la_DEPENDENCIES =
+am_libzzipfseeko_la_OBJECTS = fseeko.lo
+libzzipfseeko_la_OBJECTS = $(am_libzzipfseeko_la_OBJECTS)
+libzzipmmapped_la_DEPENDENCIES =
+am_libzzipmmapped_la_OBJECTS = mmapped.lo
+libzzipmmapped_la_OBJECTS = $(am_libzzipmmapped_la_OBJECTS)
 depcomp = $(SHELL) $(top_srcdir)/uses/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/dir.Plo ./$(DEPDIR)/err.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/fetch.Plo ./$(DEPDIR)/file.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/info.Plo ./$(DEPDIR)/mmapped.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/plugin.Plo ./$(DEPDIR)/stat.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/write.Plo ./$(DEPDIR)/zip.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/fseeko.Plo ./$(DEPDIR)/info.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/mmapped.Plo ./$(DEPDIR)/plugin.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/stat.Plo ./$(DEPDIR)/write.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/zip.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -239,12 +251,13 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libzzip_la_SOURCES) $(libzzipmmap_la_SOURCES)
+DIST_SOURCES = $(libzzip_la_SOURCES) $(libzzipfseeko_la_SOURCES) \
+	$(libzzipmmapped_la_SOURCES)
 HEADERS = $(noinst_HEADERS) $(pkgconfig_HEADERS) $(zzip_HEADERS)
 
 DIST_COMMON = $(noinst_HEADERS) $(pkgconfig_HEADERS) $(zzip_HEADERS) \
 	Makefile.am Makefile.in
-SOURCES = $(libzzip_la_SOURCES) $(libzzipmmap_la_SOURCES)
+SOURCES = $(libzzip_la_SOURCES) $(libzzipfseeko_la_SOURCES) $(libzzipmmapped_la_SOURCES)
 
 all: all-am
 
@@ -285,8 +298,10 @@ clean-libLTLIBRARIES:
 	done
 libzzip.la: $(libzzip_la_OBJECTS) $(libzzip_la_DEPENDENCIES) 
 	$(LINK) -rpath $(libdir) $(libzzip_la_LDFLAGS) $(libzzip_la_OBJECTS) $(libzzip_la_LIBADD) $(LIBS)
-libzzipmmap.la: $(libzzipmmap_la_OBJECTS) $(libzzipmmap_la_DEPENDENCIES) 
-	$(LINK) -rpath $(libdir) $(libzzipmmap_la_LDFLAGS) $(libzzipmmap_la_OBJECTS) $(libzzipmmap_la_LIBADD) $(LIBS)
+libzzipfseeko.la: $(libzzipfseeko_la_OBJECTS) $(libzzipfseeko_la_DEPENDENCIES) 
+	$(LINK) -rpath $(libdir) $(libzzipfseeko_la_LDFLAGS) $(libzzipfseeko_la_OBJECTS) $(libzzipfseeko_la_LIBADD) $(LIBS)
+libzzipmmapped.la: $(libzzipmmapped_la_OBJECTS) $(libzzipmmapped_la_DEPENDENCIES) 
+	$(LINK) -rpath $(libdir) $(libzzipmmapped_la_LDFLAGS) $(libzzipmmapped_la_OBJECTS) $(libzzipmmapped_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -298,6 +313,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/err.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fetch.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fseeko.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/info.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mmapped.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plugin.Plo@am__quote@
@@ -615,8 +631,10 @@ zzip-zlib-config.pc : Makefile
 	echo 'Libs: $${zlib_libs}' >>$@
 	echo 'Cflags: $${zlib_cflags}' >>$@
 
-zzipmmap.pc : zziplib.pc
-	sed -e 's/-lzzip/-lzzipmem/' -e 's/zziplib/zzipmmap/' $< >$@
+zzipmmapped.pc : zziplib.pc
+	sed -e 's/-lzzip/-lzzipmmapped/' -e 's/zziplib/zzipmmapped/' $< >$@
+zzipfseeko.pc : zziplib.pc
+	sed -e 's/-lzzip/-lzzipfseeko/' -e 's/zziplib/zzipfseeko/' $< >$@
 
 __zziplib.pc : Makefile
 	@ echo "prefix=$(prefix)" >$@

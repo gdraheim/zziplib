@@ -155,7 +155,7 @@ AUTOTOOL_VERSION = autoconf-2.52 automake-1.5 libtool-1.4.2
 DEFAULT_INCLUDES = # nothing - no default of -I. -I$(srcdir)
 
 bin_PROGRAMS = zzcat zzdir zzxorcat zzxordir zzxorcopy \
-               unzzip unzzipdir unzzipcat
+               unzzip unzzipdir unzzipcat unzzipshow
 
 noinst_PROGRAMS = zziptest zzobfuscated zzip
 aclocal_DATA = zziplib.m4
@@ -183,11 +183,14 @@ zzxordir_LDADD = ../zzip/libzzip.la @RESOLVES@ -lz
 zzobfuscated_LDFLAGS = @ZZIPLIB_LDFLAGS@
 zzobfuscated_LDADD = ../zzip/libzzip.la @RESOLVES@ -lz
 
-# these use the simplified mmapped version
+# these use the simplified mmapped disk version
 unzzipdir_LDFLAGS = @ZZIPLIB_LDFLAGS@
-unzzipdir_LDADD = ../zzip/libzzipmmap.la @RESOLVES@ -lz
+unzzipdir_LDADD = ../zzip/libzzipmmapped.la @RESOLVES@ -lz
 unzzipcat_LDFLAGS = @ZZIPLIB_LDFLAGS@
-unzzipcat_LDADD = ../zzip/libzzipmmap.la @RESOLVES@ -lz
+unzzipcat_LDADD = ../zzip/libzzipmmapped.la @RESOLVES@ -lz
+# and this uses the simplified fseeko stdio version
+unzzipshow_LDFLAGS = @ZZIPLIB_LDFLAGS@
+unzzipshow_LDADD = ../zzip/libzzipfseeko.la @RESOLVES@ -lz
 subdir = bins
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/uses/mkinstalldirs
@@ -195,7 +198,7 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 bin_PROGRAMS = zzcat$(EXEEXT) zzdir$(EXEEXT) zzxorcat$(EXEEXT) \
 	zzxordir$(EXEEXT) zzxorcopy$(EXEEXT) unzzip$(EXEEXT) \
-	unzzipdir$(EXEEXT) unzzipcat$(EXEEXT)
+	unzzipdir$(EXEEXT) unzzipcat$(EXEEXT) unzzipshow$(EXEEXT)
 noinst_PROGRAMS = zziptest$(EXEEXT) zzobfuscated$(EXEEXT) zzip$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
 
@@ -204,10 +207,13 @@ unzzip_OBJECTS = unzzip.$(OBJEXT)
 unzzip_DEPENDENCIES = ../zzip/libzzip.la
 unzzipcat_SOURCES = unzzipcat.c
 unzzipcat_OBJECTS = unzzipcat.$(OBJEXT)
-unzzipcat_DEPENDENCIES = ../zzip/libzzipmmap.la
+unzzipcat_DEPENDENCIES = ../zzip/libzzipmmapped.la
 unzzipdir_SOURCES = unzzipdir.c
 unzzipdir_OBJECTS = unzzipdir.$(OBJEXT)
-unzzipdir_DEPENDENCIES = ../zzip/libzzipmmap.la
+unzzipdir_DEPENDENCIES = ../zzip/libzzipmmapped.la
+unzzipshow_SOURCES = unzzipshow.c
+unzzipshow_OBJECTS = unzzipshow.$(OBJEXT)
+unzzipshow_DEPENDENCIES = ../zzip/libzzipfseeko.la
 zzcat_SOURCES = zzcat.c
 zzcat_OBJECTS = zzcat.$(OBJEXT)
 zzcat_DEPENDENCIES = ../zzip/libzzip.la
@@ -237,11 +243,11 @@ zzxordir_DEPENDENCIES = ../zzip/libzzip.la
 depcomp = $(SHELL) $(top_srcdir)/uses/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/unzzip.Po ./$(DEPDIR)/unzzipcat.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/unzzipdir.Po ./$(DEPDIR)/zzcat.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/zzdir.Po ./$(DEPDIR)/zzip.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/zziptest.Po ./$(DEPDIR)/zzobfuscated.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/zzxorcat.Po ./$(DEPDIR)/zzxorcopy.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/zzxordir.Po
+@AMDEP_TRUE@	./$(DEPDIR)/unzzipdir.Po ./$(DEPDIR)/unzzipshow.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/zzcat.Po ./$(DEPDIR)/zzdir.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/zzip.Po ./$(DEPDIR)/zziptest.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/zzobfuscated.Po ./$(DEPDIR)/zzxorcat.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/zzxorcopy.Po ./$(DEPDIR)/zzxordir.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -249,12 +255,13 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = unzzip.c unzzipcat.c unzzipdir.c zzcat.c zzdir.c zzip.c \
-	zziptest.c zzobfuscated.c zzxorcat.c zzxorcopy.c zzxordir.c
+DIST_SOURCES = unzzip.c unzzipcat.c unzzipdir.c unzzipshow.c zzcat.c \
+	zzdir.c zzip.c zziptest.c zzobfuscated.c zzxorcat.c zzxorcopy.c \
+	zzxordir.c
 DATA = $(aclocal_DATA)
 
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = unzzip.c unzzipcat.c unzzipdir.c zzcat.c zzdir.c zzip.c zziptest.c zzobfuscated.c zzxorcat.c zzxorcopy.c zzxordir.c
+SOURCES = unzzip.c unzzipcat.c unzzipdir.c unzzipshow.c zzcat.c zzdir.c zzip.c zziptest.c zzobfuscated.c zzxorcat.c zzxorcopy.c zzxordir.c
 
 all: all-am
 
@@ -310,6 +317,9 @@ unzzipcat$(EXEEXT): $(unzzipcat_OBJECTS) $(unzzipcat_DEPENDENCIES)
 unzzipdir$(EXEEXT): $(unzzipdir_OBJECTS) $(unzzipdir_DEPENDENCIES) 
 	@rm -f unzzipdir$(EXEEXT)
 	$(LINK) $(unzzipdir_LDFLAGS) $(unzzipdir_OBJECTS) $(unzzipdir_LDADD) $(LIBS)
+unzzipshow$(EXEEXT): $(unzzipshow_OBJECTS) $(unzzipshow_DEPENDENCIES) 
+	@rm -f unzzipshow$(EXEEXT)
+	$(LINK) $(unzzipshow_LDFLAGS) $(unzzipshow_OBJECTS) $(unzzipshow_LDADD) $(LIBS)
 zzcat$(EXEEXT): $(zzcat_OBJECTS) $(zzcat_DEPENDENCIES) 
 	@rm -f zzcat$(EXEEXT)
 	$(LINK) $(zzcat_LDFLAGS) $(zzcat_OBJECTS) $(zzcat_LDADD) $(LIBS)
@@ -344,6 +354,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unzzip.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unzzipcat.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unzzipdir.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unzzipshow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zzcat.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zzdir.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zzip.Po@am__quote@

@@ -173,13 +173,11 @@ zzip_disk_close(ZZIP_DISK* disk)
 static char* _zzip_restrict _zzip_strndup(char* p, int maxlen)
 {
     if (! p) return 0;
-    ___ int l = strlen (p);
-    if (l > maxlen) l = maxlen;
-    ___ char* r = malloc (l+1);
+    ___ char* r = malloc (maxlen+1);
     if (! r) return r;
-    memcpy (r, p, l);
-    r[l] = '\0';
-    return r; ____;____;
+    strncpy (r, p, maxlen);
+    r[maxlen] = '\0';
+    return r; ____;
 }
 #endif
 
@@ -384,7 +382,7 @@ zzip_disk_findfile(ZZIP_DISK* disk, char* filename,
 /* if your system does not have fnmatch, we fall back to strcmp: */
 static int _zzip_fnmatch(char* pattern, char* string, int flags)
 { 
-    puts ("<zzip:strcmp>");
+    puts ("<zzip:mmapped:strcmp>");
     return strcmp (pattern, string); 
 }
 #endif
@@ -467,6 +465,7 @@ zzip_disk_entry_fopen (ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry)
     if (! file->avail || zzip_file_header_data_stored (file->header))
     { file->stored = zzip_file_header_to_data (file->header); return file; }
 
+    file->stored = 0;
     file->zlib.opaque = 0;
     file->zlib.zalloc = Z_NULL;
     file->zlib.zfree = Z_NULL;
@@ -474,7 +473,7 @@ zzip_disk_entry_fopen (ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry)
     file->zlib.next_in = zzip_file_header_to_data (file->header);
 
     if (! zzip_file_header_data_deflated (file->header) ||
-	inflateInit (& file->zlib) != Z_OK)
+	inflateInit2 (& file->zlib, -MAX_WBITS) != Z_OK)
     { free (file); return 0; }
 
     return file;
@@ -505,7 +504,7 @@ zzip_size_t
 zzip_disk_fread (void* ptr, zzip_size_t sized, zzip_size_t nmemb,
 		 ZZIP_DISK_FILE* file)
 {
-     zzip_size_t size = sized*nmemb;
+    zzip_size_t size = sized*nmemb;
     if (size > file->avail) size = file->avail;
     if (file->stored)
     {

@@ -3,9 +3,11 @@ AUTOTOOL_VERSION=autoconf-2.52 automake-1.5 libtool-1.4.2
 DEFAULT_INCLUDES = # nothing - no default of -I. -I$(srcdir)
 DEFS = @DEFS@ -I$(top_builddir) -I$(top_srcdir) # also for automake 1.4
 
-lib_LTLIBRARIES = libzzip.la libzzipmmap.la
+lib_LTLIBRARIES = libzzip.la libzzipmmapped.la libzzipfseeko.la
 zzipdir = ${includedir}/zzip
-zzip_HEADERS = $(libzzip_la_headers) $(libzzipmmap_la_headers)
+zzip_HEADERS = $(libzzip_la_headers) \
+               $(libzzipmmapped_la_headers) \
+               $(libzzipfseeko_la_headers)
 noinst_HEADERS = __debug.h __hints.h __mmap.h __dirent.h
 #
 VERSION_INFO=@VERSION_INFO@
@@ -41,13 +43,17 @@ libzzip_la_LDFLAGS= @ZZIPLIB_LDFLAGS@ $(RELEASE_INFO) $(VERSION_INFO) \
                     $(THREAD_SAFE)
 libzzip_la_LIBADD= -lz @RESOLVES@
 
-libzzipmmap_la_SOURCES = \
-        mmapped.c
-libzzipmmap_la_headers = \
-        mmapped.h
-libzzipmmap_la_LDFLAGS= @ZZIPLIB_LDFLAGS@ $(RELEASE_INFO) $(VERSION_INFO) \
+libzzipmmapped_la_SOURCES =  mmapped.c
+libzzipmmapped_la_headers =  mmapped.h
+libzzipmmapped_la_LDFLAGS= @ZZIPLIB_LDFLAGS@ $(RELEASE_INFO) $(VERSION_INFO) \
                     $(THREAD_SAFE)
-libzzipmmap_la_LIBADD= -lz @RESOLVES@
+libzzipmmapped_la_LIBADD= -lz @RESOLVES@
+
+libzzipfseeko_la_SOURCES = fseeko.c
+libzzipfseeko_la_headers = fseeko.h
+libzzipfseeko_la_LDFLAGS= @ZZIPLIB_LDFLAGS@ $(RELEASE_INFO) $(VERSION_INFO) \
+                    $(THREAD_SAFE)
+libzzipfseeko_la_LIBADD= -lz @RESOLVES@
 
 WCC10_DIST = zziplib.wpj
 WCC10_CLEAN = *.obj *.lk1 *.mk1 *.mk *.sym *.tgt
@@ -92,7 +98,8 @@ uninstall-local :
 
 # ----------------------------------------------------------------------
 pkgconfigdir=$(libdir)/pkgconfig
-pkgconfig_HEADERS= zzip-zlib-config.pc zziplib.pc zzipmmap.pc
+pkgconfig_HEADERS= zzip-zlib-config.pc zziplib.pc \
+                    zzipmmapped.pc zzipfseeko.pc
 
 zziplib.pc : Makefile
 	(cd .. && sh config.status zzip/zziplib.pc)
@@ -107,8 +114,10 @@ zzip-zlib-config.pc : Makefile
 	echo 'Libs: $${zlib_libs}' >>$@
 	echo 'Cflags: $${zlib_cflags}' >>$@
 
-zzipmmap.pc : zziplib.pc
-	sed -e 's/-lzzip/-lzzipmem/' -e 's/zziplib/zzipmmap/' $< >$@
+zzipmmapped.pc : zziplib.pc
+	sed -e 's/-lzzip/-lzzipmmapped/' -e 's/zziplib/zzipmmapped/' $< >$@
+zzipfseeko.pc : zziplib.pc
+	sed -e 's/-lzzip/-lzzipfseeko/' -e 's/zziplib/zzipfseeko/' $< >$@
 
 __zziplib.pc : Makefile
 	@ echo "prefix=$(prefix)" >$@

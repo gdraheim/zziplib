@@ -4,7 +4,7 @@ DEFAULT_INCLUDES = # nothing - no default of -I. -I$(srcdir)
 DEFS = @DEFS@ -I$(top_builddir) -I$(top_srcdir) # also for automake 1.4
 
 bin_PROGRAMS = zzcat zzdir zzxorcat zzxordir zzxorcopy \
-               unzzip unzzipdir unzzipcat
+               unzzip unzzipdir unzzipcat unzzipshow
 noinst_PROGRAMS = zziptest zzobfuscated zzip
 aclocaldir = $(datadir)/aclocal
 aclocal_DATA = zziplib.m4
@@ -36,11 +36,14 @@ zzxordir_LDADD = ../zzip/libzzip.la @RESOLVES@ -lz
 zzobfuscated_LDFLAGS =  @ZZIPLIB_LDFLAGS@
 zzobfuscated_LDADD = ../zzip/libzzip.la @RESOLVES@ -lz
 
-# these use the simplified mmapped version
+# these use the simplified mmapped disk version
 unzzipdir_LDFLAGS = @ZZIPLIB_LDFLAGS@
-unzzipdir_LDADD = ../zzip/libzzipmmap.la @RESOLVES@ -lz
+unzzipdir_LDADD = ../zzip/libzzipmmapped.la @RESOLVES@ -lz
 unzzipcat_LDFLAGS = @ZZIPLIB_LDFLAGS@
-unzzipcat_LDADD = ../zzip/libzzipmmap.la @RESOLVES@ -lz
+unzzipcat_LDADD = ../zzip/libzzipmmapped.la @RESOLVES@ -lz
+# and this uses the simplified fseeko stdio version
+unzzipshow_LDFLAGS = @ZZIPLIB_LDFLAGS@
+unzzipshow_LDADD = ../zzip/libzzipfseeko.la @RESOLVES@ -lz
 
 ../zzip/libzzip.la : @top_srcdir@/zzip/*.c
 	(cd ../zzip && $(MAKE) `basename $@`)
