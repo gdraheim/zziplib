@@ -1,4 +1,4 @@
-AUTOMAKE_OPTIONS = 1.4 foreign
+AUTOMAKE_OPTIONS = 1.5 foreign
 AUTOTOOL_VERSION=autoconf-2.52 automake-1.5 libtool-1.4.2
 DEFAULT_INCLUDES = # nothing - no default of -I. -I$(srcdir)
 DEFS = @DEFS@ -I$(top_builddir) -I$(top_srcdir) # also for automake 1.4
@@ -43,14 +43,14 @@ libzzip_la_LDFLAGS= @ZZIPLIB_LDFLAGS@ $(RELEASE_INFO) $(VERSION_INFO) \
                     $(THREAD_SAFE)
 libzzip_la_LIBADD= -lz @RESOLVES@
 
-libzzipmmapped_la_SOURCES =  mmapped.c
-libzzipmmapped_la_headers =  mmapped.h
+libzzipmmapped_la_SOURCES =  mmapped.c fetch.c
+libzzipmmapped_la_headers =  mmapped.h fetch.h
 libzzipmmapped_la_LDFLAGS= @ZZIPLIB_LDFLAGS@ $(RELEASE_INFO) $(VERSION_INFO) \
                     $(THREAD_SAFE)
 libzzipmmapped_la_LIBADD= -lz @RESOLVES@
 
-libzzipfseeko_la_SOURCES = fseeko.c
-libzzipfseeko_la_headers = fseeko.h
+libzzipfseeko_la_SOURCES = fseeko.c fetch.c
+libzzipfseeko_la_headers = fseeko.h fetch.h
 libzzipfseeko_la_LDFLAGS= @ZZIPLIB_LDFLAGS@ $(RELEASE_INFO) $(VERSION_INFO) \
                     $(THREAD_SAFE)
 libzzipfseeko_la_LIBADD= -lz @RESOLVES@

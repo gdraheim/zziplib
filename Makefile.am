@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = 1.4 foreign dist-bzip2
-WANT_AUTOMAKE = 1.6
-WANT_AUTOCONF = 2.52
+WANT_AUTOMAKE = 1.7
+WANT_AUTOCONF = 2.57
 
 DIST_SUBDIRS = zzip zzipwrap bins test docs  SDL
 SUBDIRS =      zzip zzipwrap bins test docs @SDL@

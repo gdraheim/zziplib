@@ -50,7 +50,7 @@ struct zzip_plugin_io { /* use "zzip_plugin_io_handlers" in applications !! */
     long         sys;
     long         type;
     zzip_ssize_t (*write)(int fd, _zzip_const void* buf, zzip_size_t len);
-} fd;
+};
 
 typedef union _zzip_plugin_io
 {

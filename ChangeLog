@@ -1,3 +1,12 @@
+2004-02-19
+ * a test run on solaris did show that fetch.* needs to be linked
+	to the new lib*.la stuff - to convert endianess-dependent
+	values from zip to main memory
+ * there seems to be an automake problem with hpux10 that I can not
+	yet define on what grounds it is - to get away with it I am
+	not defining automake 1.7 as the version to be used, plus
+	autoconf 2.57 - these are pretty new.
+
 2004-01-24
  * zzip/fseeko.c and bins/zzip.c had some issued with non-C99 compilers
 	which do not like variable declarations in the middle of a block

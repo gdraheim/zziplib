@@ -152,7 +152,7 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
-AUTOMAKE_OPTIONS = 1.4 foreign
+AUTOMAKE_OPTIONS = 1.5 foreign
 AUTOTOOL_VERSION = autoconf-2.52 automake-1.5 libtool-1.4.2
 DEFAULT_INCLUDES = # nothing - no default of -I. -I$(srcdir)
 
@@ -196,15 +196,15 @@ libzzip_la_LDFLAGS = @ZZIPLIB_LDFLAGS@ $(RELEASE_INFO) $(VERSION_INFO) \
 
 libzzip_la_LIBADD = -lz @RESOLVES@
 
-libzzipmmapped_la_SOURCES = mmapped.c
-libzzipmmapped_la_headers = mmapped.h
+libzzipmmapped_la_SOURCES = mmapped.c fetch.c
+libzzipmmapped_la_headers = mmapped.h fetch.h
 libzzipmmapped_la_LDFLAGS = @ZZIPLIB_LDFLAGS@ $(RELEASE_INFO) $(VERSION_INFO) \
                     $(THREAD_SAFE)
 
 libzzipmmapped_la_LIBADD = -lz @RESOLVES@
 
-libzzipfseeko_la_SOURCES = fseeko.c
-libzzipfseeko_la_headers = fseeko.h
+libzzipfseeko_la_SOURCES = fseeko.c fetch.c
+libzzipfseeko_la_headers = fseeko.h fetch.h
 libzzipfseeko_la_LDFLAGS = @ZZIPLIB_LDFLAGS@ $(RELEASE_INFO) $(VERSION_INFO) \
                     $(THREAD_SAFE)
 
@@ -231,10 +231,10 @@ am_libzzip_la_OBJECTS = zip.lo file.lo dir.lo stat.lo info.lo err.lo \
 	plugin.lo write.lo fetch.lo
 libzzip_la_OBJECTS = $(am_libzzip_la_OBJECTS)
 libzzipfseeko_la_DEPENDENCIES =
-am_libzzipfseeko_la_OBJECTS = fseeko.lo
+am_libzzipfseeko_la_OBJECTS = fseeko.lo fetch.lo
 libzzipfseeko_la_OBJECTS = $(am_libzzipfseeko_la_OBJECTS)
 libzzipmmapped_la_DEPENDENCIES =
-am_libzzipmmapped_la_OBJECTS = mmapped.lo
+am_libzzipmmapped_la_OBJECTS = mmapped.lo fetch.lo
 libzzipmmapped_la_OBJECTS = $(am_libzzipmmapped_la_OBJECTS)
 depcomp = $(SHELL) $(top_srcdir)/uses/depcomp
 am__depfiles_maybe = depfiles
