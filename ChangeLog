@@ -1,3 +1,26 @@
+2004-01-24
+ * zzip/fseeko.c and bins/zzip.c had some issued with non-C99 compilers
+	which do not like variable declarations in the middle of a block
+
+2004-01-16
+ * zzip_rewind again - the deflateReset does not reset the
+	input buffer variables (oops) so we have to do it
+	explicitly. Here we adopt to set crestlen to full
+	csize and the current z-buffer fillstate avail_in
+	to null to trigger a new read() on next zzip_read.
+ * the zlib headers do not tell whether next_in/avail_in
+	is used in deflateReset as is done in deflateInit.
+	A question to zlib@gzip.org brought no answer (as
+	is always the case) and after some thinking I did
+	decide to reset avail_in *after* the zReset call.
+ * based on this decision, I have made up a patch and I was
+	sending it over to zlib@gzip.org. Same consequence
+	again, the message is bluntly ignored (while there is
+	traffic on zlib devel mailinglist). There seems to be
+	a major problem about it, either a technical problem
+	 (mail-adress disfunctional) or a social problem (no
+	one cares or perhaps some minor racism).
+	
 2003-12-29
  * added libzzipfseeko.la with another simplified interface
  * rename the other one to libzzipmmapped.la
