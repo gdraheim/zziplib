@@ -66,7 +66,7 @@
  posix, you can emulate it with the posix lseek() call which
  returns the resulting offset after the operation was performed,
  so we just seek by a zero offset:
-<br><code>#define tell(fd) lseek(fd,0,SEEK_CUR)
+<br><code> <> <> <> <> #define tell(fd) lseek(fd,0,SEEK_CUR)
 </P>
 
 <P>
