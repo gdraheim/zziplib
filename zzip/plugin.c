@@ -33,7 +33,7 @@ zzip_filesize(int fd)
   if (fstat(fd, &st) < 0)
     return -1;
 
-# ifdef DEBUG 
+# if defined DEBUG && ! defined _WIN32
   if (! st.st_size && st.st_blocks > 1) /* seen on some darwin 10.1 machines */
       fprintf(stderr, "broken fstat(2) ?? st_size=%ld st_blocks=%ld\n", 
 	      (long) st.st_size, (long) st.st_blocks);
