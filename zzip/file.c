@@ -21,6 +21,7 @@
 #include <ctype.h>
 
 #include <zzip/format.h>
+#include <zzip/fetch.h>
 #include <zzip/__debug.h>
 
 #if 0
@@ -225,10 +226,10 @@ zzip_file_open(ZZIP_DIR * dir, zzip_char_t* name, int o_mode)
 		dataoff = dir->io->fd.read(dir->fd, (void*)p, sizeof(*p));
 		if (dataoff < (zzip_ssize_t)sizeof(*p))
 		{ err = ZZIP_DIR_READ;  goto error; }
-                if (! ZZIP_FILE_HEADER_CHECKMAGIC(p)) /* PK\3\4 */
+                if (! zzip_file_header_check_magic(p)) /* PK\3\4 */
 		{ err = ZZIP_CORRUPTED; goto error; }
 
-                dataoff = ZZIP_GET16(p->z_namlen) + ZZIP_GET16(p->z_extras);
+                dataoff = zzip_file_header_sizeof_tail(p);
               
                 if (dir->io->fd.seeks(dir->fd, dataoff, SEEK_CUR) < 0)
                 { err = ZZIP_DIR_SEEK; goto error; }

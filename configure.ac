@@ -1,7 +1,7 @@
 AC_INIT(zziplib.spec)
 AC_PREREQ(2.49)
 AC_COPYRIGHT([Guido Draheim <guido@gmx.de> for ZZipLib.SF.net])
-AC_REVISION($Revision: 1.1.1.2 $)
+AC_REVISION($Revision: 1.2 $)
 AC_CONFIG_AUX_DIR(uses)
 # =======================================================================
 AC_CANONICAL_SYSTEM
@@ -94,7 +94,7 @@ AC_STDC_HEADERS
 AC_HEADER_DIRENT
 AC_CHECK_HEADERS(stdint.h unistd.h windows.h winnt.h winbase.h sys/int_types.h)
 AC_CHECK_HEADERS(sys/types.h sys/mman.h sys/stat.h sys/param.h) dnl posix'ish
-AC_CHECK_HEADERS(io.h direct.h zlib.h)
+AC_CHECK_HEADERS(io.h direct.h zlib.h byteswap.h)
 AC_CHECK_FUNCS( strcasecmp )
 
 AC_TYPE_OFF_T
@@ -104,6 +104,7 @@ AC_CHECK_TYPE(ssize_t,int)
 AC_COMPILE_CHECK_SIZEOF(short)
 AC_COMPILE_CHECK_SIZEOF(int)
 AC_COMPILE_CHECK_SIZEOF(long)
+AC_C_BIGENDIAN
 dnl -------------------------------------------------------------
 # the default is _disabled_!! anyway, result is prefixed in zzip/_config.h!!
 AC_SYS_LARGEFILE_SENSITIVE

@@ -1,3 +1,21 @@
+2003-12-22
+ * add AC_C_BIGENDIAN and
+ * move out ZZIP_GET to zzip/fetch.h where we also specify access
+	wrappers to items in the zzip/format.h structures, portably.
+ * add byteswap.h ac_check and put a new file autoconf.h to carry
+	compiletime overrides for the autoconf definitions.
+ * start changing over to use zzip/fetch.h definitions everywhere
+	thereby replacing original ZZIP_GET16/32 usages completely.
+	This is localized to zzip/zip.c
+ * rename struct zzip_root_dirent to struct zzip_disk_entry but
+	retain a compatibility declaration.
+ * introduce zzip_version_t and zzip_dostime_t along with an optional
+	ZZIP_NEED_PACKED def that helps with weird compiler struct packing
+ * struct zzip_file_trailer did not use the char[x] variant, it does now
+ * place even more zzip/fetch.h declarations
+ * place even more defs into zzip/format.h
+ * noting CVS area on webpages
+
 2003-12-21
  * Nigel Stewart hints on some MSVC 6 issues, thanks.
 	

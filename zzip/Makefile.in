@@ -136,7 +136,8 @@ libzzip_la_SOURCES = \
 	info.c \
 	err.c \
 	plugin.c \
-	write.c
+	write.c \
+	fetch.c
 
 libzzip_la_headers = \
 	stdint.h \
@@ -144,8 +145,10 @@ libzzip_la_headers = \
 	plugin.h \
 	lib.h \
 	zzip.h \
+	fetch.h \
 	format.h \
         info.h \
+	autoconf.h \
 	conf.h \
 	_config.h \
         _msvc.h
@@ -173,7 +176,7 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 
 libzzip_la_DEPENDENCIES =
 am_libzzip_la_OBJECTS = zip.lo file.lo dir.lo stat.lo info.lo err.lo \
-	plugin.lo write.lo
+	plugin.lo write.lo fetch.lo
 libzzip_la_OBJECTS = $(am_libzzip_la_OBJECTS)
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
@@ -181,9 +184,10 @@ LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/uses/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/dir.Plo ./$(DEPDIR)/err.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/file.Plo ./$(DEPDIR)/info.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/plugin.Plo ./$(DEPDIR)/stat.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/write.Plo ./$(DEPDIR)/zip.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/fetch.Plo ./$(DEPDIR)/file.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/info.Plo ./$(DEPDIR)/plugin.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/stat.Plo ./$(DEPDIR)/write.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/zip.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -247,6 +251,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dir.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/err.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fetch.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/info.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plugin.Plo@am__quote@

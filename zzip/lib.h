@@ -78,17 +78,5 @@ zzip_dir_fdopen_ext_io(int fd, zzip_error_t * errorcode_p,
 ZZIP_DIR* /*depracated*/
 zzip_dir_alloc_ext_io (zzip_strings_t* ext, const zzip_plugin_io_t io);
 
-/* get 16/32 bits from little-endian zip-file to host byteorder */
-uint32_t __zzip_get32(unsigned char * s);
-uint16_t __zzip_get16(unsigned char * s);
-
-#ifdef __i386__
-#define ZZIP_GET32(x) (*(uint32_t*)(x))
-#define ZZIP_GET16(x) (*(uint16_t*)(x))
-#else
-#define ZZIP_GET32(x) (__zzip_get32(x))
-#define ZZIP_GET16(x) (__zzip_get16(x))
-#endif
-
 #endif /* _ZZIP_H */
 

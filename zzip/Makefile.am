@@ -21,15 +21,18 @@ libzzip_la_SOURCES = \
 	info.c \
 	err.c \
 	plugin.c \
-	write.c
+	write.c \
+	fetch.c
 libzzip_la_headers = \
 	stdint.h \
 	file.h \
 	plugin.h \
 	lib.h \
 	zzip.h \
+	fetch.h \
 	format.h \
         info.h \
+	autoconf.h \
 	conf.h \
 	_config.h \
         _msvc.h
