@@ -4,16 +4,17 @@ AUTOTOOL_VERSION=autoconf-2.52 automake-1.5 libtool-1.4.2
 doc_FILES = README.MSVC6 README.SDL COPYING.MPL COPYING.LIB COPYING.ZLIB \
 	zziplib.html 
 htm_FILES = zzip-index.htm zzip-zip.htm zzip-file.htm zzip-sdl-rwops.htm \
-            zzip-extio.htm zzip-xor.htm zzip-api.htm  zzip-parse.htm \
+            zzip-extio.htm zzip-xor.htm zzip-crypt.htm \
+            zzip-api.htm  zzip-parse.htm \
             64on32.htm future.htm configs.htm sfx-make.htm \
-            history.htm referentials.htm  copying.htm      manpages.ar
+            history.htm referentials.htm  copying.htm  manpages.ar
 SDL = @top_srcdir@/SDL
 SDL_RWOPS = $(SDL)/SDL_rwops_zzcat.c \
             $(SDL)/SDL_rwops_zzip.c $(SDL)/SDL_rwops_zzip.h
 changelog = @top_srcdir@/ChangeLog
 
 EXTRA_DIST = make-doc.py $(doc_FILES) $(htm_FILES) $(SDL_RWOPS) \
-             make-doc.pl make-dbk.pl   body.htm
+             make-doc.pl make-dbk.pl   mksite.sh site.htm
 CLEANFILES = *.pc *.omf
 DISTCLEANFILES = zziplib.spec manpages.ar htmpages.ar *.html *.xml
 
@@ -25,7 +26,7 @@ clean-doc clean-docs : clean-unpack
 # -------------------------------------------------------------------
 zziplib.spec : @top_srcdir@/$(PACKAGE).spec
 	@ $(LN_S) $? $@ # the two zzip-doc.* will grep thru zziplib.spec
-doc  : $(doc_FILES) $(htm_FILES:.htm=.html)
+doc  : $(doc_FILES) site.html
 docs : doc manpages.ar htmpages.ar
 docu : docs
 zziplib0.html : zziplib0.xml
@@ -192,9 +193,17 @@ datetail = </td></tr></table>
 borderhead = <table cellpadding="10"><tr><td>
 bordertail = </td></tr></table>
 
-x : $(htm_FILES:.htm=.html)
-$(htm_FILES:.htm=.html) : body.htm
-%.html : %.htm
+site.htm : body.htm
+	D=$(DATESPEC) ; cat $< \
+	| sed -e "s/<!--VERSION-->/$(VERSION)/" \
+	| sed -e "s/<!--DATE-->/$$D/" \
+	> $@
+site.html : site.htm mksite.sh $(htm_FILES)
+	$(SHELL) $(srcdir)/mksite.sh --srcdir=$(srcdir) site.htm
+
+x : $(htm_FILES:.htm=.htmls)
+$(htm_FILES:.htm=.htmls) : body.htm
+%.htmls : %.htm
 	@ title=`grep '<h2>' $< | sed -e 's:</h2>.*::' -e 's:<[^<>]*>::g'` \
 	; D=$(DATESPEC) ; cat $(srcdir)/body.htm \
 	| sed -e "s/<!--VERSION-->/$(VERSION)/" \
@@ -217,7 +226,7 @@ $(htm_FILES:.htm=.html) : body.htm
 	; echo "$$D" >> $@ ; echo "$(datetail)" >> $@ ;	fi
 	@ echo "</td></tr></table></body></html>" >>$@
 
-
+# ----------------------------------------------- create pdf via docbook xml
 zzip.xml : $(htm_FILES) zziplib.xml make-dbk.pl
 	@PERL@ make-dbk.pl $(htm_FILES) zziplib.xml >$@
 	test -s "$@" || rm "$@"
