@@ -2,24 +2,26 @@ AUTOMAKE_OPTIONS = 1.4 foreign
 AUTOTOOL_VERSION=autoconf-2.52 automake-1.5 libtool-1.4.2
 
 doc_FILES = README.MSVC6 README.SDL COPYING.MPL COPYING.LIB COPYING.ZLIB \
-	zziplib.html 
+            zziplib.html
 htm_FILES = zzip-index.htm zzip-zip.htm zzip-file.htm zzip-sdl-rwops.htm \
             zzip-extio.htm zzip-xor.htm zzip-crypt.htm \
             zzip-api.htm  zzip-basics.htm zzip-extras.htm zzip-parse.htm \
-            64on32.htm future.htm configs.htm sfx-make.htm \
-            history.htm referentials.htm  copying.htm  manpages.ar
+            64on32.htm future.htm fseeko.htm mmapped.htm \
+            configs.htm sfx-make.htm \
+            history.htm referentials.htm  copying.htm
 SDL = @top_srcdir@/SDL
 SDL_RWOPS = $(SDL)/SDL_rwops_zzcat.c \
             $(SDL)/SDL_rwops_zzip.c $(SDL)/SDL_rwops_zzip.h
 changelog = @top_srcdir@/ChangeLog
 
 EXTRA_DIST = make-doc.py $(doc_FILES) $(htm_FILES) $(SDL_RWOPS) \
-             make-doc.pl make-dbk.pl   mksite.sh site.htm
+             make-doc.pl make-dbk.pl   mksite.sh body.htm \
+             manpages.ar
 CLEANFILES = *.pc *.omf
 DISTCLEANFILES = zziplib.spec manpages.ar htmpages.ar *.html *.xml
 
 html_FILES = $(htm_FILES:.htm=.html) \
-             $(htm_FILES:.htm=.print.html) 
+             $(htm_FILES:.htm=.print.html) \
              site.html site.print.html
 
 default : doc
@@ -66,7 +68,7 @@ DOCEXAMPLES = $(bins)/zzdir.c $(bins)/zzcat.c \
               $(bins)/zzxordir.c $(bins)/zzxorcat.c \
 	      $(bins)/zzxorcopy.c        $(SDL_RWOPS)
 
-install-docu: $(doc_FILES) site.html $(PACKAGE)-doc.omf
+install-docu: $(doc_FILES) $(man_FILES) site.html $(PACKAGE)-doc.omf
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
 	for i in $(html_FILES) ; do cat $$i \
 	| sed -e 's:--START-->:-- :' -e 's:<!--ENDS--: --:' \
@@ -81,7 +83,7 @@ install-docu: $(doc_FILES) site.html $(PACKAGE)-doc.omf
 	$(INSTALL_DATA) $(PACKAGE)-doc.omf $(DESTDIR)$(pkgomfdir)/
 	- test ".$(DESTDIR)" != "." || scrollkeeper-update
 
-install-sfnet: $(doc_FILES) site.html htmpages.ar
+install-sfnet: $(doc_FILES) $(man_FILES) site.html htmpages.ar
 	$(mkinstalldirs) $(DESTDIR)$(SFNETDOC)
 	$(INSTALL_DATA) $(html_FILES) $(DESTDIR)$(SFNETDOC)
 	for i in $(doc_FILES) $(DOCEXAMPLES) $(changelog) $(srcdir)/README.* \

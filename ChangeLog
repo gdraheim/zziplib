@@ -1,3 +1,6 @@
+2004-05-09
+ * documenting zzipmmapped and zzipfseeko parser libraries
+	
 2004-05-08
  * remove bogus zzip_file_open_ext_io from zzip.h
  * change to use mksite.sh for documentation builds
