@@ -28,7 +28,6 @@
  *          of the Mozilla Public License 1.1
  */
 
-/* we want fseeko/ftello ... */
 #define _LARGEFILE_SOURCE
 
 #include <zzip/fseeko.h>
@@ -103,6 +102,13 @@ struct zzip_entry /* : struct zzip_disk_entry */
 /* ====================================================================== */
 /*                      helper functions                                  */
 
+/** => zzip_entry_data_offset
+ * This functions read the correspoding struct zzip_file_header from 
+ * the zip disk of the given "entry". The returned off_t points to the
+ * end of the file_header where the current fseek pointer has stopped.
+ * This is used to immediatly parse out any filename/extras block following
+ * the file_header. The return value is null on error.
+ */
 static zzip_off_t
 zzip_entry_fread_file_header (ZZIP_ENTRY* entry, 
 			     struct zzip_file_header* file_header)
@@ -135,7 +141,7 @@ zzip_entry_data_offset(ZZIP_ENTRY* entry)
     return offset; ____;
 }
 
-/** => zzip_entry_to_data
+/** => zzip_entry_data_offset
  * This function is a big helper despite its little name: in a zip file the
  * encoded filenames are usually NOT zero-terminated but for common usage
  * with libc we need it that way. Secondly, the filename SHOULD be present
@@ -271,7 +277,9 @@ zzip_entry_findfirst(FILE* disk)
  * This function takes an existing "entry" in the central root directory
  * (e.g. from zzip_entry_findfirst) and moves it to point to the next entry.
  * On error it returns 0, otherwise the old entry. If no further match is
- * found then null is returned and the entry already free()d.
+ * found then null is returned and the entry already free()d. If you want
+ * to stop searching for matches before that case then please call 
+ * => zzip_entry_free on the cursor struct ZZIP_ENTRY.
  */
 ZZIP_ENTRY* _zzip_restrict
 zzip_entry_findnext(ZZIP_ENTRY* _zzip_restrict entry)
@@ -419,16 +427,17 @@ struct zzip_entry_file /* : zzip_file_header */
     char     buffer[PAGESIZE];         /* work buffer for inflate algorithm */
 };
 
-/** => zzip_disk_fopen
+/** open a file within a zip disk for reading
  *
- * the ZZIP_DISK_FILE* is rather simple in just encapsulating the
- * arguments given to this function plus a zlib deflate buffer.
- * Note that the ZZIP_DISK pointer does already contain the full
- * mmapped file area of a zip disk, so open()ing a file part within
- * that area happens to be a lookup of its bounds and encoding. That
- * information is memorized on the ZZIP_DISK_FILE so that subsequent
- * _read() operations will be able to get the next data portion or
- * return an eof condition for that file part wrapped in the zip archive.
+ * This function does take an "entry" argument and copies it (or just takes
+ * it over as owner) to a new ZZIP_ENTRY_FILE handle structure. That
+ * structure contains also a zlib buffer for decoding. This function does
+ * seek to the file_header of the given "entry" and validates it for the
+ * data buffer following it. We do also prefetch some data from the data
+ * buffer thereby trying to match the disk pagesize for faster access later.
+ * The => zzip_entry_fread will then read in chunks of pagesizes which is
+ * the size of the internal readahead buffer. If an error occurs then null
+ * is returned.
  */
 ZZIP_ENTRY_FILE* _zzip_restrict
 zzip_entry_fopen (ZZIP_ENTRY* entry, int takeover)
@@ -481,11 +490,11 @@ zzip_entry_fopen (ZZIP_ENTRY* entry, int takeover)
     return 0;
 }
 
-/** openening a file part wrapped within a (mmapped) zip archive
+/** => zzip_entry_fopen
  *
  * This function opens a file found by name, so it does a search into
- * the zip central directory with => zzip_disk_findfile and whatever
- * is found first is given to => zzip_disk_entry_fopen
+ * the zip central directory with => zzip_entry_findfile and whatever
+ * is found first is given to => zzip_entry_fopen
  */
 ZZIP_ENTRY_FILE* _zzip_restrict
 zzip_entry_ffile (FILE* disk, char* filename)
@@ -495,12 +504,12 @@ zzip_entry_ffile (FILE* disk, char* filename)
 }
 
 
-/** => zzip_disk_fopen
+/** => zzip_entry_fopen
  *
  * This function reads more bytes into the output buffer specified as
  * arguments. The return value is null on eof or error, the stdio-like
  * interface can not distinguish between these so you need to check
- * with => zzip_disk_feof for the difference.
+ * with => zzip_entry_feof for the difference.
  */
 zzip_size_t
 zzip_entry_fread (void* ptr, zzip_size_t sized, zzip_size_t nmemb,
@@ -548,7 +557,7 @@ zzip_entry_fread (void* ptr, zzip_size_t sized, zzip_size_t nmemb,
 
 /** => zzip_entry_fopen
  * This function releases any zlib decoder info needed for decompression
- * and dumps the ZZIP_ENTRY_FILE* then.
+ * and dumps the ZZIP_ENTRY_FILE struct then.
  */
 int
 zzip_entry_fclose (ZZIP_ENTRY_FILE* file)

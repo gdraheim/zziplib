@@ -229,6 +229,7 @@ def scan_options (options, list):
 
         # cut per-file comment block
         found = m(text, r"(?sx)  [/][*]+(?=\s) ([^¬]+) ¬ "
+                  r"(?:\s*\#define\s*\S+)*"
                   r"(\s*\#include\s*<[^<>]*>(?:\s*//[^\n]*)?)")
         if found:
             file.comment = decode(found.group(1))

@@ -35,7 +35,7 @@ uint16_t __zzip_get16(unsigned char * s)
 #endif
 }
 
-/** => zzip_get32
+/** => __zzip_get32
  * This function pushes a 32bit value at the specified address
  */
 void __zzip_set32(unsigned char * s, uint32_t v)
