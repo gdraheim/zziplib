@@ -207,7 +207,7 @@ zzip_createdir(zzip_char_t* name, int o_mode)
         return zzip_dir_creat (name, o_mode);
 }
 
-/** => zzip_file_creat                         => mkdir(2), zzip_dir_creat
+/** => zzip_file_creat                   => mkdir(2), creat(2), zzip_dir_creat
  *
  * This function has an additional primary argument over the posix
  * mkdir(2) - if it is null then this function behaves just like
@@ -255,7 +255,7 @@ zzip_file_mkdir(ZZIP_DIR* dir, zzip_char_t* name, int o_mode)
     }
 }
 
-/** start next file entry in a zip archive             => creat(2)
+/** start next file entry in a zip archive
  *
  * This function will create a new file within a zzip archive, the
  * one given as the primary argument and additionally to the posix
@@ -367,8 +367,8 @@ zzip_fwrite(const void* ptr, zzip_size_t len, zzip_size_t multiply,
          zzip_file_mkdir(zzip_savefile,name,mode)
  *
  */
-int
-zzip_mkdir(zzip_char_t* name, int o_mode) inline
+int inline
+zzip_mkdir(zzip_char_t* name, int o_mode)
 {
     return zzip_file_creat(zzip_savefile, name, mode);
 }
@@ -390,8 +390,8 @@ zzip_mkdir(zzip_char_t* name, int o_mode) inline
  #define zzip_creat(name,mode) \ -
          zzip_file_creat(zzip_savefile,name,mode)
  */
-ZZIP_FILE*
-zzip_creat(zzip_char_t* name, int o_mode) inline
+ZZIP_FILE* inline
+zzip_creat(zzip_char_t* name, int o_mode)
 {
     return zzip_file_creat(zzip_savefile, name, mode);
 }
@@ -422,8 +422,8 @@ zzip_creat(zzip_char_t* name, int o_mode) inline
  * => zzip_creat and => zzip_mkdir to run as => creat(2) / => mkdir(2) 
  * on the real filesystem.
  */
-void
-zzip_mkfifo(zzip_char_t* name, int o_mode) inline
+void inline
+zzip_mkfifo(zzip_char_t* name, int o_mode)
 {   
     if (zzip_savefile) zzip_closedir (zzip_savefile); 
     zzip_savefile = zzip_createdir(name, o_mode);
@@ -447,8 +447,8 @@ zzip_mkfifo(zzip_char_t* name, int o_mode) inline
        { zzip_closedir(zzip_savefile); zzip_savefile = 0; }
  *
  */
-void
-zzip_sync(void) inline
+void inline
+zzip_sync(void) 
 {   
     zzip_closedir (zzip_savefile); zzip_savefile = 0; 
 }
