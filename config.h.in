@@ -1,0 +1,117 @@
+/* config.h.in.  Generated automatically from configure.ac by autoheader.  */
+
+/* Define to empty if `const' does not conform to ANSI C. */
+#undef const
+
+/* Number of bits in a file offset, on hosts where this is settable. */
+#undef _FILE_OFFSET_BITS
+
+/* Define if you have the <direct.h> header file. */
+#undef HAVE_DIRECT_H
+
+/* Define if you have the <dirent.h> header file, and it defines `DIR'. */
+#undef HAVE_DIRENT_H
+
+/* Define if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
+
+/* Define if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define if you have the <io.h> header file. */
+#undef HAVE_IO_H
+
+/* Define if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* Define if you have the <ndir.h> header file, and it defines `DIR'. */
+#undef HAVE_NDIR_H
+
+/* Define if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define if you have the `strcasecmp' function. */
+#undef HAVE_STRCASECMP
+
+/* Define if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define if you have the <sys/dir.h> header file, and it defines `DIR'. */
+#undef HAVE_SYS_DIR_H
+
+/* Define if you have the <sys/int_types.h> header file. */
+#undef HAVE_SYS_INT_TYPES_H
+
+/* Define if you have the <sys/mman.h> header file. */
+#undef HAVE_SYS_MMAN_H
+
+/* Define if you have the <sys/ndir.h> header file, and it defines `DIR'. */
+#undef HAVE_SYS_NDIR_H
+
+/* Define if you have the <sys/param.h> header file. */
+#undef HAVE_SYS_PARAM_H
+
+/* Define if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define if you have the <winbase.h> header file. */
+#undef HAVE_WINBASE_H
+
+/* Define if you have the <windows.h> header file. */
+#undef HAVE_WINDOWS_H
+
+/* Define if you have the <winnt.h> header file. */
+#undef HAVE_WINNT_H
+
+/* Define if you have the <zlib.h> header file. */
+#undef HAVE_ZLIB_H
+
+/* Define as `__inline' if that's what the C compiler calls it, or to nothing
+   if it is not supported. */
+#undef inline
+
+/* Define for large files, on AIX-style hosts. */
+#undef _LARGE_FILES
+
+/* whether the system defaults to 32bit off_t but can do 64bit when requested
+   */
+#undef LARGEFILE_SENSITIVE
+
+/* Define to `long' if <sys/types.h> does not define. */
+#undef off_t
+
+/* Name of package */
+#undef PACKAGE
+
+/* The number of bytes in type int */
+#undef SIZEOF_INT
+
+/* The number of bytes in type long */
+#undef SIZEOF_LONG
+
+/* The number of bytes in type short */
+#undef SIZEOF_SHORT
+
+/* Define to `unsigned' if <sys/types.h> does not define. */
+#undef size_t
+
+/* Define to `int' if <sys/types.h> does not define. */
+#undef ssize_t
+
+/* Define if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Version number of package */
+#undef VERSION
