@@ -46,7 +46,7 @@ typedef enum
     ZZIP_ENOENT =       ZZIP_ERROR-28,
     ZZIP_UNSUPP_COMPR = ZZIP_ERROR-29,
     ZZIP_CORRUPTED =    ZZIP_ERROR-31,
-    ZZIP_UNDEF =        ZZIP_ERROR-32,
+    ZZIP_UNDEF =        ZZIP_ERROR-32
 } zzip_error_t;
 
 /*
