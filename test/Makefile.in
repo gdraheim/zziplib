@@ -1,0 +1,583 @@
+# Makefile.in generated automatically by automake 1.5 from Makefile.am.
+
+# Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
+# Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+@SET_MAKE@
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL_HEADER = $(INSTALL_DATA)
+transform = @program_transform_name@
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+build_alias = @build_alias@
+build_triplet = @build@
+host_alias = @host_alias@
+host_triplet = @host@
+target_alias = @target_alias@
+target_triplet = @target@
+AMTAR = @AMTAR@
+AS = @AS@
+AWK = @AWK@
+CC = @CC@
+CONFIG_FILES = @CONFIG_FILES@
+DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
+INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+LARGEFILE_CFLAGS = @LARGEFILE_CFLAGS@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+LTREL = @LTREL@
+LTVER = @LTVER@
+MAINT = @MAINT@
+MAJOR = @MAJOR@
+MICRO = @MICRO@
+MINOR = @MINOR@
+MKZIP = @MKZIP@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+PACKAGE = @PACKAGE@
+PATCH = @PATCH@
+PERL = @PERL@
+PKG_CONFIG = @PKG_CONFIG@
+PYTHON = @PYTHON@
+RANLIB = @RANLIB@
+RESOLVES = @RESOLVES@
+SDL = @SDL@
+SED = @SED@
+STRIP = @STRIP@
+THREAD_SAFE = @THREAD_SAFE@
+VERSION = @VERSION@
+XMLTO = @XMLTO@
+ZIPTESTS = @ZIPTESTS@
+ZLIB_INCL = @ZLIB_INCL@
+ZLIB_LDIR = @ZLIB_LDIR@
+ZLIB_VERSION = @ZLIB_VERSION@
+ZZIPLIB_LDFLAGS = @ZZIPLIB_LDFLAGS@
+am__include = @am__include@
+am__quote = @am__quote@
+docdir = @docdir@
+install_sh = @install_sh@
+pkgconfig_libdir = @pkgconfig_libdir@
+pkgconfig_libfile = @pkgconfig_libfile@
+
+AUTOMAKE_OPTIONS = 1.4 foreign
+AUTOTOOL_VERSION = autoconf-2.52 automake-1.5 libtool-1.4.2
+DEFAULT_INCLUDES = # nothing - no default of -I. -I$(srcdir)
+DEFS = @DEFS@ -I$(top_builddir) -I$(top_srcdir) # also for automake 1.4
+
+EXTRA_DIST = test.zip test1.zip
+DISTCLEANFILES = test*.dat test2.zip test3.zip
+
+zzcat = ../bins/zzcat$(EXEEXT)
+zzdir = ../bins/zzdir$(EXEEXT)
+zziptest = ../bins/zziptest$(EXEEXT)
+zzxorcat = ../bins/zzxorcat$(EXEEXT)
+zzxordir = ../bins/zzxordir$(EXEEXT)
+zzxorcopy = ../bins/zzxorcopy$(EXEEXT)
+
+# -------------------------------------------------------------------
+NULL = /dev/null
+README = @top_srcdir@/README
+
+
+# -------------------------------------------------------------------
+stdtests = @ZIPTESTS@ check-test0 check-test1 check-zzdir check-zzcat
+xortests = @ZIPTESTS@ check-zzxor check-zzxordir check-zzxorcat
+sfxtests = @ZIPTESTS@ check-sfx
+
+# -------------------------------------------------------------------
+ECHON = echo -n
+BRUTE = 0    # default is less than a thousand tests
+
+
+# -------------------------------------------------------------------
+noinst_PROGRAMS = zzipself zzipsetstub
+
+zzipself_LDFLAGS = @ZZIPLIB_LDFLAGS@
+zzipself_LDADD = ../zzip/libzzip.la @RESOLVES@ -lz
+subdir = test
+mkinstalldirs = $(SHELL) $(top_srcdir)/uses/mkinstalldirs
+CONFIG_HEADER = $(top_builddir)/config.h
+CONFIG_CLEAN_FILES =
+noinst_PROGRAMS = zzipself$(EXEEXT) zzipsetstub$(EXEEXT)
+PROGRAMS = $(noinst_PROGRAMS)
+
+zzipself_SOURCES = zzipself.c
+zzipself_OBJECTS = zzipself.$(OBJEXT)
+zzipself_DEPENDENCIES = ../zzip/libzzip.la
+zzipsetstub_SOURCES = zzipsetstub.c
+zzipsetstub_OBJECTS = zzipsetstub.$(OBJEXT)
+zzipsetstub_LDADD = $(LDADD)
+zzipsetstub_DEPENDENCIES =
+zzipsetstub_LDFLAGS =
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+depcomp = $(SHELL) $(top_srcdir)/uses/depcomp
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/zzipself.Po $(DEPDIR)/zzipsetstub.Po
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
+	$(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+CFLAGS = @CFLAGS@
+DIST_SOURCES = zzipself.c zzipsetstub.c
+DIST_COMMON = README Makefile.am Makefile.in
+SOURCES = zzipself.c zzipsetstub.c
+
+all: all-am
+
+.SUFFIXES:
+.SUFFIXES: .c .lo .o .obj
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+	-rm -f libtool
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
+	cd $(top_srcdir) && \
+	  $(AUTOMAKE) --foreign  test/Makefile
+Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) && \
+	  CONFIG_HEADERS= CONFIG_LINKS= \
+	  CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
+
+clean-noinstPROGRAMS:
+	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+zzipself$(EXEEXT): $(zzipself_OBJECTS) $(zzipself_DEPENDENCIES) 
+	@rm -f zzipself$(EXEEXT)
+	$(LINK) $(zzipself_LDFLAGS) $(zzipself_OBJECTS) $(zzipself_LDADD) $(LIBS)
+zzipsetstub$(EXEEXT): $(zzipsetstub_OBJECTS) $(zzipsetstub_DEPENDENCIES) 
+	@rm -f zzipsetstub$(EXEEXT)
+	$(LINK) $(zzipsetstub_LDFLAGS) $(zzipsetstub_OBJECTS) $(zzipsetstub_LDADD) $(LIBS)
+
+mostlyclean-compile:
+	-rm -f *.$(OBJEXT) core *.core
+
+distclean-compile:
+	-rm -f *.tab.c
+
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/zzipself.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/zzipsetstub.Po@am__quote@
+
+distclean-depend:
+	-rm -rf $(DEPDIR)
+
+.c.o:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(COMPILE) -c `test -f $< || echo '$(srcdir)/'`$<
+
+.c.obj:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(COMPILE) -c `cygpath -w $<`
+
+.c.lo:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(LTCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
+CCDEPMODE = @CCDEPMODE@
+uninstall-info-am:
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
+	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	mkid -fID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+		$(TAGS_FILES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
+
+GTAGS:
+	here=`CDPATH=: && cd $(top_builddir) && pwd` \
+	  && cd $(top_srcdir) \
+	  && gtags -i $(GTAGS_ARGS) $$here
+
+distclean-tags:
+	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH
+
+DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+
+top_distdir = ..
+distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  if test -f $$file; then d=.; else d=$(srcdir); fi; \
+	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
+	  if test "$$dir" != "$$file" && test "$$dir" != "."; then \
+	    $(mkinstalldirs) "$(distdir)/$$dir"; \
+	  fi; \
+	  if test -d $$d/$$file; then \
+	    cp -pR $$d/$$file $(distdir) \
+	    || exit 1; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || cp -p $$d/$$file $(distdir)/$$file \
+	    || exit 1; \
+	  fi; \
+	done
+check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) check-local
+check: check-am
+all-am: Makefile $(PROGRAMS)
+
+installdirs:
+
+install: install-am
+install-exec: install-exec-am
+install-data: install-data-am
+uninstall: uninstall-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+
+installcheck: installcheck-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
+	  `test -z '$(STRIP)' || \
+	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
+mostlyclean-generic:
+
+clean-generic:
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES) stamp-h stamp-h[0-9]*
+	-test -z "$(DISTCLEANFILES)" || rm -f $(DISTCLEANFILES)
+
+maintainer-clean-generic:
+	@echo "This command is intended for maintainers to use"
+	@echo "it deletes files that may require special tools to rebuild."
+clean: clean-am
+
+clean-am: clean-generic clean-libtool clean-noinstPROGRAMS \
+	mostlyclean-am
+
+distclean: distclean-am
+
+distclean-am: clean-am distclean-compile distclean-depend \
+	distclean-generic distclean-libtool distclean-tags
+
+dvi: dvi-am
+
+dvi-am:
+
+info: info-am
+
+info-am:
+
+install-data-am:
+
+install-exec-am:
+
+install-info: install-info-am
+
+install-man:
+
+installcheck-am:
+
+maintainer-clean: maintainer-clean-am
+
+maintainer-clean-am: distclean-am maintainer-clean-generic
+
+mostlyclean: mostlyclean-am
+
+mostlyclean-am: mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool
+
+uninstall-am: uninstall-info-am
+
+.PHONY: GTAGS all all-am check check-am check-local clean clean-generic \
+	clean-libtool clean-noinstPROGRAMS distclean distclean-compile \
+	distclean-depend distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am info info-am install \
+	install-am install-data install-data-am install-exec \
+	install-exec-am install-info install-info-am install-man \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	tags uninstall uninstall-am uninstall-info-am
+
+
+$(zzcat) $(zzdir) $(zziptest) $(zzxorcat) $(zzxordir) $(xorcopy) : \
+        @top_srcdir@/bins/*.c @top_srcdir@/zzip/*.c
+	(cd ../bins && $(MAKE))
+
+testzip testzips : test.zip test1.zip test2.zip test3.zip 
+
+test.zip : $(README)
+	test -f README || ln -s $(README) .
+	- $(MKZIP) test_.zip README
+	@ if test -s test_.zip ; then echo mv test_.zip $@ ; mv test_.zip $@ \
+	; else if test ! -s $@ ; then echo test -s ">" $@ ; test -s > $@ ;fi fi
+
+test1.zip :
+	@ echo $(MKZIP) $@ ... \
+	; mkdir test.tmp \
+	; for i in 1 2 3 4 5 6 8 9 \
+	; do echo "file-$i" >test.tmp/file.$$i ; done \
+	; echo " a plain text file here" >test.tmp/README \
+	; (cd test.tmp && $(MKZIP) ../$@ file.* >$(NULL)) \
+	; rm -rf test.tmp
+
+test2.zip : # will not be shipped in source tarball
+	@ echo $(MKZIP) $@ ... \
+	; mkdir test.tmp \
+	; for i in 1 2 3 4 5 6 8 9 ; do for j in 1 2 3 4 5 6 7 8 9 \
+	; do echo "file-$i" >test.tmp/file.$$j$$i ; done done \
+	; (cd test.tmp && $(MKZIP) ../$@ file.* >$(NULL)) \
+	; rm -rf test.tmp
+
+test3.zip : # will not be shipped in source tarball
+	@ echo $(MKZIP) $@ ... \
+	; mkdir test.tmp ; for h in 1 2 3 4 5 6 7 8 9 ; do : \
+	; for i in 1 2 3 4 5 6 8 9 ; do for j in 1 2 3 4 5 6 7 8 9 \
+	; do echo "file-$i" >test.tmp/file.$$h$$j$$i ; done done done \
+	; (cd test.tmp && $(MKZIP) ../$@ file.* >$(NULL)) \
+	; rm -rf test.tmp
+
+test.dat : test.zip
+	$(zzxorcopy) $? $@
+test1.dat : test1.zip
+	$(zzxorcopy) $? $@
+test2.dat : test2.zip
+	$(zzxorcopy) $? $@
+test3.dat : test3.zip
+	$(zzxorcopy) $? $@
+
+check-local: check-readme $(stdtests) $(xortests) $(sfxtests)
+
+check-readme : $(zzcat)  test.zip
+	@ test -f test.zip || cp $(srcdir)/test.zip test.zip
+	@ echo checking $(zzcat) test/README 
+	@ $(zzcat) test/README >test.out
+	@ if diff test.out $(README) >$(NULL) \
+	; then rm test.out ; echo check OK ; true \
+	; else rm test.out ; echo check FAIL ; false ; fi
+
+check-zzxor : $(zzxorcat) test.dat
+	@ echo checking $(zzxorcat) test.dat/README 
+	@ $(zzxorcat) test.dat/README >test.out
+	@ if diff test.out $(README) >$(NULL) \
+	; then rm test.out ; echo check OK ; true \
+	; else rm test.out ; echo check FAIL ; false ; fi
+
+test: test0 test1 test2 test3
+test0: $(zziptest)
+	$(zziptest) test.zip
+test1: $(zziptest)
+	$(zziptest) test1.zip
+test2: $(zzcat)
+	$(zzcat) test/README
+test3: $(zzdir)
+	$(zzdir) test1.zip
+
+check-test0 : $(zziptest)
+	@ echo ___ $@ ___
+	$(zziptest) test.zip >test.out
+	rm test.out
+check-test1 : $(zziptest)
+	@ test -f test1.zip || ln -s $(srcdir)/test1.zip test1.zip
+	@ echo ___ $@ ___ "(about ten seconds)"
+	$(zziptest) test1.zip >test.out
+	rm test.out
+
+check-zzdir : test1.zip test2.zip test3.zip $(zzdir) 
+	@ echo ___ $@ ___
+	   ./$(zzdir) test1 > test.out
+	@ X="$(zzdir) test1 "\
+	; if grep file.1 test.out >$(NULL) ; then : \
+	; if grep file.9 test.out >$(NULL) ; then : \
+	; echo ..$$X.. OK ; true ; else echo ..$$X.. FAIL ; false ; fi fi
+	   ./$(zzdir) test2 > test.out
+	@ X="$(zzdir) test2 "\
+	; if grep file.11 test.out >$(NULL) ; then : \
+	; if grep file.99 test.out >$(NULL) ; then : \
+	; echo ..$$X.. OK ; true ; else echo ..$$X.. FAIL ; false ; fi fi
+	   ./$(zzdir) test3 > test.out
+	@ X="$(zzdir) test3 "\
+	; if grep file.111 test.out >$(NULL) ; then : \
+	; if grep file.999 test.out >$(NULL) ; then : \
+	; echo ..$$X.. OK ; true ; else echo ..$$X.. FAIL ; false ; fi fi
+	@ X="$(zzdir) test000" ; echo ./$$X "(negative test)" \
+	; if ./$(zzdir) test000 >test.out ; then : \
+	; echo ..$$X.. FAIL ; false ; else echo ..$$X.. OK ; true ; fi 
+	rm test.out
+
+check-zzcat : test1.zip test2.zip test3.zip $(zzcat)
+	@ echo ___ $@ ___
+	   ./$(zzcat) test1/file.1 test1/file.9 > test.out
+	@ X="$(zzcat) test1/file.1 test1/file.9 "\
+	; if grep file-1 test.out >$(NULL) ; then : \
+	; if grep file-9 test.out >$(NULL) ; then : \
+	; echo ..$$X.. OK ; true ; else echo ..$$X.. FAIL ; false ; fi fi
+	   ./$(zzcat) test2/file.11 test2/file.99 > test.out
+	@ X="$(zzcat) test2/file.10 test2/file.99 "\
+	; if grep file-10 test.out >$(NULL) ; then : \
+	; if grep file-99 test.out >$(NULL) ; then : \
+	; echo ..$$X.. OK ; true ; else echo ..$$X.. FAIL ; false ; fi fi
+	   ./$(zzcat) test3/file.111 test3/file.999 > test.out
+	@ X="$(zzcat) test3/file.111 test3/file.999 "\
+	; if grep file-100 test.out >$(NULL) ; then : \
+	; if grep file-999 test.out >$(NULL) ; then : \
+	; echo ..$$X.. OK ; true ; else echo ..$$X.. FAIL ; false ; fi fi
+	@ X="$(zzcat) test1/file.999" ; echo ./$$X "(negative test)" \
+	; if ./$(zzdir) test1/file.999 >test.out ; then : \
+	; echo ..$$X.. FAIL ; false ; else echo ..$$X.. OK ; true ; fi 
+	rm test.out
+
+check-zzxordir : test1.dat test2.dat $(zzxordir) 
+	@ echo ___ $@ ___
+	   ./$(zzxordir) test1 > test.out
+	@ X="$(zzxordir) test1 "\
+	; if grep file.1 test.out >$(NULL) ; then : \
+	; if grep file.9 test.out >$(NULL) ; then : \
+	; echo ..$$X.. OK ; true ; else echo ..$$X.. FAIL ; false ; fi fi
+	   ./$(zzxordir) test2.dat > test.out
+	@ X="$(zzxordir) test2.dat "\
+	; if grep file.11 test.out >$(NULL) ; then : \
+	; if grep file.99 test.out >$(NULL) ; then : \
+	; echo ..$$X.. OK ; true ; else echo ..$$X.. FAIL ; false ; fi fi
+	rm test.out
+
+check-zzxorcat : test1.dat test2.dat $(zzxorcat)
+	@ echo ___ $@ ___
+	   ./$(zzxorcat) test1/file.1 test1/file.9 > test.out
+	@ X="$(zzxorcat) test1/file.1 test1/file.9 "\
+	; if grep file-1 test.out >$(NULL) ; then : \
+	; if grep file-9 test.out >$(NULL) ; then : \
+	; echo ..$$X.. OK ; true ; else echo ..$$X.. FAIL ; false ; fi fi
+	   ./$(zzxorcat) test2.dat/file.11 test2/file.99 > test.out
+	@ X="$(zzxorcat) test2.dat/file.10 test2/file.99 "\
+	; if grep file-10 test.out >$(NULL) ; then : \
+	; if grep file-99 test.out >$(NULL) ; then : \
+	; echo ..$$X.. OK ; true ; else echo ..$$X.. FAIL ; false ; fi fi
+	rm test.out
+brute :      # which is still a brute force selftest
+	@ echo $(MKZIP) $@: \
+	; for u in 1 2 3 4 5 6 8 9 ; do for v in 1 2 3 4 5 6 7 8 9 ; do : \
+	; for w in 1 2 3 4 5 6 8 9 ; do for x in $(BRUTE) ; do : \
+	; $(ECHON) $$u$$v$$w$$x: \
+	; rm -rf test.tmp ; mkdir test.tmp \
+	; for i in 1 2 3 4 5 6 8 9 ; do for j in 1 2 3 4 5 6 7 8 9 ; do : \
+	; for m in 1 2 3 4 5 6 8 9 ; do for n in $(BRUTE) ; do : \
+	; echo "file-$$i$$j$$m$$n" >test.tmp/file$$i$$j$$m$$n.txt \
+	;        test "$$i$$j$$m$$n" = "$$u$$v$$w$$x" && break \
+	; done ; test "$$i$$j$$m$$n" = "$$u$$v$$w$$x" && break \
+	; done ; test "$$i$$j$$m$$n" = "$$u$$v$$w$$x" && break \
+	; done ; test "$$i$$j$$m$$n" = "$$u$$v$$w$$x" && break \
+	; done ; test -f test.tmp/file$$i$$j$$m$$n.txt || exit 2 \
+	; (cd test.tmp && $(MKZIP) ../test$$u$$v$$w$$x.zip file*.* >$(NULL)) \
+	; rm -rf test.tmp \
+	; for i in 1 2 3 4 5 6 8 9 ; do for j in 1 2 3 4 5 6 7 8 9 ; do : \
+	; for m in 1 2 3 4 5 6 8 9 ; do for n in $(BRUTE) ; do : \
+	; ./$(zzcat) test$$u$$v$$w$$x/file$$i$$j$$m$$n.txt >test.out \
+	; if grep file-$$i$$j$$m$$n test.out >$(NULL) ; then rm test.out \
+	; else echo ERROR file-$$i$$j$$m$$n diff in test$$u$$v$$w$$x \
+	; exit 1 ; fi \
+	; ./$(zzdir) test$$u$$v$$w$$x >test.out \
+	; if grep file$$i$$j$$m$$n.txt test.out >$(NULL) ; then rm test.out \
+	; else echo ERROR file$$i$$j$$m$$n.txt not in test$$u$$v$$w$$x \
+	; exit 1 ; fi \
+	;        test "$$i$$j$$m$$n" = "$$u$$v$$w$$x" && break \
+	; done ; test "$$i$$j$$m$$n" = "$$u$$v$$w$$x" && break \
+	; done ; test "$$i$$j$$m$$n" = "$$u$$v$$w$$x" && break \
+	; done ; test "$$i$$j$$m$$n" = "$$u$$v$$w$$x" && break \
+	; done ; rm test$$u$$v$$w$$x.zip \
+	; done ; done ; done ; done ; true
+
+../zzip/libzzip.la : @top_srcdir@/zzip/*.c
+	(cd ../zzip && $(MAKE) `basename $@`)
+
+zzshowme$(EXEEXT) : zzipself$(EXEEXT) zzipsetstub$(EXEEXT)
+	zip -0 -j $@ .libs/zzipself$(EXEEXT)
+	zip -9 -j $@ $(README)
+	test ! -f $@.zip || mv $@.zip $@
+	./zzipsetstub $@ .libs/zzipself$(EXEEXT)
+	- chmod +x $@
+
+check-sfx : zzshowme$(EXEEXT)
+	echo ___ $@ ___
+	@ echo "./zzshowme readme >readme.out" \
+	; export LD_LIBRARY_PATH="../zzip/.libs:$$LD_LIBRARY_PATH" \
+	; ./zzshowme readme >readme.out 2>readme.err || cat readme.err || true
+	@ echo 'grep readme.out $(README) || grep "libzzip-" readme.err' \
+	; if test -s readme.out ; then diff readme.out $(README) \
+        ; else grep "libzzip-" readme.err || echo "possibly an error!" ; fi
+	rm readme.out readme.err
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

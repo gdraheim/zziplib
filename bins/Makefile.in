@@ -1,0 +1,481 @@
+# Makefile.in generated automatically by automake 1.5 from Makefile.am.
+
+# Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
+# Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+@SET_MAKE@
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL_HEADER = $(INSTALL_DATA)
+transform = @program_transform_name@
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+build_alias = @build_alias@
+build_triplet = @build@
+host_alias = @host_alias@
+host_triplet = @host@
+target_alias = @target_alias@
+target_triplet = @target@
+AMTAR = @AMTAR@
+AS = @AS@
+AWK = @AWK@
+CC = @CC@
+CONFIG_FILES = @CONFIG_FILES@
+DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
+INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+LARGEFILE_CFLAGS = @LARGEFILE_CFLAGS@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+LTREL = @LTREL@
+LTVER = @LTVER@
+MAINT = @MAINT@
+MAJOR = @MAJOR@
+MICRO = @MICRO@
+MINOR = @MINOR@
+MKZIP = @MKZIP@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+PACKAGE = @PACKAGE@
+PATCH = @PATCH@
+PERL = @PERL@
+PKG_CONFIG = @PKG_CONFIG@
+PYTHON = @PYTHON@
+RANLIB = @RANLIB@
+RESOLVES = @RESOLVES@
+SDL = @SDL@
+SED = @SED@
+STRIP = @STRIP@
+VERSION = @VERSION@
+XMLTO = @XMLTO@
+ZIPTESTS = @ZIPTESTS@
+ZLIB_INCL = @ZLIB_INCL@
+ZLIB_LDIR = @ZLIB_LDIR@
+ZLIB_VERSION = @ZLIB_VERSION@
+ZZIPLIB_LDFLAGS = @ZZIPLIB_LDFLAGS@
+am__include = @am__include@
+am__quote = @am__quote@
+docdir = @docdir@
+install_sh = @install_sh@
+pkgconfig_libdir = @pkgconfig_libdir@
+pkgconfig_libfile = @pkgconfig_libfile@
+THREAD_SAFE = @THREAD_SAFE@
+
+AUTOMAKE_OPTIONS = 1.4 foreign
+AUTOTOOL_VERSION = autoconf-2.52 automake-1.5 libtool-1.4.2
+DEFAULT_INCLUDES = # nothing - no default of -I. -I$(srcdir)
+DEFS = @DEFS@ -I$(top_builddir) -I$(top_srcdir) # also for automake 1.4
+
+bin_PROGRAMS = zzcat zzdir zzxorcat zzxordir zzxorcopy unzzip
+noinst_PROGRAMS = zziptest zzobfuscated zzip
+aclocaldir = $(datadir)/aclocal
+aclocal_DATA = zziplib.m4
+#
+VERSION_INFO = @VERSION_INFO@
+RELEASE_INFO = @RELEASE_INFO@
+
+#
+WCC10_CLEAN = *.obj *.lk1 *.mk1 *.mk *.sym *.tgt
+
+EXTRA_DIST = $(aclocal_DATA)
+CLEANFILES = $(WCC10_CLEAN)
+
+unzzip_LDFLAGS = @ZZIPLIB_LDFLAGS@
+unzzip_LDADD = ../zzip/libzzip.la @RESOLVES@ -lz
+zzip_LDFLAGS = @ZZIPLIB_LDFLAGS@
+zzip_LDADD = ../zzip/libzzip.la @RESOLVES@ -lz
+zziptest_LDFLAGS = @ZZIPLIB_LDFLAGS@
+zziptest_LDADD = ../zzip/libzzip.la @RESOLVES@ -lz
+zzcat_LDFLAGS = @ZZIPLIB_LDFLAGS@
+zzcat_LDADD = ../zzip/libzzip.la @RESOLVES@ -lz
+zzdir_LDFLAGS = @ZZIPLIB_LDFLAGS@
+zzdir_LDADD = ../zzip/libzzip.la @RESOLVES@ -lz
+zzxorcat_LDFLAGS = @ZZIPLIB_LDFLAGS@
+zzxorcat_LDADD = ../zzip/libzzip.la @RESOLVES@ -lz
+zzxordir_LDFLAGS = @ZZIPLIB_LDFLAGS@
+zzxordir_LDADD = ../zzip/libzzip.la @RESOLVES@ -lz
+zzobfuscated_LDFLAGS = @ZZIPLIB_LDFLAGS@
+zzobfuscated_LDADD = ../zzip/libzzip.la @RESOLVES@ -lz
+subdir = bins
+mkinstalldirs = $(SHELL) $(top_srcdir)/uses/mkinstalldirs
+CONFIG_HEADER = $(top_builddir)/config.h
+CONFIG_CLEAN_FILES =
+bin_PROGRAMS = zzcat$(EXEEXT) zzdir$(EXEEXT) zzxorcat$(EXEEXT) \
+	zzxordir$(EXEEXT) zzxorcopy$(EXEEXT) unzzip$(EXEEXT)
+noinst_PROGRAMS = zziptest$(EXEEXT) zzobfuscated$(EXEEXT) zzip$(EXEEXT)
+PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
+
+unzzip_SOURCES = unzzip.c
+unzzip_OBJECTS = unzzip.$(OBJEXT)
+unzzip_DEPENDENCIES = ../zzip/libzzip.la
+zzcat_SOURCES = zzcat.c
+zzcat_OBJECTS = zzcat.$(OBJEXT)
+zzcat_DEPENDENCIES = ../zzip/libzzip.la
+zzdir_SOURCES = zzdir.c
+zzdir_OBJECTS = zzdir.$(OBJEXT)
+zzdir_DEPENDENCIES = ../zzip/libzzip.la
+zzip_SOURCES = zzip.c
+zzip_OBJECTS = zzip.$(OBJEXT)
+zzip_DEPENDENCIES = ../zzip/libzzip.la
+zziptest_SOURCES = zziptest.c
+zziptest_OBJECTS = zziptest.$(OBJEXT)
+zziptest_DEPENDENCIES = ../zzip/libzzip.la
+zzobfuscated_SOURCES = zzobfuscated.c
+zzobfuscated_OBJECTS = zzobfuscated.$(OBJEXT)
+zzobfuscated_DEPENDENCIES = ../zzip/libzzip.la
+zzxorcat_SOURCES = zzxorcat.c
+zzxorcat_OBJECTS = zzxorcat.$(OBJEXT)
+zzxorcat_DEPENDENCIES = ../zzip/libzzip.la
+zzxorcopy_SOURCES = zzxorcopy.c
+zzxorcopy_OBJECTS = zzxorcopy.$(OBJEXT)
+zzxorcopy_LDADD = $(LDADD)
+zzxorcopy_DEPENDENCIES =
+zzxorcopy_LDFLAGS =
+zzxordir_SOURCES = zzxordir.c
+zzxordir_OBJECTS = zzxordir.$(OBJEXT)
+zzxordir_DEPENDENCIES = ../zzip/libzzip.la
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+depcomp = $(SHELL) $(top_srcdir)/uses/depcomp
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/unzzip.Po $(DEPDIR)/zzcat.Po \
+@AMDEP_TRUE@	$(DEPDIR)/zzdir.Po $(DEPDIR)/zzip.Po \
+@AMDEP_TRUE@	$(DEPDIR)/zziptest.Po $(DEPDIR)/zzobfuscated.Po \
+@AMDEP_TRUE@	$(DEPDIR)/zzxorcat.Po $(DEPDIR)/zzxorcopy.Po \
+@AMDEP_TRUE@	$(DEPDIR)/zzxordir.Po
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
+	$(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+CFLAGS = @CFLAGS@
+DIST_SOURCES = unzzip.c zzcat.c zzdir.c zzip.c zziptest.c zzobfuscated.c \
+	zzxorcat.c zzxorcopy.c zzxordir.c
+DATA = $(aclocal_DATA)
+
+DIST_COMMON = Makefile.am Makefile.in
+SOURCES = unzzip.c zzcat.c zzdir.c zzip.c zziptest.c zzobfuscated.c zzxorcat.c zzxorcopy.c zzxordir.c
+
+all: all-am
+
+.SUFFIXES:
+.SUFFIXES: .c .lo .o .obj
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+	-rm -f libtool
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
+	cd $(top_srcdir) && \
+	  $(AUTOMAKE) --foreign  bins/Makefile
+Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) && \
+	  CONFIG_HEADERS= CONFIG_LINKS= \
+	  CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
+install-binPROGRAMS: $(bin_PROGRAMS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(bindir)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  p1=`echo $$p|sed 's/$(EXEEXT)$$//'`; \
+	  if test -f $$p \
+	     || test -f $$p1 \
+	  ; then \
+	    f=`echo $$p1|sed '$(transform);s/$$/$(EXEEXT)/'`; \
+	   echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/$$f"; \
+	   $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/$$f; \
+	  else :; fi; \
+	done
+
+uninstall-binPROGRAMS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(bin_PROGRAMS)'; for p in $$list; do \
+	  f=`echo $$p|sed 's/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \
+	  echo " rm -f $(DESTDIR)$(bindir)/$$f"; \
+	  rm -f $(DESTDIR)$(bindir)/$$f; \
+	done
+
+clean-binPROGRAMS:
+	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+
+clean-noinstPROGRAMS:
+	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
+unzzip$(EXEEXT): $(unzzip_OBJECTS) $(unzzip_DEPENDENCIES) 
+	@rm -f unzzip$(EXEEXT)
+	$(LINK) $(unzzip_LDFLAGS) $(unzzip_OBJECTS) $(unzzip_LDADD) $(LIBS)
+zzcat$(EXEEXT): $(zzcat_OBJECTS) $(zzcat_DEPENDENCIES) 
+	@rm -f zzcat$(EXEEXT)
+	$(LINK) $(zzcat_LDFLAGS) $(zzcat_OBJECTS) $(zzcat_LDADD) $(LIBS)
+zzdir$(EXEEXT): $(zzdir_OBJECTS) $(zzdir_DEPENDENCIES) 
+	@rm -f zzdir$(EXEEXT)
+	$(LINK) $(zzdir_LDFLAGS) $(zzdir_OBJECTS) $(zzdir_LDADD) $(LIBS)
+zzip$(EXEEXT): $(zzip_OBJECTS) $(zzip_DEPENDENCIES) 
+	@rm -f zzip$(EXEEXT)
+	$(LINK) $(zzip_LDFLAGS) $(zzip_OBJECTS) $(zzip_LDADD) $(LIBS)
+zziptest$(EXEEXT): $(zziptest_OBJECTS) $(zziptest_DEPENDENCIES) 
+	@rm -f zziptest$(EXEEXT)
+	$(LINK) $(zziptest_LDFLAGS) $(zziptest_OBJECTS) $(zziptest_LDADD) $(LIBS)
+zzobfuscated$(EXEEXT): $(zzobfuscated_OBJECTS) $(zzobfuscated_DEPENDENCIES) 
+	@rm -f zzobfuscated$(EXEEXT)
+	$(LINK) $(zzobfuscated_LDFLAGS) $(zzobfuscated_OBJECTS) $(zzobfuscated_LDADD) $(LIBS)
+zzxorcat$(EXEEXT): $(zzxorcat_OBJECTS) $(zzxorcat_DEPENDENCIES) 
+	@rm -f zzxorcat$(EXEEXT)
+	$(LINK) $(zzxorcat_LDFLAGS) $(zzxorcat_OBJECTS) $(zzxorcat_LDADD) $(LIBS)
+zzxorcopy$(EXEEXT): $(zzxorcopy_OBJECTS) $(zzxorcopy_DEPENDENCIES) 
+	@rm -f zzxorcopy$(EXEEXT)
+	$(LINK) $(zzxorcopy_LDFLAGS) $(zzxorcopy_OBJECTS) $(zzxorcopy_LDADD) $(LIBS)
+zzxordir$(EXEEXT): $(zzxordir_OBJECTS) $(zzxordir_DEPENDENCIES) 
+	@rm -f zzxordir$(EXEEXT)
+	$(LINK) $(zzxordir_LDFLAGS) $(zzxordir_OBJECTS) $(zzxordir_LDADD) $(LIBS)
+
+mostlyclean-compile:
+	-rm -f *.$(OBJEXT) core *.core
+
+distclean-compile:
+	-rm -f *.tab.c
+
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/unzzip.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/zzcat.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/zzdir.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/zzip.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/zziptest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/zzobfuscated.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/zzxorcat.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/zzxorcopy.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/zzxordir.Po@am__quote@
+
+distclean-depend:
+	-rm -rf $(DEPDIR)
+
+.c.o:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(COMPILE) -c `test -f $< || echo '$(srcdir)/'`$<
+
+.c.obj:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(COMPILE) -c `cygpath -w $<`
+
+.c.lo:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(LTCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
+CCDEPMODE = @CCDEPMODE@
+uninstall-info-am:
+install-aclocalDATA: $(aclocal_DATA)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(aclocaldir)
+	@list='$(aclocal_DATA)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(aclocaldir)/$$f"; \
+	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(aclocaldir)/$$f; \
+	done
+
+uninstall-aclocalDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(aclocal_DATA)'; for p in $$list; do \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f $(DESTDIR)$(aclocaldir)/$$f"; \
+	  rm -f $(DESTDIR)$(aclocaldir)/$$f; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
+	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	mkid -fID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+		$(TAGS_FILES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
+
+GTAGS:
+	here=`CDPATH=: && cd $(top_builddir) && pwd` \
+	  && cd $(top_srcdir) \
+	  && gtags -i $(GTAGS_ARGS) $$here
+
+distclean-tags:
+	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH
+
+DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+
+top_distdir = ..
+distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
+
+distdir: $(DISTFILES)
+	@for file in $(DISTFILES); do \
+	  if test -f $$file; then d=.; else d=$(srcdir); fi; \
+	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
+	  if test "$$dir" != "$$file" && test "$$dir" != "."; then \
+	    $(mkinstalldirs) "$(distdir)/$$dir"; \
+	  fi; \
+	  if test -d $$d/$$file; then \
+	    cp -pR $$d/$$file $(distdir) \
+	    || exit 1; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || cp -p $$d/$$file $(distdir)/$$file \
+	    || exit 1; \
+	  fi; \
+	done
+check-am: all-am
+check: check-am
+all-am: Makefile $(PROGRAMS) $(DATA)
+
+installdirs:
+	$(mkinstalldirs) $(DESTDIR)$(bindir) $(DESTDIR)$(aclocaldir)
+
+install: install-am
+install-exec: install-exec-am
+install-data: install-data-am
+uninstall: uninstall-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+
+installcheck: installcheck-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
+	  `test -z '$(STRIP)' || \
+	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
+mostlyclean-generic:
+
+clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES) stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+	@echo "This command is intended for maintainers to use"
+	@echo "it deletes files that may require special tools to rebuild."
+clean: clean-am
+
+clean-am: clean-binPROGRAMS clean-generic clean-libtool \
+	clean-noinstPROGRAMS mostlyclean-am
+
+distclean: distclean-am
+
+distclean-am: clean-am distclean-compile distclean-depend \
+	distclean-generic distclean-libtool distclean-tags
+
+dvi: dvi-am
+
+dvi-am:
+
+info: info-am
+
+info-am:
+
+install-data-am: install-aclocalDATA
+
+install-exec-am: install-binPROGRAMS
+
+install-info: install-info-am
+
+install-man:
+
+installcheck-am:
+
+maintainer-clean: maintainer-clean-am
+
+maintainer-clean-am: distclean-am maintainer-clean-generic
+
+mostlyclean: mostlyclean-am
+
+mostlyclean-am: mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool
+
+uninstall-am: uninstall-aclocalDATA uninstall-binPROGRAMS \
+	uninstall-info-am
+
+.PHONY: GTAGS all all-am check check-am clean clean-binPROGRAMS \
+	clean-generic clean-libtool clean-noinstPROGRAMS distclean \
+	distclean-compile distclean-depend distclean-generic \
+	distclean-libtool distclean-tags distdir dvi dvi-am info \
+	info-am install install-aclocalDATA install-am \
+	install-binPROGRAMS install-data install-data-am install-exec \
+	install-exec-am install-info install-info-am install-man \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	tags uninstall uninstall-aclocalDATA uninstall-am \
+	uninstall-binPROGRAMS uninstall-info-am
+
+
+../zzip/libzzip.la : @top_srcdir@/zzip/*.c
+	(cd ../zzip && $(MAKE) `basename $@`)
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

@@ -1,0 +1,473 @@
+# Makefile.in generated automatically by automake 1.5 from Makefile.am.
+
+# Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
+# Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+@SET_MAKE@
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL_HEADER = $(INSTALL_DATA)
+transform = @program_transform_name@
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+build_alias = @build_alias@
+build_triplet = @build@
+host_alias = @host_alias@
+host_triplet = @host@
+target_alias = @target_alias@
+target_triplet = @target@
+AMTAR = @AMTAR@
+AS = @AS@
+AWK = @AWK@
+CC = @CC@
+CONFIG_FILES = @CONFIG_FILES@
+DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
+ECHO = @ECHO@
+EXEEXT = @EXEEXT@
+INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+LARGEFILE_CFLAGS = @LARGEFILE_CFLAGS@
+LIBTOOL = @LIBTOOL@
+LN_S = @LN_S@
+LTREL = @LTREL@
+LTVER = @LTVER@
+MAINT = @MAINT@
+MAJOR = @MAJOR@
+MICRO = @MICRO@
+MINOR = @MINOR@
+MKZIP = @MKZIP@
+OBJDUMP = @OBJDUMP@
+OBJEXT = @OBJEXT@
+PACKAGE = @PACKAGE@
+PATCH = @PATCH@
+PERL = @PERL@
+PKG_CONFIG = @PKG_CONFIG@
+PYTHON = @PYTHON@
+RANLIB = @RANLIB@
+RESOLVES = @RESOLVES@
+SED = @SED@
+STRIP = @STRIP@
+THREAD_SAFE = @THREAD_SAFE@
+VERSION = @VERSION@
+XMLTO = @XMLTO@
+ZIPTESTS = @ZIPTESTS@
+ZLIB_INCL = @ZLIB_INCL@
+ZLIB_LDIR = @ZLIB_LDIR@
+ZLIB_VERSION = @ZLIB_VERSION@
+ZZIPLIB_LDFLAGS = @ZZIPLIB_LDFLAGS@
+am__include = @am__include@
+am__quote = @am__quote@
+docdir = @docdir@
+install_sh = @install_sh@
+pkgconfig_libdir = @pkgconfig_libdir@
+pkgconfig_libfile = @pkgconfig_libfile@
+SDL = @top_srcdir@/SDL
+
+AUTOMAKE_OPTIONS = 1.4 foreign
+AUTOTOOL_VERSION = autoconf-2.52 automake-1.5 libtool-1.4.2
+
+doc_FILES = README.MSVC6 README.SDL COPYING.MPL COPYING.LIB COPYING.ZLIB \
+	zziplib.html 
+
+htm_FILES = zzip-index.htm zzip-zip.htm zzip-file.htm zzip-sdl-rwops.htm \
+            zzip-extio.htm zzip-xor.htm zzip-api.htm  zzip-parse.htm \
+            64on32.htm future.htm configs.htm sfx-make.htm \
+            history.htm referentials.htm  copying.htm      manpages.ar
+
+SDL_RWOPS = $(SDL)/SDL_rwops_zzcat.c \
+            $(SDL)/SDL_rwops_zzip.c $(SDL)/SDL_rwops_zzip.h
+
+changelog = @top_srcdir@/ChangeLog
+
+EXTRA_DIST = make-doc.py $(doc_FILES) $(htm_FILES) $(SDL_RWOPS) \
+             make-doc.pl make-dbk.pl   body.htm
+
+CLEANFILES = *.pc *.omf
+DISTCLEANFILES = zziplib.spec manpages.ar htmpages.ar *.html *.xml
+
+omfdir = ${datadir}/omf
+pkgomfdir = ${omfdir}/${PACKAGE}
+SFNETDIR = /groups/z/zz/zziplib/htdocs
+SFNETDOC = ${datadir}${SFNETDIR}
+pkgdocdir = ${datadir}${SFNETDIR}
+bins = @top_srcdir@/bins
+DOCEXAMPLES = $(bins)/zzdir.c $(bins)/zzcat.c \
+	      $(bins)/zzobfuscated.c $(bins)/zziptest.c \
+              $(bins)/zzxordir.c $(bins)/zzxorcat.c \
+	      $(bins)/zzxorcopy.c        $(SDL_RWOPS)
+
+
+# -------------------------------------------------------------------
+spec_file = $(top_srcdir)/$(PACKAGE).spec
+DOCSERIES = 775fb73e-1874-11d7-93e9-e18cd7ea3c2e
+FROMSPEC = $(spec_file) | head -1 | sed -e 's,<,\&lt;,g' -e 's,>,\&gt;,g'
+DATESPEC = `date +%Y-%m-%d`
+
+DOCBOOKDTD = -//OASIS/DTD Docbook V4.1.2//EN
+MANSERIES = a302c642-1888-11d7-86f6-ba4b52ef847d
+
+# -------------------------------------------------------------------
+datehead = <hr><table border="0" width="100%"><tr><td> \
+    <a href="mailto:guidod@gmx.de?subject=$(PACKAGE):">guidod@gmx.de</a> \
+    </td><td align="right">
+
+datetail = </td></tr></table>
+borderhead = <table cellpadding="10"><tr><td>
+bordertail = </td></tr></table>
+subdir = docs
+mkinstalldirs = $(SHELL) $(top_srcdir)/uses/mkinstalldirs
+CONFIG_HEADER = $(top_builddir)/config.h
+CONFIG_CLEAN_FILES =
+DIST_SOURCES =
+DIST_COMMON = COPYING.LIB Makefile.am Makefile.in
+all: all-am
+
+.SUFFIXES:
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+	-rm -f libtool
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
+	cd $(top_srcdir) && \
+	  $(AUTOMAKE) --foreign  docs/Makefile
+Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) && \
+	  CONFIG_HEADERS= CONFIG_LINKS= \
+	  CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
+uninstall-info-am:
+tags: TAGS
+TAGS:
+
+
+DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+
+top_distdir = ..
+distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
+
+distdir: $(DISTFILES)
+	$(mkinstalldirs) $(distdir)/$(SDL)
+	@for file in $(DISTFILES); do \
+	  if test -f $$file; then d=.; else d=$(srcdir); fi; \
+	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
+	  if test "$$dir" != "$$file" && test "$$dir" != "."; then \
+	    $(mkinstalldirs) "$(distdir)/$$dir"; \
+	  fi; \
+	  if test -d $$d/$$file; then \
+	    cp -pR $$d/$$file $(distdir) \
+	    || exit 1; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || cp -p $$d/$$file $(distdir)/$$file \
+	    || exit 1; \
+	  fi; \
+	done
+check-am: all-am
+check: check-am
+all-am: Makefile
+
+installdirs:
+
+install: install-am
+install-exec: install-exec-am
+install-data: install-data-am
+uninstall: uninstall-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+
+installcheck: installcheck-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
+	  `test -z '$(STRIP)' || \
+	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
+mostlyclean-generic:
+
+clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES) stamp-h stamp-h[0-9]*
+	-test -z "$(DISTCLEANFILES)" || rm -f $(DISTCLEANFILES)
+
+maintainer-clean-generic:
+	@echo "This command is intended for maintainers to use"
+	@echo "it deletes files that may require special tools to rebuild."
+clean: clean-am
+
+clean-am: clean-generic clean-libtool mostlyclean-am
+
+distclean: distclean-am
+
+distclean-am: clean-am distclean-generic distclean-libtool
+
+dvi: dvi-am
+
+dvi-am:
+
+info: info-am
+
+info-am:
+
+install-data-am:
+
+install-exec-am:
+
+install-info: install-info-am
+
+install-man:
+
+installcheck-am:
+
+maintainer-clean: maintainer-clean-am
+
+maintainer-clean-am: distclean-am maintainer-clean-generic
+
+mostlyclean: mostlyclean-am
+
+mostlyclean-am: mostlyclean-generic mostlyclean-libtool
+
+uninstall-am: uninstall-info-am
+
+.PHONY: all all-am check check-am clean clean-generic clean-libtool \
+	distclean distclean-generic distclean-libtool distdir dvi \
+	dvi-am info info-am install install-am install-data \
+	install-data-am install-exec install-exec-am install-info \
+	install-info-am install-man install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic \
+	mostlyclean-libtool uninstall uninstall-am uninstall-info-am
+
+
+default : doc
+clean-doc clean-docs : clean-unpack
+	- rm $(DISTCLEANFILES) 
+	- rm $(MAINTAINERCLEANFILES)
+
+# -------------------------------------------------------------------
+zziplib.spec : @top_srcdir@/$(PACKAGE).spec
+	@ $(LN_S) $? $@ # the two zzip-doc.* will grep thru zziplib.spec
+doc  : $(doc_FILES) $(htm_FILES:.htm=.html)
+docs : doc manpages.ar htmpages.ar
+docu : docs
+zziplib0.html : zziplib0.xml
+zziplib0.xml : zziplib.spec @srcdir@/Makefile.am @srcdir@/make-doc.pl \
+                 $(srcdir)/make-doc.pl @top_srcdir@/zzip/*.c
+	- @PERL@ $(srcdir)/make-doc.pl @top_srcdir@/zzip/*.c \
+          "suffix=0" "package=$(PACKAGE)" "version=$(VERSION)" \
+          "mainheader=zzip/zzip.h" "exported=<zzip/zzip.h> // or <zziplib.h>" \
+	  "docbookfile=$@" 
+	- test -s $@
+zziplib1.html : zziplib1.xml
+zziplib1.xml : zziplib.spec @srcdir@/Makefile.am @srcdir@/make-doc.py \
+                   $(srcdir)/make-doc.py @top_srcdir@/zzip/*.c
+	- @PYTHON@ $(srcdir)/make-doc.py @top_srcdir@/zzip/*.c suffix=1
+	- test -f zziplib1.docbook && mv zziplib1.docbook $@ ; test -s $@
+zziplib.html :    zziplib1.html zziplib0.html
+	- test -s zziplib0.html && cp zziplib0.html zziplib.html
+	- test -s zziplib1.html && cp zziplib1.html zziplib.html
+	test -s $@
+zziplib.xml :     zziplib1.xml zziplib0.xml
+	- test -s zziplib0.xml && cp zziplib0.xml zziplib.xml
+	- test -s zziplib1.xml && cp zziplib1.xml zziplib.xml
+	test -s $@ || rm $@
+
+install-docu: $(doc_FILES) $(htm_FILES:.htm=.html) $(PACKAGE)-doc.omf
+	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
+	for i in $(htm_FILES) ; do cat $${i}l \
+	| sed -e 's:--START-->:-- :' -e 's:<!--ENDS--: --:' \
+	-e "s:\\(href=\"[^/\"]*\\)[.]html\":\\1.htm\":" \
+	-e "s:\\(href=\"[^/\"]*\\)[.]html\#:\\1.htm\#:" \
+	> $(DESTDIR)$(pkgdocdir)/$$i ; done
+	@ for i in $(doc_FILES) $(DOCEXAMPLES) $(srcdir)/README.* \
+	; do $(INSTALL_DATA) `test -f $$i || echo $(srcdir)/`$$i  \
+	  $(DESTDIR)$(pkgdocdir) ; done
+	(cd $(DESTDIR)$(pkgdocdir) && ln -sf zziplib.html zziplib.htm)
+	$(mkinstalldirs) $(DESTDIR)$(pkgomfdir)
+	$(INSTALL_DATA) $(PACKAGE)-doc.omf $(DESTDIR)$(pkgomfdir)/
+	- test ".$(DESTDIR)" != "." || scrollkeeper-update
+
+install-sfnet: $(doc_FILES) $(htm_FILES:.htm=.html) htmpages.ar
+	$(mkinstalldirs) $(DESTDIR)$(SFNETDOC)
+	$(INSTALL_DATA) $(htm_FILES:.htm=.html) $(DESTDIR)$(SFNETDOC)
+	for i in $(doc_FILES) $(DOCEXAMPLES) $(changelog) $(srcdir)/README.* \
+	; do $(INSTALL_DATA) `test -f $$i || echo $(srcdir)/`$$i \
+	  $(DESTDIR)$(SFNETDOC) ; done
+	(cd $(DESTDIR)$(SFNETDOC) && ln -sf zzip-index.html index.html)
+	$(mkinstalldirs) $(DESTDIR)$(SFNETDOC)/man
+	(test -f htmpages.ar || cd "$srcdir" ; P=`pwd` \
+	; cd $(DESTDIR)$(SFNETDOC)/man && ar x $$P/htmpages.ar)
+
+install-doc : install-docu install-sfnet
+
+# --------------------------------------------------------------------
+man manpages : manpages.ar
+htm htmpages : htmpages.ar
+
+manpages.ar : zziplib.xml
+	@ if test "$(XMLTO)" = ":" \
+	; then echo no xmlto found - could not regenerate "$@" - skipped \
+	; echo just touching the output file "$@" ; touch "$@" \
+	; else echo going to regenerate "$@" in subdir "'"man"'" \
+	; echo 'test ! -d man || rm man/* ; test -d man || mkdir man' \
+	;       test ! -d man || rm man/* ; test -d man || mkdir man  \
+	; echo '(cd man && xmlto man ../zziplib.xml)' \
+	;       (cd man && xmlto man ../zziplib.xml)  \
+	; echo 'test ! -f $@ || mv $@ $@.old' \
+	;       test ! -f $@ || mv $@ $@.old  \
+	; echo '(cd man && ar qc ../$@ *.3)' \
+	;       (cd man && ar qc ../$@ *.3)  \
+	; echo '(rm man/*.3 ; rmdir man)' \
+	;       (rm man/*.3 ; rmdir man)  \
+	; fi ; test -s $@ || mv $@.old $@ \
+        || mv $(srcdir)/$@.old $@ || test -s $@.old >$@
+
+htmpages.ar : zziplib.xml
+	@ if test "$(XMLTO)" = ":" \
+	; then echo no xmlto found - could not regenerate "$@" - skipped \
+	; echo just touching the output file "$@" ; touch "$@" \
+	; else echo going to regenerate "$@" in subdir "'"man"'" \
+	; echo 'test ! -d man || rm /* ; test -d man || mkdir man' \
+	;       test ! -d man || rm man/* ; test -d man || mkdir man  \
+	; echo '(cd man && xmlto html ../zziplib.xml | tee written.lst)' \
+	;       (cd man && xmlto html ../zziplib.xml | tee written.lst)  \
+	; echo 'test ! -f $@ || mv $@ $@.old' \
+	;       test ! -f $@ || mv $@ $@.old  \
+	; echo '(cd man && ar qc ../$@ *.*)' \
+	;       (cd man && ar qc ../$@ *.*)  \
+	; echo '(rm man/*.* ; rmdir man)' \
+	;       (rm man/*.* ; rmdir man)  \
+	; fi ; test -s $@ || mv $@.old $@ \
+        || mv $(srcdir)/$@.old $@ || test -s $@.old >$@
+
+install-man3 : manpages.ar
+	$(mkinstalldirs) $(DESTDIR)$(mandir)/man3
+	P=`pwd` ; cd $(DESTDIR)$(mandir)/man3 \
+        && ar x $$P/manpages.ar && chmod 664 *
+
+unpack : manpages.ar htmpages.ar
+	(rm -rf _htm && mkdir _htm && cd _htm && ar x ../htmpages.ar)
+	(rm -rf _man && mkdir _man && cd _man && ar x ../manpages.ar)
+clean-unpack : 
+	rm -rf _htm
+	rm -rf _man
+
+$(PACKAGE)-doc.omf : $(spec_file) Makefile
+	echo '<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>' >$@
+	echo '<omf><resource><creator> Guido Draheim </creator>' >>$@
+	grep Packager $(FROMSPEC) | sed -e 's,Packager *: *, <maintainer>,' \
+                                    -e '/<maintainer>/s,$$,</maintainer>,' >>$@
+	grep Summary  $(FROMSPEC) | sed -e 's,Summary *: *, <title>,' \
+		       -e '/<title>/s,$$,</title>,' >>$@
+	echo ' <date>'$(DATESPEC)'</date>' >>$@
+	echo ' <version identifier="$(VERSION)" date="'$(DATESPEC)'"/>' >>$@
+	grep Group  $(FROMSPEC) | sed -e 's,Group *: *, <subject category=",' \
+	                -e 's,/,|,g' -e '/<subject/s,$$," />,' >>$@
+	echo ' <format mime="text/html"/>' >>$@
+	echo ' <identifier url="file:$(pkgdocdir)/zzip-index.htm"/>' >>$@
+	echo ' <language code="C"/>' >>$@
+	echo ' <relation seriesid="$(DOCSERIES)"/>' >>$@
+	echo ' <rights type="GNU LGPL" holder="Guido Draheim"' >>$@
+	echo '         license="$(pkgdocdir)/COPYING.LIB"/>' >>$@
+	echo '</resource></omf>' >>$@
+$(PACKAGE)-man.omf : $(PACKAGE)-doc.omf $(PACKAGE).xml
+	sed -e 's,"text/html","text/xml" dtd="$(DOCBOOKDTD)",' \
+	    -e 's,</title>, (Function Reference)</title>,' \
+	    -e 's,/index.html,/manpages.xml,' \
+	    -e 's,$(DOCSERIES),$(MANSERIES),' $(PACKAGE)-doc.omf > $@
+	test -s $@ || rm $@
+
+omf : $(PACKAGE)-doc.omf $(PACKAGE)-man.omf $(PACKAGE).xml
+install-omf : $(PACKAGE)-doc.omf $(PACKAGE)-man.omf $(PACKAGE).xml
+	$(mkinstalldirs) $(DESTDIR)$(pkgomfdir)
+	$(INSTALL_DATA) $(PACKAGE)-doc.omf $(DESTDIR)$(pkgomfdir)/
+	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
+	$(INSTALL_DATA) $(PACKAGE).xml $(DESTDIR)$(pkgdocdir)/manpages.xml
+	$(INSTALL_DATA) $(PACKAGE)-man.omf $(DESTDIR)$(pkgomfdir)/
+	- test ".$(DESTDIR)" != "." || scrollkeeper-update -v
+
+x : $(htm_FILES:.htm=.html)
+$(htm_FILES:.htm=.html) : body.htm
+%.html : %.htm
+	@ title=`grep '<h2>' $< | sed -e 's:</h2>.*::' -e 's:<[^<>]*>::g'` \
+	; D=$(DATESPEC) ; cat $(srcdir)/body.htm \
+	| sed -e "s/<!--VERSION-->/$(VERSION)/" \
+	| sed -e "s/<!--DATE-->/$$D/" \
+	| sed -e "s:</title>: - $$title</title>:" \
+	| sed -e "/$@.>/s:\\([^<>]*\\)</a>:<b>\\1</b></a>:" \
+	> $@
+	@ echo $< '>>' $@; cat $< | sed -e "s/<!--VERSION-->/$(VERSION)/" \
+	-e "s:</h2>\\(.*\\):</h2></td><td><i>\\1</i></td></tr></table>:" \
+	-e 's:<h2>:<table width="100%"><tr valign="bottom"><td><h2>:' \
+	-e 's:<td><i>:<td align="right"><br> <i>:' \
+	-e 's:<P>:<p class="justify"><span class="justify">:g' \
+	-e 's:</P>:</span></p>:g' \
+	-e 's,<date>,<!--DATE: ,' -e 's,</date>, -->,' \
+	-e 's,<!--border-->,$(borderhead)<!--BORDER-->,' >>$@
+	@ if grep '<!--BORDER-->' $@ >/dev/null ; then : \
+	; echo "$(bordertail)<!--/BORDER-->" >>$@ ; fi
+	@ D=`grep '<!--DATE:' $@ | sed -e 's,.*<!--DATE: *,,' -e 's, *-->,,'` \
+	; if test ".$$D" != "." ; then echo '$(datehead)' >>$@ \
+	; echo "$$D" >> $@ ; echo "$(datetail)" >> $@ ;	fi
+	@ echo "</td></tr></table></body></html>" >>$@
+
+zzip.xml : $(htm_FILES) zziplib.xml make-dbk.pl
+	@PERL@ make-dbk.pl $(htm_FILES) zziplib.xml >$@
+	test -s "$@" || rm "$@"
+
+zzip.html : zzip.xml
+	xmlto html-nochunks zzip.xml
+zzip.pdf  : zzip.xml
+	xmlto pdf zzip.xml
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:
