@@ -837,7 +837,9 @@ zzip_rewind(ZZIP_FILE *fp)
     { /* method == 8, deflate */
         err = inflateReset(&fp->d_stream);
         if (err != Z_OK) { goto error; }
-        
+
+	/* start over at next inflate with a fresh read() */
+	fp->d_stream.avail_in = 0;
         fp->crestlen = fp->csize;
     }
 
