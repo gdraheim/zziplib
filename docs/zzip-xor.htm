@@ -23,7 +23,7 @@
       static zzip_ssize_t xor_read (int f, void* p, zzip_size_t l)
       {
           zzip_size_t r = read(f, p, l);
-	  zzip_size_t i;     char* q = p;
+	  zzip_size_t x;  char* q = p;
           for (x=0; x &lt; r; x++) q[x] ^= xor_value;
           return r;
       }

@@ -4,7 +4,7 @@ AUTOTOOL_VERSION=autoconf-2.52 automake-1.5 libtool-1.4.2
 doc_FILES = README.MSVC6 README.SDL COPYING.MPL COPYING.LIB COPYING.ZLIB \
             zziplib.html
 htm_FILES = zzip-index.htm zzip-zip.htm zzip-file.htm zzip-sdl-rwops.htm \
-            zzip-extio.htm zzip-xor.htm zzip-crypt.htm \
+            zzip-extio.htm zzip-xor.htm zzip-crypt.htm zzip-cryptoid.htm \
             zzip-api.htm  zzip-basics.htm zzip-extras.htm zzip-parse.htm \
             64on32.htm future.htm fseeko.htm mmapped.htm \
             configs.htm sfx-make.htm \
