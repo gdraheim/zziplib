@@ -9,7 +9,6 @@
 # elif defined __GNUC__
 # define ZZIP_GNUC_ATLEAST(_M_,_N_) \
         ((__GNUC__ << 10) >= ((_M_) << 10))
-//16122002, tdr
 # else
 # define ZZIP_GNUC_ATLEAST(_M_, _N_) 0
 # endif
