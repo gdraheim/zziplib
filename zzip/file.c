@@ -48,7 +48,6 @@ zzip_file_close(ZZIP_FILE * fp)
     ZZIP_DIR * dir = fp->dir;
     
     if (fp->method)
-
         inflateEnd(&fp->d_stream); /* inflateEnd() can be called many times */
 
     if (fp->buf32k)
@@ -835,9 +834,7 @@ zzip_rewind(ZZIP_FILE *fp)
     
     if (fp->method) 
     { /* method == 8, deflate */
-	inflateEnd(&fp->d_stream);
-        memset(&fp->d_stream, 0, sizeof fp->d_stream);
-        err = inflateInit2(&fp->d_stream, -MAX_WBITS);
+        err = inflateReset(&fp->d_stream);
         if (err != Z_OK) { goto error; }
         
         fp->crestlen = fp->csize;
