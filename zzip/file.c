@@ -119,7 +119,7 @@ _dirsep_casecmp (zzip_char_t* s1, zzip_char_t* s2)
 	c1 = (int)(unsigned char) *s1;
 	c2 = (int)(unsigned char) *s2;
 	if ((c1&0xE0) == 0x40) c1 = mapping[c1&0x1f];
-	if ((c1&0xE0) == 0x40) c2 = mapping[c2&0x1f];
+	if ((c2&0xE0) == 0x40) c2 = mapping[c2&0x1f];
 	if (c1 != c2)
 	    return (c1 - c2);
 	s1++; s2++;
@@ -835,6 +835,7 @@ zzip_rewind(ZZIP_FILE *fp)
     
     if (fp->method) 
     { /* method == 8, deflate */
+	inflateEnd(&fp->d_stream);
         memset(&fp->d_stream, 0, sizeof fp->d_stream);
         err = inflateInit2(&fp->d_stream, -MAX_WBITS);
         if (err != Z_OK) { goto error; }
