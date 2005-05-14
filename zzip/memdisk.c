@@ -45,19 +45,19 @@ static const char* error[] = {
 
 struct _zzip_mem_disk_entry {
     struct _zzip_mem_disk_entry* zz_next;
-    char* zz_name;
-    char* zz_data;
-    int zz_flags;
-    int zz_compr;
-    long zz_crc32;
+    char*      zz_name;
+    char*      zz_data;
+    int        zz_flags;
+    int        zz_compr;
+    long       zz_crc32;
     zzip_off_t zz_csize;
     zzip_off_t zz_usize;
     zzip_off_t zz_offset;
-    int zz_diskstart;
-    int zz_filetype;
-    char* zz_comment;
-    size_t zz_extcount;
-    struct _zzip_mem_disk_extra* zz_extras;
+    int        zz_diskstart;
+    int        zz_filetype;
+    char*      zz_comment;
+    size_t     zz_extcount;
+    struct _zzip_mem_disk_extra* zz_extras; /* extras[extcount] : array */
 };
 
 struct _zzip_mem_disk_extra {
@@ -146,55 +146,55 @@ zzip_mem_disk_entry_new(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry)
     item->zz_diskstart = zzip_disk_entry_get_diskstart(entry);
     item->zz_filetype =  zzip_disk_entry_get_filetype(entry);
 
-    { /* scanning the extra blocks and building a fast-access table. */
-	size_t count = 0; struct _zzip_mem_disk_extra* cache;
-	int   len = zzip_file_header_get_extras(header);
-	char* extras = zzip_file_header_to_extras(header);
-	while (len > 0) {
+    { /* 1. scanning the extra blocks and building a fast-access table. */
+	size_t extcount = 0;
+	int    extlen = zzip_file_header_get_extras(header);
+	char*  extras = zzip_file_header_to_extras(header);
+	while (extlen > 0) {
 	    struct zzip_extra_block* ext = (struct zzip_extra_block*) extras;
 	    int size = zzip_extra_block_sizeto_end(ext);
-	    len -= size; extras += size; count ++;
+	    extlen -= size; extras += size; extcount ++;
 	}
-	len = zzip_disk_entry_get_extras(entry);
+	extlen = zzip_disk_entry_get_extras(entry);
 	extras = zzip_disk_entry_to_extras(entry);
-	while (len > 0) {
+	while (extlen > 0) {
 	    struct zzip_extra_block* ext = (struct zzip_extra_block*) extras;
 	    int size = zzip_extra_block_sizeto_end(ext);
-	    len -= size; extras += size; count ++;
+	    extlen -= size; extras += size; extcount ++;
 	}
-	cache = calloc(count, sizeof(struct _zzip_mem_disk_extra));
 	if (item->zz_extras) free(item->zz_extras);
-	item->zz_extras = cache;
-	item->zz_extcount = count;
-	/* ... */
-	count = 0;
-	len = zzip_file_header_get_extras(header);
-	extras = zzip_file_header_to_extras(header);
-	while (len > 0) {
+	item->zz_extras = calloc(extcount,sizeof(struct _zzip_mem_disk_extra));
+	item->zz_extcount = extcount;
+    }
+    { /* 2. reading the extra blocks and building a fast-access table. */
+	size_t ext = 0;
+	int    extlen = zzip_file_header_get_extras(header);
+	char*  extras = zzip_file_header_to_extras(header);
+	struct _zzip_mem_disk_extra* mem = item->zz_extras;
+	while (extlen > 0) {
 	    struct zzip_extra_block* ext = (struct zzip_extra_block*) extras;
-	    cache[count].zz_data = extras;
-	    cache[count].zz_datatype = zzip_extra_block_get_datatype(ext);
-	    cache[count].zz_datasize = zzip_extra_block_get_datasize(ext);
+	    mem[ext].zz_data = extras;
+	    mem[ext].zz_datatype = zzip_extra_block_get_datatype(ext);
+	    mem[ext].zz_datasize = zzip_extra_block_get_datasize(ext);
 	    ___ register int size = zzip_extra_block_sizeto_end(ext);
-	    len -= size; extras += size; count ++; ____;
+	    extlen -= size; extras += size; ext ++; ____;
 	}
-	len = zzip_disk_entry_get_extras(entry);
+	extlen = zzip_disk_entry_get_extras(entry);
 	extras = zzip_disk_entry_to_extras(entry);
-	while (len > 0) {
+	while (extlen > 0) {
 	    struct zzip_extra_block* ext = (struct zzip_extra_block*) extras;
-	    cache[count].zz_data = extras;
-	    cache[count].zz_datatype = zzip_extra_block_get_datatype(ext);
-	    cache[count].zz_datasize = zzip_extra_block_get_datasize(ext);
+	    mem[ext].zz_data = extras;
+	    mem[ext].zz_datatype = zzip_extra_block_get_datatype(ext);
+	    mem[ext].zz_datasize = zzip_extra_block_get_datasize(ext);
 	    ___ register int size = zzip_extra_block_sizeto_end(ext);
-	    len -= size; extras += size; count ++; ____;
+	    extlen -= size; extras += size; ext ++; ____;
 	}
     }
-
-    { /* scanning the extra blocks for platform specific extensions. */
-	register size_t count;
-	for (count = 0; count < item->zz_extcount; count++) {
+    { /* 3. scanning the extra blocks for platform specific extensions. */
+	register size_t ext;
+	for (ext = 0; ext < item->zz_extcount; ext++) {
 	    /* "http://www.pkware.com/company/standards/appnote/" */
-	    switch (item->zz_extras[count].zz_datatype) {
+	    switch (item->zz_extras[ext].zz_datatype) {
 	    case 0x0001: { /* ZIP64 extended information extra field */
 		struct {
 		    char z_datatype[2]; /* Tag for this "extra" block type */
@@ -203,7 +203,7 @@ zzip_mem_disk_entry_new(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry)
 		    char z_csize[8]; /* Size of compressed data */
 		    char z_offset[8]; /* Offset of local header record */
 		    char z_diskstart[4]; /* Number of the disk for file start*/
-		} *block = (void*) item->zz_extras[count].zz_data;
+		} *block = (void*) item->zz_extras[ext].zz_data;
 		item->zz_usize  =    __zzip_get64(block->z_usize);
 		item->zz_csize  =    __zzip_get64(block->z_csize);
 		item->zz_offset =    __zzip_get64(block->z_offset);
