@@ -1746,6 +1746,12 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
+ax_enable_builddir_auxdir="$ac_aux_dir" ; test ".$ax_enable_builddir_auxdir" = "." && ax_enable_builddir_auxdir="."
+echo "ax_enable_builddir_auxdir=(1) $ax_enable_builddir_auxdir"
+echo "$ax_enable_builddir_auxdir" : $ax_enable_builddir_sed -e "'s!$ac_top_srcdir!.!'"
+ax_enable_builddir_auxdir=`echo "$ax_enable_builddir_auxdir" | $ax_enable_builddir_sed -e "s|$ac_top_srcdir|.|"`
+test ".$ax_enable_builddir_auxdir" = "." && ax_enable_builddir_auxdir="."
+echo "ax_enable_builddir_auxdir=(2)=$ax_enable_builddir_auxdir"
           ac_config_commands="$ac_config_commands buildir"
 
  # --------------------------------------------
@@ -4376,7 +4382,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 4379 "configure"' > conftest.$ac_ext
+  echo '#line 4385 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -6190,7 +6196,7 @@ fi
 
 
 # Provide some information about the compiler.
-echo "$as_me:6193:" \
+echo "$as_me:6199:" \
      "checking for Fortran 77 compiler version" >&5
 ac_compiler=`set X $ac_compile; echo $2`
 { (eval echo "$as_me:$LINENO: \"$ac_compiler --version </dev/null >&5\"") >&5
@@ -7240,11 +7246,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7243: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7249: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:7247: \$? = $ac_status" >&5
+   echo "$as_me:7253: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -7483,11 +7489,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7486: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7492: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:7490: \$? = $ac_status" >&5
+   echo "$as_me:7496: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -7543,11 +7549,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:7546: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:7552: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:7550: \$? = $ac_status" >&5
+   echo "$as_me:7556: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -9728,7 +9734,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 9731 "configure"
+#line 9737 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -9826,7 +9832,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 9829 "configure"
+#line 9835 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12015,11 +12021,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12018: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:12024: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:12022: \$? = $ac_status" >&5
+   echo "$as_me:12028: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -12075,11 +12081,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:12078: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:12084: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:12082: \$? = $ac_status" >&5
+   echo "$as_me:12088: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -13436,7 +13442,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13439 "configure"
+#line 13445 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -13534,7 +13540,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 13537 "configure"
+#line 13543 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14371,11 +14377,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14374: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14380: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:14378: \$? = $ac_status" >&5
+   echo "$as_me:14384: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -14431,11 +14437,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14434: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14440: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:14438: \$? = $ac_status" >&5
+   echo "$as_me:14444: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -16466,11 +16472,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16469: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16475: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16473: \$? = $ac_status" >&5
+   echo "$as_me:16479: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -16709,11 +16715,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16712: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16718: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16716: \$? = $ac_status" >&5
+   echo "$as_me:16722: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings
@@ -16769,11 +16775,11 @@ else
    -e 's:.*FLAGS}? :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16772: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16778: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16776: \$? = $ac_status" >&5
+   echo "$as_me:16782: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18954,7 +18960,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 18957 "configure"
+#line 18963 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -19052,7 +19058,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 19055 "configure"
+#line 19061 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -20181,6 +20187,13 @@ echo "$as_me:$LINENO: result: expanded our pkgconfig_libfile... $ax_create_pkgco
 echo "${ECHO_T}expanded our pkgconfig_libfile... $ax_create_pkgconfig_libfile" >&6)
 
 
+echo "$as_me:$LINENO: checking our package / suffix" >&5
+echo $ECHO_N "checking our package / suffix... $ECHO_C" >&6
+ax_create_pkgconfig_suffix="$program_suffix"
+test ".$ax_create_pkgconfig_suffix" != .NONE || ax_create_pkgconfig_suffix=""
+echo "$as_me:$LINENO: result: ${PACKAGE_NAME} / ${ax_create_pkgconfig_suffix}" >&5
+echo "${ECHO_T}${PACKAGE_NAME} / ${ax_create_pkgconfig_suffix}" >&6
+
 echo "$as_me:$LINENO: checking our pkgconfig description" >&5
 echo $ECHO_N "checking our pkgconfig description... $ECHO_C" >&6
 ax_create_pkgconfig_description="$PACKAGE_SUMMARY"
@@ -20227,16 +20240,18 @@ echo "${ECHO_T}generate the pkgconfig later... $ax_create_pkgconfig_generate" >&
 
 if test ".$ax_create_pkgconfig_src_libdir" = "." ; then
 ax_create_pkgconfig_src_libdir=`pwd`
-ax_create_pkgconfig_src_libdir=`echo X"$ax_create_pkgconfig_src_libdir/$ax_create_pkgconfig_generate" |
-    sed 's/\/[^\/:][^\/:]*\/..\//\//g
-          s/\/[^\/:][^\/:]*\/..\//\//g
-          s/\/[^\/:][^\/:]*\/..\//\//g
-          s/\/[^\/:][^\/:]*\/..\//\//g
-          /^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{ s//\1/; q; }
-          /^X\(\/\/\)[^/].*/{ s//\1/; q; }
-          /^X\(\/\/\)$/{ s//\1/; q; }
-          /^X\(\/\).*/{ s//\1/; q; }
-          s/.*/./; q'`
+ax_create_pkgconfig_src_libdir=`(dirname "$ax_create_pkgconfig_src_libdir/$ax_create_pkgconfig_generate") 2>/dev/null ||
+$as_expr X"$ax_create_pkgconfig_src_libdir/$ax_create_pkgconfig_generate" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
+	 X"$ax_create_pkgconfig_src_libdir/$ax_create_pkgconfig_generate" : 'X\(//\)[^/]' \| \
+	 X"$ax_create_pkgconfig_src_libdir/$ax_create_pkgconfig_generate" : 'X\(//\)$' \| \
+	 X"$ax_create_pkgconfig_src_libdir/$ax_create_pkgconfig_generate" : 'X\(/\)' \| \
+	 .     : '\(.\)' 2>/dev/null ||
+echo X"$ax_create_pkgconfig_src_libdir/$ax_create_pkgconfig_generate" |
+    sed '/^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{ s//\1/; q; }
+  	  /^X\(\/\/\)[^/].*/{ s//\1/; q; }
+  	  /^X\(\/\/\)$/{ s//\1/; q; }
+  	  /^X\(\/\).*/{ s//\1/; q; }
+  	  s/.*/./; q'`
 test ! -d $ax_create_pkgconfig_src_libdir/src || \
 ax_create_pkgconfig_src_libdir="$ax_create_pkgconfig_src_libdir/src"
 case ".$objdir" in
@@ -20251,21 +20266,24 @@ v="$ac_top_srcdir" ;
 test ".$v" != "." || v="$ax_spec_dir"
 test ".$v" != "." || v="$srcdir"
 case "$v" in /*) PKG_CONFIG_src_headers="" ;; esac
-ax_create_pkgconfig_src_headers=`echo X"$ax_create_pkgconfig_src_headers/$v/x" |
-    sed 's/\/[^\/:][^\/:]*\/..\//\//g
-          s/\/[^\/:][^\/:]*\/..\//\//g
-          s/\/[^\/:][^\/:]*\/..\//\//g
-          s/\/[^\/:][^\/:]*\/..\//\//g
-          /^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{ s//\1/; q; }
-          /^X\(\/\/\)[^/].*/{ s//\1/; q; }
-          /^X\(\/\/\)$/{ s//\1/; q; }
-          /^X\(\/\).*/{ s//\1/; q; }
-          s/.*/./; q'`
+ax_create_pkgconfig_src_headers=`(dirname "$ax_create_pkgconfig_src_headers/$v/x") 2>/dev/null ||
+$as_expr X"$ax_create_pkgconfig_src_headers/$v/x" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
+	 X"$ax_create_pkgconfig_src_headers/$v/x" : 'X\(//\)[^/]' \| \
+	 X"$ax_create_pkgconfig_src_headers/$v/x" : 'X\(//\)$' \| \
+	 X"$ax_create_pkgconfig_src_headers/$v/x" : 'X\(/\)' \| \
+	 .     : '\(.\)' 2>/dev/null ||
+echo X"$ax_create_pkgconfig_src_headers/$v/x" |
+    sed '/^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{ s//\1/; q; }
+  	  /^X\(\/\/\)[^/].*/{ s//\1/; q; }
+  	  /^X\(\/\/\)$/{ s//\1/; q; }
+  	  /^X\(\/\).*/{ s//\1/; q; }
+  	  s/.*/./; q'`
 test ! -d $ax_create_pkgconfig_src_headers/include || \
 ax_create_pkgconfig_src_headers="$ax_create_pkgconfig_src_headers/include"
 echo "$as_me:$LINENO: result: noninstalled pkgconfig -I $ax_create_pkgconfig_src_headers" >&5
 echo "${ECHO_T}noninstalled pkgconfig -I $ax_create_pkgconfig_src_headers" >&6
 fi
+
 
           ac_config_commands="$ac_config_commands $ax_create_pkgconfig_generate"
 
@@ -22118,6 +22136,72 @@ else
 
 cat >>confdefs.h <<_ACEOF
 #define ssize_t int
+_ACEOF
+
+fi
+
+echo "$as_me:$LINENO: checking for off64_t" >&5
+echo $ECHO_N "checking for off64_t... $ECHO_C" >&6
+if test "${ac_cv_type_off64_t+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+int
+main ()
+{
+if ((off64_t *) 0)
+  return 0;
+if (sizeof (off64_t))
+  return 0;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+	 { ac_try='test -z "$ac_c_werror_flag"
+			 || test ! -s conftest.err'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; } &&
+	 { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_type_off64_t=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_type_off64_t=no
+fi
+rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: $ac_cv_type_off64_t" >&5
+echo "${ECHO_T}$ac_cv_type_off64_t" >&6
+if test $ac_cv_type_off64_t = yes; then
+  :
+else
+
+cat >>confdefs.h <<_ACEOF
+#define off64_t _zzip_off_t
 _ACEOF
 
 fi
@@ -24823,7 +24907,7 @@ cat >>$CONFIG_STATUS <<_ACEOF
 #
 
 ax_enable_builddir_srcdir="$srcdir"                    # $srcdir
-ax_enable_builddir_target="$TARGET"                    # $TARGET / $target
+ax_enable_builddir_host="$HOST"                        # $HOST / $host
 ax_enable_builddir_version="$VERSION"                  # $VERSION
 ax_enable_builddir_package="$PACKAGE"                  # $PACKAGE
 ax_enable_builddir_auxdir="$ax_enable_builddir_auxdir" # $AUX
@@ -24837,8 +24921,13 @@ PACKAGE="$PACKAGE"
 ax_create_pkgconfig_generate="$ax_create_pkgconfig_generate"
 pkgconfig_prefix='$prefix'
 pkgconfig_execprefix='$exec_prefix'
+pkgconfig_bindir='$bindir'
 pkgconfig_libdir='$libdir'
 pkgconfig_includedir='$includedir'
+pkgconfig_datadir='$datadir'
+pkgconfig_sysconfdir='$sysconfdir'
+pkgconfig_suffix='$ax_create_pkgconfig_suffix'
+pkgconfig_package='$PACKAGE_NAME'
 pkgconfig_libname='$ax_create_pkgconfig_libname'
 pkgconfig_description='$ax_create_pkgconfig_description'
 pkgconfig_version='$ax_create_pkgconfig_version'
@@ -25656,11 +25745,7 @@ esac
   { echo "$as_me:$LINENO: executing $ac_dest commands" >&5
 echo "$as_me: executing $ac_dest commands" >&6;}
   case $ac_dest in
-    buildir )   _SUB=`grep "continue configure in default builddir " config.log |
-    $ax_enable_builddir_sed -e "s/.*continue configure in default builddir //"`
-  ac_top_srcdir="$ax_enable_builddir_srcdir"
-  { echo "$as_me:$LINENO: checking $ac_top_srcdir/Makefile : $ax_enable_builddir" >&5
-echo "$as_me: checking $ac_top_srcdir/Makefile : $ax_enable_builddir" >&6;}
+    buildir )   ac_top_srcdir="$ax_enable_builddir_srcdir"
   if test ".$ax_enable_builddir" = "." ; then
     if test -f "$top_srcdir/Makefile" ; then
       { echo "$as_me:$LINENO: skipping top_srcdir/Makefile - left untouched" >&5
@@ -25715,33 +25800,33 @@ s/:.*/:/
 all-configured : all-all
 /-all-all/d
 /^.*[=]/!a\\
-	@ TARGET="\$(TARGET)\" \\\\\\
-	; test ".\$\$TARGET" = "." && TARGET=$x sh $ax_enable_builddir_auxdir/config.guess $x \\\\\\
-	; BUILD=$x grep "^#### \$\$TARGET " Makefile | sed -e 's/.*|//' $x \\\\\\
+	@ HOST="\$(HOST)\" \\\\\\
+	; test ".\$\$HOST" = "." && HOST=$x sh $ax_enable_builddir_auxdir/config.guess $x \\\\\\
+	; BUILD=$x grep "^#### \$\$HOST " Makefile | sed -e 's/.*|//' $x \\\\\\
 	; use=$x basename "\$\@" -all $x; n=$x echo \$\$BUILD | wc -w $x \\\\\\
-	; echo "MAKE \$\$TARGET : \$\$n * \$\@"; if test "\$\$n" = "0" ; then : \\\\\\
+	; echo "MAKE \$\$HOST : \$\$n * \$\@"; if test "\$\$n" = "0" ; then : \\\\\\
 	; BUILD=$x grep "^####.*|" Makefile |tail -1| sed -e 's/.*|//' $x ; fi \\\\\\
 	; test ".\$\$BUILD" = "." && BUILD="." \\\\\\
 	; test "\$\$use" = "\$\@" && BUILD=$x echo "\$\$BUILD" | tail -1 $x \\\\\\
 	; for i in \$\$BUILD ; do test ".\$\$i" = "." && continue \\\\\\
-	; (cd "\$\$i" && test ! -f configure && \$(MAKE) \$\$use) ; done
+	; (cd "\$\$i" && test ! -f configure && \$(MAKE) \$\$use) || exit; done
 /dist-all *:/a\\
-	@ TARGET="\$(TARGET)\" \\\\\\
-	; test ".\$\$TARGET" = "." && TARGET=$x sh $ax_enable_builddir_auxdir/config.guess $x \\\\\\
-	; BUILD=$x grep "^#### \$\$TARGET " Makefile | sed -e 's/.*|//' $x \\\\\\
+	@ HOST="\$(HOST)\" \\\\\\
+	; test ".\$\$HOST" = "." && HOST=$x sh $ax_enable_builddir_auxdir/config.guess $x \\\\\\
+	; BUILD=$x grep "^#### \$\$HOST " Makefile | sed -e 's/.*|//' $x \\\\\\
 	; found=$x echo \$\$BUILD | wc -w $x \\\\\\
-	; echo "MAKE \$\$TARGET : \$\$found \$(PACKAGE)-\$(VERSION).tar.*" \\\\\\
+	; echo "MAKE \$\$HOST : \$\$found \$(PACKAGE)-\$(VERSION).tar.*" \\\\\\
 	; if test "\$\$found" = "0" ; then : \\\\\\
 	; BUILD=$x grep "^#### .*|" Makefile |tail -1| sed -e 's/.*|//' $x \\\\\\
 	; fi ; for i in \$\$BUILD ; do test ".\$\$i" = "." && continue \\\\\\
-	; test -f "\$\$i/\$(PACKAGE)-\$(VERSION).tar.gz" \\\\\\
-	&& mv "\$\$i/\$(PACKAGE)-\$(VERSION).tar.gz" \$(PUB). ; break ; done
+	; for f in \$\$i/\$(PACKAGE)-\$(VERSION).tar.* \\\\\\
+	; do test -f "\$\$f" && mv "\$\$f" \$(PUB). ; done ; break ; done
 /distclean-all *:/a\\
-	@ TARGET="\$(TARGET)\" \\\\\\
-	; test ".\$\$TARGET" = "." && TARGET=$x sh $ax_enable_builddir_auxdir/config.guess $x \\\\\\
+	@ HOST="\$(HOST)\" \\\\\\
+	; test ".\$\$HOST" = "." && HOST=$x sh $ax_enable_builddir_auxdir/config.guess $x \\\\\\
 	; BUILD=$x grep "^#### .*| *\\./" Makefile | sed -e 's/.*|//' $x \\\\\\
 	; use=$x basename "\$\@" -all $x; n=$x echo \$\$BUILD | wc -w $x \\\\\\
-	; echo "MAKE \$\$TARGET : \$\$n * \$\@ (all local builds)" \\\\\\
+	; echo "MAKE \$\$HOST : \$\$n * \$\@ (all local builds)" \\\\\\
 	; test ".\$\$BUILD" = "." && BUILD="." \\\\\\
 	; for i in \$\$BUILD ; do test ".\$\$i" = "." && continue \\\\\\
 	; echo "# rm -r \$\$i"; done ; echo "# (sleep 3)" ; sleep 3 \\\\\\
@@ -25760,13 +25845,13 @@ echo "$as_me: extend top_srcdir/Makefile with top_srcdir/Makefile.mk" >&6;}
       if grep '^; echo "MAKE ' $ac_top_srcdir/Makefile >/dev/null ; then
         { echo "$as_me:$LINENO: buggy sed found - it deletes tab in \"a\" text parts" >&5
 echo "$as_me: buggy sed found - it deletes tab in \"a\" text parts" >&6;}
-        $ax_enable_builddir_sed -e '/^@ TARGET=/s/^/	/' -e '/^; /s/^/	/' $ac_top_srcdir/Makefile \
+        $ax_enable_builddir_sed -e '/^@ HOST=/s/^/	/' -e '/^; /s/^/	/' $ac_top_srcdir/Makefile \
           >$ac_top_srcdir/Makefile~
         (test -s $ac_top_srcdir/Makefile~ && mv $ac_top_srcdir/Makefile~ $ac_top_srcdir/Makefile) 2>/dev/null
       fi
     else
       xxxx="\\#\\#\\#\\#"
-      # echo "/^$xxxx *$ax_enable_builddir_target /d" >$tmp/conftemp.sed
+      # echo "/^$xxxx *$ax_enable_builddir_host /d" >$tmp/conftemp.sed
       echo "s!^$xxxx [^|]* | *$ax_enable_builddir *\$!$xxxx ...... $ax_enable_builddir!" >$tmp/conftemp.sed
       $ax_enable_builddir_sed -f "$tmp/conftemp.sed" "$ac_top_srcdir/Makefile" >$tmp/mkfile.tmp
         cp "$tmp/conftemp.sed" "$ac_top_srcdir/makefiles.sed~"         ## DEBUGGING
@@ -25781,10 +25866,10 @@ echo "$as_me: reusing top_srcdir/Makefile from earlier configure" >&6;}
         mv "$tmp/mkfile.tmp" "$ac_top_srcdir/Makefile"
       fi
     fi
-    { echo "$as_me:$LINENO: build in $ax_enable_builddir (TARGET=$ax_enable_builddir_target)" >&5
-echo "$as_me: build in $ax_enable_builddir (TARGET=$ax_enable_builddir_target)" >&6;}
+    { echo "$as_me:$LINENO: build in $ax_enable_builddir (HOST=$ax_enable_builddir_host)" >&5
+echo "$as_me: build in $ax_enable_builddir (HOST=$ax_enable_builddir_host)" >&6;}
     xxxx="####"
-    echo "$xxxx" "$ax_enable_builddir_target" "|$ax_enable_builddir" >>$ac_top_srcdir/Makefile
+    echo "$xxxx" "$ax_enable_builddir_host" "|$ax_enable_builddir" >>$ac_top_srcdir/Makefile
   fi
  ;;
     depfiles ) test x"$AMDEP_TRUE" != x"" || for mf in $CONFIG_FILES; do
@@ -26097,12 +26182,17 @@ fi
 if $generate ; then
 { echo "$as_me:$LINENO: creating $pkgconfig_generate.in" >&5
 echo "$as_me: creating $pkgconfig_generate.in" >&6;}
-cat > $pkgconfig_generate.in <<_EOF
+cat > $pkgconfig_generate.in <<AXEOF
 # generated by configure / remove this line to disable regeneration
 prefix=@prefix@
 exec_prefix=@exec_prefix@
+bindir=@bindir@
 libdir=@libdir@
+datadir=@datadir@
+sysconfdir=@sysconfdir@
 includedir=@includedir@
+package=@PACKAGE@
+suffix=@suffix@
 
 Name: @PACKAGE_NAME@
 Description: @PACKAGE_DESCRIPTION@
@@ -26110,45 +26200,102 @@ Version: @PACKAGE_VERSION@
 Requires: @PACKAGE_REQUIRES@
 Libs: -L\${libdir} @LIBS@
 Cflags: -I\${includedir} @CPPFLAGS@
-_EOF
+AXEOF
 fi # DONE generate $pkgconfig_generate.in
 { echo "$as_me:$LINENO: creating $pkgconfig_generate" >&5
 echo "$as_me: creating $pkgconfig_generate" >&6;}
-sed -e "s|@prefix@|${pkgconfig_prefix}|" \
-    -e "s|@exec_prefix@|${pkgconfig_execprefix}|" \
-    -e "s|@libdir@|${pkgconfig_libdir}|" \
-    -e "s|@includedir@|${pkgconfig_includedir}|" \
-    -e "s|@PACKAGE_NAME@|${pkgconfig_libname}|" \
-    -e "s|@PACKAGE_DESCRIPTION@|${pkgconfig_description}|" \
-    -e "s|@PACKAGE_VERSION@|${pkgconfig_version}|" \
-    -e "s|@PACKAGE_REQUIRES@|${pkgconfig_requires}|" \
-    -e "s|@LIBS@|${pkgconfig_libs}|" \
-    -e "s|@CPPFLAGS@|${pkgconfig_cppflags}|" \
-    $pkgconfig_generate.in > $pkgconfig_generate
+cat >conftest.sed <<AXEOF
+s|@prefix@|${pkgconfig_prefix}|
+s|@exec_prefix@|${pkgconfig_execprefix}|
+s|@bindir@|${pkgconfig_bindir}|
+s|@libdir@|${pkgconfig_libdir}|
+s|@datadir@|${pkgconfig_datadir}|
+s|@sysconfdir@|${pkgconfig_sysconfdir}|
+s|@includedir@|${pkgconfig_includedir}|
+s|@suffix@|${pkgconfig_suffix}|
+s|@PACKAGE@|${pkgconfig_package}|
+s|@PACKAGE_NAME@|${pkgconfig_libname}|
+s|@PACKAGE_DESCRIPTION@|${pkgconfig_description}|
+s|@PACKAGE_VERSION@|${pkgconfig_version}|
+s|@PACKAGE_REQUIRES@|${pkgconfig_requires}|
+s|@LIBS@|${pkgconfig_libs}|
+s|@CPPFLAGS@|${pkgconfig_cppflags}|
+AXEOF
+sed -f conftest.sed  $pkgconfig_generate.in > $pkgconfig_generate
 if test ! -s $pkgconfig_generate ; then
     { { echo "$as_me:$LINENO: error: $pkgconfig_generate is empty" >&5
 echo "$as_me: error: $pkgconfig_generate is empty" >&2;}
    { (exit 1); exit 1; }; }
-fi # DONE generate $pkgconfig_generate
+fi ; rm conftest.sed # DONE generate $pkgconfig_generate
 pkgconfig_uninstalled=`echo $pkgconfig_generate |sed 's/.pc$/-uninstalled.pc/'`
 { echo "$as_me:$LINENO: creating $pkgconfig_uninstalled" >&5
 echo "$as_me: creating $pkgconfig_uninstalled" >&6;}
-sed -e "s|@prefix@|${pkgconfig_prefix}|" \
-    -e "s|@exec_prefix@|${pkgconfig_execprefix}|" \
-    -e "s|@libdir@|${pkgconfig_src_libdir}|" \
-    -e "s|@includedir@|${pkgconfig_src_headers}|" \
-    -e "s|@PACKAGE_NAME@|${pkgconfig_libname}|" \
-    -e "s|@PACKAGE_DESCRIPTION@|${pkgconfig_description}|" \
-    -e "s|@PACKAGE_VERSION@|${pkgconfig_version}|" \
-    -e "s|@PACKAGE_REQUIRES@|${pkgconfig_requires}|" \
-    -e "s|@LIBS@|${pkgconfig_libs}|" \
-    -e "s|@CPPFLAGS@|${pkgconfig_cppflags}|" \
-    $pkgconfig_generate.in > $pkgconfig_uninstalled
+cat >conftest.sed <<AXEOF
+s|@prefix@|${pkgconfig_prefix}|
+s|@exec_prefix@|${pkgconfig_execprefix}|
+s|@bindir@|${pkgconfig_bindir}|
+s|@libdir@|${pkgconfig_src_libdir}|
+s|@datadir@|${pkgconfig_datadir}|
+s|@sysconfdir@|${pkgconfig_sysconfdir}|
+s|@includedir@|${pkgconfig_src_headers}|
+s|@suffix@|${pkgconfig_suffix}|
+s|@PACKAGE@|${pkgconfig_package}|
+s|@PACKAGE_NAME@|${pkgconfig_libname}|
+s|@PACKAGE_DESCRIPTION@|${pkgconfig_description}|
+s|@PACKAGE_VERSION@|${pkgconfig_version}|
+s|@PACKAGE_REQUIRES@|${pkgconfig_requires}|
+s|@LIBS@|${pkgconfig_libs}|
+s|@CPPFLAGS@|${pkgconfig_cppflags}|
+AXEOF
+sed -f conftest.sed $pkgconfig_generate.in > $pkgconfig_uninstalled
 if test ! -s $pkgconfig_uninstalled ; then
     { { echo "$as_me:$LINENO: error: $pkgconfig_uninstalled is empty" >&5
 echo "$as_me: error: $pkgconfig_uninstalled is empty" >&2;}
    { (exit 1); exit 1; }; }
-fi # DONE generate $pkgconfig_uninstalled
+fi ; rm conftest.sed # DONE generate $pkgconfig_uninstalled
+           pkgconfig_requires_add=`echo ${pkgconfig_requires}`
+if test ".$pkgconfig_requires_add" != "." ; then
+           pkgconfig_requires_add="pkg-config $pkgconfig_requires_add"
+    else   pkgconfig_requires_add=":" ; fi
+pkgconfig_uninstalled=`echo $pkgconfig_generate |sed 's/.pc$/-uninstalled.sh/'`
+{ echo "$as_me:$LINENO: creating $pkgconfig_uninstalled" >&5
+echo "$as_me: creating $pkgconfig_uninstalled" >&6;}
+cat >conftest.sed <<AXEOF
+s|@prefix@|\"${pkgconfig_prefix}\"|
+s|@exec_prefix@|\"${pkgconfig_execprefix}\"|
+s|@bindir@|\"${pkgconfig_bindir}\"|
+s|@libdir@|\"${pkgconfig_src_libdir}\"|
+s|@datadir@|\"${pkgconfig_datadir}\"|
+s|@sysconfdir@|\"${pkgconfig_sysconfdir}\"|
+s|@includedir@|\"${pkgconfig_src_headers}\"|
+s|@suffix@|\"${pkgconfig_suffix}\"|
+s|@PACKAGE@|\"${pkgconfig_package}\"|
+s|@PACKAGE_NAME@|\"${pkgconfig_libname}\"|
+s|@PACKAGE_DESCRIPTION@|\"${pkgconfig_description}\"|
+s|@PACKAGE_VERSION@|\"${pkgconfig_version}\"|
+s|@PACKAGE_REQUIRES@|\"${pkgconfig_requires}\"|
+s|@LIBS@|\"${pkgconfig_libs}\"|
+s|@CPPFLAGS@|\"${pkgconfig_cppflags}\"|
+s>Name:>for option\\; do case \"\$option\" in --list-all|--name) echo >
+s>Description: *>\\;\\; --help) pkg-config --help \\; echo Buildscript Of >
+s>Version: *>\\;\\; --modversion|--version) echo >
+s>Requires:>\\;\\; --requires) echo $pkgconfig_requires_add>
+s>Libs: *>\\;\\; --libs) echo >
+s>Cflags: *>\\;\\; --cflags) echo >
+/--libs)/a\\
+       $pkgconfig_requires_add
+/--cflags)/a\\
+       $pkgconfig_requires_add\\
+;; --variable=*) eval echo '\$'\`echo \$option | sed -e 's/.*=//'\`\\
+;; --uninstalled) exit 0 \\
+;; *) ;; esac done
+AXEOF
+sed -f conftest.sed  $pkgconfig_generate.in > $pkgconfig_uninstalled
+if test ! -s $pkgconfig_uninstalled ; then
+    { { echo "$as_me:$LINENO: error: $pkgconfig_uninstalled is empty" >&5
+echo "$as_me: error: $pkgconfig_uninstalled is empty" >&2;}
+   { (exit 1); exit 1; }; }
+fi ; rm conftest.sed # DONE generate $pkgconfig_uninstalled
  ;;
   esac
 done

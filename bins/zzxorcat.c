@@ -44,7 +44,7 @@ static zzip_ssize_t xor_read (int f, void* p, zzip_size_t l)
     return r;
 }
 
-static struct zzip_plugin_io xor_handlers;
+static zzip_plugin_io_handlers xor_handlers;
 static zzip_strings_t xor_fileext[] = { ".dat", "", 0 };
 
 int 
@@ -64,7 +64,7 @@ main (int argc, char ** argv)
 	return 0;
     }
 
-    zzip_init_io (&xor_handlers, 0); xor_handlers.read = &xor_read;
+    zzip_init_io (&xor_handlers, 0); xor_handlers.fd.read = &xor_read;
     
     for (argn=1; argn < argc; argn++)
     {

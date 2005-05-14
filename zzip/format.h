@@ -168,6 +168,26 @@ struct zzip_extra_block
 } __zzip_attribute__((packed));
 #define zzip_extra_block_headerlength (2+2)
 
+/* Zip64 end of central dir record */
+struct zzip_disk64_trailer
+{
+#   define ZZIP_DISK64_TRAILER_MAGIC 0x06064b50
+#   define ZZIP_DISK64_TRAILER_CHECKMAGIC(__p) ZZIP_CHECKMAGIC(__p,'P','K','\6','\6')
+    char  z_magic[4]; /* end of central dir signature (0x06054b50) */
+    char  z_size[8];  /* size of this central directory record */
+    zzip_version_t z_encoder;  /* version made by */
+    zzip_version_t z_extract;  /* version need to extract */
+    char  z_disk[4];  /* number of this disk */
+    char  z_finaldisk[4]; /* number of the disk with the start of the central dir */
+    char  z_entries[8]; /* total number of entries in the central dir on this disk */
+    char  z_finalentries[8]; /* total number of entries in the central dir */
+    char  z_rootsize[8]; /* size of the central directory */
+    char  z_rootseek[8]; /* offset of start of central directory with respect to *
+                          * the starting disk number */
+    /* followed by zip64 extensible data sector (of variable size) */
+} __zzip_attribute__((packed));
+#define zzip_disk64_trailer_headerlength (4+8+2+2+4+4+8+8+8+8)
+
 /* z_flags */
 #define ZZIP_IS_ENCRYPTED(p)    ((*(unsigned char*)p)&1)
 #define ZZIP_IS_COMPRLEVEL(p)  (((*(unsigned char*)p)>>1)&3)

@@ -43,8 +43,8 @@ libzzip_la_LDFLAGS= @ZZIPLIB_LDFLAGS@ $(RELEASE_INFO) $(VERSION_INFO) \
                     $(THREAD_SAFE)
 libzzip_la_LIBADD= -lz @RESOLVES@
 
-libzzipmmapped_la_SOURCES =  mmapped.c fetch.c
-libzzipmmapped_la_headers =  mmapped.h fetch.h
+libzzipmmapped_la_SOURCES =  mmapped.c memdisk.c fetch.c
+libzzipmmapped_la_headers =  mmapped.h memdisk.h fetch.h
 libzzipmmapped_la_LDFLAGS= @ZZIPLIB_LDFLAGS@ $(RELEASE_INFO) $(VERSION_INFO) \
                     $(THREAD_SAFE)
 libzzipmmapped_la_LIBADD= -lz @RESOLVES@
@@ -134,3 +134,7 @@ __zziplib.pc : Makefile
 	echo 'Requires: zzip-zlib-config' >>$@
 	echo 'Libs: -L$${libdir} -lzzip' >>$@
 	echo 'Cflags: $${largefile} -I$${includedir}' >>$@
+
+# ----------------------------------------------------------------------
+.c.i :
+	$(COMPILE) -E $< >$@

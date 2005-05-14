@@ -82,6 +82,10 @@ struct zzip_entry : public struct zzip_disk_entry
     FILE*                        diskfile;   /* a file reference */
     zzip_off_t                   disksize;   /* the size of the file */
     zzip_off_t                   headseek;   /* the offset within the file */
+    zzip_off_t                   zz_usize;
+    zzip_off_t                   zz_csize;   /* items scanned from header */
+    zzip_off_t                   zz_offset;  /* or zip64 extension block */
+    int                          zz_diskstart;
 };
 #else
 struct zzip_entry /* : struct zzip_disk_entry */
@@ -92,6 +96,10 @@ struct zzip_entry /* : struct zzip_disk_entry */
     FILE*                        diskfile;   /* a file reference */
     zzip_off_t                   disksize;   /* the size of the file */
     zzip_off_t                   headseek;   /* the offset within the file */
+    zzip_off_t                   zz_usize;
+    zzip_off_t                   zz_csize;   /* items scanned from header */
+    zzip_off_t                   zz_offset;  /* or zip64 extension block */
+    int                          zz_diskstart;
 };
 #endif
 
@@ -148,7 +156,7 @@ zzip_entry_data_offset(ZZIP_ENTRY* entry)
  * in the zip central directory but if not then we fallback to the filename
  * given in the file_header of each compressed data portion.
  */
-char* _zzip_restrict
+char* _zzip_new
 zzip_entry_strdup_name(ZZIP_ENTRY* entry)
 {
     if (! entry) return 0;
@@ -174,6 +182,29 @@ zzip_entry_strdup_name(ZZIP_ENTRY* entry)
     }
     return 0;
     ____;____;
+}
+
+static int
+prescan_entry(ZZIP_ENTRY* entry) 
+{
+    zzip_off_t tailsize = zzip_disk_entry_sizeof_tails (disk_(entry));
+    if (tailsize+1 > entry->tailalloc) 
+    {
+	char* newtail = realloc (entry->tail, tailsize+1);
+	if (! newtail) return ENOMEM;
+	entry->tail = newtail;
+	entry->tailalloc = tailsize+1;
+    }
+    fread (entry->tail, 1, tailsize, entry->diskfile);
+    /* name + comment + extras */
+    return 0;
+}
+
+static void
+prescan_clear(ZZIP_ENTRY* entry)
+{
+    if (entry->tail) free (entry->tail);
+    entry->tail = 0; entry->tailalloc = 0;
 }
 
 /* ====================================================================== */
@@ -205,7 +236,7 @@ zzip_entry_strdup_name(ZZIP_ENTRY* entry)
  * catch a common brokeness with zip archives that still allows us to find
  * the start of the zip central directory.
  */
-ZZIP_ENTRY* _zzip_restrict
+ZZIP_ENTRY* _zzip_new
 zzip_entry_findfirst(FILE* disk)
 {
     if (! disk) return 0;
@@ -231,18 +262,24 @@ zzip_entry_findfirst(FILE* disk)
 	___ char* p = buffer + mapsize - sizeof(struct zzip_disk_trailer);
 	for (; p >= buffer ; p--)
 	{
-	    if (! zzip_disk_trailer_check_magic(p)) continue;
-	    ___ zzip_off_t root = 
-		zzip_disk_trailer_rootseek ((struct zzip_disk_trailer*)p);
-	    if ((char*) root > p) 
-	    {   /* the first disk_entry is after the disk_trailer? can't be! */
-		zzip_off_t rootsize =
-		    zzip_disk_trailer_rootsize ((struct zzip_disk_trailer*)p);
-		if (rootsize > mapoffs) continue;
-		/* a common brokeness that can be fixed: we just assume that 
-		 * the central directory was written directly before : */
-		root = mapoffs - rootsize;
-	    }
+	    zzip_off_t root;  /* (struct zzip_disk_entry*) */
+	    if (zzip_disk_trailer_check_magic(p)) {
+		root = zzip_disk_trailer_rootseek (
+		    (struct zzip_disk_trailer*)p);
+		if (root > disksize - (long) sizeof(struct zzip_disk_trailer)) 
+		{   /* first disk_entry is after the disk_trailer? can't be! */
+		    zzip_off_t rootsize = zzip_disk_trailer_rootsize (
+			(struct zzip_disk_trailer*)p);
+		    if (rootsize > mapoffs) continue;
+		    /* a common brokeness that can be fixed: we just assume the
+		     * central directory was written directly before : */
+		    root = mapoffs - rootsize;
+		}
+	    } else if (zzip_disk64_trailer_check_magic(p)) {
+		if (sizeof(zzip_off_t) < 8) return 0;
+		root = zzip_disk64_trailer_rootseek (
+		    (struct zzip_disk64_trailer*)p);
+	    } else continue;
 	    assert (0 <= root && root < mapsize);
 	    fseeko (disk, root, SEEK_SET);
 	    fread (disk_(entry), 1, sizeof(*disk_(entry)), disk);
@@ -252,14 +289,9 @@ zzip_entry_findfirst(FILE* disk)
 		entry->headseek = root;
 		entry->diskfile = disk;
 		entry->disksize = disksize;
-		___ zzip_size_t tailsize = 
-		    zzip_disk_entry_sizeof_tails (disk_(entry));
-		if (!( entry->tail = malloc (tailsize+1) )) goto nomem;
-		fread (entry->tail, 1, tailsize, disk);
-		entry->tailalloc = tailsize+1;
-		return entry; ____;
+		if (prescan_entry(entry)) goto nomem;
+		return entry;
 	    }
-	    ____;
 	} ____;
 	if (! mapoffs) break;             assert (mapsize >= pagesize/2);
 	mapoffs -= pagesize/2;            /* mapsize += pagesize/2; */
@@ -281,26 +313,20 @@ zzip_entry_findfirst(FILE* disk)
  * to stop searching for matches before that case then please call 
  * => zzip_entry_free on the cursor struct ZZIP_ENTRY.
  */
-ZZIP_ENTRY* _zzip_restrict
+ZZIP_ENTRY* _zzip_new
 zzip_entry_findnext(ZZIP_ENTRY* _zzip_restrict entry)
 {
     if (! entry) return entry;
+    if (! zzip_disk_entry_check_magic (entry)) goto err;
     ___ zzip_off_t seek = 
 	entry->headseek + zzip_disk_entry_sizeto_end (disk_(entry));
     if (seek + (zzip_off_t) sizeof(*disk_(entry)) > entry->disksize) goto err;
     fseeko (entry->diskfile, seek, SEEK_SET);
     fread (disk_(entry), 1, sizeof(*disk_(entry)), entry->diskfile);
     entry->headseek = seek;
-    ___ zzip_off_t tailsize = zzip_disk_entry_sizeof_tails (disk_(entry));
-    if (tailsize+1 > entry->tailalloc) 
-    {
-	char* newtail = realloc (entry->tail, tailsize+1);
-	if (! newtail) goto err; 
-	entry->tail = newtail;
-	entry->tailalloc = tailsize+1;
-    }
-    fread (entry->tail, 1, tailsize, entry->diskfile);
-    return entry; ____;
+    if (! zzip_disk_entry_check_magic (entry)) goto err;
+    if (prescan_entry(entry)) goto err;
+    return entry;
  err:
     zzip_entry_free (entry);
     return 0; ____;
@@ -315,7 +341,7 @@ int
 zzip_entry_free(ZZIP_ENTRY* entry)
 {
     if (! entry) return 0;
-    free (entry->tail);
+    prescan_clear (entry);
     free (entry);
     return 1;
 }
@@ -331,7 +357,7 @@ zzip_entry_free(ZZIP_ENTRY* entry)
  * is rather useless with this variant of _findfile). If no further entry is
  * found then null is returned and any "old"-entry gets already free()d.
  */
-ZZIP_ENTRY* _zzip_restrict
+ZZIP_ENTRY* _zzip_new
 zzip_entry_findfile(FILE* disk, char* filename, 
 		    ZZIP_ENTRY* _zzip_restrict entry, 
 		    zzip_strcmp_fn_t compare)
@@ -386,7 +412,7 @@ static int _zzip_fnmatch(char* pattern, char* string, int flags)
  * next entry matching the given filespec. If no further entry is
  * found then null is returned and any "old"-entry gets already free()d.
  */
-ZZIP_ENTRY* _zzip_restrict
+ZZIP_ENTRY* _zzip_new
 zzip_entry_findmatch(FILE* disk, char* filespec, 
 		     ZZIP_ENTRY* _zzip_restrict entry,
 		     zzip_fnmatch_fn_t compare, int flags)
@@ -439,7 +465,7 @@ struct zzip_entry_file /* : zzip_file_header */
  * the size of the internal readahead buffer. If an error occurs then null
  * is returned.
  */
-ZZIP_ENTRY_FILE* _zzip_restrict
+ZZIP_ENTRY_FILE* _zzip_new
 zzip_entry_fopen (ZZIP_ENTRY* entry, int takeover)
 {
     if (! entry) return 0;
@@ -447,7 +473,7 @@ zzip_entry_fopen (ZZIP_ENTRY* entry, int takeover)
     {
 	ZZIP_ENTRY* found = malloc (sizeof(*entry));
 	if (! found) return 0;
-	memcpy (found, entry, sizeof(*entry));
+	memcpy (found, entry, sizeof(*entry));   /* prescan_copy */
 	found->tail = malloc (found->tailalloc);
 	if (! found->tail) { free (found); return 0; }
 	memcpy (found->tail, entry->tail, entry->tailalloc);
@@ -496,7 +522,7 @@ zzip_entry_fopen (ZZIP_ENTRY* entry, int takeover)
  * the zip central directory with => zzip_entry_findfile and whatever
  * is found first is given to => zzip_entry_fopen
  */
-ZZIP_ENTRY_FILE* _zzip_restrict
+ZZIP_ENTRY_FILE* _zzip_new
 zzip_entry_ffile (FILE* disk, char* filename)
 {
     ZZIP_ENTRY* entry = zzip_entry_findfile (disk, filename, 0, 0);

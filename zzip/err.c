@@ -22,19 +22,21 @@
 static struct errlistentry { int code; const char* mesg; } 
 errlist[] = 
 {
-    { ZZIP_NO_ERROR, "No error" },
-    { ZZIP_OUTOFMEM, "could not get temporary memory for internal structures" },
-    { ZZIP_DIR_OPEN, "Failed to open zip-file %s" },
-    { ZZIP_DIR_STAT, "Failed to fstat zip-file %s" },
-    { ZZIP_DIR_SEEK, "Failed to lseek zip-file %s" },
-    { ZZIP_DIR_READ, "Failed to read zip-file %s"},  
+    { ZZIP_NO_ERROR,        "No error" },
+    { ZZIP_OUTOFMEM,        
+      "could not get temporary memory for internal structures" },
+    { ZZIP_DIR_OPEN,        "Failed to open zip-file %s" },
+    { ZZIP_DIR_STAT,        "Failed to fstat zip-file %s" },
+    { ZZIP_DIR_SEEK,        "Failed to lseek zip-file %s" },
+    { ZZIP_DIR_READ,        "Failed to read zip-file %s"},  
     { ZZIP_DIR_TOO_SHORT,   "zip-file %s too short" },
     { ZZIP_DIR_EDH_MISSING, "zip-file central directory not found" },
-    { ZZIP_DIRSIZE, "Directory size too big..." },
-    { ZZIP_ENOENT, "No such file found in zip-file %s" },
-    { ZZIP_UNSUPP_COMPR, "Unsupported compression format" },
-    { ZZIP_CORRUPTED, "Zipfile corrupted" }, 
-    { ZZIP_UNDEF,      "Some undefined error occurred" },
+    { ZZIP_DIRSIZE,         "Directory size too big..." },
+    { ZZIP_ENOENT,          "No such file found in zip-file %s" },
+    { ZZIP_UNSUPP_COMPR,    "Unsupported compression format" },
+    { ZZIP_CORRUPTED,       "Zipfile corrupted" }, 
+    { ZZIP_UNDEF,           "Some undefined error occurred" },
+    { ZZIP_DIR_LARGEFILE,   "Directory is largefile variant" },
     { 0, 0 },
 };
 

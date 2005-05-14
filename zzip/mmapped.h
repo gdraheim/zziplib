@@ -61,9 +61,6 @@ zzip_disk_extern int
 zzip_disk_close(ZZIP_DISK* disk);
 
 
-zzip_disk_extern int
-zzip_disk_init (ZZIP_DISK* disk, char* buffer, _zzip_size_t buflen);
-
 zzip_disk_extern ZZIP_DISK_ENTRY*
 zzip_disk_findfirst(ZZIP_DISK* disk);
 
@@ -72,6 +69,8 @@ zzip_disk_findnext(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry);
 
 char* _zzip_restrict
 zzip_disk_entry_strdup_name(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry);
+char* _zzip_restrict
+zzip_disk_entry_strdup_comment(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry);
 struct zzip_file_header*
 zzip_disk_entry_to_file_header(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry);
 char*

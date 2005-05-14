@@ -48,6 +48,14 @@
 #endif
 #endif
 
+#ifndef _zzip_off64_t
+#ifdef   ZZIP_off64_t
+#define _zzip_off64_t ZZIP_off64_t
+#else
+#define _zzip_off64_t off64_t
+#endif
+#endif
+
 /* currently unused, all current zziplib-users do have ansi-C94 compilers. */
 #ifndef _zzip_const
 #ifdef   ZZIP_const
@@ -70,6 +78,12 @@
 #define _zzip_restrict restrict
 #endif
 #endif
+#ifdef __linux__
+#define _zzip_new _zzip_restrict
+#else
+#define _zzip_new
+#endif
+
 #ifndef _zzip_size_t
 #ifdef   ZZIP_size_t
 #define _zzip_size_t ZZIP_size_t

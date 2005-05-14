@@ -179,6 +179,11 @@ zzip_seekdir(ZZIP_DIR* dir, zzip_off_t offset)
 #undef zzip_seekdir /* zzip_seekdir64 */
 #undef zzip_telldir /* zzip_telldir64 */
 
+long   zzip_telldir(ZZIP_DIR* dir);
+void   zzip_seekdir(ZZIP_DIR* dir, long offset);
+
+/* DLL compatibility layer - so that 32bit code can link with this lib too */
+
 long   zzip_telldir(ZZIP_DIR* dir) 
 { 
     off_t off = zzip_telldir64 (dir); 

@@ -68,7 +68,7 @@ libzzipfseeko_la_DEPENDENCIES =
 am_libzzipfseeko_la_OBJECTS = fseeko.lo fetch.lo
 libzzipfseeko_la_OBJECTS = $(am_libzzipfseeko_la_OBJECTS)
 libzzipmmapped_la_DEPENDENCIES =
-am_libzzipmmapped_la_OBJECTS = mmapped.lo fetch.lo
+am_libzzipmmapped_la_OBJECTS = mmapped.lo memdisk.lo fetch.lo
 libzzipmmapped_la_OBJECTS = $(am_libzzipmmapped_la_OBJECTS)
 depcomp = $(SHELL) $(top_srcdir)/uses/depcomp
 am__depfiles_maybe = depfiles
@@ -266,8 +266,8 @@ libzzip_la_LDFLAGS = @ZZIPLIB_LDFLAGS@ $(RELEASE_INFO) $(VERSION_INFO) \
                     $(THREAD_SAFE)
 
 libzzip_la_LIBADD = -lz @RESOLVES@
-libzzipmmapped_la_SOURCES = mmapped.c fetch.c
-libzzipmmapped_la_headers = mmapped.h fetch.h
+libzzipmmapped_la_SOURCES = mmapped.c memdisk.c fetch.c
+libzzipmmapped_la_headers = mmapped.h memdisk.h fetch.h
 libzzipmmapped_la_LDFLAGS = @ZZIPLIB_LDFLAGS@ $(RELEASE_INFO) $(VERSION_INFO) \
                     $(THREAD_SAFE)
 
@@ -290,7 +290,7 @@ pkgconfig_HEADERS = zzip-zlib-config.pc zziplib.pc \
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .c .lo .o .obj
+.SUFFIXES: .c .i .lo .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -366,6 +366,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/file.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fseeko.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/info.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/memdisk.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mmapped.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plugin.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stat.Plo@am__quote@
@@ -681,6 +682,10 @@ __zziplib.pc : Makefile
 	echo 'Requires: zzip-zlib-config' >>$@
 	echo 'Libs: -L$${libdir} -lzzip' >>$@
 	echo 'Cflags: $${largefile} -I$${includedir}' >>$@
+
+# ----------------------------------------------------------------------
+.c.i :
+	$(COMPILE) -E $< >$@
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

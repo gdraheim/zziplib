@@ -22,6 +22,10 @@
  *          of the Mozilla Public License 1.1
  */
 
+#ifdef __linux__
+#define _GNU_SOURCE _glibc_developers_are_idiots_to_call_this_gnu_specific_
+#endif
+
 #include <zzip/mmapped.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -258,6 +262,27 @@ zzip_disk_entry_strdup_name(ZZIP_DISK* disk, struct zzip_disk_entry* entry)
     return  _zzip_strndup (name, len); ____;
 }
 
+/** => zzip_disk_entry_to_data
+ * This function is similar creating a reference to a zero terminated
+ * string but it can only exist in the zip central directory entry.
+ */
+char* _zzip_restrict
+zzip_disk_entry_strdup_comment(ZZIP_DISK* disk, struct zzip_disk_entry* entry)
+{
+    if (! disk || ! entry) return 0;
+
+    ___ char* text; zzip_size_t len;
+    if ((len = zzip_disk_entry_comment (entry)))
+	text = zzip_disk_entry_to_comment (entry);
+    else
+	return 0;
+
+    if (disk->buffer > text || text+len > disk->endbuf)
+	return 0;
+    
+    return  _zzip_strndup (text, len); ____;
+}
+
 /* ====================================================================== */
 
 /** => zzip_disk_findfile
@@ -295,22 +320,29 @@ zzip_disk_findfirst(ZZIP_DISK* disk)
     ___ char* p = disk->endbuf-sizeof(struct zzip_disk_trailer);
     for (; p >= disk->buffer ; p--)
     {
-	if (! zzip_disk_trailer_check_magic(p)) continue;
-	___ char* root = /* (struct zzip_disk_entry*) */ disk->buffer + 
-	    zzip_disk_trailer_get_rootseek ((struct zzip_disk_trailer*)p);
-	if (root > p) 
-	{   /* the first disk_entry is after the disk_trailer? can't be! */
-	    zzip_size_t rootsize =
-		zzip_disk_trailer_get_rootsize ((struct zzip_disk_trailer*)p);
-	    if (disk->buffer+rootsize > p) continue;
-	    /* a common brokeness that can be fixed: we just assume that the 
-	     * central directory was written directly before the trailer: */
-	    root = p - rootsize;
-	}
+	char* root; /* (struct zzip_disk_entry*) */
+	if (zzip_disk_trailer_check_magic(p)) {
+	    root =  disk->buffer + zzip_disk_trailer_get_rootseek (
+		(struct zzip_disk_trailer*)p);
+	    if (root > p) 
+	    {   /* the first disk_entry is after the disk_trailer? can't be! */
+		zzip_size_t rootsize = zzip_disk_trailer_get_rootsize (
+		    (struct zzip_disk_trailer*)p);
+		if (disk->buffer+rootsize > p) continue;
+		/* a common brokeness that can be fixed: we just assume the
+		 * central directory was written directly before the trailer:*/
+		root = p - rootsize;
+	    }
+	} else if (zzip_disk64_trailer_check_magic(p)) {
+	    if (sizeof(void*) < 8) return 0; /* EOVERFLOW */
+	    root =  disk->buffer + zzip_disk64_trailer_get_rootseek (
+		(struct zzip_disk64_trailer*)p);
+	    if (root > p) continue; 
+	} else continue;
+
 	if (root < disk->buffer) continue;
 	if (zzip_disk_entry_check_magic(root)) 
 	    return (struct zzip_disk_entry*) root;
-	____;
     }____;
     return 0;
 }
@@ -326,10 +358,12 @@ zzip_disk_findnext(ZZIP_DISK* disk, struct zzip_disk_entry* entry)
 {
     if ((char*)entry < disk->buffer || 
 	(char*)entry > disk->endbuf-sizeof(entry) ||
+	! zzip_disk_entry_check_magic (entry) ||
 	zzip_disk_entry_sizeto_end (entry) > 64*1024)
 	return 0;
     entry = zzip_disk_entry_to_next_entry (entry);
     if ((char*)entry > disk->endbuf-sizeof(entry) ||
+	! zzip_disk_entry_check_magic (entry) ||
 	zzip_disk_entry_sizeto_end (entry) > 64*1024 ||
 	zzip_disk_entry_skipto_end (entry) + sizeof(entry) > disk->endbuf)
 	return 0;

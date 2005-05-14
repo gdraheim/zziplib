@@ -15,7 +15,7 @@
 @SET_MAKE@
 
 
-SOURCES = unzzip.c unzzipcat.c unzzipdir.c unzzipshow.c zzcat.c zzdir.c zzip.c zziptest.c zzobfuscated.c zzxorcat.c zzxorcopy.c zzxordir.c
+SOURCES = unzzip.c unzzipcat.c unzzipcat-mem.c unzzipcat-seeko.c unzzipdir.c unzzipdir-mem.c zzcat.c zzdir.c zzip.c zziptest.c zzobfuscated.c zzxorcat.c zzxorcopy.c zzxordir.c
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -42,7 +42,8 @@ host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = zzcat$(EXEEXT) zzdir$(EXEEXT) zzxorcat$(EXEEXT) \
 	zzxordir$(EXEEXT) zzxorcopy$(EXEEXT) unzzip$(EXEEXT) \
-	unzzipdir$(EXEEXT) unzzipcat$(EXEEXT) unzzipshow$(EXEEXT)
+	unzzipdir$(EXEEXT) unzzipcat$(EXEEXT) unzzipcat-seeko$(EXEEXT) \
+	unzzipdir-mem$(EXEEXT) unzzipcat-mem$(EXEEXT)
 noinst_PROGRAMS = zziptest$(EXEEXT) zzobfuscated$(EXEEXT) \
 	zzip$(EXEEXT)
 subdir = bins
@@ -64,12 +65,18 @@ unzzip_DEPENDENCIES = ../zzip/libzzip.la
 unzzipcat_SOURCES = unzzipcat.c
 unzzipcat_OBJECTS = unzzipcat.$(OBJEXT)
 unzzipcat_DEPENDENCIES = ../zzip/libzzipmmapped.la
+unzzipcat_mem_SOURCES = unzzipcat-mem.c
+unzzipcat_mem_OBJECTS = unzzipcat-mem.$(OBJEXT)
+unzzipcat_mem_DEPENDENCIES = ../zzip/libzzipmmapped.la
+unzzipcat_seeko_SOURCES = unzzipcat-seeko.c
+unzzipcat_seeko_OBJECTS = unzzipcat-seeko.$(OBJEXT)
+unzzipcat_seeko_DEPENDENCIES = ../zzip/libzzipfseeko.la
 unzzipdir_SOURCES = unzzipdir.c
 unzzipdir_OBJECTS = unzzipdir.$(OBJEXT)
 unzzipdir_DEPENDENCIES = ../zzip/libzzipmmapped.la
-unzzipshow_SOURCES = unzzipshow.c
-unzzipshow_OBJECTS = unzzipshow.$(OBJEXT)
-unzzipshow_DEPENDENCIES = ../zzip/libzzipfseeko.la
+unzzipdir_mem_SOURCES = unzzipdir-mem.c
+unzzipdir_mem_OBJECTS = unzzipdir-mem.$(OBJEXT)
+unzzipdir_mem_DEPENDENCIES = ../zzip/libzzipmmapped.la
 zzcat_SOURCES = zzcat.c
 zzcat_OBJECTS = zzcat.$(OBJEXT)
 zzcat_DEPENDENCIES = ../zzip/libzzip.la
@@ -104,12 +111,12 @@ LTCOMPILE = $(LIBTOOL) --mode=compile --tag=CC $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link --tag=CC $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = unzzip.c unzzipcat.c unzzipdir.c unzzipshow.c zzcat.c \
-	zzdir.c zzip.c zziptest.c zzobfuscated.c zzxorcat.c \
-	zzxorcopy.c zzxordir.c
-DIST_SOURCES = unzzip.c unzzipcat.c unzzipdir.c unzzipshow.c zzcat.c \
-	zzdir.c zzip.c zziptest.c zzobfuscated.c zzxorcat.c \
-	zzxorcopy.c zzxordir.c
+SOURCES = unzzip.c unzzipcat.c unzzipcat-mem.c unzzipcat-seeko.c \
+	unzzipdir.c unzzipdir-mem.c zzcat.c zzdir.c zzip.c zziptest.c \
+	zzobfuscated.c zzxorcat.c zzxorcopy.c zzxordir.c
+DIST_SOURCES = unzzip.c unzzipcat.c unzzipcat-mem.c unzzipcat-seeko.c \
+	unzzipdir.c unzzipdir-mem.c zzcat.c zzdir.c zzip.c zziptest.c \
+	zzobfuscated.c zzxorcat.c zzxorcopy.c zzxordir.c
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -284,9 +291,13 @@ unzzipdir_LDFLAGS = @ZZIPLIB_LDFLAGS@
 unzzipdir_LDADD = ../zzip/libzzipmmapped.la @RESOLVES@ -lz
 unzzipcat_LDFLAGS = @ZZIPLIB_LDFLAGS@
 unzzipcat_LDADD = ../zzip/libzzipmmapped.la @RESOLVES@ -lz
+unzzipdir_mem_LDFLAGS = @ZZIPLIB_LDFLAGS@
+unzzipdir_mem_LDADD = ../zzip/libzzipmmapped.la @RESOLVES@ -lz
+unzzipcat_mem_LDFLAGS = @ZZIPLIB_LDFLAGS@
+unzzipcat_mem_LDADD = ../zzip/libzzipmmapped.la @RESOLVES@ -lz
 # and this uses the simplified fseeko stdio version
-unzzipshow_LDFLAGS = @ZZIPLIB_LDFLAGS@
-unzzipshow_LDADD = ../zzip/libzzipfseeko.la @RESOLVES@ -lz
+unzzipcat_seeko_LDFLAGS = @ZZIPLIB_LDFLAGS@
+unzzipcat_seeko_LDADD = ../zzip/libzzipfseeko.la @RESOLVES@ -lz
 all: all-am
 
 .SUFFIXES:
@@ -361,12 +372,18 @@ unzzip$(EXEEXT): $(unzzip_OBJECTS) $(unzzip_DEPENDENCIES)
 unzzipcat$(EXEEXT): $(unzzipcat_OBJECTS) $(unzzipcat_DEPENDENCIES) 
 	@rm -f unzzipcat$(EXEEXT)
 	$(LINK) $(unzzipcat_LDFLAGS) $(unzzipcat_OBJECTS) $(unzzipcat_LDADD) $(LIBS)
+unzzipcat-mem$(EXEEXT): $(unzzipcat_mem_OBJECTS) $(unzzipcat_mem_DEPENDENCIES) 
+	@rm -f unzzipcat-mem$(EXEEXT)
+	$(LINK) $(unzzipcat_mem_LDFLAGS) $(unzzipcat_mem_OBJECTS) $(unzzipcat_mem_LDADD) $(LIBS)
+unzzipcat-seeko$(EXEEXT): $(unzzipcat_seeko_OBJECTS) $(unzzipcat_seeko_DEPENDENCIES) 
+	@rm -f unzzipcat-seeko$(EXEEXT)
+	$(LINK) $(unzzipcat_seeko_LDFLAGS) $(unzzipcat_seeko_OBJECTS) $(unzzipcat_seeko_LDADD) $(LIBS)
 unzzipdir$(EXEEXT): $(unzzipdir_OBJECTS) $(unzzipdir_DEPENDENCIES) 
 	@rm -f unzzipdir$(EXEEXT)
 	$(LINK) $(unzzipdir_LDFLAGS) $(unzzipdir_OBJECTS) $(unzzipdir_LDADD) $(LIBS)
-unzzipshow$(EXEEXT): $(unzzipshow_OBJECTS) $(unzzipshow_DEPENDENCIES) 
-	@rm -f unzzipshow$(EXEEXT)
-	$(LINK) $(unzzipshow_LDFLAGS) $(unzzipshow_OBJECTS) $(unzzipshow_LDADD) $(LIBS)
+unzzipdir-mem$(EXEEXT): $(unzzipdir_mem_OBJECTS) $(unzzipdir_mem_DEPENDENCIES) 
+	@rm -f unzzipdir-mem$(EXEEXT)
+	$(LINK) $(unzzipdir_mem_LDFLAGS) $(unzzipdir_mem_OBJECTS) $(unzzipdir_mem_LDADD) $(LIBS)
 zzcat$(EXEEXT): $(zzcat_OBJECTS) $(zzcat_DEPENDENCIES) 
 	@rm -f zzcat$(EXEEXT)
 	$(LINK) $(zzcat_LDFLAGS) $(zzcat_OBJECTS) $(zzcat_LDADD) $(LIBS)
@@ -399,9 +416,11 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unzzip.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unzzipcat-mem.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unzzipcat-seeko.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unzzipcat.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unzzipdir-mem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unzzipdir.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unzzipshow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zzcat.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zzdir.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/zzip.Po@am__quote@

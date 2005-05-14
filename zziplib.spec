@@ -1,7 +1,7 @@
 %define lib   lib010
 Summary:      ZZipLib - libZ-based ZIP-access Library
 Name:         zziplib
-Version:      0.13.38
+Version:      0.13.43
 Release:      1.suse92
 Serial:       1
 Copyright:    LGPL

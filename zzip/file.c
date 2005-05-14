@@ -765,6 +765,19 @@ zzip_open_shared_io (ZZIP_FILE* stream,
 _zzip_export
 ZZIP_FILE * zzip_open_shared_io(ZZIP_FILE* stream,
 				zzip_char_t* name, int o_flags, int o_modes,
+				zzip_strings_t* ext, zzip_plugin_io_t io);
+_zzip_export
+ZZIP_FILE * zzip_open_ext_io(zzip_char_t* name, int o_flags, int o_modes,
+			     zzip_strings_t* ext, zzip_plugin_io_t io);
+_zzip_export
+ZZIP_DIR *  zzip_opendir_ext_io(zzip_char_t* name, int o_modes,
+				zzip_strings_t* ext, zzip_plugin_io_t io);
+
+/* DLL compatibility layer - so that 32bit code can link with this lib too */
+
+_zzip_export
+ZZIP_FILE * zzip_open_shared_io(ZZIP_FILE* stream,
+				zzip_char_t* name, int o_flags, int o_modes,
 				zzip_strings_t* ext, zzip_plugin_io_t io)
 {
     if (! io) return zzip_open_shared_io64 (stream, name, o_flags, o_modes, 

@@ -27,6 +27,7 @@
 /* msvc6 has neither ssize_t (we assume "int") nor off_t (assume "long") */
 
 
+typedef       _zzip_off64_t     zzip_off64_t;
 typedef       _zzip_off_t       zzip_off_t;
 typedef       _zzip_size_t      zzip_size_t;
 typedef       _zzip_ssize_t     zzip_ssize_t;

@@ -31,18 +31,19 @@ extern "C" {
 typedef enum 
 {
     ZZIP_NO_ERROR = 0,	/* no error, may be used if user sets it. */
-    ZZIP_OUTOFMEM =     ZZIP_ERROR-20, /* out of memory */
+    ZZIP_OUTOFMEM =      ZZIP_ERROR-20, /* out of memory */
     ZZIP_DIR_OPEN =      ZZIP_ERROR-21, /* failed to open zipfile, see errno for details */
     ZZIP_DIR_STAT =      ZZIP_ERROR-22, /* failed to fstat zipfile, see errno for details */
     ZZIP_DIR_SEEK =      ZZIP_ERROR-23, /* failed to lseek zipfile, see errno for details */
     ZZIP_DIR_READ =      ZZIP_ERROR-24, /* failed to read zipfile, see errno for details */
     ZZIP_DIR_TOO_SHORT = ZZIP_ERROR-25,
     ZZIP_DIR_EDH_MISSING = ZZIP_ERROR-26,
-    ZZIP_DIRSIZE =      ZZIP_ERROR-27,
-    ZZIP_ENOENT =       ZZIP_ERROR-28,
-    ZZIP_UNSUPP_COMPR = ZZIP_ERROR-29,
-    ZZIP_CORRUPTED =    ZZIP_ERROR-31,
-    ZZIP_UNDEF =        ZZIP_ERROR-32
+    ZZIP_DIRSIZE =       ZZIP_ERROR-27,
+    ZZIP_ENOENT =        ZZIP_ERROR-28,
+    ZZIP_UNSUPP_COMPR =  ZZIP_ERROR-29,
+    ZZIP_CORRUPTED =     ZZIP_ERROR-31,
+    ZZIP_UNDEF =         ZZIP_ERROR-32,
+    ZZIP_DIR_LARGEFILE = ZZIP_ERROR-33
 } zzip_error_t;
 
 /*

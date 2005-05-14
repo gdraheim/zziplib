@@ -1,3 +1,38 @@
+2005-02-17
+ * adding that _GNU_SOURCE on __linux__ to get the strndup prototype
+ * cleaning a few warning messages on different platforms as well
+	as a bug for 64bit platforms
+ * updating docs/mksite.sh and adding docs/mksite.pl and going to
+	let VERSION be pasted directly instead of a makefile snippet
+ * adding docs/memdisk.htm documentation to the series which is
+	currently quite shallow.
+ * note: no tests for actual zip64 support are made, neither for a
+	large central directory (more than 64K files) nor for large
+	files (more than 2GB). This is all theoretic but I am quite
+	confident that it will work.
+	
+2005-02-16
+ * change zzip/zip disk_trailer implementation
+ * we do not anymore pass a copy of the file block around
+ * we do use a local helper structure now with off_t fields
+ * the parse_root_directory is now using off_t for all computatations
+ * make check succeeds - beware, this is a new implementation
+ * RANT: glibc bastards make for additinal warning messages, the fseeko
+    prototype is not exported by default, but as soon as we add some
+    define to make it available, some other prototypes are disabled,
+    including one of the most widespread: strndup(). The documentation
+    even says we have to say GNU to get prototype - if you have ever heard
+    of unix to diverge into something not quite but be alike, here it is,
+    what compiles on most platforms gives a warning on linux even that it
+    works fine afterwards because the libc does export all we need and
+    autoconf does find it - it is just not prototyped and that's all.
+	
+2005-02-15
+ * adding zzip/memdisk.* as cache variant for libzzipfseeko
+ * add macro support for zip64 extensions
+ * extend trailer routines with zip64 detection (and return 0)
+ * add memdisk bins
+
 2005-01-04
  * remember TODO multithreading tests and hardening the code.
  http://www.idefense.com/application/poi/display?id=153&type=vulnerabilities

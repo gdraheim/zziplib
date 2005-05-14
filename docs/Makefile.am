@@ -6,7 +6,7 @@ doc_FILES = README.MSVC6 README.SDL COPYING.MPL COPYING.LIB COPYING.ZLIB \
 htm_FILES = zzip-index.htm zzip-zip.htm zzip-file.htm zzip-sdl-rwops.htm \
             zzip-extio.htm zzip-xor.htm zzip-crypt.htm zzip-cryptoid.htm \
             zzip-api.htm  zzip-basics.htm zzip-extras.htm zzip-parse.htm \
-            64on32.htm future.htm fseeko.htm mmapped.htm \
+            64on32.htm future.htm fseeko.htm mmapped.htm memdisk.htm \
             configs.htm sfx-make.htm   developer.htm download.htm \
             history.htm referentials.htm  faq.htm copying.htm
 SDL = @top_srcdir@/SDL
@@ -15,7 +15,7 @@ SDL_RWOPS = $(SDL)/SDL_rwops_zzcat.c \
 changelog = @top_srcdir@/ChangeLog
 
 EXTRA_DIST = make-doc.py $(doc_FILES) $(htm_FILES) $(SDL_RWOPS) \
-             make-doc.pl make-dbk.pl   mksite.sh body.htm \
+             make-doc.pl make-dbk.pl   mksite.sh mksite.pl body.htm \
              manpages.ar
 CLEANFILES = *.pc *.omf
 DISTCLEANFILES = zziplib.spec manpages.ar htmpages.ar *.html *.xml
@@ -200,12 +200,11 @@ borderhead = <table cellpadding="10"><tr><td>
 bordertail = </td></tr></table>
 
 site.htm : body.htm
-	D=$(DATESPEC) ; cat $< \
-	| sed -e "s/<!--VERSION-->/$(VERSION)/" \
-	| sed -e "s/<!--DATE-->/$$D/" \
-	> $@
+	cp $(srcdir)/body.htm site.htm
+mksite_sh_args = --srcdir=$(srcdir) --VERSION=$(VERSION)
 site.html : site.htm mksite.sh $(htm_FILES)
-	$(SHELL) $(srcdir)/mksite.sh --srcdir=$(srcdir) site.htm
+	perl $(srcdir)/mksite.pl $(mksite_sh_args) site.htm || \
+	$(SHELL) $(srcdir)/mksite.sh $(mksite_sh_args) site.htm
 
 x : $(htm_FILES:.htm=.htmls)
 $(htm_FILES:.htm=.htmls) : body.htm
