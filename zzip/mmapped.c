@@ -26,20 +26,12 @@
 #define _GNU_SOURCE _glibc_developers_are_idiots_to_call_this_gnu_specific_
 #endif
 
-#define _ZZIP_MMAPPED_PRIVATE 1
+#define _ZZIP_DISK_FILE_STRUCT 1
 
-#include <zlib.h>
-#include <zzip/format.h>
-#include <zzip/fetch.h>
-#include <zzip/__mmap.h>
+#include <zzip/types.h>
 
-#include <zzip/mmapped.h>
 #include <stdlib.h>
 #include <sys/stat.h>
-
-#ifdef ZZIP_HAVE_FNMATCH_H
-#include <fnmatch.h>
-#endif
 
 #if   defined ZZIP_HAVE_UNISTD_H
 #include <unistd.h>
@@ -53,6 +45,12 @@
 #include <strings.h>
 #endif
 
+#include <zlib.h>
+#include <zzip/mmapped.h>
+#include <zzip/format.h>
+#include <zzip/fetch.h>
+#include <zzip/__mmap.h>
+#include <zzip/__fnmatch.h>
 
 #if __STDC_VERSION__+0 > 199900L
 #define ___
@@ -406,23 +404,6 @@ zzip_disk_findfile(ZZIP_DISK* disk, char* filename,
     }
     return 0;
 }
-
-#ifdef ZZIP_HAVE_FNMATCH_H
-#define _zzip_fnmatch fnmatch
-# ifdef FNM_CASEFOLD
-# define _zzip_fnmatch_CASEFOLD FNM_CASEFOLD
-# else
-# define _zzip_fnmatch_CASEFOLD 0
-# endif
-#else
-# define _zzip_fnmatch_CASEFOLD 0
-/* if your system does not have fnmatch, we fall back to strcmp: */
-static int _zzip_fnmatch(char* pattern, char* string, int flags)
-{ 
-    puts ("<zzip:mmapped:strcmp>");
-    return strcmp (pattern, string); 
-}
-#endif
 
 /** => zzip_disk_findfile
  *

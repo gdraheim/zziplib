@@ -28,16 +28,14 @@
  *          of the Mozilla Public License 1.1
  */
 
-#define _LARGEFILE_SOURCE
+#define _LARGEFILE_SOURCE 1
+#define _ZZIP_ENTRY_STRUCT 1
 
-#include <zzip/fseeko.h>
+#include <zzip/types.h>
+
 #include <assert.h>
 #include <stdlib.h>
 #include <sys/stat.h>
-
-#ifdef ZZIP_HAVE_FNMATCH_H
-#include <fnmatch.h>
-#endif
 
 #if   defined ZZIP_HAVE_STRING_H
 #include <string.h>
@@ -47,8 +45,10 @@
 
 #include <zlib.h>
 #include <zzip/format.h>
+#include <zzip/fseeko.h>
 #include <zzip/fetch.h>
 #include <zzip/__mmap.h>
+#include <zzip/__fnmatch.h>
 
 #if __STDC_VERSION__+0 > 199900L
 #define ___
@@ -397,7 +397,7 @@ zzip_entry_findmatch(FILE* disk, char* filespec,
     {	/* filenames within zip files are often not null-terminated! */
 	char* realname = zzip_entry_strdup_name (entry);
 	if (! realname) continue;
-	if (! compare (filespec, realname, flags)) 
+	if (! compare (filespec, realname, flags)) {
 	    free (realname);    return entry;
 	} else {
 	    free (realname);    continue;

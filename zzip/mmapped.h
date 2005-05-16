@@ -100,7 +100,7 @@ zzip_disk_fclose (ZZIP_DISK_FILE* file);
 int
 zzip_disk_feof (ZZIP_DISK_FILE* file);
 
-#ifdef _ZZIP_MMAPPED_PRIVATE
+#ifdef _ZZIP_DISK_FILE_STRUCT
 /**
  * typedef struct zzip_disk_file ZZIP_DISK_FILE;
  */

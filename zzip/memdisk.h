@@ -9,10 +9,8 @@ typedef struct _zzip_mem_entry ZZIP_MEM_ENTRY;
 
 struct _zzip_mem_disk {
     ZZIP_DISK* disk;
-#  ifdef _ZZIP_MEM_DISK_PRIVATE
     ZZIP_MEM_ENTRY* list;
     ZZIP_MEM_ENTRY* last;
-#  endif
 };
 
 #ifndef zzip_mem_disk_extern

@@ -72,7 +72,7 @@ zzip_entry_fclose (ZZIP_ENTRY_FILE* file);
 int
 zzip_entry_feof (ZZIP_ENTRY_FILE* file);
 
-# ifdef _ZZIP_MEM_ENTRY_PRIVATE
+# ifdef _ZZIP_ENTRY_STRUCT
 #  ifdef __cplusplus
 #  define __zzip_entry_extends_zzip_disk_entry
 struct zzip_entry : public struct zzip_disk_entry

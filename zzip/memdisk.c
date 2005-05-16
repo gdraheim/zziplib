@@ -19,20 +19,20 @@
  *          or alternatively the restrictions 
  *          of the Mozilla Public License 1.1
  */
-#define _ZZIP_MEM_DISK_PRIVATE 1
-#define _ZZIP_MMAPPED_PRIVATE 1
+#define _ZZIP_DISK_FILE_STRUCT 1
 
-#include <zzip/lib.h>                                  /* archive handling */
-#include <zzip/file.h>
-#include <zzip/format.h>
-#include <zzip/fetch.h>
+#include <zzip/types.h>
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
+#include <zlib.h>
+#include <zzip/format.h>
+#include <zzip/fetch.h>
 #include <zzip/mmapped.h>
 #include <zzip/memdisk.h>
+#include <zzip/__fnmatch.h>
 
 #define ___ {
 #define ____ }
