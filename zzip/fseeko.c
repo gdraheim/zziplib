@@ -68,39 +68,10 @@
  * following code more readable, we use a shorthand notation for the
  * upcast needed in C (not needed in C++) as "disk_(entry)".
  */
-#ifdef __cplusplus
+#ifdef __zzip_entry_extends_zzip_disk_entry
 #define disk_(_entry_) _entry_
 #else
 #define disk_(_entry_) (& (_entry_)->head)
-#endif
-
-#ifdef __cplusplus
-struct zzip_entry : public struct zzip_disk_entry
-{
-    char*             _zzip_restrict tail;
-    zzip_off_t                  tailalloc;   /* the allocated size of tail */
-    FILE*                        diskfile;   /* a file reference */
-    zzip_off_t                   disksize;   /* the size of the file */
-    zzip_off_t                   headseek;   /* the offset within the file */
-    zzip_off_t                   zz_usize;
-    zzip_off_t                   zz_csize;   /* items scanned from header */
-    zzip_off_t                   zz_offset;  /* or zip64 extension block */
-    int                          zz_diskstart;
-};
-#else
-struct zzip_entry /* : struct zzip_disk_entry */
-{
-    struct zzip_disk_entry           head;
-    char*             _zzip_restrict tail;
-    zzip_off_t                  tailalloc;   /* the allocated size of tail */
-    FILE*                        diskfile;   /* a file reference */
-    zzip_off_t                   disksize;   /* the size of the file */
-    zzip_off_t                   headseek;   /* the offset within the file */
-    zzip_off_t                   zz_usize;
-    zzip_off_t                   zz_csize;   /* items scanned from header */
-    zzip_off_t                   zz_offset;  /* or zip64 extension block */
-    int                          zz_diskstart;
-};
 #endif
 
 /* we try to round all seeks to the pagesize - since we do not use

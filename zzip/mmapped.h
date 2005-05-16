@@ -19,7 +19,7 @@
 
 typedef struct zzip_disk_file  ZZIP_DISK_FILE;
 typedef struct zzip_disk       ZZIP_DISK;
-typedef struct zzip_disk_entry ZZIP_DISK_ENTRY;
+/*  def struct zzip_disk_entry ZZIP_DISK_ENTRY; */
 
 /* we expose this structure so third party applications can augment
  * on them. The mmapped zip access usually just needs the two pointers
@@ -99,6 +99,20 @@ zzip_disk_extern int
 zzip_disk_fclose (ZZIP_DISK_FILE* file);
 int
 zzip_disk_feof (ZZIP_DISK_FILE* file);
+
+#ifdef _ZZIP_MMAPPED_PRIVATE
+/**
+ * typedef struct zzip_disk_file ZZIP_DISK_FILE;
+ */
+struct zzip_disk_file
+{
+    char* buffer;                      /* fopen disk->buffer */
+    char* endbuf;                      /* fopen disk->endbuf */
+    zzip_size_t avail;                 /* memorized for checks on EOF */
+    z_stream zlib;                     /* for inflated blocks */
+    char* stored;                      /* for stored blocks */
+};
+#endif
 
 #endif
 

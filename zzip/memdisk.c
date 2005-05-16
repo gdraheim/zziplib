@@ -20,6 +20,7 @@
  *          of the Mozilla Public License 1.1
  */
 #define _ZZIP_MEM_DISK_PRIVATE 1
+#define _ZZIP_MMAPPED_PRIVATE 1
 
 #include <zzip/lib.h>                                  /* archive handling */
 #include <zzip/file.h>
@@ -28,6 +29,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include <zzip/mmapped.h>
 #include <zzip/memdisk.h>
@@ -43,35 +45,29 @@ static const char* error[] = {
     "zzip_mem_disk_fdopen: zzip_disk_mmap did fail"
 };
 
-struct _zzip_mem_disk_entry {
-    struct _zzip_mem_disk_entry* zz_next;
-    char*      zz_name;
-    char*      zz_data;
-    int        zz_flags;
-    int        zz_compr;
-    long       zz_crc32;
-    zzip_off_t zz_csize;
-    zzip_off_t zz_usize;
-    zzip_off_t zz_offset;
-    int        zz_diskstart;
-    int        zz_filetype;
-    char*      zz_comment;
-    size_t     zz_extcount;
-    struct _zzip_mem_disk_extra* zz_extras; /* extras[extcount] : array */
-};
+#define R _zzip_restrict /* a.k.a. allocated */
 
-struct _zzip_mem_disk_extra {
-    int   zz_datatype;
-    int   zz_datasize;
-    char* zz_data;
-};
 
-static ZZIP_MEM_DISK_ENTRY* _zzip_new
-zzip_mem_disk_entry_new(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry);
+#define ZZIP_EXTRA_zip64 0x0001
+typedef struct _zzip_extra_zip64 { /* ZIP64 extended information extra field */
+    char z_datatype[2]; /* Tag for this "extra" block type */
+    char z_datasize[2]; /* Size of this "extra" block */
+    char z_usize[8]; /* Original uncompressed file size */
+    char z_csize[8]; /* Size of compressed data */
+    char z_offset[8]; /* Offset of local header record */
+    char z_diskstart[4]; /* Number of the disk for file start*/
+} zzip_extra_zip64;
+
+static ZZIP_MEM_ENTRY* _zzip_new
+zzip_mem_entry_new(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry);
 static void
-zzip_mem_disk_entry_free(ZZIP_MEM_DISK_ENTRY* _zzip_restrict item);
+zzip_mem_entry_free(ZZIP_MEM_ENTRY* _zzip_restrict item);
 
-
+ZZIP_MEM_DISK* _zzip_new
+zzip_mem_disk_new(void)
+{
+    return calloc(1, sizeof(ZZIP_MEM_DISK)); 
+}
 
 /** create new diskdir handle. 
  *  wraps underlying zzip_disk_open. */
@@ -80,7 +76,7 @@ zzip_mem_disk_open(char* filename)
 {
     ZZIP_DISK* disk = zzip_disk_open(filename);
     if (! disk) { perror(error[_zzip_mem_disk_open_fail]); return 0; }
-    ___ ZZIP_MEM_DISK* dir = calloc(1, sizeof(*dir)); 
+    ___ ZZIP_MEM_DISK* dir = zzip_mem_disk_new();
     zzip_mem_disk_load(dir, disk);
     return dir; ____;
 }
@@ -92,26 +88,34 @@ zzip_mem_disk_fdopen(int fd)
 {
     ZZIP_DISK* disk = zzip_disk_mmap(fd);
     if (! disk) { perror(error[_zzip_mem_disk_fdopen_fail]); return 0; }
-    ___ ZZIP_MEM_DISK* dir = calloc(1, sizeof(*dir)); 
+    ___ ZZIP_MEM_DISK* dir = zzip_mem_disk_new();
     zzip_mem_disk_load(dir, disk);
     return dir; ____;
 }
 
 /** parse central dir.
  *  creates an internal copy of each entry converted to the local platform.
+ *  returns: number of entries, or -1 on error (setting errno)
  */
-int
+long
 zzip_mem_disk_load(ZZIP_MEM_DISK* dir, ZZIP_DISK* disk)
 {
+    if (! dir || ! disk) { errno=EINVAL; return -1; }
     if (dir->list) zzip_mem_disk_unload(dir);
+    ___ long count = 0;
     ___ struct zzip_disk_entry* entry = zzip_disk_findfirst(disk);
     for (; entry ; entry = zzip_disk_findnext(disk, entry)) {
-	ZZIP_MEM_DISK_ENTRY* item = zzip_mem_disk_entry_new(disk, entry);
-	if (dir->last) { dir->last->zz_next = item; }
-	else { dir->list = item; }; dir->last = item;
+	ZZIP_MEM_ENTRY* item = zzip_mem_entry_new(disk, entry);
+	if (! item) goto error;
+	if (dir->last) { dir->last->zz_next = item; }    /* chain last */
+	else { dir->list = item; }; dir->last = item;    /* to earlier */
+	count++;
     } ____;
     dir->disk = disk;
-    return 0;
+    return count; ____;
+ error:
+    zzip_mem_disk_unload (dir); 
+    return -1;
 }
 
 /** convert a zip disk entry to internal format.
@@ -119,21 +123,19 @@ zzip_mem_disk_load(ZZIP_MEM_DISK* dir, ZZIP_DISK* disk)
  * in the zip archive. This is a good place to extend functionality if
  * you have a project with extra requirements as you can push more bits
  * right into the diskdir_entry for later usage in higher layers.
+ * returns: new item, or null on error (setting errno)
  */
-ZZIP_MEM_DISK_ENTRY* _zzip_new
-zzip_mem_disk_entry_new(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry) 
+ZZIP_MEM_ENTRY* _zzip_new
+zzip_mem_entry_new(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry) 
 {
-    ZZIP_MEM_DISK_ENTRY* item = calloc(1, sizeof(*item));
-    struct zzip_file_header* header = 
+    if (! disk || ! entry) { errno=EINVAL; return 0; }
+    ___ ZZIP_MEM_ENTRY* item = calloc(1, sizeof(*item));
+    if (! item) return 0; /* errno=ENOMEM; */
+    ___ struct zzip_file_header* header = 
 	zzip_disk_entry_to_file_header(disk, entry);
     /*  there is a number of duplicated information in the file header
      *  or the disk entry block. Theoretically some part may be missing
-     *  that exists in the other, so each and every item would need to
-     *  be checked. However, we assume that the "always-exists" fields
-     *  do either (a) exist both and have the same value or (b) the bits
-     *  in the disk entry are correct. Only the variable fields are 
-     *  checked in both places: file name, file comment, extra blocks.
-     *  From mmapped.c we do already have two helper functions for that:
+     *  that exists in the other, ... but we will prefer the disk entry.
      */
     item->zz_comment =   zzip_disk_entry_strdup_comment(disk, entry);
     item->zz_name =      zzip_disk_entry_strdup_name(disk, entry);
@@ -146,118 +148,78 @@ zzip_mem_disk_entry_new(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry)
     item->zz_diskstart = zzip_disk_entry_get_diskstart(entry);
     item->zz_filetype =  zzip_disk_entry_get_filetype(entry);
 
-    { /* 1. scanning the extra blocks and building a fast-access table. */
-	size_t extcount = 0;
-	int    extlen = zzip_file_header_get_extras(header);
-	char*  extras = zzip_file_header_to_extras(header);
-	while (extlen > 0) {
-	    struct zzip_extra_block* ext = (struct zzip_extra_block*) extras;
-	    int size = zzip_extra_block_sizeto_end(ext);
-	    extlen -= size; extras += size; extcount ++;
-	}
-	extlen = zzip_disk_entry_get_extras(entry);
-	extras = zzip_disk_entry_to_extras(entry);
-	while (extlen > 0) {
-	    struct zzip_extra_block* ext = (struct zzip_extra_block*) extras;
-	    int size = zzip_extra_block_sizeto_end(ext);
-	    extlen -= size; extras += size; extcount ++;
-	}
-	if (item->zz_extras) free(item->zz_extras);
-	item->zz_extras = calloc(extcount,sizeof(struct _zzip_mem_disk_extra));
-	item->zz_extcount = extcount;
-    }
-    { /* 2. reading the extra blocks and building a fast-access table. */
-	size_t ext = 0;
-	int    extlen = zzip_file_header_get_extras(header);
-	char*  extras = zzip_file_header_to_extras(header);
-	struct _zzip_mem_disk_extra* mem = item->zz_extras;
-	while (extlen > 0) {
-	    struct zzip_extra_block* ext = (struct zzip_extra_block*) extras;
-	    mem[ext].zz_data = extras;
-	    mem[ext].zz_datatype = zzip_extra_block_get_datatype(ext);
-	    mem[ext].zz_datasize = zzip_extra_block_get_datasize(ext);
-	    ___ register int size = zzip_extra_block_sizeto_end(ext);
-	    extlen -= size; extras += size; ext ++; ____;
-	}
-	extlen = zzip_disk_entry_get_extras(entry);
-	extras = zzip_disk_entry_to_extras(entry);
-	while (extlen > 0) {
-	    struct zzip_extra_block* ext = (struct zzip_extra_block*) extras;
-	    mem[ext].zz_data = extras;
-	    mem[ext].zz_datatype = zzip_extra_block_get_datatype(ext);
-	    mem[ext].zz_datasize = zzip_extra_block_get_datasize(ext);
-	    ___ register int size = zzip_extra_block_sizeto_end(ext);
-	    extlen -= size; extras += size; ext ++; ____;
+    {   /* copy the extra blocks to memory as well */
+	int     ext1 = zzip_disk_entry_get_extras(entry);
+	char* R ptr1 = zzip_disk_entry_to_extras(entry);
+	int     ext2 = zzip_file_header_get_extras(header);
+	char* R ptr2 = zzip_file_header_to_extras(header);
+	
+	if (ext1) {
+	    void* mem = malloc (ext1+2);
+	    item->zz_ext[1] = mem;
+	    memcpy (mem, ptr1, ext1);
+	    ((char*)(mem))[ext1+0] = 0; 
+	    ((char*)(mem))[ext1+1] = 0;
+	}	    
+	if (ext2) {
+	    void* mem = malloc (ext2+2);
+	    item->zz_ext[2] = mem;
+	    memcpy (mem, ptr2, ext2);
+	    ((char*)(mem))[ext2+0] = 0; 
+	    ((char*)(mem))[ext2+1] = 0;
+	}	    
+    }    
+    {   /* override sizes/offsets with zip64 values for largefile support */
+	zzip_extra_zip64* block = (zzip_extra_zip64*)
+	    zzip_mem_entry_extra_block (item, ZZIP_EXTRA_zip64);
+	if (block) {
+	    item->zz_usize  =    __zzip_get64(block->z_usize);
+	    item->zz_csize  =    __zzip_get64(block->z_csize);
+	    item->zz_offset =    __zzip_get64(block->z_offset);
+	    item->zz_diskstart = __zzip_get32(block->z_diskstart);
 	}
     }
-    { /* 3. scanning the extra blocks for platform specific extensions. */
-	register size_t ext;
-	for (ext = 0; ext < item->zz_extcount; ext++) {
-	    /* "http://www.pkware.com/company/standards/appnote/" */
-	    switch (item->zz_extras[ext].zz_datatype) {
-	    case 0x0001: { /* ZIP64 extended information extra field */
-		struct {
-		    char z_datatype[2]; /* Tag for this "extra" block type */
-		    char z_datasize[2]; /* Size of this "extra" block */
-		    char z_usize[8]; /* Original uncompressed file size */
-		    char z_csize[8]; /* Size of compressed data */
-		    char z_offset[8]; /* Offset of local header record */
-		    char z_diskstart[4]; /* Number of the disk for file start*/
-		} *block = (void*) item->zz_extras[ext].zz_data;
-		item->zz_usize  =    __zzip_get64(block->z_usize);
-		item->zz_csize  =    __zzip_get64(block->z_csize);
-		item->zz_offset =    __zzip_get64(block->z_offset);
-		item->zz_diskstart = __zzip_get32(block->z_diskstart);
-	    } break;
-	    case 0x0007: /* AV Info */
-	    case 0x0008: /* Reserved for future Unicode file name data (PFS) */
-	    case 0x0009: /* OS/2 */
-	    case 0x000a: /* NTFS */
-	    case 0x000c: /* OpenVMS */
-	    case 0x000d: /* Unix */
-	    case 0x000e: /* Reserved for file stream and fork descriptors */
-	    case 0x000f: /* Patch Descriptor */
-	    case 0x0014: /* PKCS#7 Store for X.509 Certificates */
-	    case 0x0015: /* X.509 Certificate ID and Signature for file */
-	    case 0x0016: /* X.509 Certificate ID for Central Directory */
-	    case 0x0017: /* Strong Encryption Header */
-	    case 0x0018: /* Record Management Controls */
-	    case 0x0019: /* PKCS#7 Encryption Recipient Certificate List */
-	    case 0x0065: /* IBM S/390, AS/400 attributes - uncompressed */
-	    case 0x0066: /* Reserved for IBM S/390, AS/400 attr - compressed */
-	    case 0x07c8: /* Macintosh */
-	    case 0x2605: /* ZipIt Macintosh */
-	    case 0x2705: /* ZipIt Macintosh 1.3.5+ */
-	    case 0x2805: /* ZipIt Macintosh 1.3.5+ */
-	    case 0x334d: /* Info-ZIP Macintosh */
-	    case 0x4341: /* Acorn/SparkFS  */
-	    case 0x4453: /* Windows NT security descriptor (binary ACL) */
-	    case 0x4704: /* VM/CMS */
-	    case 0x470f: /* MVS */
-	    case 0x4b46: /* FWKCS MD5 (see below) */
-	    case 0x4c41: /* OS/2 access control list (text ACL) */
-	    case 0x4d49: /* Info-ZIP OpenVMS */
-	    case 0x4f4c: /* Xceed original location extra field */
-	    case 0x5356: /* AOS/VS (ACL) */
-	    case 0x5455: /* extended timestamp */
-	    case 0x554e: /* Xceed unicode extra field */
-	    case 0x5855: /* Info-ZIP Unix (original, also OS/2, NT, etc) */
-	    case 0x6542: /* BeOS/BeBox */
-	    case 0x756e: /* ASi Unix */
-	    case 0x7855: /* Info-ZIP Unix (new) */
-	    case 0xfd4a: /* SMS/QDOS */
-		break;
+    /* NOTE: 
+     * All information from the central directory entry is now in memory.
+     * Effectivly that allows us to modify it and write it back to disk.
+     */
+    return item; ____;____;
+}
+
+/* find an extra block for the given datatype code. 
+ * We assume that the central directory has been preparsed to memory.
+ */
+ZZIP_EXTRA_BLOCK*
+zzip_mem_entry_extra_block (ZZIP_MEM_ENTRY* entry, short datatype)
+{
+    int i = 2;
+    while (1) {
+	ZZIP_EXTRA_BLOCK* ext = entry->zz_ext[i];
+	if (ext) {
+	    while (ext->z_datatype) {
+		if (datatype == zzip_extra_block_get_datatype (ext)) {
+		    return ext;
+		}
+		___ char* e = (char*) ext;
+		e += zzip_extra_block_headerlength;
+		e += zzip_extra_block_get_datasize (ext);
+		ext = (void*) e; ____;
 	    }
 	}
+	if (! i) return 0;
+	i--;
     }
-    return item;
 }
-    
+
 void
-zzip_mem_disk_entry_free(ZZIP_MEM_DISK_ENTRY* _zzip_restrict item) 
+zzip_mem_entry_free(ZZIP_MEM_ENTRY* _zzip_restrict item) 
 {
     if (item) {
-	if (item->zz_extras) free(item->zz_extras);
+	if (item->zz_ext[0]) free (item->zz_ext[0]);
+	if (item->zz_ext[1]) free (item->zz_ext[1]);
+	if (item->zz_ext[2]) free (item->zz_ext[2]);
+	if (item->zz_comment) free (item->zz_comment);
+	if (item->zz_name) free (item->zz_name);
 	free (item);
     }
 }
@@ -265,10 +227,10 @@ zzip_mem_disk_entry_free(ZZIP_MEM_DISK_ENTRY* _zzip_restrict item)
 void
 zzip_mem_disk_unload(ZZIP_MEM_DISK* dir)
 {
-    ZZIP_MEM_DISK_ENTRY* item = dir->list;
+    ZZIP_MEM_ENTRY* item = dir->list;
     while (item) {
-	ZZIP_MEM_DISK_ENTRY* next = item->zz_next;
-	zzip_mem_disk_entry_free(item); item = next;
+	ZZIP_MEM_ENTRY* next = item->zz_next;
+	zzip_mem_entry_free(item); item = next;
     }
     dir->list = dir->last = 0; dir->disk = 0;
 }
@@ -281,4 +243,131 @@ zzip_mem_disk_close(ZZIP_MEM_DISK* _zzip_restrict dir)
 	zzip_disk_close(dir->disk);
 	free (dir);
     }
+}
+
+#if 0
+static void foo (short zz_datatype) {
+    switch (zz_datatype) {
+    case 0x0001: /* ZIP64 extended information extra field */
+    case 0x0007: /* AV Info */
+    case 0x0008: /* Reserved for future Unicode file name data (PFS) */
+    case 0x0009: /* OS/2 */
+    case 0x000a: /* NTFS */
+    case 0x000c: /* OpenVMS */
+    case 0x000d: /* Unix */
+    case 0x000e: /* Reserved for file stream and fork descriptors */
+    case 0x000f: /* Patch Descriptor */
+    case 0x0014: /* PKCS#7 Store for X.509 Certificates */
+    case 0x0015: /* X.509 Certificate ID and Signature for file */
+    case 0x0016: /* X.509 Certificate ID for Central Directory */
+    case 0x0017: /* Strong Encryption Header */
+    case 0x0018: /* Record Management Controls */
+    case 0x0019: /* PKCS#7 Encryption Recipient Certificate List */
+    case 0x0065: /* IBM S/390, AS/400 attributes - uncompressed */
+    case 0x0066: /* Reserved for IBM S/390, AS/400 attr - compressed */
+    case 0x07c8: /* Macintosh */
+    case 0x2605: /* ZipIt Macintosh */
+    case 0x2705: /* ZipIt Macintosh 1.3.5+ */
+    case 0x2805: /* ZipIt Macintosh 1.3.5+ */
+    case 0x334d: /* Info-ZIP Macintosh */
+    case 0x4341: /* Acorn/SparkFS  */
+    case 0x4453: /* Windows NT security descriptor (binary ACL) */
+    case 0x4704: /* VM/CMS */
+    case 0x470f: /* MVS */
+    case 0x4b46: /* FWKCS MD5 (see below) */
+    case 0x4c41: /* OS/2 access control list (text ACL) */
+    case 0x4d49: /* Info-ZIP OpenVMS */
+    case 0x4f4c: /* Xceed original location extra field */
+    case 0x5356: /* AOS/VS (ACL) */
+    case 0x5455: /* extended timestamp */
+    case 0x554e: /* Xceed unicode extra field */
+    case 0x5855: /* Info-ZIP Unix (original, also OS/2, NT, etc) */
+    case 0x6542: /* BeOS/BeBox */
+    case 0x756e: /* ASi Unix */
+    case 0x7855: /* Info-ZIP Unix (new) */
+    case 0xfd4a: /* SMS/QDOS */
+    }
+}
+#endif
+
+ZZIP_MEM_ENTRY*
+zzip_mem_disk_findfile(ZZIP_MEM_DISK* dir, 
+                       char* filename, ZZIP_MEM_ENTRY* after,
+		       zzip_strcmp_fn_t compare) 
+{
+    ZZIP_MEM_ENTRY* entry = (! after ? dir->list : after->zz_next);
+    if (! compare) compare = (zzip_strcmp_fn_t) (strcmp);
+    for (; entry ; entry = entry->zz_next) {
+	if (! compare (filename, entry->zz_name)) {
+	    return entry;
+	}
+    }
+    return 0;
+}
+
+ZZIP_MEM_ENTRY*
+zzip_mem_disk_findmatch(ZZIP_MEM_DISK* dir, 
+                        char* filespec, ZZIP_MEM_ENTRY* after,
+			zzip_fnmatch_fn_t compare, int flags)
+{
+    ZZIP_MEM_ENTRY* entry = (! after ? dir->list : after->zz_next);
+    if (! compare) compare = (zzip_fnmatch_fn_t) _zzip_fnmatch;
+    for (; entry ; entry = entry->zz_next) {
+	if (! compare (filespec, entry->zz_name, flags)) {
+	    return entry;
+	}
+    }
+    return 0;
+}
+
+ZZIP_MEM_DISK_FILE* _zzip_new
+zzip_mem_entry_fopen (ZZIP_MEM_DISK* dir, ZZIP_MEM_ENTRY* entry) 
+{
+    /* keep this in sync with zzip_disk_entry_fopen */
+    ZZIP_DISK_FILE* file = malloc(sizeof(ZZIP_MEM_DISK_FILE));
+    if (! file) return file;
+    file->buffer = dir->disk->buffer;
+    file->endbuf = dir->disk->endbuf;
+    file->avail = zzip_mem_entry_usize (entry);
+
+    if (! file->avail || zzip_mem_entry_data_stored (entry))
+    { file->stored = zzip_mem_entry_to_data (entry); return file; }
+
+    file->stored = 0;
+    file->zlib.opaque = 0;
+    file->zlib.zalloc = Z_NULL;
+    file->zlib.zfree = Z_NULL;
+    file->zlib.avail_in = zzip_mem_entry_csize (entry);
+    file->zlib.next_in = zzip_mem_entry_to_data (entry);
+
+    if (! zzip_mem_entry_data_deflated (entry) ||
+	inflateInit2 (& file->zlib, -MAX_WBITS) != Z_OK)
+    { free (file); return 0; }
+
+    return file;
+}
+
+ZZIP_MEM_DISK_FILE* _zzip_new
+zzip_mem_disk_fopen (ZZIP_MEM_DISK* dir, char* filename) 
+{
+    ZZIP_MEM_ENTRY* entry = zzip_mem_disk_findfile (dir, filename, 0, 0);
+    if (! entry) return 0; else return zzip_mem_entry_fopen (dir, entry);
+}
+_zzip_size_t
+zzip_mem_disk_fread (void* ptr, _zzip_size_t size, _zzip_size_t nmemb,
+                     ZZIP_MEM_DISK_FILE* file)
+{
+    return zzip_disk_fread (ptr, size, nmemb, file);
+}
+
+int
+zzip_mem_disk_fclose (ZZIP_MEM_DISK_FILE* file) 
+{
+    return zzip_disk_fclose (file);
+}
+
+int
+zzip_mem_disk_feof (ZZIP_MEM_DISK_FILE* file)
+{
+    return zzip_disk_feof (file);
 }

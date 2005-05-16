@@ -32,5 +32,16 @@ typedef       _zzip_off_t       zzip_off_t;
 typedef       _zzip_size_t      zzip_size_t;
 typedef       _zzip_ssize_t     zzip_ssize_t;
 
+/* in <zzip/format.h> */
+typedef struct zzip_disk64_trailer ZZIP_DISK64_TRAILER;
+typedef struct zzip_disk_trailer ZZIP_DISK_TRAILER;
+typedef struct zzip_file_trailer ZZIP_FILE_TRAILER;
+typedef struct zzip_root_dirent  ZZIP_ROOT_DIRENT;
+typedef struct zzip_file_header ZZIP_FILE_HEADER;
+typedef struct zzip_disk_entry  ZZIP_DISK_ENTRY;
+typedef struct zzip_extra_block ZZIP_EXTRA_BLOCK;
+
+
+
 #endif
 

@@ -26,6 +26,13 @@
 #define _GNU_SOURCE _glibc_developers_are_idiots_to_call_this_gnu_specific_
 #endif
 
+#define _ZZIP_MMAPPED_PRIVATE 1
+
+#include <zlib.h>
+#include <zzip/format.h>
+#include <zzip/fetch.h>
+#include <zzip/__mmap.h>
+
 #include <zzip/mmapped.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -46,10 +53,6 @@
 #include <strings.h>
 #endif
 
-#include <zlib.h>
-#include <zzip/format.h>
-#include <zzip/fetch.h>
-#include <zzip/__mmap.h>
 
 #if __STDC_VERSION__+0 > 199900L
 #define ___
@@ -461,19 +464,6 @@ zzip_disk_findmatch(ZZIP_DISK* disk, char* filespec,
 
 /* ====================================================================== */
 
-/**
- * typedef struct zzip_disk_file ZZIP_DISK_FILE;
- */
-struct zzip_disk_file
-{
-    char* buffer;                      /* fopen disk->buffer */
-    char* endbuf;                      /* fopen disk->endbuf */
-    struct zzip_file_header* header;   /* fopen detected header */
-    zzip_size_t avail;                 /* memorized for checks on EOF */
-    z_stream zlib;                     /* for inflated blocks */
-    char* stored;                      /* for stored blocks */
-};
-
 /** => zzip_disk_fopen
  *
  * the ZZIP_DISK_FILE* is rather simple in just encapsulating the
@@ -488,29 +478,31 @@ struct zzip_disk_file
 ZZIP_DISK_FILE* _zzip_restrict
 zzip_disk_entry_fopen (ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry)
 {
-    ZZIP_DISK_FILE* file = malloc(sizeof(ZZIP_DISK_FILE));
+    /* keep this in sync with zzip_mem_entry_fopen */
+    struct zzip_file_header* header = 
+	zzip_disk_entry_to_file_header (disk, entry);
+    if (! header) return 0;
+    ___ ZZIP_DISK_FILE* file = malloc(sizeof(ZZIP_DISK_FILE));
     if (! file) return file;
     file->buffer = disk->buffer;
     file->endbuf = disk->endbuf;
-    file->header = zzip_disk_entry_to_file_header (disk, entry);
-    if (! file->header) { free (file); return 0; }
-    file->avail = zzip_file_header_usize (file->header);
+    file->avail = zzip_file_header_usize (header);
 
-    if (! file->avail || zzip_file_header_data_stored (file->header))
-    { file->stored = zzip_file_header_to_data (file->header); return file; }
+    if (! file->avail || zzip_file_header_data_stored (header))
+    { file->stored = zzip_file_header_to_data (header); return file; }
 
     file->stored = 0;
     file->zlib.opaque = 0;
     file->zlib.zalloc = Z_NULL;
     file->zlib.zfree = Z_NULL;
-    file->zlib.avail_in = zzip_file_header_csize (file->header);
-    file->zlib.next_in = zzip_file_header_to_data (file->header);
+    file->zlib.avail_in = zzip_file_header_csize (header);
+    file->zlib.next_in = zzip_file_header_to_data (header);
 
-    if (! zzip_file_header_data_deflated (file->header) ||
+    if (! zzip_file_header_data_deflated (header) ||
 	inflateInit2 (& file->zlib, -MAX_WBITS) != Z_OK)
     { free (file); return 0; }
 
-    return file;
+    return file; ____;
 }
 
 /** openening a file part wrapped within a (mmapped) zip archive
