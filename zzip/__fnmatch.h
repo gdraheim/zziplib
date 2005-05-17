@@ -1,5 +1,5 @@
-#ifndef __ZZIP__FNMATCH_H
-#define __ZZIP__FNMATCH_H
+#ifndef __ZZIP_INTERNAL_FNMATCH_H
+#define __ZZIP_INTERNAL_FNMATCH_H
 /** included by fseeko.c, mmapped.c, memdisk.c */
 
 #include <zzip/conf.h>

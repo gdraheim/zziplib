@@ -1,6 +1,8 @@
 #ifndef _ZZIP_FSEEKO_H_
 #define _ZZIP_FSEEKO_H_
 /*
+ * NOTE: this is part of libzzipfseeko (i.e. it is not libzzip). 
+ *
  * simplified zip disk access using fseeko on a stdio FILE handle
  *
  * Author: 

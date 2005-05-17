@@ -1,4 +1,6 @@
 /*
+ * NOTE: this is part of libzzipmmapped (i.e. it is not libzzip).
+ *
  * The mem_disk cache will parse the central information of a zip archive
  * and store it internally. One the one hand it allows to find files
  * faster - no disk access is required and endian conversion is not

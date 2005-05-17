@@ -1,6 +1,8 @@
 #ifndef _ZZIP_MMAPPED_H_
 #define _ZZIP_MMAPPED_H_
 /*
+ * NOTE: this is part of libzzipmmapped (i.e. it is not libzzip). 
+ *
  * simplified zip disk access using a mmapping of the whole archive.
  *
  * Author: 

@@ -1,4 +1,6 @@
 /*
+ * NOTE: this is part of libzzipfseeko (i.e. it is not libzzip).
+ *
  * These routines are fully independent from the traditional zzip
  * implementation. They assume a readonly seekable stdio handle
  * representing a complete zip file. The functions show how to 

@@ -1,5 +1,6 @@
 #ifndef __ZZIP_INTERNAL_DEBUG_H
 #define __ZZIP_INTERNAL_DEBUG_H
+
 #include <zzip/conf.h>
 #include <zzip/__hints.h>
 

@@ -1,4 +1,6 @@
 /*
+ * NOTE: this is part of libzzipmmapped (i.e. it is not libzzip).
+ *
  * These routines are fully independent from the traditional zzip
  * implementation. They assume a readonly mmapped sharedmem block
  * representing a complete zip file. The functions show how to 
