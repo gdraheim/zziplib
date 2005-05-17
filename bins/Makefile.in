@@ -15,7 +15,7 @@
 @SET_MAKE@
 
 
-SOURCES = unzzip.c unzzipcat.c unzzipcat-mem.c unzzipcat-seeko.c unzzipdir.c unzzipdir-mem.c zzcat.c zzdir.c zzip.c zziptest.c zzobfuscated.c zzxorcat.c zzxorcopy.c zzxordir.c
+SOURCES = unzip-mem.c unzzip.c unzzipcat.c unzzipcat-mem.c unzzipcat-seeko.c unzzipdir.c unzzipdir-mem.c zzcat.c zzdir.c zzip.c zziptest.c zzobfuscated.c zzxorcat.c zzxorcopy.c zzxordir.c
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -43,7 +43,8 @@ target_triplet = @target@
 bin_PROGRAMS = zzcat$(EXEEXT) zzdir$(EXEEXT) zzxorcat$(EXEEXT) \
 	zzxordir$(EXEEXT) zzxorcopy$(EXEEXT) unzzip$(EXEEXT) \
 	unzzipdir$(EXEEXT) unzzipcat$(EXEEXT) unzzipcat-seeko$(EXEEXT) \
-	unzzipdir-mem$(EXEEXT) unzzipcat-mem$(EXEEXT)
+	unzzipdir-mem$(EXEEXT) unzzipcat-mem$(EXEEXT) \
+	unzip-mem$(EXEEXT)
 noinst_PROGRAMS = zziptest$(EXEEXT) zzobfuscated$(EXEEXT) \
 	zzip$(EXEEXT)
 subdir = bins
@@ -59,6 +60,9 @@ CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(aclocaldir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
+unzip_mem_SOURCES = unzip-mem.c
+unzip_mem_OBJECTS = unzip-mem.$(OBJEXT)
+unzip_mem_DEPENDENCIES = ../zzip/libzzipmmapped.la
 unzzip_SOURCES = unzzip.c
 unzzip_OBJECTS = unzzip.$(OBJEXT)
 unzzip_DEPENDENCIES = ../zzip/libzzip.la
@@ -111,12 +115,14 @@ LTCOMPILE = $(LIBTOOL) --mode=compile --tag=CC $(CC) $(DEFS) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link --tag=CC $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = unzzip.c unzzipcat.c unzzipcat-mem.c unzzipcat-seeko.c \
-	unzzipdir.c unzzipdir-mem.c zzcat.c zzdir.c zzip.c zziptest.c \
-	zzobfuscated.c zzxorcat.c zzxorcopy.c zzxordir.c
-DIST_SOURCES = unzzip.c unzzipcat.c unzzipcat-mem.c unzzipcat-seeko.c \
-	unzzipdir.c unzzipdir-mem.c zzcat.c zzdir.c zzip.c zziptest.c \
-	zzobfuscated.c zzxorcat.c zzxorcopy.c zzxordir.c
+SOURCES = unzip-mem.c unzzip.c unzzipcat.c unzzipcat-mem.c \
+	unzzipcat-seeko.c unzzipdir.c unzzipdir-mem.c zzcat.c zzdir.c \
+	zzip.c zziptest.c zzobfuscated.c zzxorcat.c zzxorcopy.c \
+	zzxordir.c
+DIST_SOURCES = unzip-mem.c unzzip.c unzzipcat.c unzzipcat-mem.c \
+	unzzipcat-seeko.c unzzipdir.c unzzipdir-mem.c zzcat.c zzdir.c \
+	zzip.c zziptest.c zzobfuscated.c zzxorcat.c zzxorcopy.c \
+	zzxordir.c
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -295,6 +301,8 @@ unzzipdir_mem_LDFLAGS = @ZZIPLIB_LDFLAGS@
 unzzipdir_mem_LDADD = ../zzip/libzzipmmapped.la @RESOLVES@ -lz
 unzzipcat_mem_LDFLAGS = @ZZIPLIB_LDFLAGS@
 unzzipcat_mem_LDADD = ../zzip/libzzipmmapped.la @RESOLVES@ -lz
+unzip_mem_LDFLAGS = @ZZIPLIB_LDFLAGS@
+unzip_mem_LDADD = ../zzip/libzzipmmapped.la @RESOLVES@ -lz
 # and this uses the simplified fseeko stdio version
 unzzipcat_seeko_LDFLAGS = @ZZIPLIB_LDFLAGS@
 unzzipcat_seeko_LDADD = ../zzip/libzzipfseeko.la @RESOLVES@ -lz
@@ -366,6 +374,9 @@ clean-noinstPROGRAMS:
 	  echo " rm -f $$p $$f"; \
 	  rm -f $$p $$f ; \
 	done
+unzip-mem$(EXEEXT): $(unzip_mem_OBJECTS) $(unzip_mem_DEPENDENCIES) 
+	@rm -f unzip-mem$(EXEEXT)
+	$(LINK) $(unzip_mem_LDFLAGS) $(unzip_mem_OBJECTS) $(unzip_mem_LDADD) $(LIBS)
 unzzip$(EXEEXT): $(unzzip_OBJECTS) $(unzzip_DEPENDENCIES) 
 	@rm -f unzzip$(EXEEXT)
 	$(LINK) $(unzzip_LDFLAGS) $(unzzip_OBJECTS) $(unzzip_LDADD) $(LIBS)
@@ -415,6 +426,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unzip-mem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unzzip.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unzzipcat-mem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unzzipcat-seeko.Po@am__quote@

@@ -49,6 +49,7 @@ struct _zzip_mem_entry {
     char*            zz_data;      /* compressed content start (mmap addr) */
     int              zz_flags;     /* (from "z_flags") */
     int              zz_compr;     /* (from "z_compr") */
+    long             zz_mktime;    /* (from "z_dostime") */
     long             zz_crc32;     /* (from "z_crc32") */
     zzip_off_t       zz_csize;     /* (from "z_csize")  overridden by zip64 */
     zzip_off_t       zz_usize;     /* (from "z_usize")  overridden by zip64 */
@@ -60,7 +61,7 @@ struct _zzip_mem_entry {
 };                                 /* the extra blocks are NOT converted */
      
 #define _zzip_mem_disk_findfirst(_d_) ((_d_)->list)
-#define _zzip_mem_disk_findnext(_d_,_e_) ((_e_)?(_d_)->list:(_e_)->zz_next)
+#define _zzip_mem_disk_findnext(_d_,_e_) (!(_e_)?(_d_)->list:(_e_)->zz_next)
 #define _zzip_mem_entry_findnext(_e_) ((_e_)->zz_next)
 
 #ifndef USE_INLINE
@@ -84,11 +85,13 @@ zzip_mem_entry_findnext(ZZIP_MEM_ENTRY* entry) {
 #endif
 
 #define _zzip_mem_entry_to_name(_e_) ((_e_)->zz_name)
+#define _zzip_mem_entry_to_comment(_e_) ((_e_)->zz_comment)
 #define _zzip_mem_entry_strdup_name(_e_) (strdup((_e_)->zz_name))
 #define _zzip_mem_entry_to_data(_e_) ((_e_)->zz_data)
 
 #ifndef USE_INLINE
 #define zzip_mem_entry_to_name _zzip_mem_entry_to_name
+#define zzip_mem_entry_to_comment _zzip_mem_entry_to_comment
 #define zzip_mem_entry_strdup_name _zzip_mem_entry_strdup_name
 #define zzip_mem_entry_to_data _zzip_mem_entry_to_data
 #else
@@ -96,6 +99,10 @@ _zzip_inline char*
 zzip_mem_entry_to_name(ZZIP_MEM_ENTRY* entry) {
     if (! entry) return 0;
     return _zzip_mem_entry_to_name(entry); }
+_zzip_inline char*
+zzip_mem_entry_to_comment(ZZIP_MEM_ENTRY* entry) {
+    if (! entry) return 0;
+    return _zzip_mem_entry_to_comment(entry); }
 _zzip_inline char* _zzip_new
 zzip_mem_entry_strdup_name(ZZIP_MEM_ENTRY* entry) {
     if (! entry) return 0;
@@ -146,7 +153,7 @@ zzip_mem_disk_fclose (ZZIP_MEM_DISK_FILE* file);
 int
 zzip_mem_disk_feof (ZZIP_MEM_DISK_FILE* file);
 
-
-
+/* convert dostime of entry to unix time_t */
+long zzip_disk_entry_get_mktime(ZZIP_DISK_ENTRY* entry);
 
 #endif

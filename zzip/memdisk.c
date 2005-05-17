@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 #include <zlib.h>
 #include <zzip/format.h>
@@ -57,6 +58,9 @@ typedef struct _zzip_extra_zip64 { /* ZIP64 extended information extra field */
     char z_offset[8]; /* Offset of local header record */
     char z_diskstart[4]; /* Number of the disk for file start*/
 } zzip_extra_zip64;
+
+/*forward*/
+
 
 static ZZIP_MEM_ENTRY* _zzip_new
 zzip_mem_entry_new(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry);
@@ -142,6 +146,7 @@ zzip_mem_entry_new(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry)
     item->zz_data =      zzip_file_header_to_data(header);
     item->zz_flags =     zzip_disk_entry_get_flags(entry);
     item->zz_compr =     zzip_disk_entry_get_compr(entry);
+    item->zz_mktime =    zzip_disk_entry_get_mktime(entry);
     item->zz_crc32 =     zzip_disk_entry_get_crc32(entry);
     item->zz_csize =     zzip_disk_entry_get_csize(entry);
     item->zz_usize =     zzip_disk_entry_get_usize(entry);
@@ -196,7 +201,7 @@ zzip_mem_entry_extra_block (ZZIP_MEM_ENTRY* entry, short datatype)
     while (1) {
 	ZZIP_EXTRA_BLOCK* ext = entry->zz_ext[i];
 	if (ext) {
-	    while (ext->z_datatype) {
+	    while (*(short*)(ext->z_datatype)) {
 		if (datatype == zzip_extra_block_get_datatype (ext)) {
 		    return ext;
 		}
@@ -370,4 +375,19 @@ int
 zzip_mem_disk_feof (ZZIP_MEM_DISK_FILE* file)
 {
     return zzip_disk_feof (file);
+}
+
+/* convert dostime of entry to unix time_t */
+long zzip_disk_entry_get_mktime(ZZIP_DISK_ENTRY* entry) 
+{
+    uint16_t dostime = ZZIP_GET16 (entry->z_dostime.time);
+    uint16_t dosdate = ZZIP_GET16 (entry->z_dostime.date);
+    struct tm date;
+    date.tm_sec =  (dostime) & 0x1F;       /* bits 0..4 */
+    date.tm_min =  (dostime >> 5) & 0x3F;  /* bits 5..10 */
+    date.tm_hour = (dostime >> 11);       /* bits 11..15 */
+    date.tm_mday = (dosdate) & 0x1F;      /* bits 16..20 */
+    date.tm_mon =  (dosdate >> 5) & 0xF;  /* bits 21..24 */
+    date.tm_year = (dosdate >> 9) + 80;   /* bits 25..31 */
+    return mktime (&date); /* well, unix has that function... */
 }
