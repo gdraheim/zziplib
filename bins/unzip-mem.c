@@ -123,7 +123,7 @@ static void zzip_mem_entry_test(ZZIP_MEM_DISK* disk,
     if (file) 
     {
 	unsigned long crc = crc32 (0L, NULL, 0);
-	char buffer[1024]; int len; 
+	unsigned char buffer[1024]; int len; 
 	while ((len = zzip_mem_disk_fread (buffer, 1024, 1, file))) {
 	    crc = crc32 (crc, buffer, len);
 	}

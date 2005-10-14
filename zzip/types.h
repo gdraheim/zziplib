@@ -26,6 +26,7 @@
 #include <stddef.h> /* size_t and friends */
 /* msvc6 has neither ssize_t (we assume "int") nor off_t (assume "long") */
 
+typedef unsigned char zzip_byte_t; // especially zlib decoding data
 
 typedef       _zzip_off64_t     zzip_off64_t;
 typedef       _zzip_off_t       zzip_off_t;

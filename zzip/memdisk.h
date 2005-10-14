@@ -19,11 +19,11 @@ struct _zzip_mem_disk {
 #define zzip_mem_disk_extern
 #endif
 
-zzip_mem_disk_extern ZZIP_MEM_DISK* _zzip_new
+zzip_mem_disk_extern zzip__new__ ZZIP_MEM_DISK*
 zzip_mem_disk_new (void);
-zzip_mem_disk_extern ZZIP_MEM_DISK* _zzip_new
+zzip_mem_disk_extern zzip__new__ ZZIP_MEM_DISK*
 zzip_mem_disk_open (char* filename);
-zzip_mem_disk_extern ZZIP_MEM_DISK* _zzip_new
+zzip_mem_disk_extern zzip__new__ ZZIP_MEM_DISK*
 zzip_mem_disk_fdopen (int fd);
 zzip_mem_disk_extern void 
 zzip_mem_disk_close (ZZIP_MEM_DISK* _zzip_restrict dir);
@@ -48,7 +48,7 @@ _zzip_inline ZZIP_DISK* zzip_disk (ZZIP_MEM_DISK* dir) { return dir->disk; }
 struct _zzip_mem_entry {
     struct _zzip_mem_entry* zz_next;
     char*            zz_name;      /* zero-terminated (from "filename") */
-    char*            zz_data;      /* compressed content start (mmap addr) */
+    zzip_byte_t*     zz_data;      /* compressed content start (mmap addr) */
     int              zz_flags;     /* (from "z_flags") */
     int              zz_compr;     /* (from "z_compr") */
     long             zz_mktime;    /* (from "z_dostime") */
@@ -105,11 +105,12 @@ _zzip_inline char*
 zzip_mem_entry_to_comment(ZZIP_MEM_ENTRY* entry) {
     if (! entry) return 0;
     return _zzip_mem_entry_to_comment(entry); }
-_zzip_inline char* _zzip_new
+zzip__new__
+_zzip_inline char*
 zzip_mem_entry_strdup_name(ZZIP_MEM_ENTRY* entry) {
     if (! entry) return 0;
     return _zzip_mem_entry_strdup_name(entry); }
-_zzip_inline char*
+_zzip_inline zzip_byte_t*
 zzip_mem_entry_to_data(ZZIP_MEM_ENTRY* entry) {
     if (! entry) return 0;
     return _zzip_mem_entry_to_data(entry); }
@@ -143,9 +144,9 @@ zzip_mem_disk_findmatch(ZZIP_MEM_DISK* dir,
 
 typedef ZZIP_DISK_FILE ZZIP_MEM_DISK_FILE;
 
-ZZIP_MEM_DISK_FILE* _zzip_new
+zzip__new__ ZZIP_MEM_DISK_FILE*
 zzip_mem_entry_fopen (ZZIP_MEM_DISK* dir, ZZIP_MEM_ENTRY* entry);
-ZZIP_MEM_DISK_FILE* _zzip_new
+zzip__new__ ZZIP_MEM_DISK_FILE*
 zzip_mem_disk_fopen (ZZIP_MEM_DISK* dir, char* filename);
 _zzip_size_t
 zzip_mem_disk_fread (void* ptr, _zzip_size_t size, _zzip_size_t nmemb,

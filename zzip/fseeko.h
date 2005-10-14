@@ -33,10 +33,12 @@ typedef int (*zzip_fnmatch_fn_t)(char*, char*, int);
 zzip_entry_extern zzip_off_t
 zzip_entry_data_offset(ZZIP_ENTRY* entry);
 
-zzip_entry_extern ZZIP_ENTRY* _zzip_new
+zzip__new__
+zzip_entry_extern ZZIP_ENTRY*
 zzip_entry_findfirst(FILE* file);
 
-zzip_entry_extern ZZIP_ENTRY* _zzip_new
+zzip__new__
+zzip_entry_extern ZZIP_ENTRY*
 zzip_entry_findnext(ZZIP_ENTRY* _zzip_restrict entry);
 
 #define zzip_entry_findlast      zzip_entry_free
@@ -46,24 +48,28 @@ zzip_entry_findnext(ZZIP_ENTRY* _zzip_restrict entry);
 zzip_entry_extern int
 zzip_entry_free(ZZIP_ENTRY* entry);
 
-zzip_entry_extern char* _zzip_new
+zzip__new__
+zzip_entry_extern char*
 zzip_entry_strdup_name(ZZIP_ENTRY* entry);
 zzip_entry_extern char*
 zzip_entry_to_data(ZZIP_ENTRY* entry);
 
-zzip_entry_extern ZZIP_ENTRY* _zzip_new
+zzip__new__
+zzip_entry_extern ZZIP_ENTRY*
 zzip_entry_findfile(FILE* disk, char* filename, 
 		    ZZIP_ENTRY* _zzip_restrict old,
 		   zzip_strcmp_fn_t compare);
-zzip_entry_extern ZZIP_ENTRY* _zzip_new
+zzip__new__
+zzip_entry_extern ZZIP_ENTRY*
 zzip_entry_findmatch(FILE* disk, char* filespec, 
 		     ZZIP_ENTRY* _zzip_restrict old,
 		    zzip_fnmatch_fn_t compare, int flags);
-
-zzip_entry_extern ZZIP_ENTRY_FILE* _zzip_new
+zzip__new__
+zzip_entry_extern ZZIP_ENTRY_FILE*
 zzip_entry_fopen (ZZIP_ENTRY* entry, int takeover);
 
-zzip_entry_extern ZZIP_ENTRY_FILE* _zzip_new
+zzip__new__
+zzip_entry_extern ZZIP_ENTRY_FILE*
 zzip_entry_ffile (FILE* disk, char* filename);
 
 zzip_entry_extern _zzip_size_t

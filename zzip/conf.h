@@ -78,10 +78,12 @@
 #define _zzip_restrict restrict
 #endif
 #endif
-#ifdef __linux__
-#define _zzip_new _zzip_restrict
+#if defined __linux__ && __GNUC__+0 >= 4
+#define zzip__new__ __attribute__((malloc))
+#elif defined __linux__ && __GNUC__+0 >= 3 && __GNUC_MINOR_+0 >= 3
+#define zzip__new__  __attribute__((malloc))
 #else
-#define _zzip_new
+#define zzip__new__
 #endif
 
 #ifndef _zzip_size_t

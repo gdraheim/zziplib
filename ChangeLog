@@ -1,3 +1,14 @@
+2005-10-12
+ * MSVC7 knows the following __declspec attributes:
+	align(#), allocate("seg"), deprecated, dllexport, dllimport,
+	naked{for asm}, noinline, noreturn, nothrow, novtable,
+	property{MngC++}, selectany{common}, thread{tls}, uuid("name")
+ * introduce zzip__new__ for a restrict'ed return item
+ * introduce zzip_byte_t to help silence down compiler warnings
+	about signedness mismatch in assigning data buffer variables.
+	Especially the zlib data_in happens to be of unsigned char type.
+ * note that zzip/format.h does now use zzip_byte_t for layout definition
+
 2005-02-17
  * adding that _GNU_SOURCE on __linux__ to get the strndup prototype
  * cleaning a few warning messages on different platforms as well

@@ -33,7 +33,7 @@
 /* per default, we use a little hack to correct bad z_rootseek parts */
 #define ZZIP_CORRECT_ROOTSEEK 1
 
-#if __GNUC__ >= 3 && __GNUC_MINOR__ >= 3
+#if (__GNUC__ == 3 && __GNUC_MINOR__ >= 3) || (__GNUC__ >= 4)
 # ifdef DEBUG
 # warning suppress a warning where the compiler should have optimized instead.
 # endif

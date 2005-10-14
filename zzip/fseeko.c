@@ -131,7 +131,7 @@ zzip_entry_data_offset(ZZIP_ENTRY* entry)
  * in the zip central directory but if not then we fallback to the filename
  * given in the file_header of each compressed data portion.
  */
-char* _zzip_new
+zzip__new__ char*
 zzip_entry_strdup_name(ZZIP_ENTRY* entry)
 {
     if (! entry) return 0;
@@ -210,7 +210,7 @@ prescan_clear(ZZIP_ENTRY* entry)
  * catch a common brokeness with zip archives that still allows us to find
  * the start of the zip central directory.
  */
-ZZIP_ENTRY* _zzip_new
+zzip__new__ ZZIP_ENTRY*
 zzip_entry_findfirst(FILE* disk)
 {
     if (! disk) return 0;
@@ -220,7 +220,7 @@ zzip_entry_findfirst(FILE* disk)
     /* we read out chunks of 8 KiB in the hope to match disk granularity */
     ___ zzip_off_t pagesize = PAGESIZE; /* getpagesize() */
     ___ ZZIP_ENTRY* entry = malloc (sizeof(*entry));  if (! entry) return 0;
-    ___ char* buffer = malloc (pagesize);             if (! buffer) goto nomem;
+    ___ unsigned char* buffer = malloc (pagesize);    if (! buffer) goto nomem;
 
     assert (pagesize/2 > (zzip_off_t) sizeof (struct zzip_disk_trailer));
     /* at each step, we will fread a pagesize block which overlaps with the
@@ -232,7 +232,8 @@ zzip_entry_findfirst(FILE* disk)
     while(1) {
 	fseeko (disk, mapoffs, SEEK_SET);
 	fread (buffer, 1, mapsize, disk);
-	___ char* p = buffer + mapsize - sizeof(struct zzip_disk_trailer);
+	___ unsigned char* p = 
+	    buffer + mapsize - sizeof(struct zzip_disk_trailer);
 	for (; p >= buffer ; p--)
 	{
 	    zzip_off_t root;  /* (struct zzip_disk_entry*) */
@@ -286,7 +287,7 @@ zzip_entry_findfirst(FILE* disk)
  * to stop searching for matches before that case then please call 
  * => zzip_entry_free on the cursor struct ZZIP_ENTRY.
  */
-ZZIP_ENTRY* _zzip_new
+zzip__new__ ZZIP_ENTRY*
 zzip_entry_findnext(ZZIP_ENTRY* _zzip_restrict entry)
 {
     if (! entry) return entry;
@@ -331,7 +332,7 @@ zzip_entry_free(ZZIP_ENTRY* entry)
  * is rather useless with this variant of _findfile). If no further entry is
  * found then null is returned and any "old"-entry gets already free()d.
  */
-ZZIP_ENTRY* _zzip_new
+zzip__new__ ZZIP_ENTRY*
 zzip_entry_findfile(FILE* disk, char* filename, 
 		    ZZIP_ENTRY* _zzip_restrict entry, 
 		    zzip_strcmp_fn_t compare)
@@ -385,7 +386,7 @@ static int _zzip_fnmatch(char* pattern, char* string, int flags)
  * next entry matching the given filespec. If no further entry is
  * found then null is returned and any "old"-entry gets already free()d.
  */
-ZZIP_ENTRY* _zzip_new
+zzip__new__ ZZIP_ENTRY*
 zzip_entry_findmatch(FILE* disk, char* filespec, 
 		     ZZIP_ENTRY* _zzip_restrict entry,
 		     zzip_fnmatch_fn_t compare, int flags)
@@ -416,13 +417,13 @@ zzip_entry_findmatch(FILE* disk, char* filespec,
 struct zzip_entry_file /* : zzip_file_header */
 {
     struct zzip_file_header header;    /* fopen detected header */
-    ZZIP_ENTRY* entry;                 /* fopen entry */
-    zzip_off_t  data;                  /* for stored blocks */
-    zzip_size_t avail;                 /* memorized for checks on EOF */
-    zzip_size_t compressed;            /* compressed flag and datasize */
-    zzip_size_t dataoff;               /* offset from data start */
-    z_stream zlib;                     /* for inflated blocks */
-    char     buffer[PAGESIZE];         /* work buffer for inflate algorithm */
+    ZZIP_ENTRY*   entry;               /* fopen entry */
+    zzip_off_t    data;                /* for stored blocks */
+    zzip_size_t   avail;               /* memorized for checks on EOF */
+    zzip_size_t   compressed;          /* compressed flag and datasize */
+    zzip_size_t   dataoff;             /* offset from data start */
+    z_stream      zlib;                /* for inflated blocks */
+    unsigned char buffer[PAGESIZE];    /* work buffer for inflate algorithm */
 };
 
 /** open a file within a zip disk for reading
@@ -437,7 +438,7 @@ struct zzip_entry_file /* : zzip_file_header */
  * the size of the internal readahead buffer. If an error occurs then null
  * is returned.
  */
-ZZIP_ENTRY_FILE* _zzip_new
+zzip__new__ ZZIP_ENTRY_FILE*
 zzip_entry_fopen (ZZIP_ENTRY* entry, int takeover)
 {
     if (! entry) return 0;
@@ -493,7 +494,7 @@ zzip_entry_fopen (ZZIP_ENTRY* entry, int takeover)
  * the zip central directory with => zzip_entry_findfile and whatever
  * is found first is given to => zzip_entry_fopen
  */
-ZZIP_ENTRY_FILE* _zzip_new
+zzip__new__ ZZIP_ENTRY_FILE*
 zzip_entry_ffile (FILE* disk, char* filename)
 {
     ZZIP_ENTRY* entry = zzip_entry_findfile (disk, filename, 0, 0);

@@ -53,23 +53,22 @@ static const char* error[] = {
 
 #define ZZIP_EXTRA_zip64 0x0001
 typedef struct _zzip_extra_zip64 { /* ZIP64 extended information extra field */
-    char z_datatype[2]; /* Tag for this "extra" block type */
-    char z_datasize[2]; /* Size of this "extra" block */
-    char z_usize[8]; /* Original uncompressed file size */
-    char z_csize[8]; /* Size of compressed data */
-    char z_offset[8]; /* Offset of local header record */
-    char z_diskstart[4]; /* Number of the disk for file start*/
+    zzip_byte_t z_datatype[2]; /* Tag for this "extra" block type */
+    zzip_byte_t z_datasize[2]; /* Size of this "extra" block */
+    zzip_byte_t z_usize[8]; /* Original uncompressed file size */
+    zzip_byte_t z_csize[8]; /* Size of compressed data */
+    zzip_byte_t z_offset[8]; /* Offset of local header record */
+    zzip_byte_t z_diskstart[4]; /* Number of the disk for file start*/
 } zzip_extra_zip64;
 
 /*forward*/
 
-
-static ZZIP_MEM_ENTRY* _zzip_new
+zzip__new__ static ZZIP_MEM_ENTRY*
 zzip_mem_entry_new(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry);
-static void
+zzip__new__ static void
 zzip_mem_entry_free(ZZIP_MEM_ENTRY* _zzip_restrict item);
 
-ZZIP_MEM_DISK* _zzip_new
+zzip__new__ ZZIP_MEM_DISK*
 zzip_mem_disk_new(void)
 {
     return calloc(1, sizeof(ZZIP_MEM_DISK)); 
@@ -77,7 +76,7 @@ zzip_mem_disk_new(void)
 
 /** create new diskdir handle. 
  *  wraps underlying zzip_disk_open. */
-ZZIP_MEM_DISK* _zzip_new
+zzip__new__ ZZIP_MEM_DISK*
 zzip_mem_disk_open(char* filename)
 {
     ZZIP_DISK* disk = zzip_disk_open(filename);
@@ -89,7 +88,7 @@ zzip_mem_disk_open(char* filename)
 
 /** create new diskdir handle. 
  *  wraps underlying zzip_disk_open. */
-ZZIP_MEM_DISK* _zzip_new
+zzip__new__ ZZIP_MEM_DISK*
 zzip_mem_disk_fdopen(int fd)
 {
     ZZIP_DISK* disk = zzip_disk_mmap(fd);
@@ -131,8 +130,8 @@ zzip_mem_disk_load(ZZIP_MEM_DISK* dir, ZZIP_DISK* disk)
  * right into the diskdir_entry for later usage in higher layers.
  * returns: new item, or null on error (setting errno)
  */
-ZZIP_MEM_ENTRY* _zzip_new
-zzip_mem_entry_new(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry) 
+zzip__new__ ZZIP_MEM_ENTRY*
+zzip_mem_entry_new(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry)
 {
     if (! disk || ! entry) { errno=EINVAL; return 0; }
     ___ ZZIP_MEM_ENTRY* item = calloc(1, sizeof(*item));
@@ -327,7 +326,7 @@ zzip_mem_disk_findmatch(ZZIP_MEM_DISK* dir,
     return 0;
 }
 
-ZZIP_MEM_DISK_FILE* _zzip_new
+zzip__new__ ZZIP_MEM_DISK_FILE*
 zzip_mem_entry_fopen (ZZIP_MEM_DISK* dir, ZZIP_MEM_ENTRY* entry) 
 {
     /* keep this in sync with zzip_disk_entry_fopen */
@@ -354,7 +353,7 @@ zzip_mem_entry_fopen (ZZIP_MEM_DISK* dir, ZZIP_MEM_ENTRY* entry)
     return file;
 }
 
-ZZIP_MEM_DISK_FILE* _zzip_new
+zzip__new__ ZZIP_MEM_DISK_FILE*
 zzip_mem_disk_fopen (ZZIP_MEM_DISK* dir, char* filename) 
 {
     ZZIP_MEM_ENTRY* entry = zzip_mem_disk_findfile (dir, filename, 0, 0);
