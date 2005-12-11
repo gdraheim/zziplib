@@ -308,6 +308,7 @@ __zzip_fetch_disk_trailer(int fd, zzip_off_t filesize,
 		    trailer->zz_finalentries = zzip_disk64_trailer_finalentries (orig);
 		    trailer->zz_rootseek = zzip_disk64_trailer_rootseek (orig);
 		    trailer->zz_rootsize = zzip_disk64_trailer_rootsize (orig);
+		    { return(0); }
 #                  endif
 		}
 	    }
