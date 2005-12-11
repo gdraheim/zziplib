@@ -47,6 +47,7 @@
 #ifdef ZZIP_DISK64_TRAILER
 struct _disk_trailer {
     void*         zz_tail;
+    void*         zz_for_correct_rootseek; // ZZIP_CORRECT_ROOTSEEK
     zzip_off64_t  zz_entries; 
     zzip_off64_t  zz_finalentries;
     zzip_off64_t  zz_rootseek;
