@@ -1,7 +1,7 @@
 AC_INIT(zziplib.spec)
 AC_PREREQ(2.49)
 AC_COPYRIGHT([Guido Draheim <guido@gmx.de> for ZZipLib.SF.net])
-AC_REVISION($Revision: 1.4 $)
+AC_REVISION($Revision: 1.5 $)
 AC_CONFIG_AUX_DIR(uses)
 # =======================================================================
 AC_CANONICAL_SYSTEM
@@ -104,6 +104,7 @@ AC_TYPE_SIZE_T
 dnl AC_TYPE_SSIZE_T
 AC_CHECK_TYPE(ssize_t,int)
 AC_CHECK_TYPE(off64_t,_zzip_off_t)
+AC_CHECK_TYPE(__int64,long long)
 AC_COMPILE_CHECK_SIZEOF(short)
 AC_COMPILE_CHECK_SIZEOF(int)
 AC_COMPILE_CHECK_SIZEOF(long)

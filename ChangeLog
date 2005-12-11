@@ -1,4 +1,25 @@
-2005-10-12
+2005-12-10
+ * testing on sourceforge compilefarm - including "make check"
+ * result: bsd platforms get it wrong zzdir "exec format error" 
+	and zzcat "bad file descriptor". The bsd-platforms do
+	use 64bit filepointers by default even on a 32bit system.
+
+2005-12-09
+ * testing with Microsoft Visual Studio 2005 (msvc8) Express Edition
+ * fixing some compilation problems related to zip64 support in win32
+	
+2005-12-08
+ * cut acinclude.m4 into seperated aclocal macros in m4/ subdirectory
+
+2005-10-14
+ * testing on sourceforge compilefarm, cleaning away any compiler warnings
+	i386-debian2.2 i386-freebsd4.8 
+	amd64-fedora3 alpha-debian3.0
+	sparc-solaris8 powerpc-macos10.2
+ * note, the build system has some quirks but not yet renovated to the
+	newest autoconf/automake stuff anyway - TBD before final release
+	
+2005-10-13
  * MSVC7 knows the following __declspec attributes:
 	align(#), allocate("seg"), deprecated, dllexport, dllimport,
 	naked{for asm}, noinline, noreturn, nothrow, novtable,

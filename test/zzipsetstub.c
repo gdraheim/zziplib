@@ -35,7 +35,7 @@ main (int argc, char ** argv)
 	zipFILE = fopen (zipfile, "r+b");
 	if (! zipFILE) { perror (zipfile); return 1; }
 
-	sfxFILE = fopen (sfxfile, "r+b");
+	sfxFILE = fopen (sfxfile, "rb");
 	if (! sfxFILE) { perror (sfxfile); return 1; }
     
 	while (0 < (n = fread(buf, 1, 16, sfxFILE)))

@@ -100,6 +100,13 @@
 #define _zzip_ssize_t ssize_t
 #endif
 #endif
+#ifndef _zzip___int64
+#ifdef   ZZIP___int64
+#define _zzip___int64 ZZIP___int64
+#else
+#define _zzip___int64 long long
+#endif
+#endif
 
 /* whether this library shall use a 64bit off_t largefile variant in 64on32: */
 /* (some exported names must be renamed to avoid bad calls after linking) */

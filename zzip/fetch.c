@@ -42,10 +42,10 @@ uint16_t __zzip_get16(unsigned char * s)
 /** => __zzip_get32
  * This function does the same for an off64_t value.
  */
-zzip_off64_t __zzip_get64(unsigned char * s)
+uint64_t __zzip_get64(unsigned char * s)
 {
-#if __GNUC__+0 >= 3
-    register zzip_off64_t v
+#ifdef __GNUC__
+    register uint64_t v
 	= s[7]; v <<= 8;
     v |= s[6]; v <<= 8;
     v |= s[5]; v <<= 8;
@@ -55,10 +55,10 @@ zzip_off64_t __zzip_get64(unsigned char * s)
     v |= s[1]; v <<= 8;
     v |= s[0]; return v;
 #else
-    return ((zzip_off64_t)s[7] << 56) | ((zzip_off64_t)s[6] << 48)
-	|  ((zzip_off64_t)s[5] << 40) | ((zzip_off64_t)s[4] << 32)
-        |  ((zzip_off64_t)s[3] << 24) | ((zzip_off64_t)s[2] << 16)
-	|  ((zzip_off64_t)s[1] << 8)  | ((zzip_off64_t)s[0]);
+    return ((uint64_t)s[7] << 56) | ((uint64_t)s[6] << 48)
+	|  ((uint64_t)s[5] << 40) | ((uint64_t)s[4] << 32)
+        |  ((uint64_t)s[3] << 24) | ((uint64_t)s[2] << 16)
+	|  ((uint64_t)s[1] << 8)  | ((uint64_t)s[0]);
 #endif
 }
 
@@ -97,7 +97,7 @@ void __zzip_set16(unsigned char * s, uint16_t v)
 /** => __zzip_get32
  * This function pushes a off64_t value at the specified address
  */
-void __zzip_set64(unsigned char * s, zzip_off64_t v)
+void __zzip_set64(unsigned char * s, uint64_t v)
 {
     s[0] = (unsigned char) (v);
     v >>= 8;

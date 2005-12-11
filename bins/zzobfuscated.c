@@ -22,6 +22,13 @@
 #include <unistd.h> /* read */
 #elif defined ZZIP_HAVE_IO_H
 #include <io.h>     /* win32 */
+#else
+#endif
+
+#ifdef _MSC_VER
+#define _MSC_VER_NULL NULL
+#else
+#define _MSC_VER_NULL
 #endif
 
 /*
@@ -40,7 +47,7 @@ static zzip_ssize_t our_read(int fd, void* buf, zzip_size_t len)
     return bytes;
 }
 
-static zzip_plugin_io_handlers our_handlers = { };
+static zzip_plugin_io_handlers our_handlers = { _MSC_VER_NULL };
 static const char* const our_fileext [] = { ".dat", ".sav", 0 };
 
 

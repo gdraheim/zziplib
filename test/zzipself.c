@@ -24,6 +24,7 @@ static const char usage[] =
 int 
 main (int argc, char ** argv)
 {
+	int status = 0;
     int argn;
     if (argc <= 1)
     {
@@ -66,14 +67,17 @@ main (int argc, char ** argv)
             }
 
             if (n == -1) 
+			{
                 perror (argv[argn]);
+				status ++;
+			}
         }
 
 	zzip_file_close (fp);
 	zzip_closedir (zip);
     }
     
-    return 0;
+    return status;
 } 
 
 /* 

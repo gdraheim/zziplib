@@ -16,8 +16,10 @@ s:undef *SIZEOF_SHORT *$:define SIZEOF_SHORT 2:
 s:undef *STDC_HEADERS *$:define STDC_HEADERS 1:
 s:undef *inline *$:define inline __inline:
 s:undef *off_t *$:define off_t long:
+s:undef *off64_t *$:define off64_t __int64:
 s:undef *ssize_t *$:define ssize_t int:
 s:undef restrict *$:define restrict:
+s:undef VERSION:define VERSION "0.13.x":
 s:^ *# *undef.*$:/* & */:
 /Generated automatically .* by autoheader/a\
 /* config values have been automatically set by zzip/_msvc.sed */

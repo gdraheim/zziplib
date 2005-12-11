@@ -119,7 +119,7 @@ int main(int argc, char ** argv)
   
     {   ZZIP_FILE * fp;
         char buf[17];
-        const char * name = argv[1]? argv[1]: "readme";
+        const char * name = argv[1]? argv[1]: "README";
 
 
         printf("Opening file `%s' in zip archive... ", name);    

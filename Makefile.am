@@ -3,7 +3,7 @@ ACLOCAL_AMFLAGS = -I m4
 WANT_AUTOMAKE = 1.7
 WANT_AUTOCONF = 2.57
 
-DIST_SUBDIRS = zzip zzipwrap bins test docs  SDL  m4
+DIST_SUBDIRS = zzip zzipwrap bins test docs  SDL
 SUBDIRS =      zzip zzipwrap bins test docs @SDL@
 
 # see Makefile.mk for the "make rpm" target
@@ -24,6 +24,14 @@ check-zzxor check-zzxordir check-zzxorcat \
 check-sfx     check-readme : \
 	(cd test && $(MAKE) `basename $@`)
 
+MSVC8 =   msvc8/README.TXT msvc8/zip.exe msvc8/test1.zip msvc8/test.zip \
+msvc8/zzdir.vcproj    msvc8/zzipself.vcproj     msvc8/zzip.vcproj \
+msvc8/zziplib.sln     msvc8/zzipsetstub.sln     msvc8/zzobfuscated.sln \
+msvc8/zziplib.vcproj  msvc8/zzipsetstub.vcproj  msvc8/zzobfuscated.vcproj \
+msvc8/zzcat.sln       msvc8/zzipself.bat        msvc8/zzip.sln \
+msvc8/zzcat.vcproj    msvc8/zzipself.sln        msvc8/zziptest.sln \
+msvc8/zzdir.sln       msvc8/zzipself.txt        msvc8/zziptest.vcproj
+
 MSVC7 =   msvc7/pkzip.exe msvc7/test1.zip msvc7/test.zip \
 msvc7/zzdir.vcproj    msvc7/zzipself.vcproj     msvc7/zzip.vcproj \
 msvc7/zziplib.sln     msvc7/zzipsetstub.sln     msvc7/zzobfuscated.sln \
@@ -37,7 +45,8 @@ msvc6/zzcat.dsp        msvc6/zziplib.dsp      msvc6/zzipwrap.dsp \
 msvc6/zzdir.dsp        msvc6/zziplib.dsw      msvc6/zzobfuscated.dsp \
 msvc6/zziptest.dsp     msvc6/zzip.dsp  
 
-EXTRA_DIST =   zziplib.spec zzipback.sed Makefile.mk $(MSVC7) $(MSVC6)
+EXTRA_DIST =   zziplib.spec zzipback.sed Makefile.mk \
+               $(MSVC8) $(MSVC7) $(MSVC6) $(am__aclocal_m4_deps)
 
 PHONY = auto boottrap rpm doc docs man manpages htmpages sdl testsdl \
 	comp compats msvc6 msvc7

@@ -131,6 +131,9 @@
 /* Define for large files, on AIX-style hosts. */
 #undef _LARGE_FILES
 
+/* Define to `long long' if <sys/types.h> does not define. */
+#undef __int64
+
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const
 

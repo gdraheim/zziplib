@@ -11,13 +11,13 @@
 #endif
 
 /* get 16/32 bits from little-endian zip-file to host byteorder */
-extern uint32_t __zzip_get32(zzip_byte_t * s) __attribute__((const));
-extern uint16_t __zzip_get16(zzip_byte_t * s) __attribute__((const));
+extern uint32_t __zzip_get32(zzip_byte_t * s) __zzip_attribute__((const));
+extern uint16_t __zzip_get16(zzip_byte_t * s) __zzip_attribute__((const));
 extern void     __zzip_set32(zzip_byte_t * s, uint32_t v);
 extern void     __zzip_set16(zzip_byte_t * s, uint16_t v);
 
-extern zzip_off64_t __zzip_get64(zzip_byte_t * s) __attribute__((const));
-extern void         __zzip_set64(zzip_byte_t * s, zzip_off64_t v);
+extern uint64_t __zzip_get64(zzip_byte_t * s) __zzip_attribute__((const));
+extern void     __zzip_set64(zzip_byte_t * s, uint64_t v);
 
 #ifdef ZZIP_WORDS_BIGENDIAN
 # if defined bswap_16 && defined bswap_32 && defined bswap_64 /* i.e. linux */

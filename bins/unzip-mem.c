@@ -117,7 +117,7 @@ static void zzip_mem_entry_test(ZZIP_MEM_DISK* disk,
     ZZIP_DISK_FILE* file = zzip_mem_entry_fopen (disk, entry);
     printf ("    testing: %s ", entry->zz_name);
     if (strlen (entry->zz_name) < 24) {
-	printf ("%.*s", 24 - strlen (entry->zz_name),
+	printf ("%.*s", 24 - (int) strlen (entry->zz_name),
 		"                        ");
     }
     if (file) 
@@ -203,14 +203,14 @@ static void zzip_mem_entry_direntry_done (void)
 	sum_usize /= 1024; sum_csize /= 1024; }
     if (option_verbose) goto verbose;
     printf(" --------                   ----\n");
-    printf(" %8li%c           %8li %s\n", sum_usize, exp, sum_files,
+    printf(" %8li%c           %8li %s\n", L sum_usize, exp, L sum_files,
 	   sum_files == 1 ? "file" : "files");
     return;
  verbose:
     printf("--------  ------  ------- -----                           ----\n");
     printf("%8li%c       %8li%c %3li%%                     %8li %s\n",
 	   L sum_usize, exp, L sum_csize, exp, 
-	   L (100 - (sum_csize*100/sum_usize)), sum_files, 
+	   L (100 - (sum_csize*100/sum_usize)), L sum_files, 
 	   sum_files == 1 ? "file" : "files");
 }
 
@@ -222,7 +222,7 @@ static void zzip_mem_entry_direntry(ZZIP_MEM_ENTRY* entry)
     int compr = zzip_mem_entry_data_comprlevel (entry);
     long mtime = entry->zz_mktime;
     long crc32 = entry->zz_crc32;
-    char* comment = zzip_mem_entry_to_comment (entry);
+    const char* comment = zzip_mem_entry_to_comment (entry);
     char exp = ' ';
 
     sum_usize += usize;

@@ -57,6 +57,9 @@
 #define ZZIP_HAVE_STRING_H  1 
 #endif
 
+/* Define to 1 if you have the `strndup' function. */
+/* #undef ZZIP_HAVE_STRNDUP */
+
 /* Define to 1 if you have the <sys/dir.h> header file, and it defines `DIR'.
    */
 /* #undef ZZIP_HAVE_SYS_DIR_H */
@@ -152,7 +155,9 @@
 #endif
 
 /* Version number of package */
-/* #undef ZZIP_VERSION */
+#ifndef ZZIP_VERSION 
+#define ZZIP_VERSION  "0.13.x" 
+#endif
 
 /* Define to 1 if your processor stores words with the most significant byte
    first (like Motorola and SPARC, unlike Intel and VAX). */
@@ -164,13 +169,23 @@
 /* Define for large files, on AIX-style hosts. */
 /* #undef ZZIP__LARGE_FILES */
 
+/* Define to `long long' if <sys/types.h> does not define. */
+/* #undef ZZIP___int64 */
+
 /* Define to empty if `const' does not conform to ANSI C. */
 /* #undef _zzip_const */
 
-/* Define as `__inline' if that's what the C compiler calls it, or to nothing
-   if it is not supported. */
+/* Define to `__inline__' or `__inline' if that's what the C compiler
+   calls it, or to nothing if 'inline' is not supported under any name.  */
+#ifndef __cplusplus
 #ifndef _zzip_inline 
 #define _zzip_inline  __inline 
+#endif
+#endif
+
+/* Define to `_zzip_off_t' if <sys/types.h> does not define. */
+#ifndef _zzip_off64_t 
+#define _zzip_off64_t  __int64 
 #endif
 
 /* Define to `long' if <sys/types.h> does not define. */
