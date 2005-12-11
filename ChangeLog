@@ -1,8 +1,8 @@
 2005-12-10
  * testing on sourceforge compilefarm - including "make check"
- * result: bsd platforms get it wrong zzdir "exec format error" 
-	and zzcat "bad file descriptor". The bsd-platforms do
-	use 64bit filepointers by default even on a 32bit system.
+ * there was an error on bsd'ish systems (implicit 64on32)
+	which was caused by archaic CORRECT_ROOTSEEK code
+	being still present. Remove it?
 
 2005-12-09
  * testing with Microsoft Visual Studio 2005 (msvc8) Express Edition
