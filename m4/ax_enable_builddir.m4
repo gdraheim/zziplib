@@ -92,8 +92,10 @@ if test ".$srcdir" = ".." ; then
 fi fi
 dnl ac_path_prog uses "set dummy" to override $@ which would defeat the "exec"
 AC_PATH_PROG(SED,gsed sed, sed)
-AUX="$ac_aux_dir" ; test ".$AUX" = "." && AUX="."
+AUX="$ac_aux_dir" 
 AUX=`echo "$AUX" | $SED -e "s|$ac_top_srcdir|.|"` 
+test ".$AUX" = "." && AUX="$ac_aux_dir"
+test ".$AUX" = "." && AUX="."
 AS_VAR_POPDEF([SED])dnl
 AS_VAR_POPDEF([AUX])dnl
 AS_VAR_POPDEF([SUB])dnl

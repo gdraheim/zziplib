@@ -48,9 +48,10 @@ struct zzip_dir
     int fd;
     int errcode; /* zzip_error_t */
     long refcount;
-    struct {
-        struct zzip_file * fp;  /* reduce a lot of alloc/deallocations by */
-        char * buf32k;         /* caching one entry of these data structures */
+    struct { /* reduce a lot of alloc/deallocations by caching these: */
+	volatile int* locked;
+        volatile struct zzip_file * fp;  
+        volatile char * buf32k; 
     } cache;
     struct zzip_dir_hdr * hdr0;  /* zfi; */
     struct zzip_dir_hdr * hdr;   /* zdp; directory pointer, for dirent stuff */

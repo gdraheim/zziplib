@@ -46,14 +46,19 @@
 int 
 zzip_file_close(ZZIP_FILE * fp)
 {
+    auto int self;
     ZZIP_DIR * dir = fp->dir;
     
     if (fp->method)
         inflateEnd(&fp->d_stream); /* inflateEnd() can be called many times */
 
+    if (dir->cache.locked == NULL) 
+	dir->cache.locked = &self;
+
     if (fp->buf32k)
     {
-        if (dir->cache.buf32k == NULL) dir->cache.buf32k = fp->buf32k;
+        if (dir->cache.locked == &self &&
+	    dir->cache.buf32k == NULL) dir->cache.buf32k = fp->buf32k;
         else free(fp->buf32k);
     }
 
@@ -64,8 +69,12 @@ zzip_file_close(ZZIP_FILE * fp)
     /* ease to notice possible dangling reference errors */
     memset(fp, 0, sizeof(*fp)); 
 
-    if (dir->cache.fp == NULL) dir->cache.fp = fp;
+    if (dir->cache.locked == &self &&
+	dir->cache.fp == NULL) dir->cache.fp = fp;
     else free(fp);
+
+    if (dir->cache.locked == &self) 
+	dir->cache.locked = NULL;
     
     if (! dir->refcount) return zzip_dir_close(dir); else return 0;
 }
@@ -142,6 +151,7 @@ static int zzip_inflate_init(ZZIP_FILE *, struct zzip_dir_hdr *);
 ZZIP_FILE * 
 zzip_file_open(ZZIP_DIR * dir, zzip_char_t* name, int o_mode)
 {
+    auto int self;
     zzip_error_t err = 0;
     struct zzip_file * fp = 0;
     struct zzip_dir_hdr * hdr = dir->hdr0;
@@ -181,7 +191,11 @@ zzip_file_open(ZZIP_DIR * dir, zzip_char_t* name, int o_mode)
                 { err = ZZIP_UNSUPP_COMPR; goto error; }
             }
 
-            if (dir->cache.fp) 
+	    if (dir->cache.locked == NULL)
+		dir->cache.locked = &self;
+
+            if (dir->cache.locked == &self &&
+		dir->cache.fp) 
             {
                 fp = dir->cache.fp; dir->cache.fp = NULL;
                 /* memset(zfp, 0, sizeof *fp); cleared in zzip_file_close() */
@@ -195,7 +209,8 @@ zzip_file_open(ZZIP_DIR * dir, zzip_char_t* name, int o_mode)
             fp->io = dir->io;
             dir->refcount++;
         
-            if (dir->cache.buf32k) 
+            if (dir->cache.locked == &self &&
+		dir->cache.buf32k) 
               { fp->buf32k = dir->cache.buf32k; dir->cache.buf32k = NULL; }
             else
             {
@@ -203,6 +218,8 @@ zzip_file_open(ZZIP_DIR * dir, zzip_char_t* name, int o_mode)
                     { err = ZZIP_OUTOFMEM; goto error; }
             }
 
+	    if (dir->cache.locked == &self)
+		dir->cache.locked = NULL;
             /*
              * In order to support simultaneous open files in one zip archive
              * we'll fix the fd offset when opening new file/changing which

@@ -1,3 +1,25 @@
+2005-12-11
+ * there have been reports about multithreading problems
+ * one source of problems: access to the dir->cache members.
+	fixed by using an explicit semaphore variable, otherwise
+	just allocate/deallocate the buffer / filehandle
+ * second source of problems: the zip file is opened _and_ read
+	with only one filehandle for multiple threads that
+	share the same "dir" handle. Look for "->currentfp".
+ * that is not fixed away - while access to the cache variables
+	can continue in the case of a "locked" state that is not
+	possible for open/reads. In the "locked" case the thread
+	must be blocked but that is a system-specific call.
+ * there are two ways to fix it - (a) push down the sysfile to
+	each zzip_file by "dup(2)"licating the sysfile handle.
+	However zzip looses a feature that was helping a lot on
+	system with a low number of sysfile hands (e.g. dos and
+	some embedded operating systems that I did work with).
+	and (b) provide an indirect ->lock() call that can be
+	filled by the caller application upon zzip invokation,
+	perhaps add it to the io-plugin structure. Well (c) is
+	it possible to support both styles? Dynamically?
+
 2005-12-10
  * testing on sourceforge compilefarm - including "make check"
  * there was an error on bsd'ish systems (implicit 64on32)

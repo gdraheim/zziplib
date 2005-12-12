@@ -682,9 +682,11 @@ zzip-zlib-config.pc : Makefile
 	echo 'Cflags: $${zlib_cflags}' >>$@
 
 zzipmmapped.pc : zziplib.pc
-	sed -e 's/-lzzip/-lzzipmmapped/' -e 's/zziplib/zzipmmapped/' $< >$@
+	sed -e 's/-lzzip/-lzzipmmapped/' -e 's/zziplib/zzipmmapped/' \
+	zziplib.pc >$@
 zzipfseeko.pc : zziplib.pc
-	sed -e 's/-lzzip/-lzzipfseeko/' -e 's/zziplib/zzipfseeko/' $< >$@
+	sed -e 's/-lzzip/-lzzipfseeko/' -e 's/zziplib/zzipfseeko/' \
+	zziplib.pc >$@
 
 __zziplib.pc : Makefile
 	@ echo "prefix=$(prefix)" >$@
