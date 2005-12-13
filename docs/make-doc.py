@@ -1,3 +1,5 @@
+#! /usr/bin/python
+# -*- coding: UTF-8 -*-
 import sys
 import re
 import string
@@ -201,9 +203,9 @@ class InputFiles:
 
 def scan_options (options, list):
     def encode(text):
-        return s(s(text, r"¬",  r"&#AC;"), r"\*/",r"¬")
+        return s(s(text, r"Â¬",  r"&#AC;"), r"\*/",r"Â¬")
     def decode(text):
-        return s(text, r"¬", r"*/")
+        return s(text, r"Â¬", r"*/")
 
     for name in options:
         found = m(name, r"^(\w+)=(.*)")
@@ -223,12 +225,12 @@ def scan_options (options, list):
         file = list.new_File(name)
         
         # cut per-function comment block
-        text = s(text, r"(?x) [/][*][*](?=\s) ([^¬]+) ¬ ([^\{\}\;\#]+) [\{\;]",
+        text = s(text, r"(?x) [/][*][*](?=\s) ([^Â¬]+) Â¬ ([^\{\}\;\#]+) [\{\;]",
                  lambda x : list.add_function_declaration(
             decode(x.group(1)), decode(x.group(2))))
 
         # cut per-file comment block
-        found = m(text, r"(?sx)  [/][*]+(?=\s) ([^¬]+) ¬ "
+        found = m(text, r"(?sx)  [/][*]+(?=\s) ([^Â¬]+) Â¬ "
                   r"(?:\s*\#define\s*\S+)*"
                   r"(\s*\#include\s*<[^<>]*>(?:\s*//[^\n]*)?)")
         if found:
@@ -237,7 +239,7 @@ def scan_options (options, list):
         else:
             file.comment = None
             file.include = None
-            found = m(text, r"(?sx)  ^ [/][*]+(?=\s) ([^¬]+) ¬ ")
+            found = m(text, r"(?sx)  ^ [/][*]+(?=\s) ([^Â¬]+) Â¬ ")
             if found:
                 file.comment = decode(found.group(1))
         #fi

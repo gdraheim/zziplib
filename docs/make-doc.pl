@@ -1,5 +1,5 @@
 
-use strict "var";
+use strict "vars";
 
 my $x;
 my $F;
@@ -94,6 +94,7 @@ sub pre { # used for non-star lines in comment blocks
 }
 
 # per-file comment block handling
+my $name;
 for $name (keys %file)
 {
     $file{$name}{comment} =~ s{<([\w\.\-]+\@[\w\.\-]+\w\w)>}{&lt;$1&gt;}sg;
@@ -292,7 +293,7 @@ $htmlTXT =~ s/ \-\> /<small>-\&gt\;<\/small>/gsx; # just sanitize
 
 # and finally print the html-formatted output
 open F, ">$o{libhtmlfile}" or die "could not open '$o{libhtmlfile}': $!";
-print F "<html><head><title> ${package} autodoc documentation </title>";
+print F "<html><head><title> $o{package} autodoc documentation </title>";
 print F "</head>\n<body>\n";
 print F "\n<h1>",$o{package}," <small><small><i>-", $o{version};
 print F "</i></small></small></h1>";
@@ -373,7 +374,7 @@ for $name (@headerlist)
     $fn{$into}{_refstart} .= '<refentry id="'.$name.'">' if $me;
     $fn{$into}{_refends}  .= "\n</refentry>\n" if $me;
 
-    $fn{$nane}{_title_} = $name; 
+    $fn{$name}{_title_} = $name; 
     $fn{$name}{_title_} =~ s{\s*}{}gs;
     $fn{$name}{_refentryinfo} 
     .= "\n <title>".$fn{$name}{_title_}."</title>" if $me;
@@ -532,6 +533,7 @@ for $name (@namelist)
     }
 }
 
+my $H;
 for $H (keys %header) # second pass
 {
     next if not length $header{$H}{_refstart};
