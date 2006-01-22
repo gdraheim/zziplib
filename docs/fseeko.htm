@@ -1,3 +1,4 @@
+<section> <date> 2005 </date>
 <H2> zzip/fseeko </H2> zip access for stdio handle
 
 <BLOCKQUOTE>
@@ -7,6 +8,7 @@
   parse the structure, find files and return a decoded bytestream.
 </BLOCKQUOTE>
 
+<section>
 <H3> stdio disk handle </H3>
 
 <P>
@@ -53,6 +55,7 @@
   }
 </PRE>
 
+</section><section>
 <H3> find a zipped file </H3>
 
 <P>
@@ -110,6 +113,7 @@
   }
 </PRE>
 
+</section><section>
 <H3> reading bytes </H3>
 
 <P>
@@ -145,6 +149,7 @@
   root of the zip disk <code>FILE</code>.
 </P>
 
+</section><section>
 <H3> ZZIP_ENTRY inspection </H3>
 
 <P>
@@ -185,3 +190,4 @@ extern zzip_size_t zzip_disk_entry_sizeof_tail( zzip_disk_entry* entry);
 extern zzip_size_t zzip_disk_entry_sizeto_end( zzip_disk_entry* entry);
 extern char*       zzip_disk_entry_skipto_end( zzip_disk_entry* entry);
 </PRE>
+</section></section>

@@ -1,6 +1,7 @@
+<section> <date> February 2003 </date>
 <h2> Configuration </h2>                    of other projects using zziplib
 
-<!--border--> <date> February 2003 </date>
+<!--border-->
 
 <P>
   If using the zziplib with other project then you can use a number
@@ -16,6 +17,7 @@
   usually less than 20k)
 </P>
 
+<section>
 <h3> pkg-config --libs </h3>
 
 <P>
@@ -38,9 +40,9 @@
     LIBS   = -Wl,-E  `pkg-config zziplib --libs`
 
     my_prog.o : my_prog.c
-       $(CC) $(CFLAGS) $< -o $@
+       $(CC) $(CFLAGS) $&lt; -o $@
     my_prog : my_prog.o
-       $(LINK) $< $(LIBS)
+       $(LINK) $&lt; $(LIBS)
   </pre>
 </P>
 <P>
@@ -78,6 +80,7 @@
    </pre>
 </P>
 
+</section><section>
 <h3> zzip-config </h3>
 <P>
    The pkg-config ".pc" files are relativly young in the history of
@@ -103,9 +106,9 @@
     LIBS   = -Wl,-E  `zzip-config --libs`
 
     my_prog.o : my_prog.c
-       $(CC) $(CFLAGS) $< -o $@
+       $(CC) $(CFLAGS) $&lt; -o $@
     my_prog : my_prog.o
-       $(LINK) $< $(LIBS)
+       $(LINK) $&lt; $(LIBS)
   </pre>
 </P>
 <P>
@@ -116,6 +119,7 @@
    on the zziplib-devel/zziplib-dev part.
 </P>
 
+</section><section>
 <h3> autoconf macro </h3>
 
 <P>
@@ -138,7 +142,7 @@
   want to have. If it is only zziplib, than you could simply
   use this in your configure.ac:
 <pre>
-  <b>PKG_CHECK_MODULES</b>([<b>ZZIP</b>],[zziplib >= 0.10.75])
+  <b>PKG_CHECK_MODULES</b>([<b>ZZIP</b>],[zziplib &gt;= 0.10.75])
   </pre>
 </P><P>
   which will provide you with two autoconf/automake variables
@@ -157,3 +161,4 @@
   as well,  <code>ZZIP_CFLAGS</code> and <code>ZZIP_LIBS</code>
 </P>
 
+</section></section>

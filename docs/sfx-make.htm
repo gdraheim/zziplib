@@ -1,7 +1,9 @@
+<section> <date> February 2003 </date>
 <h2> SFX-Make </h2>                 combining an EXE with a ZIP archive
 
-<!--border--> <date> February 2003 </date>
+<!--border-->
 
+<section>
 <h3> How To </h3>
 <P>
   In this section we walk you through the steps of combining an EXE
@@ -28,6 +30,7 @@
   magic (from the exe info header).
 </P>
 
+</section><section>
 <h3> Step 1: Creating The Zip Combination </h3>
 <P>
   Choose your exe file (example.exe) and wrap that file into a
@@ -73,6 +76,7 @@
   the same task.
 </P>
 
+</section><section>
 <h3> Step 2: Accessing The Data From The Program </h3>
 
 <P>
@@ -100,6 +104,7 @@
   parts of your program.
 </P>
 
+</section><section>
 <h3> Step 3: Using Obfuscation Along </h3>
 
 <P>
@@ -137,7 +142,7 @@
    static zzip_ssize_t xor_read (int f, void* p, zzip_size_t l)
    {
        zzip_ssize_t r = read(f, p, l);
-       zzip_ssize_t x; char* q; for (x=0, q=p; x < r; x++) q[x] ^= xor_value;
+       zzip_ssize_t x; char* q; for (x=0, q=p; x &lt; r; x++) q[x] ^= xor_value;
        return r;
    }
 
@@ -159,3 +164,4 @@
   the zziplib-shipped tool `zzipxorcopy` does know an option to just
   set the xor-value with which to obfuscate the data.
 </P>
+</section></section>

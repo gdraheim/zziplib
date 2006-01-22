@@ -1,7 +1,9 @@
+<section> <date> 11. May 2004 </date>
 <h2> ZIP Ext Encryption </h2>       ext/io used for cryptoid plugins
 
-<!--border--> <date> 11. May 2004 </date>
+<!--border-->
 
+<section>
 <h3> Stronger Obfuscation For ZZip </h3>
 
 <P>
@@ -65,8 +67,9 @@
  usually named "tell(fd)". Since this call is not mandated by
  posix, you can emulate it with the posix lseek() call which
  returns the resulting offset after the operation was performed,
- so we just seek by a zero offset:
-<br><code> <> <> <> <> #define tell(fd) lseek(fd,0,SEEK_CUR)
+ so we just seek by a zero offset: <br><code> 
+ <> <> <> <> #define tell(fd) lseek(fd,0,SEEK_CUR)
+</code>
 </P>
 
 <P>
@@ -100,3 +103,4 @@
       }
 </pre>
 
+</section></section>

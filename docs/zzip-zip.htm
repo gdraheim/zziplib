@@ -1,7 +1,9 @@
+<section><date> 1. June 2000 </date>
 <h2> ZIP Access </h2>    Accessing Zip Archives with ZLib Decompression
 
-<!--border--> <date> 1. June 2000 </date>
+<!--border--> 
 
+<section>
 <h3> The Library </h3>
 
 <P>
@@ -20,6 +22,7 @@
  is not needed in that final operation.
 </P>
 
+</section><section>
 <h3> Using A Zip-File </h3>
 
 <P>
@@ -38,7 +41,7 @@
 <p><pre> ZZIP_DIR* dir = zzip_dir_open("test.zip",0);
  if (dir) {
    ZZIP_DIRENT dirent;
-   if (zzip_dir_read(dir,&dirent) {
+   if (zzip_dir_read(dir,&amp;dirent) {
      /* show info for first file */
      print("%s %i/%i", dirent.d_name, dirent.d_csize, dirent.st_size);
    }
@@ -68,6 +71,7 @@
  } 
 </pre></p>
 
+</section><section>
 <h3> Magic Zipped Files </h3>
 
 <P>
@@ -101,6 +105,7 @@
  <a href="zziplib.html#zzip_realfd"> zzip_realfd </a> respectivly.
 </P>
 
+</section><section>
 <h3> Errors &amp; Infos </h3>
 
 <P>
@@ -138,3 +143,4 @@
  <a href="zziplib.h"> zziplib.h </a> to your system's
  <tt>include</tt> directory.
 </P>
+</section></section>

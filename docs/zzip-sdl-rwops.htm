@@ -1,3 +1,4 @@
+<section> <date> 19. Aug 2001 </date>
 <h2> SDL rwops </h2> Example to make an SDL_rwops interface.
 
 <p><small> some <b>MSVC</b> help in 
@@ -5,8 +6,9 @@
    <a href="README.SDL">README.SDL</a>
 </small></p>
 
-<!--border--> <date> 19. Aug 2001 </date>
+<!--border-->
 
+<section>
 <h3> Source </h3>
 
 <P>
@@ -37,6 +39,7 @@
  into the callback fields.
 </P>
 
+</section><section>
 <h3> Usage </h3>
 
 <P>
@@ -55,13 +58,14 @@
  of course where they belong. When you've done that
  then go to X/share/myapp and 
 <br><code>&nbsp;&nbsp;&nbsp;
- `(cd graphics/ && zip -9r ../graphics.zip .)` </br></code>
+ `(cd graphics/ && zip -9r ../graphics.zip .)` </code><br>
  and rename the graphics/ subfolder - and still all your files
  are found: a filepath like X/shared/graphics/game/greetings.bmp 
  will open X/shared/graphics.zip and return the zipped file 
  game/greetings.bmp in the zip-archive (for reading that is).
 </P>
 
+</section><section>
 <h3> Test </h3>
 
 <P>
@@ -82,4 +86,5 @@
  there is no build-processing that had been tweaked much by automake/autoconf.
  Just use sdl-config and zzip-config to add the needed flags.
 </P>
+</section></section>
 

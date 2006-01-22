@@ -1,3 +1,4 @@
+<section> <date> 2005 </date>
 <H2> zzip/mmapped </H2> zip access for mmapped views
 
 <BLOCKQUOTE>
@@ -7,6 +8,7 @@
   parse the structure, find files and return a decoded bytestream.
 </BLOCKQUOTE>
 
+<section>
 <H3> zzip disk handle </H3>
 
 <P>
@@ -41,6 +43,7 @@
                             char* buffer, zzip_size_t buflen);
 </PRE>
 
+</section><section>
 <H3> reading the central directory </H3>
 
 <P>
@@ -77,6 +80,7 @@
   }
 </PRE>
 
+</section><section>
 <H3> find a zipped file </H3>
 
 <P>
@@ -128,6 +132,7 @@
   }
 </PRE>
 
+</section><section>
 <H3> reading bytes </H3>
 
 <P>
@@ -160,6 +165,7 @@
   root of the zip disk <code>FILE</code>.
 </P>
 
+</section><section>
 <H3> ZZIP_DISK_ENTRY inspection </H3>
 
 <P>
@@ -217,3 +223,4 @@ extern char*       zzip_disk_entry_skipto_end( zzip_disk_entry* entry);
                                  struct zzip_disk_entry* entry);
 </PRE>
 
+</section></section>
