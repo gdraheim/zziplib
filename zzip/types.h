@@ -24,6 +24,9 @@
 #include <zzip/conf.h>
 #include <fcntl.h>
 #include <stddef.h> /* size_t and friends */
+#ifdef ZZIP_HAVE_SYS_TYPES_H
+#include <sys/types.h> /* bsd (mac) has size_t here */
+#endif
 /* msvc6 has neither ssize_t (we assume "int") nor off_t (assume "long") */
 
 typedef unsigned char zzip_byte_t; // especially zlib decoding data
