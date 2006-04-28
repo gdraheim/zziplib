@@ -1,3 +1,6 @@
+2006-04-28
+ * bsd/mac needs sys/types.h for size_t
+
 2005-12-11
  * there have been reports about multithreading problems
  * one source of problems: access to the dir->cache members.
