@@ -1,12 +1,12 @@
 AC_INIT(zziplib.spec)
 AC_PREREQ(2.49)
 AC_COPYRIGHT([Guido Draheim <guido@gmx.de> for ZZipLib.SF.net])
-AC_REVISION($Revision: 1.5 $)
+AC_REVISION($Revision: 1.6 $)
 AC_CONFIG_AUX_DIR(uses)
 # =======================================================================
 AC_CANONICAL_SYSTEM
 dnl AM_ENABLE_MULTILIB([Makefile],[$host])
-AX_ENABLE_BUILDDIR
+AX_ENABLE_BUILDDIR_UNAME
 AC_SET_DEFAULT_PATHS_SYSTEM
 # -----------------------------------------------------------------------
 AC_ARG_ENABLE(thread-safe,AC_HELP_STRING(
