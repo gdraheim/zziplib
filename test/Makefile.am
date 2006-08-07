@@ -20,7 +20,7 @@ $(zzcat) $(zzdir) $(zziptest) $(zzxorcat) $(zzxordir) $(xorcopy) : \
 # -------------------------------------------------------------------
 NULL=/dev/null
 README = $(top_srcdir)/README
-testdatadir = $(top_srcdir)/test.tmp
+testdatadir = $(top_srcdir)/testdata.d
 
 testzip testzips : test.zip test1.zip test2.zip test3.zip 
 

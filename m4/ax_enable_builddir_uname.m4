@@ -7,7 +7,7 @@ dnl into a separate builddir.
 dnl
 dnl Defaults:
 dnl
-dnl   $1 = $build (defaults to `uname -mn`)
+dnl   $1 = $build (defaults to `uname -msr`.d)
 dnl   $2 = Makefile.mk
 dnl   $3 = -all
 dnl
@@ -18,7 +18,7 @@ dnl found in the created toplevel builddir Makefile. It just copies the
 dnl variables and rule-targets, each extended with a default
 dnl rule-execution that recurses into the build directory of the
 dnl current "BUILD". You can override the auto-dection through
-dnl `uname -mn | sed -e "s| |_|g"` at build-time of course, as in
+dnl `uname -msr | tr " /" "__"`.d at build-time of course, as in
 dnl
 dnl   make BUILD=i386-mingw-cross
 dnl
@@ -58,7 +58,7 @@ if test ".$srcdir" = ".." ; then
   else
     test ".$SUB" = "."  && SUB="."
     test ".$SUB" = ".no"  && SUB="."
-    test ".$BUILD" = "." && BUILD=`uname -mn | sed -e "s| |_|g"`
+    test ".$BUILD" = "." && BUILD=`uname -msr | tr " /" "__"`.d
     test ".$SUB" = ".yes" && SUB="m4_ifval([$1], [$1],[$BUILD])"
     if test ".$SUB" != ".." ; then    # we know where to go and
       AS_MKDIR_P([$SUB])
@@ -103,21 +103,8 @@ pushdef([END],[Makefile.mk])dnl
       AC_MSG_NOTICE([skipping TOP/Makefile - not created])
     fi
   else
-    if test -f "$SRC/Makefile" ; then
-      a=`grep "^VERSION " "$SRC/Makefile"` ; b=`grep "^VERSION " Makefile`
-      test "$a" != "$b" && rm "$SRC/Makefile"
-    fi
-    if test -f "$SRC/Makefile" ; then
-	echo "$SRC/Makefile : $SRC/Makefile.in" > $tmp/conftemp.mk
-	echo "	[]@ echo 'REMOVED,,,' >\$[]@" >> $tmp/conftemp.mk
-      eval "${MAKE-make} -f $tmp/conftemp.mk 2>/dev/null >/dev/null"
-      if grep '^REMOVED,,,' "$SRC/Makefile" >/dev/null
-      then rm $SRC/Makefile ; fi
-      cp $tmp/conftemp.mk $SRC/makefiles.mk~      ## DEBUGGING
-    fi
-    if test ! -f "$SRC/Makefile" ; then
-      AC_MSG_NOTICE([create TOP/Makefile guessed from local Makefile])
-      x='`' ; cat >$tmp/conftemp.sed <<_EOF
+    AC_MSG_NOTICE([create TOP/Makefile guessed from local Makefile])
+     x='`' ; cat >$tmp/conftemp.sed <<_EOF
 /^\$/n
 x
 /^\$/bS
@@ -143,43 +130,19 @@ s/:.*/:/
 /:\$/s/  / /g
 /^.*[[=]]/!s%\$% ; (cd \$(BUILD) \\&\\& \$(ISNOTSRCDIR) \\&\\& \$(MAKE) "\$\@") || exit ; \$(MAKE) done "RULE=\$\@"%
 _EOF
-      cp "$tmp/conftemp.sed" "$SRC/makefile.sed~"            ## DEBUGGING
-      echo 'BUILD=`uname -mn | sed -e "s| |_|g"`' >$SRC/Makefile
-      echo 'ISNOTSRCDIR=test ! -f configure' >>$SRC/Makefile
-      $SED -f $tmp/conftemp.sed Makefile >>$SRC/Makefile
-      echo 'done: ;@ if grep "$(RULE)-done .*:" Makefile > /dev/null; then dnl
-      echo $(MAKE) $(RULE)-done ; $(MAKE) $(RULE)-done ; else true ; fi' dnl
-      >> $SRC/Makefile
-      if test -f "$SRC/m4_ifval([$2],[$2],[END])" ; then
-        AC_MSG_NOTICE([extend TOP/Makefile with TOP/m4_ifval([$2],[$2],[END])])
-        cat $SRC/END >>$SRC/Makefile
-      fi ; xxxx="####"
-      echo "$xxxx CONFIGURATIONS FOR TOPLEVEL MAKEFILE: " >>$SRC/Makefile
-      # sanity check
-      if grep '^; echo "MAKE ' $SRC/Makefile >/dev/null ; then
-        AC_MSG_NOTICE([buggy sed found - it deletes tab in "a" text parts])
-        $SED -e '/^@ HOST=/s/^/	/' -e '/^; /s/^/	/' $SRC/Makefile \
-          >$SRC/Makefile~
-        (test -s $SRC/Makefile~ && mv $SRC/Makefile~ $SRC/Makefile) 2>/dev/null
-      fi
-    else
-      xxxx="\\#\\#\\#\\#"
-      # echo "/^$xxxx *$ax_enable_builddir_host /d" >$tmp/conftemp.sed
-      echo "s!^$xxxx [[^|]]* | *$SUB *\$!$xxxx ...... $SUB!" >$tmp/conftemp.sed
-      $SED -f "$tmp/conftemp.sed" "$SRC/Makefile" >$tmp/mkfile.tmp
-        cp "$tmp/conftemp.sed" "$SRC/makefiles.sed~"         ## DEBUGGING
-        cp "$tmp/mkfile.tmp"   "$SRC/makefiles.out~"         ## DEBUGGING
-      if cmp -s "$SRC/Makefile" "$tmp/mkfile.tmp" 2>/dev/null ; then
-        AC_MSG_NOTICE([keeping TOP/Makefile from earlier configure])
-        rm "$tmp/mkfile.tmp"
-      else
-        AC_MSG_NOTICE([reusing TOP/Makefile from earlier configure])
-        mv "$tmp/mkfile.tmp" "$SRC/Makefile"
-      fi
-    fi
-    AC_MSG_NOTICE([build in $SUB (HOST=$ax_enable_builddir_host)])
-    xxxx="####"
-    echo "$xxxx" "$ax_enable_builddir_host" "|$SUB" >>$SRC/Makefile
+    test ".$USE_MAINTAINER_MODE" = ".no" || \
+  	cp "$tmp/conftemp.sed" "$SRC/makefile.sed~"            ## DEBUGGING
+    echo 'BUILD=`uname -msr | tr " /" "__"`.d' >$SRC/Makefile
+    echo 'ISNOTSRCDIR=test ! -f configure' >>$SRC/Makefile
+    $SED -f $tmp/conftemp.sed Makefile >>$SRC/Makefile
+    echo 'done: ;@ if grep "$(RULE)-done .*:" Makefile > /dev/null; then dnl
+    echo $(MAKE) $(RULE)-done ; $(MAKE) $(RULE)-done ; else true ; fi' dnl
+    >> $SRC/Makefile
+    if test -f "$SRC/m4_ifval([$2],[$2],[END])" ; then
+      AC_MSG_NOTICE([extend TOP/Makefile with TOP/m4_ifval([$2],[$2],[END])])
+      cat $SRC/END >>$SRC/Makefile
+    fi 
+    AC_MSG_NOTICE([make uses BUILD=$SUB (on $ax_enable_builddir_host:)])
   fi
 popdef([END])dnl
 AS_VAR_POPDEF([SED])dnl

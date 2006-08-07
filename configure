@@ -1651,7 +1651,7 @@ echo "$as_me: toplevel srcdir already configured... skipping subdir build" >&6;}
   else
     test ".$ax_enable_builddir" = "."  && ax_enable_builddir="."
     test ".$ax_enable_builddir" = ".no"  && ax_enable_builddir="."
-    test ".$BUILD" = "." && BUILD=`uname -mn | sed -e "s| |_|g"`
+    test ".$BUILD" = "." && BUILD=`uname -msr | tr " /" "__"`.d
     test ".$ax_enable_builddir" = ".yes" && ax_enable_builddir="$BUILD"
     if test ".$ax_enable_builddir" != ".." ; then    # we know where to go and
       { if $as_mkdir_p; then
@@ -25219,22 +25219,9 @@ echo "$as_me: skipping top_srcdir/Makefile - left untouched" >&6;}
 echo "$as_me: skipping top_srcdir/Makefile - not created" >&6;}
     fi
   else
-    if test -f "$ac_top_srcdir/Makefile" ; then
-      a=`grep "^VERSION " "$ac_top_srcdir/Makefile"` ; b=`grep "^VERSION " Makefile`
-      test "$a" != "$b" && rm "$ac_top_srcdir/Makefile"
-    fi
-    if test -f "$ac_top_srcdir/Makefile" ; then
-	echo "$ac_top_srcdir/Makefile : $ac_top_srcdir/Makefile.in" > $tmp/conftemp.mk
-	echo "	@ echo 'REMOVED,,,' >\$@" >> $tmp/conftemp.mk
-      eval "${MAKE-make} -f $tmp/conftemp.mk 2>/dev/null >/dev/null"
-      if grep '^REMOVED,,,' "$ac_top_srcdir/Makefile" >/dev/null
-      then rm $ac_top_srcdir/Makefile ; fi
-      cp $tmp/conftemp.mk $ac_top_srcdir/makefiles.mk~      ## DEBUGGING
-    fi
-    if test ! -f "$ac_top_srcdir/Makefile" ; then
-      { echo "$as_me:$LINENO: create top_srcdir/Makefile guessed from local Makefile" >&5
+    { echo "$as_me:$LINENO: create top_srcdir/Makefile guessed from local Makefile" >&5
 echo "$as_me: create top_srcdir/Makefile guessed from local Makefile" >&6;}
-      x='`' ; cat >$tmp/conftemp.sed <<_EOF
+     x='`' ; cat >$tmp/conftemp.sed <<_EOF
 /^\$/n
 x
 /^\$/bS
@@ -25260,46 +25247,19 @@ s/:.*/:/
 /:\$/s/  / /g
 /^.*[=]/!s%\$% ; (cd \$(BUILD) \\&\\& \$(ISNOTSRCDIR) \\&\\& \$(MAKE) "\$\@") || exit ; \$(MAKE) done "RULE=\$\@"%
 _EOF
-      cp "$tmp/conftemp.sed" "$ac_top_srcdir/makefile.sed~"            ## DEBUGGING
-      echo 'BUILD=`uname -mn | sed -e "s| |_|g"`' >$ac_top_srcdir/Makefile
-      echo 'ISNOTSRCDIR=test ! -f configure' >>$ac_top_srcdir/Makefile
-      $ax_enable_builddir_sed -f $tmp/conftemp.sed Makefile >>$ac_top_srcdir/Makefile
-      echo 'done: ;@ if grep "$(RULE)-done .*:" Makefile > /dev/null; then       echo $(MAKE) $(RULE)-done ; $(MAKE) $(RULE)-done ; else true ; fi'       >> $ac_top_srcdir/Makefile
-      if test -f "$ac_top_srcdir/Makefile.mk" ; then
-        { echo "$as_me:$LINENO: extend top_srcdir/Makefile with top_srcdir/Makefile.mk" >&5
+    test ".$USE_MAINTAINER_MODE" = ".no" || \
+  	cp "$tmp/conftemp.sed" "$ac_top_srcdir/makefile.sed~"            ## DEBUGGING
+    echo 'BUILD=`uname -msr | tr " /" "__"`.d' >$ac_top_srcdir/Makefile
+    echo 'ISNOTSRCDIR=test ! -f configure' >>$ac_top_srcdir/Makefile
+    $ax_enable_builddir_sed -f $tmp/conftemp.sed Makefile >>$ac_top_srcdir/Makefile
+    echo 'done: ;@ if grep "$(RULE)-done .*:" Makefile > /dev/null; then     echo $(MAKE) $(RULE)-done ; $(MAKE) $(RULE)-done ; else true ; fi'     >> $ac_top_srcdir/Makefile
+    if test -f "$ac_top_srcdir/Makefile.mk" ; then
+      { echo "$as_me:$LINENO: extend top_srcdir/Makefile with top_srcdir/Makefile.mk" >&5
 echo "$as_me: extend top_srcdir/Makefile with top_srcdir/Makefile.mk" >&6;}
-        cat $ac_top_srcdir/Makefile.mk >>$ac_top_srcdir/Makefile
-      fi ; xxxx="####"
-      echo "$xxxx CONFIGURATIONS FOR TOPLEVEL MAKEFILE: " >>$ac_top_srcdir/Makefile
-      # sanity check
-      if grep '^; echo "MAKE ' $ac_top_srcdir/Makefile >/dev/null ; then
-        { echo "$as_me:$LINENO: buggy sed found - it deletes tab in \"a\" text parts" >&5
-echo "$as_me: buggy sed found - it deletes tab in \"a\" text parts" >&6;}
-        $ax_enable_builddir_sed -e '/^@ HOST=/s/^/	/' -e '/^; /s/^/	/' $ac_top_srcdir/Makefile \
-          >$ac_top_srcdir/Makefile~
-        (test -s $ac_top_srcdir/Makefile~ && mv $ac_top_srcdir/Makefile~ $ac_top_srcdir/Makefile) 2>/dev/null
-      fi
-    else
-      xxxx="\\#\\#\\#\\#"
-      # echo "/^$xxxx *$ax_enable_builddir_host /d" >$tmp/conftemp.sed
-      echo "s!^$xxxx [^|]* | *$ax_enable_builddir *\$!$xxxx ...... $ax_enable_builddir!" >$tmp/conftemp.sed
-      $ax_enable_builddir_sed -f "$tmp/conftemp.sed" "$ac_top_srcdir/Makefile" >$tmp/mkfile.tmp
-        cp "$tmp/conftemp.sed" "$ac_top_srcdir/makefiles.sed~"         ## DEBUGGING
-        cp "$tmp/mkfile.tmp"   "$ac_top_srcdir/makefiles.out~"         ## DEBUGGING
-      if cmp -s "$ac_top_srcdir/Makefile" "$tmp/mkfile.tmp" 2>/dev/null ; then
-        { echo "$as_me:$LINENO: keeping top_srcdir/Makefile from earlier configure" >&5
-echo "$as_me: keeping top_srcdir/Makefile from earlier configure" >&6;}
-        rm "$tmp/mkfile.tmp"
-      else
-        { echo "$as_me:$LINENO: reusing top_srcdir/Makefile from earlier configure" >&5
-echo "$as_me: reusing top_srcdir/Makefile from earlier configure" >&6;}
-        mv "$tmp/mkfile.tmp" "$ac_top_srcdir/Makefile"
-      fi
+      cat $ac_top_srcdir/Makefile.mk >>$ac_top_srcdir/Makefile
     fi
-    { echo "$as_me:$LINENO: build in $ax_enable_builddir (HOST=$ax_enable_builddir_host)" >&5
-echo "$as_me: build in $ax_enable_builddir (HOST=$ax_enable_builddir_host)" >&6;}
-    xxxx="####"
-    echo "$xxxx" "$ax_enable_builddir_host" "|$ax_enable_builddir" >>$ac_top_srcdir/Makefile
+    { echo "$as_me:$LINENO: make uses BUILD=$ax_enable_builddir (on $ax_enable_builddir_host:)" >&5
+echo "$as_me: make uses BUILD=$ax_enable_builddir (on $ax_enable_builddir_host:)" >&6;}
   fi
  ;;
     depfiles ) test x"$AMDEP_TRUE" != x"" || for mf in $CONFIG_FILES; do

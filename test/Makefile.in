@@ -238,7 +238,7 @@ zzxorcopy = ../bins/zzxorcopy$(EXEEXT)
 # -------------------------------------------------------------------
 NULL = /dev/null
 README = $(top_srcdir)/README
-testdatadir = $(top_srcdir)/test.tmp
+testdatadir = $(top_srcdir)/testdata.d
 
 # -------------------------------------------------------------------
 stdtests = @ZIPTESTS@ check-test0 check-test1 check-zzdir check-zzcat
