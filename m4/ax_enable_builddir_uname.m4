@@ -7,7 +7,7 @@ dnl into a separate builddir.
 dnl
 dnl Defaults:
 dnl
-dnl   $1 = $build (overridden with `uname -i`.`uname -n`)
+dnl   $1 = $build (defaults to `uname -mn`)
 dnl   $2 = Makefile.mk
 dnl   $3 = -all
 dnl
@@ -18,7 +18,7 @@ dnl found in the created toplevel builddir Makefile. It just copies the
 dnl variables and rule-targets, each extended with a default
 dnl rule-execution that recurses into the build directory of the
 dnl current "BUILD". You can override the auto-dection through
-dnl `uname -i`.`uname -n` at build-time of course, as in
+dnl `uname -mn | sed -e "s| |_|g"` at build-time of course, as in
 dnl
 dnl   make BUILD=i386-mingw-cross
 dnl
@@ -58,7 +58,7 @@ if test ".$srcdir" = ".." ; then
   else
     test ".$SUB" = "."  && SUB="."
     test ".$SUB" = ".no"  && SUB="."
-    test ".$BUILD" = "." && BUILD=`uname -i`.`uname -n`
+    test ".$BUILD" = "." && BUILD=`uname -mn | sed -e "s| |_|g"`
     test ".$SUB" = ".yes" && SUB="m4_ifval([$1], [$1],[$BUILD])"
     if test ".$SUB" != ".." ; then    # we know where to go and
       AS_MKDIR_P([$SUB])
@@ -141,10 +141,15 @@ s/^top_srcdir *=.*/top_srcdir = ./
 s/:.*/:/
 /:\$/s/ /  /g
 /:\$/s/  / /g
-/^.*[[=]]/!s%\$% ; (cd \`uname -i\`.\`uname -n\` \\&\\& test ! -f configure \\&\\& \$(MAKE) "\$\@") || exit%
+/^.*[[=]]/!s%\$% ; (cd \$(BUILD) \\&\\& \$(ISNOTSRCDIR) \\&\\& \$(MAKE) "\$\@") || exit ; \$(MAKE) done "RULE=\$\@"%
 _EOF
       cp "$tmp/conftemp.sed" "$SRC/makefile.sed~"            ## DEBUGGING
-      $SED -f $tmp/conftemp.sed Makefile >$SRC/Makefile
+      echo 'BUILD=`uname -mn | sed -e "s| |_|g"`' >$SRC/Makefile
+      echo 'ISNOTSRCDIR=test ! -f configure' >>$SRC/Makefile
+      $SED -f $tmp/conftemp.sed Makefile >>$SRC/Makefile
+      echo 'done: ;@ if grep "$(RULE)-done .*:" Makefile > /dev/null; then dnl
+      echo $(MAKE) $(RULE)-done ; $(MAKE) $(RULE)-done ; else true ; fi' dnl
+      >> $SRC/Makefile
       if test -f "$SRC/m4_ifval([$2],[$2],[END])" ; then
         AC_MSG_NOTICE([extend TOP/Makefile with TOP/m4_ifval([$2],[$2],[END])])
         cat $SRC/END >>$SRC/Makefile

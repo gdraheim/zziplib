@@ -50,7 +50,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ac_compile_check_sizeof.m4 \
 	$(top_srcdir)/m4/ax_cflags_strict_prototypes.m4 \
 	$(top_srcdir)/m4/ax_cflags_warn_all.m4 \
 	$(top_srcdir)/m4/ax_create_pkgconfig_info.m4 \
-	$(top_srcdir)/m4/ax_enable_builddir.m4 \
+	$(top_srcdir)/m4/ax_enable_builddir_uname.m4 \
 	$(top_srcdir)/m4/ax_expand_prefix.m4 \
 	$(top_srcdir)/m4/ax_maintainer_mode_auto_silent.m4 \
 	$(top_srcdir)/m4/ax_not_enable_frame_pointer.m4 \
@@ -237,7 +237,8 @@ zzxorcopy = ../bins/zzxorcopy$(EXEEXT)
 
 # -------------------------------------------------------------------
 NULL = /dev/null
-README = @top_srcdir@/README
+README = $(top_srcdir)/README
+testdatadir = $(top_srcdir)/test.tmp
 
 # -------------------------------------------------------------------
 stdtests = @ZIPTESTS@ check-test0 check-test1 check-zzdir check-zzcat
@@ -511,36 +512,55 @@ $(zzcat) $(zzdir) $(zziptest) $(zzxorcat) $(zzxordir) $(xorcopy) : \
 
 testzip testzips : test.zip test1.zip test2.zip test3.zip 
 
-test.zip : $(README)
+test.zip tmp/../test.zip : $(README)
+	- test -d tmp || mkdir tmp
+	- $(MAKE) test0.zip && mv test0.zip $@
+	test -s $@ || cp $(srcdir)/test.zip $@
+test0.zip : $(README)
 	test -f README || ln -s $(README) .
 	- $(MKZIP) test_.zip README
-	@ if test -s test_.zip ; then echo mv test_.zip $@ ; mv test_.zip $@ \
-	; else if test ! -s $@ ; then echo test -s ">" $@ ; test -s > $@ ;fi fi
+	@ if test -s test_.zip ;then echo mv test_.zip $@ ; mv test_.zip $@ ;fi
+	@      test -d $(testdatadir) || mkdir $(testdatadir); if test -s $@ \
+	; then echo cp $@ $(testdatadir)/ ; cp $@ $(testdatadir)/ \
+	; else echo cp $(testdatadir)/$@ .; cp $(testdatadir)/$@ . \
+	; fi ; echo test -s $@ ; test -s $@
 
 test1.zip :
-	@ echo $(MKZIP) $@ ... \
+	@ echo $(MKZIP) $@ ... "(10 files)" \
 	; mkdir test.tmp \
 	; for i in 1 2 3 4 5 6 8 9 \
 	; do echo "file-$i" >test.tmp/file.$$i ; done \
 	; echo " a plain text file here" >test.tmp/README \
 	; (cd test.tmp && $(MKZIP) ../$@ file.* >$(NULL)) \
 	; rm -rf test.tmp
+	@      test -d $(testdatadir) || mkdir $(testdatadir); if test -s $@ \
+	; then echo cp $@ $(testdatadir)/ ; cp $@ $(testdatadir)/ \
+	; else echo cp $(testdatadir)/$@ .; cp $(testdatadir)/$@ . \
+	; fi ; echo test -s $@ ; test -s $@
 
 test2.zip : # will not be shipped in source tarball
-	@ echo $(MKZIP) $@ ... \
+	@ echo $(MKZIP) $@ ... "(100 files)" \
 	; mkdir test.tmp \
 	; for i in 1 2 3 4 5 6 8 9 ; do for j in 1 2 3 4 5 6 7 8 9 \
 	; do echo "file-$i" >test.tmp/file.$$j$$i ; done done \
 	; (cd test.tmp && $(MKZIP) ../$@ file.* >$(NULL)) \
 	; rm -rf test.tmp
+	@      test -d $(testdatadir) || mkdir $(testdatadir); if test -s $@ \
+	; then echo cp $@ $(testdatadir)/ ; cp $@ $(testdatadir)/ \
+	; else echo cp $(testdatadir)/$@ .; cp $(testdatadir)/$@ . \
+	; fi ; echo test -s $@ ; test -s $@
 
 test3.zip : # will not be shipped in source tarball
-	@ echo $(MKZIP) $@ ... \
+	@ echo $(MKZIP) $@ ... "(1000 files)" \
 	; mkdir test.tmp ; for h in 1 2 3 4 5 6 7 8 9 ; do : \
 	; for i in 1 2 3 4 5 6 8 9 ; do for j in 1 2 3 4 5 6 7 8 9 \
 	; do echo "file-$i" >test.tmp/file.$$h$$j$$i ; done done done \
 	; (cd test.tmp && $(MKZIP) ../$@ file.* >$(NULL)) \
 	; rm -rf test.tmp
+	@      test -d $(testdatadir) || mkdir $(testdatadir); if test -s $@ \
+	; then echo cp $@ $(testdatadir)/ ; cp $@ $(testdatadir)/ \
+	; else echo cp $(testdatadir)/$@ .; cp $(testdatadir)/$@ . \
+	; fi ; echo test -s $@ ; test -s $@
 
 test.dat : test.zip
 	$(zzxorcopy) $? $@
@@ -554,15 +574,16 @@ test3.dat : test3.zip
 check-local: check-readme $(stdtests) $(xortests) $(sfxtests)
 
 check-readme : $(zzcat)  test.zip
-	@ test -f test.zip || cp $(srcdir)/test.zip test.zip
-	@ echo checking $(zzcat) test/README 
+	@ test -f test.zip || $(MAKE) tmp/../test.zip 
+	test -s test.zip
+	@ echo :$@: checking $(zzcat) test/README 
 	@ $(zzcat) test/README >test.out
 	@ if diff test.out $(README) >$(NULL) \
 	; then rm test.out ; echo check OK ; true \
 	; else rm test.out ; echo check FAIL ; false ; fi
 
 check-zzxor : $(zzxorcat) test.dat
-	@ echo checking $(zzxorcat) test.dat/README 
+	@ echo :$@: checking $(zzxorcat) test.dat/README 
 	@ $(zzxorcat) test.dat/README >test.out
 	@ if diff test.out $(README) >$(NULL) \
 	; then rm test.out ; echo check OK ; true \
@@ -579,17 +600,17 @@ test3: $(zzdir)
 	$(zzdir) test1.zip
 
 check-test0 : $(zziptest)
-	@ echo ___ $@ ___
+	@ echo :$@: quick selftest
 	$(zziptest) test.zip >test.out
 	rm test.out
 check-test1 : $(zziptest)
 	@ test -f test1.zip || ln -s $(srcdir)/test1.zip test1.zip
-	@ echo ___ $@ ___ "(about ten seconds)"
+	@ echo :$@: longer selftest "(about ten seconds)"
 	$(zziptest) test1.zip >test.out
 	rm test.out
 
 check-zzdir : test1.zip test2.zip test3.zip $(zzdir) 
-	@ echo ___ $@ ___
+	@ echo :$@: zip directory access
 	   ./$(zzdir) test1 > test.out
 	@ X="$(zzdir) test1 "\
 	; if grep file.1 test.out >$(NULL) ; then : \
@@ -696,20 +717,20 @@ brute :      # which is still a brute force selftest
 	(cd ../zzip && $(MAKE) `basename $@`)
 
 zzshowme$(EXEEXT) : zzipself$(EXEEXT) zzipsetstub$(EXEEXT)
-	zip -0 -j $@ .libs/zzipself$(EXEEXT)
-	zip -9 -j $@ $(README)
+	$(MKZIP) -0 -j $@ .libs/zzipself$(EXEEXT)
+	$(MKZIP) -9 -j $@ $(README)
+	- test -s $@ || cp test2.zip $@
 	test ! -f $@.zip || mv $@.zip $@
 	./zzipsetstub $@ .libs/zzipself$(EXEEXT)
 	- chmod +x $@
 
 check-sfx : zzshowme$(EXEEXT)
-	echo ___ $@ ___
-	@ echo "./zzshowme readme >readme.out" \
-	; export LD_LIBRARY_PATH="../zzip/.libs:$$LD_LIBRARY_PATH" \
-	; ./zzshowme readme >readme.out 2>readme.err || cat readme.err || true
-	@ echo 'grep readme.out $(README) || grep "libzzip-" readme.err' \
+	echo :$@: "./zzshowme readme >readme.out 2>readme.err" 
+	export LD_LIBRARY_PATH="../zzip/.libs:$$LD_LIBRARY_PATH" \
+	; ./zzshowme readme >readme.out 2>readme.err ; true
+	@ echo 'diff readme.out $(README) || grep "libzzip-" readme.err' \
 	; if test -s readme.out ; then diff readme.out $(README) \
-        ; else grep "libzzip-" readme.err || echo "possibly an error!" ; fi
+        ; else grep "libzzip-" readme.err || echo "readme.out is empty!" ; fi
 	rm readme.out readme.err
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -160,7 +160,7 @@ static void zzip_mem_entry_test_done(void)
 /* ------------------------- list ------------------------------------ */
 
 static char _zzip_time_[30];
-static char* _zzip_ctime (long* timeval) 
+static char* _zzip_ctime (const time_t* timeval) 
 {
     struct tm* date = localtime (timeval);
     sprintf (_zzip_time_, "%02i-%02i-%02i %02i:%02i",
@@ -220,7 +220,7 @@ static void zzip_mem_entry_direntry(ZZIP_MEM_ENTRY* entry)
     zzip_off_t usize = zzip_mem_entry_usize (entry);
     zzip_off_t csize = zzip_mem_entry_csize (entry);
     int compr = zzip_mem_entry_data_comprlevel (entry);
-    long mtime = entry->zz_mktime;
+    time_t mtime = entry->zz_mktime;
     long crc32 = entry->zz_crc32;
     const char* comment = zzip_mem_entry_to_comment (entry);
     char exp = ' ';

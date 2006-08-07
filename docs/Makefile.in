@@ -48,7 +48,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ac_compile_check_sizeof.m4 \
 	$(top_srcdir)/m4/ax_cflags_strict_prototypes.m4 \
 	$(top_srcdir)/m4/ax_cflags_warn_all.m4 \
 	$(top_srcdir)/m4/ax_create_pkgconfig_info.m4 \
-	$(top_srcdir)/m4/ax_enable_builddir.m4 \
+	$(top_srcdir)/m4/ax_enable_builddir_uname.m4 \
 	$(top_srcdir)/m4/ax_expand_prefix.m4 \
 	$(top_srcdir)/m4/ax_maintainer_mode_auto_silent.m4 \
 	$(top_srcdir)/m4/ax_not_enable_frame_pointer.m4 \
@@ -220,7 +220,7 @@ SDL_RWOPS = $(SDL)/SDL_rwops_zzcat.c \
 changelog = @top_srcdir@/ChangeLog
 EXTRA_DIST = make-doc.py $(doc_FILES) $(htm_FILES) $(SDL_RWOPS) \
              make-doc.pl make-dbk.pl   mksite.sh mksite.pl body.htm \
-             manpages.ar
+             manpages.ar zziplib-master.dbk
 
 CLEANFILES = *.pc *.omf
 DISTCLEANFILES = zziplib.spec manpages.ar htmpages.ar *.html *.xml
@@ -256,7 +256,7 @@ datehead = <hr><table border="0" width="100%"><tr><td> \
 datetail = </td></tr></table>
 borderhead = <table cellpadding="10"><tr><td>
 bordertail = </td></tr></table>
-mksite_sh_args = --srcdir=$(srcdir) --VERSION=$(VERSION)
+mksite_sh_args = --VERSION=$(VERSION) --xml --src-dir=$(srcdir)
 all: all-am
 
 .SUFFIXES:
@@ -399,8 +399,6 @@ maintainer-clean-am: distclean-am maintainer-clean-generic
 mostlyclean: mostlyclean-am
 
 mostlyclean-am: mostlyclean-generic mostlyclean-libtool
-
-pdf: pdf-am
 
 pdf-am:
 
@@ -608,6 +606,13 @@ zzip.html : zzip.xml
 	xmlto html-nochunks zzip.xml
 zzip.pdf  : zzip.xml
 	xmlto pdf zzip.xml
+
+zziplib.pdf : $(htm_FILES) $(srcdir)/zziplib-master.dbk mksite.pl
+	cp $(srcdir)/zziplib-master.dbk zziplib.docbook
+	xmlto pdf zziplib.docbook ; rm zziplib.docbook
+	test -s zziplib.pdf
+
+pdf : zziplib.pdf
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

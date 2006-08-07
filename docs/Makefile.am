@@ -16,7 +16,7 @@ changelog = @top_srcdir@/ChangeLog
 
 EXTRA_DIST = make-doc.py $(doc_FILES) $(htm_FILES) $(SDL_RWOPS) \
              make-doc.pl make-dbk.pl   mksite.sh mksite.pl body.htm \
-             manpages.ar
+             manpages.ar zziplib-master.dbk
 CLEANFILES = *.pc *.omf
 DISTCLEANFILES = zziplib.spec manpages.ar htmpages.ar *.html *.xml
 
@@ -201,7 +201,7 @@ bordertail = </td></tr></table>
 
 site.htm : body.htm
 	cp $(srcdir)/body.htm site.htm
-mksite_sh_args = --srcdir=$(srcdir) --VERSION=$(VERSION)
+mksite_sh_args = --VERSION=$(VERSION) --xml --src-dir=$(srcdir)
 site.html : site.htm mksite.sh $(htm_FILES)
 	perl $(srcdir)/mksite.pl $(mksite_sh_args) site.htm || \
 	$(SHELL) $(srcdir)/mksite.sh $(mksite_sh_args) site.htm
@@ -240,3 +240,10 @@ zzip.html : zzip.xml
 	xmlto html-nochunks zzip.xml
 zzip.pdf  : zzip.xml
 	xmlto pdf zzip.xml
+
+zziplib.pdf : $(htm_FILES) $(srcdir)/zziplib-master.dbk mksite.pl
+	cp $(srcdir)/zziplib-master.dbk zziplib.docbook
+	xmlto pdf zziplib.docbook ; rm zziplib.docbook
+	test -s zziplib.pdf
+
+pdf : zziplib.pdf
