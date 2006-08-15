@@ -1,3 +1,6 @@
+2008-08-14
+ * Yvan Phelizot reports a problem in zzip/mmapped.c
+
 2006-08-08
  * rephrase build system, automated tests, some doc parts
 
