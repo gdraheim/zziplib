@@ -1,5 +1,7 @@
 2008-08-14
  * Yvan Phelizot reports a problem in zzip/mmapped.c
+ * Malcom MacLeod had spurious problems inside a C++ project,
+	so let's update all heraders with explicit 'extern "C"' linkage.
 
 2006-08-08
  * rephrase build system, automated tests, some doc parts

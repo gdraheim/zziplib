@@ -6,6 +6,10 @@
 #include <zzip/types.h>
 #include <zzip/mmapped.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct _zzip_mem_disk ZZIP_MEM_DISK;
 typedef struct _zzip_mem_entry ZZIP_MEM_ENTRY;
 
@@ -159,4 +163,7 @@ zzip_mem_disk_feof (ZZIP_MEM_DISK_FILE* file);
 /* convert dostime of entry to unix time_t */
 long zzip_disk_entry_get_mktime(ZZIP_DISK_ENTRY* entry);
 
+#ifdef __cplusplus
+}
+#endif
 #endif

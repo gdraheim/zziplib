@@ -10,6 +10,10 @@
 #include <byteswap.h>
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* get 16/32 bits from little-endian zip-file to host byteorder */
 extern uint32_t __zzip_get32(zzip_byte_t * s) __zzip_attribute__((const));
 extern uint16_t __zzip_get16(zzip_byte_t * s) __zzip_attribute__((const));
@@ -340,4 +344,7 @@ extern void     __zzip_set64(zzip_byte_t * s, uint64_t v);
         (zzip_disk_entry_data_deflated(__p) && \
 	 zzip_disk_entry_data_comprlevel(__p) == ZZIP_DEFLATED_MIN_COMPR)
 
+#ifdef __cplusplus
+}
+#endif
 #endif

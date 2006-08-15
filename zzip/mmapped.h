@@ -19,6 +19,10 @@
 
 #include <zzip/types.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct zzip_disk_file  ZZIP_DISK_FILE;
 typedef struct zzip_disk       ZZIP_DISK;
 /*  def struct zzip_disk_entry ZZIP_DISK_ENTRY; */
@@ -116,5 +120,8 @@ struct zzip_disk_file
 };
 #endif
 
+#ifdef __cplusplus
+}
+#endif
 #endif
 

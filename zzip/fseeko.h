@@ -20,6 +20,10 @@
 #include <zzip/types.h>
 #include <stdio.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct zzip_entry ZZIP_ENTRY;
 typedef struct zzip_entry_file ZZIP_ENTRY_FILE;
 
@@ -112,5 +116,8 @@ struct zzip_entry /* : struct zzip_disk_entry */
 #  endif /* __cplusplus */
 # endif /* _ZZIP_MEM_ENTRY_PRIVATE */
 
+#ifdef __cplusplus
+extern "C" {
+}
 #endif
 
