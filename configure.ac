@@ -1,7 +1,7 @@
 AC_INIT(zziplib.spec)
 AC_PREREQ(2.49)
 AC_COPYRIGHT([Guido Draheim <guido@gmx.de> for ZZipLib.SF.net])
-AC_REVISION($Revision: 1.6 $)
+AC_REVISION($Revision: 1.7 $)
 AC_CONFIG_AUX_DIR(uses)
 # =======================================================================
 AC_CANONICAL_SYSTEM
@@ -109,6 +109,7 @@ AC_COMPILE_CHECK_SIZEOF(short)
 AC_COMPILE_CHECK_SIZEOF(int)
 AC_COMPILE_CHECK_SIZEOF(long)
 AC_C_BIGENDIAN
+AX_CHECK_ALIGNED_ACCESS_REQUIRED
 dnl -------------------------------------------------------------
 # the default is _disabled_!! anyway, result is prefixed in zzip/_config.h!!
 AC_SYS_LARGEFILE_SENSITIVE

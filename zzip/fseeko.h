@@ -120,4 +120,5 @@ struct zzip_entry /* : struct zzip_disk_entry */
 extern "C" {
 }
 #endif
+#endif
 

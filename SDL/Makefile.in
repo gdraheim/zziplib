@@ -51,6 +51,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ac_compile_check_sizeof.m4 \
 	$(top_srcdir)/m4/ax_cflags_no_writable_strings.m4 \
 	$(top_srcdir)/m4/ax_cflags_strict_prototypes.m4 \
 	$(top_srcdir)/m4/ax_cflags_warn_all.m4 \
+	$(top_srcdir)/m4/ax_check_aligned_access_required.m4 \
 	$(top_srcdir)/m4/ax_create_pkgconfig_info.m4 \
 	$(top_srcdir)/m4/ax_enable_builddir_uname.m4 \
 	$(top_srcdir)/m4/ax_expand_prefix.m4 \
