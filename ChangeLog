@@ -3,6 +3,8 @@
    error on an alpha machine. So, I have added macro to test for
    the condition of aligned access but the alpha platoform seems
    to be okay. Further reports are required.
+ * Mark README.SDL to be explicitly outdated (it's 16. Dec. 2002)
+	
 2008-08-14
  * Yvan Phelizot reports a problem in zzip/mmapped.c
  * Malcom MacLeod had spurious problems inside a C++ project,

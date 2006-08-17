@@ -1,3 +1,11 @@
+SHORTTERM
+- single-file documentation (a docbook?)
+- handle international filenames more gracefully (unicode API?)
+- most is multithreaded ... but zzip_dir_open (Thorsten Schöning)
+- rboerdijk@ does also report errors on overlapping reads, another
+   one pointed to the usage of seek_set that may cause the problems
+
+WISHLIST
 
 - Check the CRC value at the end of read... and add more error codes.
 
