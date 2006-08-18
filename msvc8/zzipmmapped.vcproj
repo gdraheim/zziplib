@@ -2,8 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="zziptest"
-	ProjectGUID="{FCEF4E99-72DB-4422-95BB-3C83673B66E9}"
+	Name="zzipmmapped"
+	ProjectGUID="{E7474EF2-BF27-4482-B347-2075BEC6A0D4}"
+	RootNamespace="zzipmmapped"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -16,11 +17,10 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="Debug"
-			IntermediateDirectory="Debug"
-			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
-			CharacterSet="2"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -42,11 +42,11 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..;../msvc/zlib/include;&quot;$(MSSdk)/Include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				AdditionalIncludeDirectories="..;../msvc/zlib/include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -63,12 +63,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="zziplib-$(ConfigurationName).lib"
-				OutputFile="zziptest-$(ConfigurationName).exe"
+				AdditionalDependencies="zdll.lib"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="../msvc/zlib/lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)/zziptest.pdb"
 				SubSystem="1"
 				TargetMachine="1"
 			/>
@@ -101,11 +99,11 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="Release"
-			IntermediateDirectory="Release"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
-			CharacterSet="2"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -126,14 +124,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..;../msvc/zlib/include;&quot;$(MSSdk)/Include&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
-				StringPooling="true"
-				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="true"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CRT_SECURE_NO_DEPRECATE"
+				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
@@ -150,10 +142,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="zziplib-$(ConfigurationName).lib"
-				OutputFile="zziptest-$(ConfigurationName).exe"
+				AdditionalDependencies="kernel32.lib $(NoInherit)"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -183,8 +173,6 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="del $(ConfigurationName)\vc80.idb"
-				CommandLine="del $(ConfigurationName)\vc80.idb"
 			/>
 		</Configuration>
 	</Configurations>
@@ -192,18 +180,47 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Quelldateien"
-			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm"
+			Name="Source Files"
+			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\bins\zziptest.c"
+				RelativePath="..\zzip\fetch.c"
+				>
+			</File>
+			<File
+				RelativePath="..\zzip\memdisk.c"
+				>
+			</File>
+			<File
+				RelativePath="..\zzip\mmapped.c"
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath="zziplib.sln"
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-		</File>
+			<File
+				RelativePath="..\zzip\fetch.h"
+				>
+			</File>
+			<File
+				RelativePath="..\zzip\memdisk.h"
+				>
+			</File>
+			<File
+				RelativePath="..\zzip\mmapped.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

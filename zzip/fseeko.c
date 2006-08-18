@@ -1,5 +1,6 @@
 /*
  * NOTE: this is part of libzzipfseeko (i.e. it is not libzzip).
+ *                                           ==================
  *
  * These routines are fully independent from the traditional zzip
  * implementation. They assume a readonly seekable stdio handle
@@ -354,23 +355,6 @@ zzip_entry_findfile(FILE* disk, char* filename,
     }
     return 0;
 }
-
-#ifdef ZZIP_HAVE_FNMATCH_H
-#define _zzip_fnmatch fnmatch
-# ifdef FNM_CASEFOLD
-# define _zzip_fnmatch_CASEFOLD FNM_CASEFOLD
-# else
-# define _zzip_fnmatch_CASEFOLD 0
-# endif
-#else
-# define _zzip_fnmatch_CASEFOLD 0
-/* if your system does not have fnmatch, we fall back to strcmp: */
-static int _zzip_fnmatch(char* pattern, char* string, int flags)
-{ 
-    puts ("<zzip:strcmp>");
-    return strcmp (pattern, string); 
-}
-#endif
 
 /** => zzip_entry_findfile
  *

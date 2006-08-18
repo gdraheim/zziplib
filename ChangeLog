@@ -1,3 +1,9 @@
+2006-08-18
+ * updating msvc8 project files
+ * adding zlib.dll to cvs
+ * zzip/memdisk.c:183 overrides for off64_t will not work with off32_t !!!
+ * headers for mktime should return time_t - do we have the header ???
+
 2006-08-17
  * A report by Tuilipant Gergely had shown an "unaligned access"
    error on an alpha machine. So, I have added macro to test for

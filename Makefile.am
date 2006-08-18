@@ -30,7 +30,8 @@ msvc8/zziplib.sln     msvc8/zzipsetstub.sln     msvc8/zzobfuscated.sln \
 msvc8/zziplib.vcproj  msvc8/zzipsetstub.vcproj  msvc8/zzobfuscated.vcproj \
 msvc8/zzcat.sln       msvc8/zzipself.bat        msvc8/zzip.sln \
 msvc8/zzcat.vcproj    msvc8/zzipself.sln        msvc8/zziptest.sln \
-msvc8/zzdir.sln       msvc8/zzipself.txt        msvc8/zziptest.vcproj
+msvc8/zzdir.sln       msvc8/zzipself.txt        msvc8/zziptest.vcproj \
+                      msvc8/zzipfseeko.vcproj   msvc8/zzipmmapped.vcproj 
 
 MSVC7 =   msvc7/pkzip.exe msvc7/test1.zip msvc7/test.zip \
 msvc7/zzdir.vcproj    msvc7/zzipself.vcproj     msvc7/zzip.vcproj \

@@ -1,5 +1,6 @@
 /*
  * NOTE: this is part of libzzipmmapped (i.e. it is not libzzip).
+ *                                            ==================
  *
  * These routines are fully independent from the traditional zzip
  * implementation. They assume a readonly mmapped sharedmem block
@@ -177,7 +178,7 @@ zzip_disk_close(ZZIP_DISK* disk)
 #define _zzip_strndup strndup
 #else
 /* if your system does not have strndup: */
-zzip__new__ static char* _zzip_strndup(char* p, int maxlen)
+zzip__new__ static char* _zzip_strndup(char* p, size_t maxlen)
 {
     if (! p) return 0;
     ___ zzip_byte_t* r = malloc (maxlen+1);
