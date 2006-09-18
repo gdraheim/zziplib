@@ -98,9 +98,11 @@ class FunctionListRefEntry:
         self.file_authors = None
         if  func.get_authors():
             self.file_authors = func.get_authors()
+            self.authors_list += [ self.file_authors ]
         self.file_copyright = None
         if  func.get_copyright():
             self.file_copyright = func.get_copyright()
+            self.copyright_list += [ self.file_copyright ]
     #fu
     def refentryinfo_text(self):
         """ the manvol formatter wants to render a footer line and header line

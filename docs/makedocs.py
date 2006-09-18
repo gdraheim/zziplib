@@ -26,6 +26,11 @@ class PerFile:
         self.textfileheaders += [ textfileheader ]
         self.filecomments += [ filecomment ]
         self.entries += [ PerFileEntry(textfileheader, filecomment) ]
+    def where_filename(self, filename):
+        for entry in self.entries:
+            if entry.textfileheader.get_filename() == filename:
+                return entry
+        return None
     def print_list_mainheader(self):
         for t_fileheader in self.headers:
             print t_fileheader.get_filename(), t_fileheader.src_mainheader()
@@ -178,23 +183,28 @@ class HtmlManualPageAdapter:
     def get_mainheader(self):
         return _src_to_xml(self.src_mainheader())
 class RefEntryManualPageAdapter:
-    def __init__(self, entry):
+    def __init__(self, entry, per_file = None):
         """ usually takes a PerFunctionEntry """
         self.entry = entry
+        self.per_file = per_file
     def get_name(self):
         return self.entry.get_name()
     def _head(self):
         return self.entry.get_head()
     def _body(self):
         return self.entry.get_body()
+    def _textfile(self):
+        return self._body().header.parent.textfile
     def head_xml_text(self):
         return self._head().xml_text()
     def body_xml_text(self, name):
         return self._body().xml_text(name)
     def get_title(self):
         return self._body().header.get_title()
+    def get_filename(self):
+        return self._body().header.get_filename()
     def src_mainheader(self):
-        return self._body().header.parent.textfile.src_mainheader()
+        return self._textfile().src_mainheader()
     def get_mainheader(self):
         return _src_to_xml(self.src_mainheader())
     def get_includes(self):
@@ -202,8 +212,24 @@ class RefEntryManualPageAdapter:
     def list_seealso(self):
         return self._body().header.get_alsolist()
     def get_authors(self):
+        comment = None
+        if self.per_file:
+            entry = self.per_file.where_filename(self.get_filename())
+            if entry:
+                comment = entry.filecomment.xml_text()
+        if comment:
+            check = Match(r"(?s)<para>\s*[Aa]uthors*\b:*((?:.(?!</para>))*.)</para>")
+            if comment & check: return _src_to_xml(check[1])
         return None
     def get_copyright(self):
+        comment = None
+        if self.per_file:
+            entry = self.per_file.where_filename(self.get_filename())
+            if entry:
+                comment = entry.filecomment.xml_text()
+        if comment:
+            check = Match(r"(?s)<para>\s*[Cc]opyright\b((?:.(?!</para>))*.)</para>")
+            if comment & check: return check[0]
         return None
 
 def makedocs(filenames, o):
@@ -262,7 +288,7 @@ def makedocs(filenames, o):
     man3 = FunctionListReference(o)
     for item in per_family.entries:
         for func in item.functions:
-            func_adapter = RefEntryManualPageAdapter(func)
+            func_adapter = RefEntryManualPageAdapter(func, per_file)
             if o.onlymainheader and not (Match("<"+o.onlymainheader+">")
                                          & func_adapter.src_mainheader()):
                     continue
