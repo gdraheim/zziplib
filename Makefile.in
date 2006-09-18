@@ -704,7 +704,7 @@ rpm2: dist-bzip2 $(PACKAGE).spec
 zzip.html zzip.xml zzip.pdf \
 doc docu clean-doc clean-docs clean-docu \
 man manpages htmpages unpack clean-unpack \
-omf install-omf install-doc install-sfnet install-man3 x :
+omf install-omf install-doc install-sfnet install-man3 docu x :
 	(cd docs && $(MAKE) `basename $@`)
 
 sdl testsdl test-sdl install-sdl :
