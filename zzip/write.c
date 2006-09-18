@@ -5,6 +5,14 @@
  * where time-stamps are rather unimportant. Here we can create an 
  * archive with filenames and their data portions, possibly obfuscated.
  *
+ * DONT USE THIS
+ *
+ * The write support is supposed to be added directly into the main
+ * zziplib but it has not been implemented so far. It does however
+ * export the relevant call entries which will return EROFS (read-only
+ * filesystem) in case they are being called. That allows later programs
+ * to start up with earlier versions of zziplib that can only read ZIPs.
+ *
  * Author: 
  *      Guido Draheim <guidod@gmx.de>
  *
@@ -24,7 +32,7 @@
 #define _ZZIP_POSIX_WRITE
 #endif
 
-#include <zzip/lib.h>                                         /* exported...*/
+#include <zzip/write.h>                   /* #includes <zzip/lib.h> */
 #include <zzip/file.h>
 
 #include <string.h>
@@ -207,7 +215,7 @@ zzip_createdir(zzip_char_t* name, int o_mode)
         return zzip_dir_creat (name, o_mode);
 }
 
-/** => zzip_file_creat                   => mkdir(2), creat(2), zzip_dir_creat
+/** => zzip_file_creat              also: mkdir(2), creat(2), zzip_dir_creat
  *
  * This function has an additional primary argument over the posix
  * mkdir(2) - if it is null then this function behaves just like

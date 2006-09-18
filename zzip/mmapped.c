@@ -17,7 +17,7 @@
  * Author: 
  *      Guido Draheim <guidod@gmx.de>
  *
- * Copyright (c) 2003,2004 Guido Draheim
+ * Copyright (c) 2003,2004,2006 Guido Draheim
  *          All rights reserved,
  *          use under the restrictions of the 
  *          Lesser GNU General Public License
@@ -25,13 +25,17 @@
  *          of the Mozilla Public License 1.1
  */
 
-#ifdef __linux__
-#define _GNU_SOURCE _glibc_developers_are_idiots_to_call_this_gnu_specific_
-#endif
-
 #define _ZZIP_DISK_FILE_STRUCT 1
 
-#include <zzip/types.h>
+#ifdef __linux__
+#define _GNU_SOURCE _glibc_developers_are_idiots_to_call_strndup_gnu_specific_
+#endif
+
+#include <zzip/mmapped.h>
+#include <zzip/format.h>
+#include <zzip/fetch.h>
+#include <zzip/__mmap.h>
+#include <zzip/__fnmatch.h>
 
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -48,12 +52,6 @@
 #include <strings.h>
 #endif
 
-#include <zlib.h>
-#include <zzip/mmapped.h>
-#include <zzip/format.h>
-#include <zzip/fetch.h>
-#include <zzip/__mmap.h>
-#include <zzip/__fnmatch.h>
 
 #if __STDC_VERSION__+0 > 199900L
 #define ___

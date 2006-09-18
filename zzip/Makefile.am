@@ -31,6 +31,7 @@ libzzip_la_headers = \
 	plugin.h \
 	lib.h \
 	zzip.h \
+        write.h \
 	fetch.h \
 	format.h \
         info.h \

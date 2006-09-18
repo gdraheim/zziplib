@@ -20,6 +20,11 @@
 #include <zzip/types.h>
 #include <stdio.h>
 
+#ifdef _ZZIP_ENTRY_STRUCT
+#include <zlib.h>
+#include <zzip/format.h>
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

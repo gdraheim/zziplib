@@ -19,6 +19,10 @@
 
 #include <zzip/types.h>
 
+#ifdef _ZZIP_DISK_FILE_STRUCT
+#include <zlib.h> /* z_stream */
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

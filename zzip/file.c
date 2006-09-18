@@ -471,7 +471,7 @@ zzip_fread(void *ptr, zzip_size_t size, zzip_size_t nmemb, ZZIP_FILE *file)
 
 /* ------------------------------------------------------------------- */
 
-/**                                                            
+/**                                                          also: fopen(2)  
  * This function will => fopen(3) a real/zipped file.
  * 
  * It has some magic functionality builtin - it will first try to open
@@ -492,22 +492,22 @@ zzip_fread(void *ptr, zzip_size_t size, zzip_size_t nmemb, ZZIP_FILE *file)
  * zzip modes called ZZIP_CASEINSENSITIVE and ZZIP_IGNOREPATH.
  * Currently, this => zzip_fopen call will convert the following
  * characters in the mode-string into their corrsponding mode-bits: 
- *  <ul><li><code> "r" : O_RDONLY : </code> read-only
- * </li><li><code> "b" : O_BINARY : </code> binary (win32 specific)
- * </li><li><code> "f" : O_NOCTTY : </code> no char device (unix)
- * </li><li><code> "i" : ZZIP_CASELESS : </code> inside zip file
- * </li><li><code> "*" : ZZIP_NOPATHS : </code> inside zip file only
- * </ul> all other modes will be ignored for zip-contained entries
+ * * <code> "r" : O_RDONLY : </code> read-only
+ * * <code> "b" : O_BINARY : </code> binary (win32 specific)
+ * * <code> "f" : O_NOCTTY : </code> no char device (unix)
+ * * <code> "i" : ZZIP_CASELESS : </code> inside zip file
+ * * <code> "*" : ZZIP_NOPATHS : </code> inside zip file only
+ * all other modes will be ignored for zip-contained entries
  * but they are transferred for compatibility and portability,
  * including these extra sugar bits:
- *  <ul><li><code> "x" : O_EXCL :</code> fail if file did exist
- * </li><li><code> "s" : O_SYNC :</code> synchronized access
- * </li><li><code> "n" : O_NONBLOCK :</code> nonblocking access
- * </li><li><code> "z#" : compression level :</code> for zlib
- * </li><li><code> "g#" : group access :</code> unix access bits
- * </li><li><code> "u#" : owner access :</code> unix access bits
- * </li><li><code> "o#" : world access :</code> unix access bits
- * </ul>... the access bits are in traditional unix bit format
+ * * <code> "x" : O_EXCL :</code> fail if file did exist
+ * * <code> "s" : O_SYNC :</code> synchronized access
+ * * <code> "n" : O_NONBLOCK :</code> nonblocking access
+ * * <code> "z#" : compression level :</code> for zlib
+ * * <code> "g#" : group access :</code> unix access bits
+ * * <code> "u#" : owner access :</code> unix access bits
+ * * <code> "o#" : world access :</code> unix access bits
+ * ... the access bits are in traditional unix bit format
  * with 7 = read/write/execute, 6 = read/write, 4 = read-only.
  *
  * The default access mode is 0664, and the compression level
@@ -619,10 +619,10 @@ zzip_freopen(zzip_char_t* filename, zzip_char_t* mode, ZZIP_FILE* stream)
  * There was a possibility to transfer zziplib-specific openmodes
  * through o_flags but you should please not use them anymore and
  * look into => zzip_open_ext_io to submit them down. This function
- * is shallow in that it just extracts the zzipflags and calls <ul><li><code>
- * zzip_open_ext_io(filename, o_flags, zzipflags|0664, 0, 0) </code></li></ul>
- * you must stop using this extra functionality (not well known
- * anyway) since zzip_open might be later usable to open files
+ * is shallow in that it just extracts the zzipflags and calls <ul><li><p>
+ * <code>zzip_open_ext_io(filename, o_flags, zzipflags|0664, 0, 0) </code>
+ * </p></li></ul> you must stop using this extra functionality (not well 
+ * known anyway) since zzip_open might be later usable to open files
  * for writing in which case the _EXTRAFLAGS will get in conflict.
  *
  * compare with  => open(2) and => zzip_fopen
@@ -880,7 +880,7 @@ zzip_rewind(ZZIP_FILE *fp)
     return err;
 }
 
-/**                                                                  
+/**  
  * This function will perform a => lseek(2) operation on a real/zipped file
  *
  * It will try to seek to the offset specified by offset, relative to whence, 

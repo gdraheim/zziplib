@@ -34,7 +34,11 @@
 #define _LARGEFILE_SOURCE 1
 #define _ZZIP_ENTRY_STRUCT 1
 
-#include <zzip/types.h>
+#include <zzip/fseeko.h>
+
+#include <zzip/fetch.h>
+#include <zzip/__mmap.h>
+#include <zzip/__fnmatch.h>
 
 #include <assert.h>
 #include <stdlib.h>
@@ -45,13 +49,6 @@
 #elif defined ZZIP_HAVE_STRINGS_H
 #include <strings.h>
 #endif
-
-#include <zlib.h>
-#include <zzip/format.h>
-#include <zzip/fseeko.h>
-#include <zzip/fetch.h>
-#include <zzip/__mmap.h>
-#include <zzip/__fnmatch.h>
 
 #if __STDC_VERSION__+0 > 199900L
 #define ___
