@@ -1,3 +1,8 @@
+2006-09-18
+ * docs/makedocs.py docs/zzipdoc/*.py creates new docs/zziplib-man3.tar.gz
+	plus zziplib.html zzipmmapped.html zzipfseeko.html
+ * that will be the only to be used in the future but it is not complete
+	
 2006-08-18
  * updating msvc8 project files
  * adding zlib.dll to cvs
