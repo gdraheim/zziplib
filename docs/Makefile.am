@@ -1,6 +1,9 @@
 AUTOMAKE_OPTIONS = 1.4 foreign
 AUTOTOOL_VERSION=autoconf-2.52 automake-1.5 libtool-1.4.2
 
+PYRUN = $(PYDEFS) @PYTHON@ $(PYFLAGS)
+PLRUN = $(PLDEFS) @PERL@   $(PLFLAGS)
+
 doc_FILES = README.MSVC6 README.SDL COPYING.MPL COPYING.LIB COPYING.ZLIB \
             zziplib.html
 htm_FILES = zzip-index.htm zzip-zip.htm zzip-file.htm zzip-sdl-rwops.htm \
@@ -16,9 +19,17 @@ changelog = @top_srcdir@/ChangeLog
 
 EXTRA_DIST = make-doc.py $(doc_FILES) $(htm_FILES) $(SDL_RWOPS) \
              make-doc.pl make-dbk.pl   mksite.sh mksite.pl body.htm \
-             manpages.ar zziplib-master.dbk
+             manpages.ar zziplib-master.dbk $(zzipdoc_FILES)
 CLEANFILES = *.pc *.omf
 DISTCLEANFILES = zziplib.spec manpages.ar htmpages.ar *.html *.xml
+
+zzipdoc_FILES = makedocs.py               zzipdoc/__init__.py \
+	zzipdoc/commentmarkup.py          zzipdoc/match.py    \
+	zzipdoc/dbk2htm.py                zzipdoc/htm2dbk.py  \
+	zzipdoc/functionheader.py         zzipdoc/options.py  \
+	zzipdoc/functionlisthtmlpage.py   zzipdoc/textfileheader.py \
+	zzipdoc/functionlistreference.py  zzipdoc/textfile.py
+	zzipdoc/functionprototype.py
 
 html_FILES = $(htm_FILES:.htm=.html) \
              $(htm_FILES:.htm=.print.html) \
@@ -34,28 +45,69 @@ zziplib.spec : @top_srcdir@/$(PACKAGE).spec
 	@ $(LN_S) $? $@ # the two zzip-doc.* will grep thru zziplib.spec
 doc  : $(doc_FILES) site.html
 docs : doc manpages.ar htmpages.ar
-docu : docs
-zziplib0.html : zziplib0.xml
-zziplib0.xml : zziplib.spec @srcdir@/Makefile.am @srcdir@/make-doc.pl \
-                 $(srcdir)/make-doc.pl @top_srcdir@/zzip/*.c
-	- @PERL@ $(srcdir)/make-doc.pl @top_srcdir@/zzip/*.c \
-          "suffix=0" "package=$(PACKAGE)" "version=$(VERSION)" \
-          "mainheader=zzip/zzip.h" "exported=<zzip/zzip.h> // or <zziplib.h>" \
-	  "docbookfile=$@" 
-	- test -s $@
-zziplib1.html : zziplib1.xml
-zziplib1.xml : zziplib.spec @srcdir@/Makefile.am @srcdir@/make-doc.py \
-                   $(srcdir)/make-doc.py @top_srcdir@/zzip/*.c
-	- @PYTHON@ $(srcdir)/make-doc.py @top_srcdir@/zzip/*.c suffix=1
-	- test -f zziplib1.docbook && mv zziplib1.docbook $@ ; test -s $@
+# docu : docs
+docu : 
+	- rm zziplib2.html zzipmmapped.html zzipfseeko.html
+	$(MAKE) zziplib2.html
+	$(MAKE) zzipmmapped.html
+	$(MAKE) zzipfseeko.html
+	$(MAKE) zziplib-man3.tar.gz
+
 zziplib.html :    zziplib1.html zziplib0.html
 	- test -s zziplib0.html && cp zziplib0.html zziplib.html
 	- test -s zziplib1.html && cp zziplib1.html zziplib.html
+	- test -s zziplib2.html && cp zziplib2.html zziplib.html
 	test -s $@
 zziplib.xml :     zziplib1.xml zziplib0.xml
 	- test -s zziplib0.xml && cp zziplib0.xml zziplib.xml
 	- test -s zziplib1.xml && cp zziplib1.xml zziplib.xml
+	- test -s zziplib2.xml && cp zziplib2.xml zziplib.xml
 	test -s $@ || rm $@
+
+_zziplib0 = $(zziplib0) \
+          "suffix=0" "package=$(PACKAGE)" "version=$(VERSION)" \
+          "mainheader=zzip/zzip.h" "exported=<zzip/zzip.h> // or <zziplib.h>" \
+	  "docbookfile=$@" 
+zziplib0.html : zziplib0.xml
+zziplib0.xml : zziplib.spec @srcdir@/Makefile.am @srcdir@/make-doc.pl \
+                 $(srcdir)/make-doc.pl @top_srcdir@/zzip/*.c
+	- $(PLRUN) $(srcdir)/make-doc.pl @top_srcdir@/zzip/*.c $(_zziplib0)
+	- test -s $@
+_zziplib1 = $(zziplib1) \
+          "--suffix=1"
+zziplib1.html : zziplib1.xml
+zziplib1.xml : zziplib.spec @srcdir@/Makefile.am @srcdir@/make-doc.py \
+                   $(srcdir)/make-doc.py @top_srcdir@/zzip/*.c
+	- $(PYRUN) $(srcdir)/make-doc.py @top_srcdir@/zzip/*.c $(_zziplib1)
+	- test -f zziplib1.docbook && mv zziplib1.docbook $@ ; test -s $@
+_zziplib2 = $(zziplib2) "--package=$(PACKAGE)" "--version=$(VERSION)" \
+               "--onlymainheader=zzip/lib.h" "--suffix=2"
+zziplib2.html : zziplib2.xml
+zziplib2.xml : zziplib.spec $(srcdir)/Makefile.am $(srcdir)/zzipdoc/*.py \
+                   $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c
+	- $(PYRUN) $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c $(_zziplib2)
+	- test -f zziplib2.docbook && mv zziplib2.docbook $@ ; test -s $@
+_zzipmmapped = $(zziplib2) "--package=$(PACKAGE)" "--version=$(VERSION)" \
+               "--onlymainheader=zzip/mmapped.h" "--suffix=3"
+zzipmmapped.html : zzipmmapped.xml
+zzipmmapped.xml : zziplib.spec $(srcdir)/Makefile.am $(srcdir)/zzipdoc/*.py \
+                   $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c
+	- $(PYRUN) $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c $(_zzipmmapped)
+	- test -f zziplib3.docbook && mv zziplib3.docbook $@ ; test -s $@
+_zzipfseeko = $(zziplib2) "--package=$(PACKAGE)" "--version=$(VERSION)" \
+               "--onlymainheader=zzip/fseeko.h" "--suffix=4"
+zzipfseeko.html : zzipfseeko.xml
+zzipfseeko.xml : zziplib.spec $(srcdir)/Makefile.am $(srcdir)/zzipdoc/*.py \
+                   $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c
+	- $(PYRUN) $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c $(_zzipfseeko)
+	- test -f zziplib4.docbook && mv zziplib4.docbook $@ ; test -s $@
+
+zziplib-man3.tar.gz : zziplib2.xml
+	- mkdir zziplib-man3 || rm zziplib-man3/* 
+	(cd zziplib-man3 && xmlto man ../zziplib2.xml) 
+	(cd zziplib-man3 && xmlto man ../zzipmmapped.xml) 
+	(cd zziplib-man3 && xmlto man ../zzipfseeko.xml) 
+	tar czf $@ zziplib-man3/
 
 omfdir=${datadir}/omf
 pkgomfdir=${omfdir}/${PACKAGE}
@@ -192,13 +244,6 @@ install-omf : $(PACKAGE)-doc.omf $(PACKAGE)-man.omf $(PACKAGE).xml
 	- test ".$(DESTDIR)" != "." || scrollkeeper-update -v
 
 # -------------------------------------------------------------------
-datehead = <hr><table border="0" width="100%"><tr><td> \
-    <a href="mailto:guidod@gmx.de?subject=$(PACKAGE):">guidod@gmx.de</a> \
-    </td><td align="right">
-datetail = </td></tr></table>
-borderhead = <table cellpadding="10"><tr><td>
-bordertail = </td></tr></table>
-
 site.htm : body.htm
 	cp $(srcdir)/body.htm site.htm
 mksite_sh_args = --VERSION=$(VERSION) --xml --src-dir=$(srcdir)
@@ -206,34 +251,10 @@ site.html : site.htm mksite.sh $(htm_FILES)
 	perl $(srcdir)/mksite.pl $(mksite_sh_args) site.htm || \
 	$(SHELL) $(srcdir)/mksite.sh $(mksite_sh_args) site.htm
 
-x : $(htm_FILES:.htm=.htmls)
-$(htm_FILES:.htm=.htmls) : body.htm
-%.htmls : %.htm
-	@ title=`grep '<h2>' $< | sed -e 's:</h2>.*::' -e 's:<[^<>]*>::g'` \
-	; D=$(DATESPEC) ; cat $(srcdir)/body.htm \
-	| sed -e "s/<!--VERSION-->/$(VERSION)/" \
-	| sed -e "s/<!--DATE-->/$$D/" \
-	| sed -e "s:</title>: - $$title</title>:" \
-	| sed -e "/$@.>/s:\\([^<>]*\\)</a>:<b>\\1</b></a>:" \
-	> $@
-	@ echo $< '>>' $@; cat $< | sed -e "s/<!--VERSION-->/$(VERSION)/" \
-	-e "s:</h2>\\(.*\\):</h2></td><td><i>\\1</i></td></tr></table>:" \
-	-e 's:<h2>:<table width="100%"><tr valign="bottom"><td><h2>:' \
-	-e 's:<td><i>:<td align="right"><br> <i>:' \
-	-e 's:<P>:<p class="justify"><span class="justify">:g' \
-	-e 's:</P>:</span></p>:g' \
-	-e 's,<date>,<!--DATE: ,' -e 's,</date>, -->,' \
-	-e 's,<!--border-->,$(borderhead)<!--BORDER-->,' >>$@
-	@ if grep '<!--BORDER-->' $@ >/dev/null ; then : \
-	; echo "$(bordertail)<!--/BORDER-->" >>$@ ; fi
-	@ D=`grep '<!--DATE:' $@ | sed -e 's,.*<!--DATE: *,,' -e 's, *-->,,'` \
-	; if test ".$$D" != "." ; then echo '$(datehead)' >>$@ \
-	; echo "$$D" >> $@ ; echo "$(datetail)" >> $@ ;	fi
-	@ echo "</td></tr></table></body></html>" >>$@
-
 # ----------------------------------------------- create pdf via docbook xml
 zzip.xml : $(htm_FILES) zziplib.xml make-dbk.pl
-	@PERL@ make-dbk.pl $(htm_FILES) zziplib.xml >$@
+	: '@PERL@ make-dbk.pl $(htm_FILES) zziplib.xml >$@'
+	@PYTHON@ $(srcdir)/zzipdoc/htm2dbk.py $(htm_FILES) zziplib.xml >$@
 	test -s "$@" || rm "$@"
 
 zzip.html : zzip.xml
