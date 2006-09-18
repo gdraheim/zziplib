@@ -1,6 +1,9 @@
 from match import Match
 from htm2dbk import *
 
+def _to_word(text):
+    return text & Match("[^\w]+") >> "_"
+
 class FunctionListReference:
     """ Creating a docbook-style <reference> list of <refentry> parts
     that will each be translated into a unix manual page in a second step """
@@ -13,6 +16,7 @@ class FunctionListReference:
         self.o = o
         self.pages = []
         self.entry = None
+        self.overview = None
     def cut(self):
         if not self.entry: return
         self.pages += [ self.entry ]
@@ -34,11 +38,26 @@ class FunctionListReference:
             for item in entry.list_seealso():
                 if item not in self.entry.seealso_list:
                     self.entry.seealso_list += [ item ]
+    def add_overview(self, entry):
+        if self.overview is None:
+            title = entry.get_mainheader() & Match(".*&lt;(.*)&gt;.*") >> "\\1"
+            self.overview = FunctionListRefEntry(entry, self.o)
+            self.overview.funcsynopsisinfo = entry.get_mainheader()
+            self.overview.refpurpose = self.o.package.strip()
+            self.overview.refentrytitle = title
+            self.overview.refname = _to_word(title)
+        description = entry.get_title().strip() & Match("^[.]+") >> ""
+        funcsynopsis = entry.head_xml_text()
+        self.overview.funcsynopsis_list += [ funcsynopsis ]
+        if description:
+            self.overview.description_list += [
+                "<para> - "+ description +"</para>" ]
     def xml_text(self):
         T = self.doctype
         T += "<reference><title>"+self.o.package+" Function List</title>\n"
         for item in self.pages:
             T += self.sane(item.refentry_text())
+        T += self.sane(self.overview.refentry_text())
         T += "</reference>\n"
         return T
     def sane(self, text):

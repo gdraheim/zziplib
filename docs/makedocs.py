@@ -12,6 +12,8 @@ from zzipdoc.dbk2htm import *
 
 def _src_to_xml(text):
     return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+def _email_to_xml(text):
+    return text & Match("<([^<>]*@[^<>]*)>") >> "&lt;\\1&gt;"
 
 class PerFileEntry:
     def __init__(self, header, comment):
@@ -218,8 +220,9 @@ class RefEntryManualPageAdapter:
             if entry:
                 comment = entry.filecomment.xml_text()
         if comment:
-            check = Match(r"(?s)<para>\s*[Aa]uthors*\b:*((?:.(?!</para>))*.)</para>")
-            if comment & check: return _src_to_xml(check[1])
+            check = Match(r"(?s)<para>\s*[Aa]uthors*\b:*"
+                          r"((?:.(?!</para>))*.)</para>")
+            if comment & check: return _email_to_xml(check[1])
         return None
     def get_copyright(self):
         comment = None
@@ -228,8 +231,9 @@ class RefEntryManualPageAdapter:
             if entry:
                 comment = entry.filecomment.xml_text()
         if comment:
-            check = Match(r"(?s)<para>\s*[Cc]opyright\b((?:.(?!</para>))*.)</para>")
-            if comment & check: return check[0]
+            check = Match(r"(?s)<para>\s*[Cc]opyright\b"
+                          r"((?:.(?!</para>))*.)</para>")
+            if comment & check: return _email_to_xml(check[0])
         return None
 
 def makedocs(filenames, o):
@@ -293,6 +297,7 @@ def makedocs(filenames, o):
                                          & func_adapter.src_mainheader()):
                     continue
             man3.add(func_adapter)
+            man3.add_overview(func_adapter)
         man3.cut()
     man3.cut()
     man3_filename = "zziplib"+o.suffix+".docbook"
