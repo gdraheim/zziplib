@@ -7,11 +7,9 @@ def markup_link_syntax(text):
             >> r"\1<link>\2</link>"
             & Match(r"(?m)(^|\s)\=\>\'([^\']*)\'")
             >> r"\1<link>\2</link>"
-            & Match(r"(?m)(^|\s)\=\>\s(\w[\w.]*\w\([^\(\)]*\))")
+            & Match(r"(?m)(^|\s)\=\>\s(\w[\w.]*\w\(\d+\))")
             >> r"\1<link>\2</link>"
-            & Match(r"(?m)(^|\s)\=\>\s(\w[\w.]*\w)\b")
-            >> r"\1<link>\2</link>"
-            & Match(r"(?m)(^|\s)\=\>\s([^\s\,\.\!\?\:\;\<\>\&\'\=\-]+)")
+            & Match(r"(?m)(^|\s)\=\>\s([^\s\,\.\!\?]+)")
             >> r"\1<link>\2</link>")
 
 class CommentMarkup:
@@ -44,7 +42,7 @@ class CommentMarkup:
                     if mode: text += "</"+mode+">"
                     mode = "ul" ; text += "<"+mode+">"
                 line = check.group(1)
-                text += "<li> "+self.markup_para_line(line)+" </li>\n"
+                text += "<li><p> "+self.markup_para_line(line)+" </p></li>\n"
             elif line & check(r"^\s?\s?\s?[*](.*)"):
                 if mode != "para":
                     if mode: text += "</"+mode+">"
@@ -64,6 +62,7 @@ class CommentMarkup:
                      & Match(r"(<para>)(\s*[R]eturns)") >>r"\1This function\2"
                      & Match(r"(?s)<para>\s*</para><para>") >> "<para>"
                      & Match(r"(?s)<screen>\s*</screen>") >> "")
+        return True
     def markup_screen_line(self, line):
         return self.markup_line(line.replace("&","&amp;")
                                 .replace("<","&lt;")

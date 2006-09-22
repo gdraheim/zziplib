@@ -54,6 +54,7 @@ class FunctionPrototype:
         if not self._assert_parsed(): return None
         return self.name
     def xml_text(self):
+        if not self.namespec: return self.namespec
         return ("<fu:protospec><fu:prespec>"+self.prespec+"</fu:prespec>"+
                 "<fu:namespec>"+self.namespec+"</fu:namespec>"+
                 "<fu:callspec>"+self.callspec+"</fu:callspec></fu:protospec>")

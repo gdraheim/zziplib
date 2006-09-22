@@ -1,36 +1,32 @@
+#! /usr/bin/env python
+# -*- coding: UTF-8 -*-
 from match import Match
 from htm2dbk import *
-
-def _to_word(text):
-    return text & Match("[^\w]+") >> "_"
 
 class FunctionListReference:
     """ Creating a docbook-style <reference> list of <refentry> parts
     that will each be translated into a unix manual page in a second step """
-    doctype = (
-        '<!DOCTYPE reference PUBLIC "-//OASIS//DTD'+
-        ' DocBook XML V4.1.2//EN"'+"\n"+
-        '       "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">'+
-        "\n")
     def __init__(self, o = None):
         self.o = o
         self.pages = []
         self.entry = None
-        self.overview = None
     def cut(self):
         if not self.entry: return
         self.pages += [ self.entry ]
         self.entry = None
     def add(self, entry):
+        name = entry.get_name()
+        description = entry.body_xml_text(name)
+        funcsynopsis = entry.head_xml_text()
+        if not funcsynopsis:
+            print "no funcsynopsis for", name
+            return
         if self.entry is None:
             self.entry = FunctionListRefEntry(entry, self.o)
             self.entry.funcsynopsisinfo = entry.get_mainheader()
             self.entry.refpurpose = entry.get_title()
             self.entry.refentrytitle = entry.get_name()
             # self.entry.refname = entry.get_name()
-        name = entry.get_name()
-        description = entry.body_xml_text(name)
-        funcsynopsis = entry.head_xml_text()
         self.entry.funcsynopsis_list += [ funcsynopsis ]
         self.entry.description_list += [ description ]
         self.entry.refname_list += [ name ]
@@ -38,30 +34,18 @@ class FunctionListReference:
             for item in entry.list_seealso():
                 if item not in self.entry.seealso_list:
                     self.entry.seealso_list += [ item ]
-    def add_overview(self, entry):
-        if self.overview is None:
-            title = entry.get_mainheader() & Match(".*&lt;(.*)&gt;.*") >> "\\1"
-            self.overview = FunctionListRefEntry(entry, self.o)
-            self.overview.funcsynopsisinfo = entry.get_mainheader()
-            self.overview.refpurpose = self.o.package.strip()
-            self.overview.refentrytitle = title
-            self.overview.refname = _to_word(title)
-        description = entry.get_title().strip() & Match("^[.]+") >> ""
-        funcsynopsis = entry.head_xml_text()
-        self.overview.funcsynopsis_list += [ funcsynopsis ]
-        if description:
-            self.overview.description_list += [
-                "<para> - "+ description +"</para>" ]
+    def get_title(self):
+        return self.o.package+" Function List"
     def xml_text(self):
-        T = self.doctype
-        T += "<reference><title>"+self.o.package+" Function List</title>\n"
+        T = "<reference><title>"+self.get_title()+"</title>\n"
         for item in self.pages:
-            T += self.sane(item.refentry_text())
-        T += self.sane(self.overview.refentry_text())
+            text = item.refentry_text()
+            if not text: "OOPS, no text for", item.name ; continue
+            T += self.sane(text)
         T += "</reference>\n"
         return T
     def sane(self, text):
-        return (html2docbook(text).replace("->","-&gt;")
+        return (html2docbook(text)
                 .replace("<link>","<function>")
                 .replace("</link>","</function>")
                 .replace("<fu:protospec>","<funcprototype>")
@@ -71,9 +55,7 @@ class FunctionListReference:
                 .replace("<fu:namespec>","")
                 .replace("</fu:namespec>","</funcdef>")
                 .replace("</fu:callspec>","</paramdef>")
-                .replace("<fu:callspec>","<paramdef>")) & (
-            Match("<listitem>((?:.(?!(<para|</listitem)))*).</listitem>")
-            >> "<listitem><para>\\1</para></listitem>")
+                .replace("<fu:callspec>","<paramdef>")) 
 
     
 class FunctionListRefEntry:
@@ -86,10 +68,10 @@ class FunctionListRefEntry:
         self.name = func.get_name()
         self.refhint = "\n<!--========= "+self.name+" (3) ============-->\n"
         self.refentry = None
-        self.refentry_date = o.version.strip()        # //refentryinfo/date
-        self.refentry_productname = o.package.strip() # //refentryinfo/prod*
-        self.refentry_title = None                    # //refentryinfo/title
-        self.refentryinfo = None                      # override
+        self.refentry_date = o.version.strip()        #! //refentryinfo/date
+        self.refentry_productname = o.package.strip() #! //refentryinfo/prod*
+        self.refentry_title = None                    #! //refentryinfo/title
+        self.refentryinfo = None                      #! override
         self.manvolnum = "3"                         # //refmeta/manvolnum
         self.refentrytitle = None                    # //refmeta/refentrytitle
         self.refmeta = None                          # override

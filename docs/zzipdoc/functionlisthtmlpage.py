@@ -24,6 +24,7 @@ class FunctionListHtmlPage:
         self.anchors = []
         self.o = o
         if self.o is None: self.o = Options()
+        self.not_found_in_anchors = []
     def cut(self):
         self.text += ("<dt>"+self._ul_start+self.head+self._ul_end+"</dt>"+
                       "<dd>"+self._ul_start+self.body+self._ul_end+"</dd>")
@@ -33,7 +34,9 @@ class FunctionListHtmlPage:
         name = entry.get_name()
         head_text = entry.head_xml_text()
         body_text = entry.body_xml_text(name)
-        assert head_text
+        if not head_text:
+            print "no head_text for", name
+            return
         try:
             prespec = entry.head_get_prespec()
             namespec = entry.head_get_namespec()
@@ -47,9 +50,9 @@ class FunctionListHtmlPage:
             title = entry.get_title()
             filename = entry.get_filename().replace("../","")
             if title:
-                extraline = (self._null_table100+'<td>'+
-                             '&nbsp;<em>'+title+'</em>'+
-                             ' </td><td align="right"> '+
+                subtitle = '&nbsp;<em>'+title+'</em>'
+                extraline = (self._null_table100+'<td> '+subtitle+' </td>'+
+                             '<td align="right"> '+
                              '<em><small>'+filename+'</small></em>'+
                              '</td></table>')
             body_text = extraline + body_text
@@ -70,18 +73,20 @@ class FunctionListHtmlPage:
         self.toc += self._li_start+self.sane(link(head_text))+self._li_end
         self.head += self._li_start+self.sane(here(head_text))+self._li_end
         self.body += self._li_start+self.sane(body_text)+self._li_end
+    def get_title(self):
+        return self.o.package+" Library Functions"
     def xml_text(self):
         self.cut()
-        title=self.o.package+" Library Functions"
-        return ("<html><title>"+title+"</title><body>"
-                "<h2>"+title+"</h2>"+
+        return ("<h2>"+self.get_title()+"</h2>"+
                 self.version_line()+
                 self.mainheader_line()+
                 self._ul_start+
                 self.resolve_links(self.toc)+
                 self._ul_end+
-                "<h3>Documentation</h3><dl>"+self.resolve_links(self.text)+
-                "</dl></html>")
+                "<h3>Documentation</h3>"+
+                "<dl>"+
+                self.resolve_links(self.text)+
+                "</dl>")
     def version_line(self):
         if self.o.version:
             return "<p>Version "+self.o.version+"</p>"
@@ -96,6 +101,8 @@ class FunctionListHtmlPage:
                  >> (lambda x: self.resolve_external(x.group(1), x.group(2))))
         text &= (Match("(?s)<link>(\w+)</link>")
                  >> (lambda x: self.resolve_internal(x.group(1))))
+        if len(self.not_found_in_anchors):
+            print "not found in anchors: ", self.not_found_in_anchors
         return (text & Match("(?s)<link>([^<>]*)</link>")
                 >> "<code>\\1</code>")
     def resolve_external(self, func, sect):
@@ -110,7 +117,8 @@ class FunctionListHtmlPage:
     def resolve_internal(self, func):
         if func in self.anchors:
             return '<code><a href="#'+func+'">'+func+"</a></code>"
-        print "not in anchors '"+func+"'"
+        if func not in self.not_found_in_anchors:
+            self.not_found_in_anchors += [ func ]
         return "<code><u>"+func+"</u></code>"
     def sane(self, text):
         return (text 

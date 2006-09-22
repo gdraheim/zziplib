@@ -46,7 +46,6 @@ class FunctionHeader:
             self.titleline = line[:x]
             for also in line[x+5:].split(","):
                 self.alsolist += [ also.strip() ]
-            print "[[[", self.alsolist, "}}}", self.titleline
         self._alsolist = self.alsolist
         return True
     def get_alsolist(self):

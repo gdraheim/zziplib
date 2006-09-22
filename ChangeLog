@@ -1,3 +1,9 @@
+2006-09-21
+ * last doc/*.py updates
+ * last doc/mksite.* updates
+ * last doc/body.htm updates - including new zzipmmapped.html docu
+ * "make install-sf" will copy the doctree directly to sourceforge
+
 2006-09-18
  * docs/makedocs.py docs/zzipdoc/*.py creates new docs/zziplib-man3.tar.gz
 	plus zziplib.html zzipmmapped.html zzipfseeko.html

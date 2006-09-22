@@ -90,14 +90,14 @@ class htm2dbk_conversion_base:
         m()(r"<link>") >> "<function>",
         m()(r"</link>") >> "</function>",
         m()(r"(?s)\s*</screen>") >> "</screen>",
-        # m()(r"<ul>") >> "</para><itemizedlist>",
-        # m()(r"</ul>") >> "</itemizedlist><para>",
-        # m()(r"<li>") >> "<listitem><para>",
-        # m()(r"</li>") >> "</para></listitem>\n",
-        m()(r"<ul>") >> "</para><programlisting>\n",
-        m()(r"</ul>") >> "</programlisting><para>",
-        m()(r"<li>") >> "",
-        m()(r"</li>") >> ""
+        # m()(r"<ul>") >> "</para><programlisting>\n",
+        # m()(r"</ul>") >> "</programlisting><para>",
+        m()(r"<ul>") >> "<itemizedlist>",
+        m()(r"</ul>") >> "</itemizedlist>",
+        # m()(r"<li>") >> "",
+        # m()(r"</li>") >> ""
+        m()(r"<li>") >> "<listitem><para>",
+        m()(r"</li>") >> "</para></listitem>\n",
         ]
 class htm2dbk_conversion(htm2dbk_conversion_base):
     def __init__(self):

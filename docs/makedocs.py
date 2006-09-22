@@ -9,6 +9,8 @@ from zzipdoc.commentmarkup import *
 from zzipdoc.functionlisthtmlpage import *
 from zzipdoc.functionlistreference import *
 from zzipdoc.dbk2htm import *
+from zzipdoc.htmldocument import *
+from zzipdoc.docbookdocument import *
 
 def _src_to_xml(text):
     return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
@@ -270,7 +272,8 @@ def makedocs(filenames, o):
     # per_file.print_list_mainheader()
     # per_function.print_list_titleline()
     # per_function.print_list_name()
-    per_family.print_list_name()
+    # per_family.print_list_name()
+    #
     html = FunctionListHtmlPage(o)
     for item in per_family.entries:
         for func in item.functions:
@@ -281,14 +284,15 @@ def makedocs(filenames, o):
             html.add(func_adapter)
         html.cut()
     html.cut()
-    html_filename = "zziplib"+o.suffix+".html"
-    try:
-        print "writing "+html_filename
-        fd = open(html_filename, "w")
-        print >>fd, section2html(paramdef2html(html.xml_text()))
-        fd.close()
-    except IOError, e:
-        print "could not open '"+html_filename+"'file", e
+    class _Html_:
+        def __init__(self, html):
+            self.html = html
+        def html_text(self):
+            return section2html(paramdef2html(self.html.xml_text()))
+        def get_title(self):
+            return self.html.get_title()
+    HtmlDocument(o).add(_Html_(html)).save(o.output+o.suffix)
+    #
     man3 = FunctionListReference(o)
     for item in per_family.entries:
         for func in item.functions:
@@ -297,17 +301,9 @@ def makedocs(filenames, o):
                                          & func_adapter.src_mainheader()):
                     continue
             man3.add(func_adapter)
-            man3.add_overview(func_adapter)
         man3.cut()
     man3.cut()
-    man3_filename = "zziplib"+o.suffix+".docbook"
-    try:
-        print "writing "+man3_filename
-        fd = open(man3_filename, "w")
-        print >>fd, man3.xml_text()
-        fd.close()
-    except IOError, e:
-        print "could not open '"+man3_filename+"'file", e
+    DocbookDocument(o).add(man3).save(o.output+o.suffix)
     
         
 if __name__ == "__main__":
@@ -315,6 +311,10 @@ if __name__ == "__main__":
     o = Options()
     o.package = "ZZipLib"
     o.program = sys.argv[0]
+    o.html = "html"
+    o.docbook = "docbook"
+    o.output = "zziplib"
+    o.suffix = ""
     for item in sys.argv[1:]:
         if o.scan(item): continue
         filenames += [ item ]

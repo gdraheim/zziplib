@@ -619,11 +619,11 @@ zzip_freopen(zzip_char_t* filename, zzip_char_t* mode, ZZIP_FILE* stream)
  * There was a possibility to transfer zziplib-specific openmodes
  * through o_flags but you should please not use them anymore and
  * look into => zzip_open_ext_io to submit them down. This function
- * is shallow in that it just extracts the zzipflags and calls <ul><li><p>
- * <code>zzip_open_ext_io(filename, o_flags, zzipflags|0664, 0, 0) </code>
- * </p></li></ul> you must stop using this extra functionality (not well 
- * known anyway) since zzip_open might be later usable to open files
- * for writing in which case the _EXTRAFLAGS will get in conflict.
+ * is shallow in that it just extracts the zzipflags and calls 
+ * * <code>zzip_open_ext_io(filename, o_flags, zzipflags|0664, 0, 0) </code>
+ * you must stop using this extra functionality (not well known anyway) 
+ * since zzip_open might be later usable to open files for writing 
+ * in which case the _EXTRAFLAGS will get in conflict.
  *
  * compare with  => open(2) and => zzip_fopen
  */
