@@ -12,7 +12,7 @@ htm_FILES = zzip-index.htm zzip-zip.htm zzip-file.htm zzip-sdl-rwops.htm \
             zzip-api.htm  zzip-basics.htm zzip-extras.htm zzip-parse.htm \
             64on32.htm future.htm fseeko.htm mmapped.htm memdisk.htm \
             configs.htm sfx-make.htm   developer.htm download.htm \
-            history.htm referentials.htm  faq.htm copying.htm \
+            history.htm referentials.htm  faq.htm copying.htm notes.htm \
             functions.htm
 SDL = @top_srcdir@/SDL
 SDL_RWOPS = $(SDL)/SDL_rwops_zzcat.c \
