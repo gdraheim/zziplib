@@ -1,7 +1,7 @@
 AC_INIT(zziplib.spec)
 AC_PREREQ(2.49)
 AC_COPYRIGHT([Guido Draheim <guido@gmx.de> for ZZipLib.SF.net])
-AC_REVISION($Revision: 1.7 $)
+AC_REVISION($Revision: 1.8 $)
 AC_CONFIG_AUX_DIR(uses)
 # =======================================================================
 AC_CANONICAL_SYSTEM
@@ -301,7 +301,8 @@ AX_CFLAGS_GCC_OPTION(-Wmissing-declarations)
 AX_ENABLE_DEFAULT_PKGCONFIGDIR
 AX_ENABLE_DEFAULT_ACLOCALDIR
 AC_SUBST([CONFIG_FILES])
-AC_OUTPUT([Makefile zzip/Makefile zzipwrap/Makefile SDL/Makefile
+AC_OUTPUT([Makefile 
+           zzip/Makefile zzipwrap/Makefile SDL/Makefile
            docs/Makefile test/Makefile bins/Makefile])
 dnl -------------------------------------------------------------
 PATCH_LIBTOOL_ON_DARWIN_ZSH_OVERQUOTING

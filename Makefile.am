@@ -11,7 +11,7 @@ rpm2: dist-bzip2 $(PACKAGE).spec
 	rpmbuild -ta $(PACKAGE)-$(VERSION).tar.bz2
 
 doc docs docu clean-doc clean-docs clean-docu   zzip.html zzip.xml zzip.pdf \
-man mans manpages htmpages unpack clean-unpack  pdfs \
+man mans manpages htmpages unpack clean-unpack  changes.htm pdfs \
 omf install-omf install-doc install-docs install-sf install-man3 install-mans :
 	(cd docs && $(MAKE) `basename $@`)
 

@@ -14,6 +14,7 @@ htm_FILES = zzip-index.htm zzip-zip.htm zzip-file.htm zzip-sdl-rwops.htm \
             configs.htm sfx-make.htm   developer.htm download.htm \
             history.htm referentials.htm  faq.htm copying.htm notes.htm \
             functions.htm zip-php.htm
+htms_FILES = changes.htm
 SDL = @top_srcdir@/SDL
 SDL_RWOPS = $(SDL)/SDL_rwops_zzcat.c \
             $(SDL)/SDL_rwops_zzip.c $(SDL)/SDL_rwops_zzip.h
@@ -35,8 +36,8 @@ zzipdoc_FILES = makedocs.py               zzipdoc/__init__.py \
 	zzipdoc/functionprototype.py      zzipdoc/htmldocument.py \
                                           zzipdoc/docbookdocument.py
 
-html_FILES = $(htm_FILES:.htm=.html) \
-             $(htm_FILES:.htm=.print.html) \
+html_FILES = $(htm_FILES:.htm=.html)       $(htms_FILES:.htm=.html) \
+             $(htm_FILES:.htm=.print.html) $(htms_FILES:.htm=.print.html) \
              site.html site.print.html
 
 default : doc
@@ -228,10 +229,17 @@ install-omf : omf zziplib.xml zzipmmapped.xml zzipfseeko.xml
 site.htm : body.htm
 	cp $(srcdir)/body.htm site.htm
 mksite_sh_args = --VERSION=$(VERSION) --xml --src-dir=$(srcdir) --print
-site.html : body.htm site.htm mksite.sh $(htm_FILES)
+site.html : body.htm site.htm mksite.sh $(htm_FILES) $(htms_FILES)
 	cp $(srcdir)/body.htm site.htm
 	perl $(srcdir)/mksite.pl $(mksite_sh_args) site.htm || \
 	$(SHELL) $(srcdir)/mksite.sh $(mksite_sh_args) site.htm
+
+changes.htm : $(top_srcdir)/ChangeLog Makefile 
+	echo "<pre>" > $@ ; cat $(top_srcdir)/ChangeLog \
+	| sed -e "s,\\&,\\&amp\\;,g" \
+	-e "s,<,\\&lt\\;,g" -e "s,>,\\&gt\\;,g" \
+	-e "/^[A-Z].*[12][09][09][09]/s,\\(.*\\),<b>&</b>," \
+	-e "/^[0-9]/s,\\(.*\\),<b>&</b>," >> $@ ; echo "</pre>" >>$@
 
 # ----------------------------------------------- create pdf via docbook xml
 # sorry, the xmlto / docbook-xsl are too broken to rebuild the PDF anymore
