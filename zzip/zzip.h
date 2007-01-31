@@ -176,14 +176,14 @@ ZZIP_FILE * 	zzip_file_open(ZZIP_DIR * dir, zzip_char_t* name, int flags);
 _zzip_export
 int  		zzip_file_close(ZZIP_FILE * fp);
 _zzip_export
-zzip_ssize_t	zzip_file_read(ZZIP_FILE * fp, char* buf, zzip_size_t len);
+zzip_ssize_t	zzip_file_read(ZZIP_FILE * fp, void* buf, zzip_size_t len);
 
 _zzip_export
 ZZIP_FILE * 	zzip_open(zzip_char_t* name, int flags);
 _zzip_export
 int	 	zzip_close(ZZIP_FILE * fp);
 _zzip_export
-zzip_ssize_t	zzip_read(ZZIP_FILE * fp, char * buf, zzip_size_t len);
+zzip_ssize_t	zzip_read(ZZIP_FILE * fp, void * buf, zzip_size_t len);
 
 /*
  * the stdc variant to open/read/close files. - Take note of the freopen()

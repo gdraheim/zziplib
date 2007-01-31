@@ -339,7 +339,7 @@ zzip_close(ZZIP_FILE* fp)
  *       a smaller buffer.
  */
 zzip_ssize_t 
-zzip_file_read(ZZIP_FILE * fp, char * buf, zzip_size_t len)
+zzip_file_read(ZZIP_FILE * fp, void * buf, zzip_size_t len)
 {
     ZZIP_DIR * dir; 
     zzip_size_t l;
@@ -429,7 +429,7 @@ zzip_file_read(ZZIP_FILE * fp, char * buf, zzip_size_t len)
  * to decompress the data stream and any error is mapped to => errno(3).
  */
 zzip_ssize_t
-zzip_read(ZZIP_FILE * fp, char * buf, zzip_size_t len)
+zzip_read(ZZIP_FILE * fp, void * buf, zzip_size_t len)
 {
     if (! fp) return 0;
     if (! fp->dir) 
