@@ -1,7 +1,11 @@
 2007-01-31
  * applying patches from Mike Frysinger
  * consider making the manpage install target part of the default 
-   `make install` rather than a sep install-man3 target ?
+   `make install` rather than a sep install-man3 target ? (from Mike)
+ * Michael Sterret reports, that the SDL/* example requires zzip-config
+   instead of the pkgconfig stuff - actually, the whole part should be
+   give a makeover as newer SDL does install its own sdl.pc which makes
+   the current local generation of zzip-sdl-config.pc a real mess.
 	
 2006-09-27
  * adding docs/zip-php.htm integrating Chris Branch's mail into the docs
