@@ -1,3 +1,8 @@
+2007-02-01
+ * remake manpages.ar / htmpages.ar - redistribute zziplib-manpages.ar 
+   instead while the rebuild mechanics become a lot simpler
+ * unless --maintainer-mode, make mans / install-mans part of the default
+	
 2007-01-31
  * applying patches from Mike Frysinger
  * consider making the manpage install target part of the default 

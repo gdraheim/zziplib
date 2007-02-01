@@ -57,6 +57,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ac_compile_check_sizeof.m4 \
 	$(top_srcdir)/m4/ax_cflags_strict_prototypes.m4 \
 	$(top_srcdir)/m4/ax_cflags_warn_all.m4 \
 	$(top_srcdir)/m4/ax_check_aligned_access_required.m4 \
+	$(top_srcdir)/m4/ax_configure_args.m4 \
 	$(top_srcdir)/m4/ax_create_pkgconfig_info.m4 \
 	$(top_srcdir)/m4/ax_enable_builddir_uname.m4 \
 	$(top_srcdir)/m4/ax_expand_prefix.m4 \
@@ -186,6 +187,7 @@ EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 F77 = @F77@
 FFLAGS = @FFLAGS@
+GREP = @GREP@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
@@ -231,15 +233,9 @@ ZLIB_INCL = @ZLIB_INCL@
 ZLIB_LDIR = @ZLIB_LDIR@
 ZLIB_VERSION = @ZLIB_VERSION@
 ZZIPLIB_LDFLAGS = @ZZIPLIB_LDFLAGS@
-ac_ct_AR = @ac_ct_AR@
-ac_ct_AS = @ac_ct_AS@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
-ac_ct_DLLTOOL = @ac_ct_DLLTOOL@
 ac_ct_F77 = @ac_ct_F77@
-ac_ct_OBJDUMP = @ac_ct_OBJDUMP@
-ac_ct_RANLIB = @ac_ct_RANLIB@
-ac_ct_STRIP = @ac_ct_STRIP@
 aclocaldir = $(datadir)/aclocal
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
@@ -258,27 +254,33 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
+datarootdir = @datarootdir@
 docdir = @docdir@
+dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
+htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
+localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
+pdfdir = @pdfdir@
 pkgconfig_libdir = @pkgconfig_libdir@
 pkgconfig_libfile = @pkgconfig_libfile@
 pkgconfigdir = @pkgconfigdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
+psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@

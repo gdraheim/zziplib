@@ -149,14 +149,14 @@
 /* Define to `_zzip_off_t' if <sys/types.h> does not define. */
 #undef off64_t
 
-/* Define to `long' if <sys/types.h> does not define. */
+/* Define to `long int' if <sys/types.h> does not define. */
 #undef off_t
 
 /* Define to equivalent of C99 restrict keyword, or to nothing if this is not
    supported. Do not define if restrict is supported directly. */
 #undef restrict
 
-/* Define to `unsigned' if <sys/types.h> does not define. */
+/* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef size_t
 
 /* Define to `int' if <sys/types.h> does not define. */

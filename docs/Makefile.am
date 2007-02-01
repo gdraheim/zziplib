@@ -22,8 +22,9 @@ changelog = @top_srcdir@/ChangeLog
 
 EXTRA_DIST = make-doc.py $(doc_FILES) $(htm_FILES) $(SDL_RWOPS) \
              make-doc.pl make-dbk.pl   mksite.sh mksite.pl body.htm \
-             manpages.ar zziplib-manpages.dbk zziplib-master.dbk \
-             $(zzipdoc_FILES) sdocbook.css
+             $(zzipdoc_FILES) sdocbook.css \
+             zziplib-manpages.dbk zziplib-master.dbk \
+             zziplib-manpages.ar 
 CLEANFILES = *.pc *.omf
 DISTCLEANFILES = zziplib.spec manpages.ar htmpages.ar *.html *.xml
 
@@ -40,10 +41,12 @@ html_FILES = $(htm_FILES:.htm=.html)       $(htms_FILES:.htm=.html) \
              $(htm_FILES:.htm=.print.html) $(htms_FILES:.htm=.print.html) \
              site.html site.print.html
 
-default : doc
+all : all-am default
+default : doc @MAINTAINER_MODE_FALSE@ mans
 clean-doc clean-docs : clean-unpack
 	- rm $(DISTCLEANFILES) 
 	- rm $(MAINTAINERCLEANFILES)
+install-data-local : @MAINTAINER_MODE_FALSE@ install-mans
 
 # -------------------------------------------------------------------
 zziplib.spec : @top_srcdir@/$(PACKAGE).spec
@@ -112,18 +115,18 @@ install-sf:
 	rm -r /tmp/zziplib-htdocs-$$USER/
 
 # ------------------------------------------------------------ package manpages
-mans : man3
+mans : manpages
 install-mans : install-man3
 
 man3 man manpages : manpages.ar
 html htm htmpages : htmpages.ar
 
+zziplib-manpages.ar : manpages.ar
+	test -s "$@" || test -s "$(srcdir)/$@"
 manpages.ar : zziplib.xml zzipmmapped.xml zzipfseeko.xml
 	: "unix man format of the manpages - goes to ../share/man/man3"
-	@ if test "$(XMLTO)" = ":" \
-	; then echo no xmlto found - could not regenerate "$@" - skipped \
-	; echo just touching the output file "$@" ; touch "$@" \
-	; else echo going to regenerate "$@" in subdir "'"man"'" \
+	@ if test "$(XMLTO)" != ":" \
+	; then echo going to regenerate "$@" in subdir "'"man"'" \
 	; echo 'test ! -d man3 || rm man3/* ; test -d man3 || mkdir man3' \
 	;       test ! -d man3 || rm man3/* ; test -d man3 || mkdir man3  \
 	; echo '$(XMLTO) -o man3 man zziplib.xml' \
@@ -132,35 +135,37 @@ manpages.ar : zziplib.xml zzipmmapped.xml zzipfseeko.xml
 	;       $(XMLTO) -o man3 man zzipmmapped.xml  \
 	; echo '$(XMLTO) -o man3 man zzipfseeko.xml' \
 	;       $(XMLTO) -o man3 man zzipfseeko.xml  \
-	; echo 'test ! -f $@ || mv $@ $@.old' \
-	;       test ! -f $@ || mv $@ $@.old  \
 	; echo 'ar qc "$@" man3/*.3' \
 	;       ar qc "$@" man3/*.3  \
-	; echo '$(DELETE); rm man/*.3 ; rmdir man' \
-	;       $(DELETE); rm man/*.3 ; rmdir man  \
-	; fi ; test -s $@ || mv $@.old $@ \
-        || mv $(srcdir)/$@.old $@ || test -s $@.old >$@
+	; echo '$(DELETE); rm man3/*.3 ; rmdir man3' \
+	;       $(DELETE); rm man3/*.3 ; rmdir man3  \
+	; fi ; true
+	@ if test -s $@ \
+	; then echo cp $@ zziplib-$@ "(saved)"; cp $@ zziplib-$@ \
+	; else echo cp $(srcdir)/zziplib-$@ $@; cp $(srcdir)/zziplib-$@ $@ \
+	; fi
 
+zziplib-htmpages.ar : htmpages.ar
+	test -s "$@" || test -s "$(srcdir)/$@"
 htmpages.ar : zziplib.xml zzipmmapped.xml zzipfseeko.xml zziplib-manpages.dbk
 	: "html format of the manpages - put into zziplib/htdocs/man/*"
-	@ if test "$(XMLTO)" = ":" \
-	; then echo no xmlto found - could not regenerate "$@" - skipped \
-	; echo just touching the output file "$@" ; touch "$@" \
-	; else echo going to regenerate "$@" in subdir "'"html"'" \
+	@ if test "$(XMLTO)" != ":" \
+	; then echo going to regenerate "$@" in subdir "'"html"'" \
 	; echo 'test ! -d html || rm /* ; test -d html || mkdir html' \
 	;       test ! -d html || rm html/* ; test -d html || mkdir html  \
 	; echo 'cp $(srcdir)/zziplib-manpages.dbk zziplib-manpages.xml' \
 	;       cp $(srcdir)/zziplib-manpages.dbk zziplib-manpages.xml \
 	; echo '$(XMLTO) -o html html zziplib-manpages.xml | tee written.lst' \
 	;       $(XMLTO) -o html html zziplib-manpages.xml | tee written.lst \
-	; echo 'test ! -f $@ || mv $@ $@.old' \
-	;       test ! -f $@ || mv $@ $@.old  \
 	; echo 'ar qc $@ html/*.*' \
 	;       ar qc $@ html/*.*  \
 	; echo '$(DELETE); rm html/*.* ; rmdir html' \
 	;       $(DELETE); rm html/*.* ; rmdir html  \
-	; fi ; test -s $@ || mv $@.old $@ \
-        || mv $(srcdir)/$@.old $@ || test -s $@.old >$@
+	; fi ; true
+	@ if test -s $@ \
+	; then echo cp $@ zziplib-$@ "(saved)"; cp $@ zziplib-$@ \
+	; else echo cp $(srcdir)/zziplib-$@ $@; cp $(srcdir)/zziplib-$@ $@ \
+	; fi
 
 install-man3 : manpages.ar
 	$(mkinstalldirs) $(DESTDIR)$(mandir)/man3
