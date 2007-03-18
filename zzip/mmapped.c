@@ -326,23 +326,24 @@ zzip_disk_findfirst(ZZIP_DISK* disk)
     {
 	zzip_byte_t* root; /* (struct zzip_disk_entry*) */
 	if (zzip_disk_trailer_check_magic(p)) {
-	    root =  disk->buffer + zzip_disk_trailer_get_rootseek (
-		(struct zzip_disk_trailer*)p);
+	    struct zzip_disk_trailer* trailer = (struct zzip_disk_trailer*)p;
+	    root =  disk->buffer + zzip_disk_trailer_get_rootseek (trailer);
 	    if (root > p) 
 	    {   /* the first disk_entry is after the disk_trailer? can't be! */
-		zzip_size_t rootsize = zzip_disk_trailer_get_rootsize (
-		    (struct zzip_disk_trailer*)p);
+		zzip_size_t rootsize = zzip_disk_trailer_get_rootsize (trailer);
 		if (disk->buffer+rootsize > p) continue;
 		/* a common brokeness that can be fixed: we just assume the
 		 * central directory was written directly before the trailer:*/
 		root = p - rootsize;
 	    }
 	} else if (zzip_disk64_trailer_check_magic(p)) {
+	    struct zzip_disk64_trailer* trailer = (struct zzip_disk64_trailer*)p;
 	    if (sizeof(void*) < 8) return 0; /* EOVERFLOW */
-	    root =  disk->buffer + zzip_disk64_trailer_get_rootseek (
-		(struct zzip_disk64_trailer*)p);
+	    root =  disk->buffer + zzip_disk64_trailer_get_rootseek (trailer);
 	    if (root > p) continue; 
-	} else continue;
+	} else {
+	    continue;
+	}
 
 	if (root < disk->buffer) continue;
 	if (zzip_disk_entry_check_magic(root)) 

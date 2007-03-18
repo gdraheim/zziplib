@@ -38,13 +38,17 @@ zzip_dir_stat(ZZIP_DIR * dir, zzip_char_t* name, ZZIP_STAT * zs, int flags)
 
     cmp = (flags & ZZIP_CASEINSENSITIVE) ? strcasecmp : strcmp;
 
+    if (! hdr) {
+	dir->errcode = ZZIP_ENOENT;
+	return -1;
+    }
+
     if (flags & ZZIP_IGNOREPATH)
     {
         char* n = strrchr(name, '/');
         if (n)  name = n + 1;
     }
 
-    if (hdr)
     while (1)
     {
         register char* hdr_name = hdr->d_name;

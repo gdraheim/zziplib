@@ -99,7 +99,6 @@ uninstall-local :
 
 INDENT = indent
 INDENTFLAGS = \
---blank-lines-after-declarations \
 --blank-lines-after-procedures \
 --blank-lines-before-block-comments \
 --brace-indent0 \
@@ -126,18 +125,23 @@ INDENTFLAGS = \
 --space-special-semicolon 
 
 DIFF_U0 = diff -U0
+# __indent1 = "s|^\\([^{};]*if[^{};]*\\)\\(return[^{};]*;\\)|\\1 { \\2 }|" 
+__indent1 = ":begin"
+__indent2 = "s|^\\([^{};]*\\)\\({[^{}]*}\\)\\([^{};]*\\)$$|\\1(' \\2 ');\\3|"
+__indent3 = "s|___+[;].*|/*&*/|"
+__indent4 = ":end"
+__indent6 = "s|!\\([^ !=)]\\)|! \\1|g"
+__indent7 = "s|(' \\({[^{}]*}\\) ');|\\1|"
+__indent8 = "s|/[*]\\(___+[;].*\\)[*]/$$|\\1|"
+__indent9 = ":end"
 indent-check:
 	for file in $(srcdir)/*.c ; do f=`basename "$$file"`  \
-	; sed \
-	-e "s|\\(if[^{};]*\\)\\(return[^{};];\\)|\\1 { \\2 }|" \
-        -e "s|{\\([^{}]\\)*}|(' & ');|" \
-	-e "s|___;.*|//&|" $$file > $$f.tmp.2 \
-	; $(INDENT) $(INDENTFLAGS) $(INDENTOPTS) -st "$$f.tmp.2" \
-	| sed \
-        -e "s|!\\([^ !=)]\\)|! \\1|g" $(INDENTSED) \
-	-e "s|(' \\({[^{}]*}\\) ');|\\1|" \
-	-e "s|//\\(___;.*\\)|\\1|"  $$f.tmp.2 > $$f.tmp \
-	; $(DIFF_U0) -s "$$file" "$$f.tmp" ; rm $$f.tmp.* ; done
+	; sed -e $(__indent1) -e $(__indent2) -e $(__indent3) -e $(__indent4) \
+          $(INDENTBEFORE) $$file \
+	| $(INDENT) $(INDENTFLAGS) $(INDENTOPTS) -st - \
+	| sed -e $(__indent6) -e $(__indent7) -e $(__indent8) -e $(__indent9) \
+          $(INDENTAFTER) > $$f.tmp \
+	; $(DIFF_U0) -s "$$file" "$$f.tmp" ; done
 
 i:
 	@ f=`basename $(file) .tmp` \
