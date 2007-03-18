@@ -1,3 +1,8 @@
+2007-03-17
+ * http://www.securitylab.ru/forum/read.php?FID=21&TID=40858&MID=326187
+  zziplib vulnerability due to usage of strcpy
+ * add indent-check for enforcing some source code style.
+	
 2007-02-01
  * remake manpages.ar / htmpages.ar - redistribute zziplib-manpages.ar 
    instead while the rebuild mechanics become a lot simpler

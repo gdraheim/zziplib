@@ -189,13 +189,13 @@ __zzip_fetch_disk_trailer(int fd, zzip_off_t filesize,
     zzip_ssize_t maplen = 0; /* mmap(),read(),getpagesize() use size_t !! */
     char* fd_map = 0;
 
-    if (!trailer)
+    if (! trailer)
         { return(EINVAL); }
   
     if (filesize < __sizeof(struct zzip_disk_trailer))
         { return(ZZIP_DIR_TOO_SHORT); }
           
-    if (!buf)
+    if (! buf)
         { return(ZZIP_OUTOFMEM); }
 
     offset = filesize; /* a.k.a. old offset */
@@ -376,7 +376,7 @@ __zzip_parse_root_directory(int fd,
     __correct_rootseek (zz_rootseek, zz_rootsize, trailer);
 
     hdr0 = (struct zzip_dir_hdr*) malloc(zz_rootsize);
-    if (!hdr0) 
+    if (! hdr0) 
         return ZZIP_DIRSIZE;
     hdr = hdr0;                  __debug_dir_hdr (hdr);
 
@@ -501,11 +501,13 @@ static zzip_strings_t* zzip_get_default_ext(void)
 {
     static zzip_strings_t ext [] =
     {
+	/* *INDENT-OFF* */
        ".zip", ".ZIP", /* common extension */
-#  ifdef ZZIP_USE_ZIPLIKES
+#     ifdef ZZIP_USE_ZIPLIKES
        ".pk3", ".PK3", /* ID Software's Quake3 zipfiles */
        ".jar", ".JAR", /* Java zipfiles */ 
-#  endif
+#      endif
+	/* *INDENT-OFF* */
        0
     };
 
@@ -661,9 +663,13 @@ __zzip_dir_parse (ZZIP_DIR* dir)
 }
 
 /**
- * will attach a .zip extension and tries to open it
- * the with => open(2). This is a helper function for
- * => zzip_dir_open, => zzip_opendir and => zzip_open.
+ * This function will attach any of the .zip extensions then
+ * trying to open it the with => open(2). This is a helper 
+ * function for => zzip_dir_open, => zzip_opendir and => zzip_open.
+ *
+ * This function returns a new system file handle or -1 on error.
+ * On error this function leaves the errno(3) of the underlying
+ * open(2) call on the last file.
  */
 int
 __zzip_try_open(zzip_char_t* filename, int filemode, 
@@ -673,11 +679,11 @@ __zzip_try_open(zzip_char_t* filename, int filemode,
     int fd;
     zzip_size_t len = strlen (filename);
     
-    if (len+4 >= PATH_MAX) return -1;
+    if (len+4 >= PATH_MAX) { errno = ENAMETOOLONG; return -1; }
     memcpy(file, filename, len+1);
 
-    if (!io) io = zzip_get_default_io();
-    if (!ext) ext = zzip_get_default_ext();
+    if (! io) io = zzip_get_default_io();
+    if (! ext) ext = zzip_get_default_ext();
 
     for ( ; *ext ; ++ext)
     {
@@ -709,18 +715,18 @@ zzip_dir_open_ext_io(zzip_char_t* filename, zzip_error_t* e,
 {
     int fd;
 
-    if (!io) io = zzip_get_default_io();
-    if (!ext) ext = zzip_get_default_ext();
+    if (! io) io = zzip_get_default_io();
+    if (! ext) ext = zzip_get_default_ext();
 
     fd = io->fd.open(filename, O_RDONLY|O_BINARY);
-    if (fd != -1) 
-      { return zzip_dir_fdopen_ext_io(fd, e, ext, io); }
-    else
+    if (fd != -1) { 
+	return zzip_dir_fdopen_ext_io(fd, e, ext, io); 
+    } else
     {
         fd = __zzip_try_open(filename, O_RDONLY|O_BINARY, ext, io);
-        if (fd != -1) 
-          { return zzip_dir_fdopen_ext_io(fd, e, ext, io); }
-        else
+        if (fd != -1) { 
+	    return zzip_dir_fdopen_ext_io(fd, e, ext, io); 
+	} else
         {
             if (e) { *e = ZZIP_DIR_OPEN; } 
             return 0; 
@@ -744,10 +750,13 @@ zzip_dir_read(ZZIP_DIR * dir, ZZIP_DIRENT * d )
     d->st_size = dir->hdr->d_usize;
     d->d_name  = dir->hdr->d_name;
 
-    if (! dir->hdr->d_reclen) 
-    { dir->hdr = 0; }
-    else  
-    { dir->hdr = (struct zzip_dir_hdr *)((char *)dir->hdr + dir->hdr->d_reclen); }
+    if (! dir->hdr->d_reclen) { 
+	dir->hdr = 0; 
+    } else  
+    { 
+	dir->hdr = (struct zzip_dir_hdr *)
+	    ((char *)dir->hdr + dir->hdr->d_reclen); 
+    }
   
     return 1;
 }

@@ -100,7 +100,7 @@ zzip__new__ ZZIP_DISK*
 zzip_disk_mmap(int fd)
 {
     struct stat st;
-    if (fstat (fd, &st) || !st.st_size) return 0;
+    if (fstat (fd, &st) || ! st.st_size) return 0;
     ___ ZZIP_DISK* disk = zzip_disk_new (); if (! disk) return 0;
     disk->buffer = _zzip_mmap (& disk->mapped, fd, 0, st.st_size);
     if (disk->buffer == MAP_FAILED) { free (disk); return 0; }
@@ -136,7 +136,7 @@ zzip_disk_open(char* filename)
 #  define O_BINARY 0
 #  endif
     struct stat st;
-    if (stat (filename, &st) || !st.st_size) return 0;
+    if (stat (filename, &st) || ! st.st_size) return 0;
     ___ int fd = open (filename, O_RDONLY|O_BINARY);
     if (fd <= 0) return 0;
     ___ ZZIP_DISK* disk = zzip_disk_mmap (fd);

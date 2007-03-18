@@ -32,10 +32,10 @@
 
 #ifdef ZZIP_HAVE_SYS_STAT_H
 /* MSVC does have IFbitmask but not the corresponding IStests */
-# if !defined S_ISDIR && defined S_IFDIR
+# if ! defined S_ISDIR && defined S_IFDIR
 # define S_ISDIR(_X_) ((_X_) & S_IFDIR)
 # endif
-# if !defined S_ISREG && defined S_IFREG
+# if ! defined S_ISREG && defined S_IFREG
 # define S_ISREG(_X_) ((_X_) & S_IFREG)
 # endif
 #endif

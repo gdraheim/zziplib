@@ -1,3 +1,4 @@
+dnl /usr/share/aclocal/guidod-cvs/ax_check_aligned_access_required.m4
 dnl @synopsis AC_CHECK_ALIGNED_ACCESS_REQUIRED
 dnl
 dnl While the x86 CPUs allow access to memory objects to be unaligned
@@ -47,3 +48,4 @@ if test "$ax_cv_have_aligned_access_required" = yes ; then
     [Define if pointers to integers require aligned access])
 fi
 ])
+

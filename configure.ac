@@ -1,7 +1,7 @@
 AC_INIT(zziplib.spec)
 AC_PREREQ(2.49)
 AC_COPYRIGHT([Guido Draheim <guido@gmx.de> for ZZipLib.SF.net])
-AC_REVISION($Revision: 1.8 $)
+AC_REVISION($Revision: 1.9 $)
 AC_CONFIG_AUX_DIR(uses)
 # =======================================================================
 AC_CANONICAL_SYSTEM
@@ -75,7 +75,7 @@ AX_SET_VERSION_INFO
 AC_MSG_RESULT([creating zzip/_msvc.in via zzip/_msvc.sed of config.h.in])
 test -d zzip || mkdir zzip
 sed -f $srcdir/zzip/_msvc.sed $srcdir/config.h.in >zzip/_msvc.in
-AC_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 AX_PREFIX_CONFIG_H([zzip/_config.h],[zzip],[config.h])
 AX_PREFIX_CONFIG_H([zzip/_msvc.h],[zzip],[zzip/_msvc.in])
 AM_MAINTAINER_MODE
@@ -297,6 +297,8 @@ AX_CFLAGS_STRICT_PROTOTYPES
 AX_CFLAGS_GCC_OPTION(-Wpointer-arith)
 AX_CFLAGS_GCC_OPTION(-Wsign-compare)
 AX_CFLAGS_GCC_OPTION(-Wmissing-declarations)
+AX_CFLAGS_GCC_OPTION(-Wdeclaration-after-statement)
+AX_CFLAGS_GCC_OPTION(-Werror-implicit-function-declaration)
 # ---------------------------------------------------------------
 AX_ENABLE_DEFAULT_PKGCONFIGDIR
 AX_ENABLE_DEFAULT_ACLOCALDIR

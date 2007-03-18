@@ -69,7 +69,7 @@ zzip_get_default_io()
  */
 int zzip_init_io(zzip_plugin_io_handlers_t io, int flags)
 {
-    if (!io) {
+    if (! io) {
         return ZZIP_ERROR;
     }
     memcpy(io, &default_io, sizeof(default_io));

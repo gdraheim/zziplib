@@ -133,7 +133,7 @@ zzip_dir_creat_ext_io(zzip_char_t* name, int o_mode,
     }
 
 
-    if (!_ZZIP_TRY)
+    if (! _ZZIP_TRY)
     {  /* not implemented - however, we respect that a null argument to 
         * zzip_mkdir and zzip_creat works, so we silently still do the mkdir 
         */
@@ -156,7 +156,7 @@ zzip_dir_creat_ext_io(zzip_char_t* name, int o_mode,
         for (; *exx ; exx++)
         {
             if ((exx_len = strlen (*exx)+1) <= name_len &&
-                !memcmp (dir->realname+(name_len-exx_len), *exx, exx_len))
+                ! memcmp (dir->realname+(name_len-exx_len), *exx, exx_len))
                 break; /* keep unmodified */
             exx++; if (*exx) continue;
 
@@ -253,7 +253,7 @@ zzip_file_mkdir(ZZIP_DIR* dir, zzip_char_t* name, int o_mode)
     if (! dir)
         return _mkdir(name, o_mode);
 
-    if (!_ZZIP_TRY)
+    if (! _ZZIP_TRY)
     {/* not implemented */
         errno = EROFS;
         return -1;
@@ -285,7 +285,7 @@ zzip_file_creat(ZZIP_DIR* dir, zzip_char_t* name, int o_mode)
     if (! dir)
         return zzip_open (name, o_mode);
 
-    if (!_ZZIP_TRY)
+    if (! _ZZIP_TRY)
     {/* not implemented */
         errno = EROFS;
         return 0;
@@ -325,7 +325,7 @@ zzip_write(ZZIP_FILE* file, const void* ptr, zzip_size_t len)
 zzip_ssize_t
 zzip_file_write(ZZIP_FILE* file, const void* ptr, zzip_size_t len) 
 {
-    if (!_ZZIP_TRY)
+    if (! _ZZIP_TRY)
     {/* not implemented */
         errno = EROFS;
         return -1;

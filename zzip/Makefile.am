@@ -62,7 +62,7 @@ WCC10_CLEAN = *.obj *.lk1 *.mk1 *.mk *.sym *.tgt
 EXTRA_DIST =  $(WCC10_DIST) _msvc.sed 
 CONFIG_CLEAN_FILES = _config.h 
 MAINTAINERCLEANFILES = _msvc.h
-CLEANFILES = $(WCC10_CLEAN)  *.pc *.omf
+CLEANFILES = $(WCC10_CLEAN)  *.pc *.omf *~ *.tmp *.tmp.*
 
 # here is some backward compatibility with version 0.10.* of zziplib
 install-data-local : install-zzipHEADERS
@@ -96,6 +96,53 @@ install-exec-local:
 uninstall-local :
 	(cd $(DESTDIR)$(includedir) && rm zziplib.h  zzip.h  zzip-io.h)
 
+
+INDENT = indent
+INDENTFLAGS = \
+--blank-lines-after-declarations \
+--blank-lines-after-procedures \
+--blank-lines-before-block-comments \
+--brace-indent0 \
+--braces-after-if-line \
+--case-indentation0 \
+--cuddle-else \
+--space-after-cast \
+--honour-newlines \
+--indent-level4 \
+--line-length80 \
+--continue-at-parentheses \
+--leave-preprocessor-space \
+--dont-break-function-decl-args \
+--dont-cuddle-do-while \
+--dont-format-first-column-comments \
+--no-space-after-function-call-names \
+--no-space-after-parentheses \
+--no-tabs \
+--ignore-profile \
+--procnames-start-lines \
+--space-after-for \
+--space-after-if \
+--space-after-while \
+--space-special-semicolon 
+
+DIFF_U0 = diff -U0
+indent-check:
+	for file in $(srcdir)/*.c ; do f=`basename "$$file"`  \
+	; sed \
+	-e "s|\\(if[^{};]*\\)\\(return[^{};];\\)|\\1 { \\2 }|" \
+        -e "s|{\\([^{}]\\)*}|(' & ');|" \
+	-e "s|___;.*|//&|" $$file > $$f.tmp.2 \
+	; $(INDENT) $(INDENTFLAGS) $(INDENTOPTS) -st "$$f.tmp.2" \
+	| sed \
+        -e "s|!\\([^ !=)]\\)|! \\1|g" $(INDENTSED) \
+	-e "s|(' \\({[^{}]*}\\) ');|\\1|" \
+	-e "s|//\\(___;.*\\)|\\1|"  $$f.tmp.2 > $$f.tmp \
+	; $(DIFF_U0) -s "$$file" "$$f.tmp" ; rm $$f.tmp.* ; done
+
+i:
+	@ f=`basename $(file) .tmp` \
+	; echo cp $(file) $(srcdir)/$$f ; sleep 2 \
+	; cp $(file) $(srcdir)/$$f
 
 # ----------------------------------------------------------------------
 pkgconfigdir=$(libdir)/pkgconfig

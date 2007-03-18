@@ -61,8 +61,9 @@ uint16_t __zzip_get16(unsigned char * s)
 uint64_t __zzip_get64(unsigned char * s)
 {
 #ifdef __GNUC__
+    /* *INDENT-OFF* */
     register uint64_t v
-	= s[7]; v <<= 8;
+       = s[7]; v <<= 8;
     v |= s[6]; v <<= 8;
     v |= s[5]; v <<= 8;
     v |= s[4]; v <<= 8;
@@ -70,6 +71,7 @@ uint64_t __zzip_get64(unsigned char * s)
     v |= s[2]; v <<= 8;
     v |= s[1]; v <<= 8;
     v |= s[0]; return v;
+    /* *INDENT-ON* */
 #else
     return ((uint64_t)s[7] << 56) | ((uint64_t)s[6] << 48)
 	|  ((uint64_t)s[5] << 40) | ((uint64_t)s[4] << 32)
@@ -86,13 +88,12 @@ void __zzip_set32(unsigned char * s, uint32_t v)
 #if defined __ZZIP_SET32
     return __ZZIP_SET32(s, v);
 #else
-    s[0] = (unsigned char) (v);
-    v >>= 8;
-    s[1] = (unsigned char) (v);
-    v >>= 8;
-    s[2] = (unsigned char) (v);
-    v >>= 8;
+    /* *INDENT-OFF* */
+    s[0] = (unsigned char) (v); v >>= 8;
+    s[1] = (unsigned char) (v); v >>= 8;
+    s[2] = (unsigned char) (v); v >>= 8;
     s[3] = (unsigned char) (v);
+    /* *INDENT-ON* */
 #endif
 }
 
@@ -104,9 +105,10 @@ void __zzip_set16(unsigned char * s, uint16_t v)
 #if defined __ZZIP_SET16
     return __ZZIP_SET16(s, v);
 #else
-    s[0] = (unsigned char) (v);
-    v >>= 8;
+    /* *INDENT-OFF* */
+    s[0] = (unsigned char) (v); v >>= 8;
     s[1] = (unsigned char) (v);
+    /* *INDENT-ON* */
 #endif
 }
 
@@ -115,19 +117,14 @@ void __zzip_set16(unsigned char * s, uint16_t v)
  */
 void __zzip_set64(unsigned char * s, uint64_t v)
 {
-    s[0] = (unsigned char) (v);
-    v >>= 8;
-    s[1] = (unsigned char) (v);
-    v >>= 8;
-    s[2] = (unsigned char) (v);
-    v >>= 8;
-    s[3] = (unsigned char) (v);
-    v >>= 8;
-    s[4] = (unsigned char) (v);
-    v >>= 8;
-    s[5] = (unsigned char) (v);
-    v >>= 8;
-    s[6] = (unsigned char) (v);
-    v >>= 8;
+    /* *INDENT-OFF* */
+    s[0] = (unsigned char) (v); v >>= 8;
+    s[1] = (unsigned char) (v); v >>= 8;
+    s[2] = (unsigned char) (v); v >>= 8;
+    s[3] = (unsigned char) (v); v >>= 8;
+    s[4] = (unsigned char) (v); v >>= 8;
+    s[5] = (unsigned char) (v); v >>= 8;
+    s[6] = (unsigned char) (v); v >>= 8;
     s[7] = (unsigned char) (v);
+    /* *INDENT-ON* */
 }

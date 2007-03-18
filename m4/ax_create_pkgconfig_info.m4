@@ -1,3 +1,5 @@
+dnl /usr/share/aclocal/guidod-cvs/ax_create_pkgconfig_info.m4
+dnl ______ /usr/share/aclocal/guidod-cvs/ax_create_pkgconfig_info.m4 ______
 dnl @synopsis AX_CREATE_PKGCONFIG_INFO [(outputfile, [requires [,libs [,summary [,cflags [, ldflags]]]]])]
 dnl
 dnl defaults:
@@ -22,7 +24,7 @@ dnl whole project.
 dnl
 dnl @category InstalledPackages
 dnl @author Sven Verdoolaege <skimo*liacs.nl>
-dnl @author Guido Draheim <guidod@gmx.de>
+dnl @author Guido U. Draheim <guidod@gmx.de>
 dnl @version 2003-10-19
 dnl @license GPLWithACException
 
@@ -310,3 +312,5 @@ AS_VAR_POPDEF([PKGCONFIG_generate])dnl
 AS_VAR_POPDEF([PKGCONFIG_src_libdir])dnl
 AS_VAR_POPDEF([PKGCONFIG_src_headers])dnl
 ])
+
+

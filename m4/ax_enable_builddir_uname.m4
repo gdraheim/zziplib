@@ -1,3 +1,4 @@
+dnl /usr/share/aclocal/guidod-cvs/ax_enable_builddir_uname.m4
 dnl @synopsis AX_ENABLE_BUILDDIR_UNAME [(dirstring-or-command [,Makefile.mk])]
 dnl
 dnl if the current configure was run within the srcdir then we move all
@@ -40,7 +41,7 @@ dnl reason of convenience.
 dnl
 dnl @category Misc
 dnl @author Guido U. Draheim
-dnl @version 2007-02-01
+dnl @version 2005-12-03
 dnl @license GPLWithACException
 
 AC_DEFUN([AX_ENABLE_BUILDDIR_UNAME],[
@@ -160,3 +161,4 @@ ax_enable_builddir_sed="$ax_enable_builddir_sed"       # $SED
 ax_enable_builddir="$ax_enable_builddir"               # $SUB
 ])dnl
 ])
+

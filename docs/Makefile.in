@@ -494,7 +494,7 @@ install-sf:
 	rm -r /tmp/zziplib-htdocs-$$USER/
 
 # ------------------------------------------------------------ package manpages
-mans : man3
+mans : manpages
 install-mans : install-man3
 
 man3 man manpages : manpages.ar
@@ -516,8 +516,8 @@ manpages.ar : zziplib.xml zzipmmapped.xml zzipfseeko.xml
 	;       $(XMLTO) -o man3 man zzipfseeko.xml  \
 	; echo 'ar qc "$@" man3/*.3' \
 	;       ar qc "$@" man3/*.3  \
-	; echo '$(DELETE); rm man/*.3 ; rmdir man' \
-	;       $(DELETE); rm man/*.3 ; rmdir man  \
+	; echo '$(DELETE); rm man3/*.3 ; rmdir man3' \
+	;       $(DELETE); rm man3/*.3 ; rmdir man3  \
 	; fi ; true
 	@ if test -s $@ \
 	; then echo cp $@ zziplib-$@ "(saved)"; cp $@ zziplib-$@ \

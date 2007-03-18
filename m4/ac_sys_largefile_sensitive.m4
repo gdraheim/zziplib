@@ -1,3 +1,4 @@
+dnl /usr/share/aclocal/guidod-cvs/ac_sys_largefile_sensitive.m4
 dnl @synopsis AC_SYS_LARGEFILE_SENSITIVE
 dnl
 dnl checker whether the current system is sensitive to -Ddefines making
@@ -28,7 +29,7 @@ dnl macro, otherwise you want to export a renamed LARGEFILE_SENSITIVE
 dnl in an installed header file. -> see AX_PREFIX_CONFIG_H
 dnl
 dnl @category Misc
-dnl @author Guido Draheim <guidod@gmx.de>
+dnl @author Guido U. Draheim <guidod@gmx.de>
 dnl @version 2003-02-02
 dnl @license GPLWithACException
 
@@ -44,3 +45,4 @@ then ac_cv_sys_largefile_sensitive="yes"
 fi
 AC_MSG_RESULT([$ac_cv_sys_largefile_sensitive])
 ])
+

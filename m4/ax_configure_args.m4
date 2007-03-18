@@ -1,3 +1,4 @@
+dnl /usr/share/aclocal/guidod-cvs/ax_configure_args.m4
 dnl @synopsis AX_CONFIGURE_ARGS
 dnl
 dnl Helper macro for AX_ENABLE_BUILDDIR and AX_ENABLE_BUILDDIR_UNAME
@@ -32,3 +33,4 @@ AC_DEFUN([AX_CONFIGURE_ARGS],[
       done
    fi         
 ])
+

@@ -19,6 +19,7 @@
 
 #include <zzip/file.h>
 
+/* *INDENT-OFF* */
 static struct errlistentry { int code; const char* mesg; } 
 errlist[] = 
 {
@@ -39,6 +40,8 @@ errlist[] =
     { ZZIP_DIR_LARGEFILE,   "Directory is largefile variant" },
     { 0, 0 },
 };
+/* *INDENT-ON* */
+
 
 #define errlistSIZE (sizeof(errlist)/sizeof(*errlist))
 
@@ -87,6 +90,7 @@ zzip_strerror_of(ZZIP_DIR* dir)
     return zzip_strerror(dir->errcode);
 }
 
+/* *INDENT-OFF* */
 static struct errnolistentry { int code; int e_no; } 
 errnolist[] =
 {
@@ -126,6 +130,7 @@ errnolist[] =
     { ZZIP_UNDEF, EINVAL },
     { 0, 0 },
 };    
+/* *INDENT-ON* */
 
 /**
  * map the error code to a system error code. This is used
