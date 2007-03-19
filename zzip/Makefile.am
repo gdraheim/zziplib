@@ -127,11 +127,11 @@ INDENTFLAGS = \
 DIFF_U0 = diff -U0
 # __indent1 = "s|^\\([^{};]*if[^{};]*\\)\\(return[^{};]*;\\)|\\1 { \\2 }|" 
 __indent1 = ":begin"
-__indent2 = "s|^\\([^{};]*\\)\\({[^{}]*}\\)\\([^{};]*\\)$$|\\1(' \\2 ');\\3|"
+__indent2 = "s|^\\([^{}';]*\\)\\({[^{}']*}\\)\\([^{}';]*\\)$$|\\1(' \\2 ');\\3|"
 __indent3 = "s|___+[;].*|/*&*/|"
 __indent4 = ":end"
 __indent6 = "s|!\\([^ !=)]\\)|! \\1|g"
-__indent7 = "s|(' \\({[^{}]*}\\) ');|\\1|"
+__indent7 = "s|(' \\({[^{}']*}\\) ');|\\1|"
 __indent8 = "s|/[*]\\(___+[;].*\\)[*]/$$|\\1|"
 __indent9 = ":end"
 indent-check:
@@ -141,7 +141,8 @@ indent-check:
 	| $(INDENT) $(INDENTFLAGS) $(INDENTOPTS) -st - \
 	| sed -e $(__indent6) -e $(__indent7) -e $(__indent8) -e $(__indent9) \
           $(INDENTAFTER) > $$f.tmp \
-	; $(DIFF_U0) -s "$$file" "$$f.tmp" ; done
+	; echo $(DIFF_U0) "$$file" "$$f.tmp" \
+	; $(DIFF_U0) "$$file" "$$f.tmp" ; done
 
 i:
 	@ f=`basename $(file) .tmp` \

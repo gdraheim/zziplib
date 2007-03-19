@@ -1,3 +1,6 @@
+2007-03-19
+ * enforce indent by automatic indentic-check
+
 2007-03-17
  * http://www.securitylab.ru/forum/read.php?FID=21&TID=40858&MID=326187
   zziplib vulnerability due to usage of strcpy

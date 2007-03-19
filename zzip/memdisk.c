@@ -195,7 +195,8 @@ zzip_mem_entry_new(ZZIP_DISK * disk, ZZIP_DISK_ENTRY * entry)
             ((char *) (mem))[ext2 + 1] = 0;
         }
     }
-    {                           /* override sizes/offsets with zip64 values for largefile support */
+    {
+        /* override sizes/offsets with zip64 values for largefile support */
         zzip_extra_zip64 *block = (zzip_extra_zip64 *)
             zzip_mem_entry_extra_block(item, ZZIP_EXTRA_zip64);
         if (block)
@@ -291,8 +292,9 @@ zzip_mem_disk_close(ZZIP_MEM_DISK * _zzip_restrict dir)
 static void
 foo(short zz_datatype)
 {
+    switch (zz_datatype)
+    {
     /* *INDENT-OFF* */
-    switch (zz_datatype) {
     case 0x0001: /* ZIP64 extended information extra field */
     case 0x0007: /* AV Info */
     case 0x0008: /* Reserved for future Unicode file name data (PFS) */
@@ -331,104 +333,116 @@ foo(short zz_datatype)
     case 0x756e: /* ASi Unix */
     case 0x7855: /* Info-ZIP Unix (new) */
     case 0xfd4a: /* SMS/QDOS */
-    /* *INDENT-OFF* */
+    /* *INDENT-ON* */
     }
 }
 #endif
 
-ZZIP_MEM_ENTRY*
-zzip_mem_disk_findfile(ZZIP_MEM_DISK* dir, 
-                       char* filename, ZZIP_MEM_ENTRY* after,
-		       zzip_strcmp_fn_t compare) 
+ZZIP_MEM_ENTRY *
+zzip_mem_disk_findfile(ZZIP_MEM_DISK * dir,
+                       char *filename, ZZIP_MEM_ENTRY * after,
+                       zzip_strcmp_fn_t compare)
 {
-    ZZIP_MEM_ENTRY* entry = (! after ? dir->list : after->zz_next);
-    if (! compare) compare = (zzip_strcmp_fn_t) (strcmp);
-    for (; entry ; entry = entry->zz_next) {
-	if (! compare (filename, entry->zz_name)) {
-	    return entry;
-	}
+    ZZIP_MEM_ENTRY *entry = (! after ? dir->list : after->zz_next);
+    if (! compare)
+        compare = (zzip_strcmp_fn_t) (strcmp);
+    for (; entry; entry = entry->zz_next)
+    {
+        if (! compare(filename, entry->zz_name))
+        {
+            return entry;
+        }
     }
     return 0;
 }
 
-ZZIP_MEM_ENTRY*
-zzip_mem_disk_findmatch(ZZIP_MEM_DISK* dir, 
-                        char* filespec, ZZIP_MEM_ENTRY* after,
-			zzip_fnmatch_fn_t compare, int flags)
+ZZIP_MEM_ENTRY *
+zzip_mem_disk_findmatch(ZZIP_MEM_DISK * dir,
+                        char *filespec, ZZIP_MEM_ENTRY * after,
+                        zzip_fnmatch_fn_t compare, int flags)
 {
-    ZZIP_MEM_ENTRY* entry = (! after ? dir->list : after->zz_next);
-    if (! compare) compare = (zzip_fnmatch_fn_t) _zzip_fnmatch;
-    for (; entry ; entry = entry->zz_next) {
-	if (! compare (filespec, entry->zz_name, flags)) {
-	    return entry;
-	}
+    ZZIP_MEM_ENTRY *entry = (! after ? dir->list : after->zz_next);
+    if (! compare)
+        compare = (zzip_fnmatch_fn_t) _zzip_fnmatch;
+    for (; entry; entry = entry->zz_next)
+    {
+        if (! compare(filespec, entry->zz_name, flags))
+        {
+            return entry;
+        }
     }
     return 0;
 }
 
-zzip__new__ ZZIP_MEM_DISK_FILE*
-zzip_mem_entry_fopen (ZZIP_MEM_DISK* dir, ZZIP_MEM_ENTRY* entry) 
+zzip__new__ ZZIP_MEM_DISK_FILE *
+zzip_mem_entry_fopen(ZZIP_MEM_DISK * dir, ZZIP_MEM_ENTRY * entry)
 {
     /* keep this in sync with zzip_disk_entry_fopen */
-    ZZIP_DISK_FILE* file = malloc(sizeof(ZZIP_MEM_DISK_FILE));
-    if (! file) return file;
+    ZZIP_DISK_FILE *file = malloc(sizeof(ZZIP_MEM_DISK_FILE));
+    if (! file)
+        return file;
     file->buffer = dir->disk->buffer;
     file->endbuf = dir->disk->endbuf;
-    file->avail = zzip_mem_entry_usize (entry);
+    file->avail = zzip_mem_entry_usize(entry);
 
-    if (! file->avail || zzip_mem_entry_data_stored (entry))
-    { file->stored = zzip_mem_entry_to_data (entry); return file; }
+    if (! file->avail || zzip_mem_entry_data_stored(entry))
+        { file->stored = zzip_mem_entry_to_data (entry); return file; }
 
     file->stored = 0;
     file->zlib.opaque = 0;
     file->zlib.zalloc = Z_NULL;
     file->zlib.zfree = Z_NULL;
-    file->zlib.avail_in = zzip_mem_entry_csize (entry);
-    file->zlib.next_in = zzip_mem_entry_to_data (entry);
+    file->zlib.avail_in = zzip_mem_entry_csize(entry);
+    file->zlib.next_in = zzip_mem_entry_to_data(entry);
 
-    if (! zzip_mem_entry_data_deflated (entry) ||
-	inflateInit2 (& file->zlib, -MAX_WBITS) != Z_OK)
-    { free (file); return 0; }
+    if (! zzip_mem_entry_data_deflated(entry) ||
+        inflateInit2(&file->zlib, -MAX_WBITS) != Z_OK)
+        { free (file); return 0; }
 
     return file;
 }
 
-zzip__new__ ZZIP_MEM_DISK_FILE*
-zzip_mem_disk_fopen (ZZIP_MEM_DISK* dir, char* filename) 
+zzip__new__ ZZIP_MEM_DISK_FILE *
+zzip_mem_disk_fopen(ZZIP_MEM_DISK * dir, char *filename)
 {
-    ZZIP_MEM_ENTRY* entry = zzip_mem_disk_findfile (dir, filename, 0, 0);
-    if (! entry) return 0; else return zzip_mem_entry_fopen (dir, entry);
+    ZZIP_MEM_ENTRY *entry = zzip_mem_disk_findfile(dir, filename, 0, 0);
+    if (! entry)
+        return 0;
+    else
+        return zzip_mem_entry_fopen(dir, entry);
 }
+
 _zzip_size_t
-zzip_mem_disk_fread (void* ptr, _zzip_size_t size, _zzip_size_t nmemb,
-                     ZZIP_MEM_DISK_FILE* file)
+zzip_mem_disk_fread(void *ptr, _zzip_size_t size, _zzip_size_t nmemb,
+                    ZZIP_MEM_DISK_FILE * file)
 {
-    return zzip_disk_fread (ptr, size, nmemb, file);
+    return zzip_disk_fread(ptr, size, nmemb, file);
 }
 
 int
-zzip_mem_disk_fclose (ZZIP_MEM_DISK_FILE* file) 
+zzip_mem_disk_fclose(ZZIP_MEM_DISK_FILE * file)
 {
-    return zzip_disk_fclose (file);
+    return zzip_disk_fclose(file);
 }
 
 int
-zzip_mem_disk_feof (ZZIP_MEM_DISK_FILE* file)
+zzip_mem_disk_feof(ZZIP_MEM_DISK_FILE * file)
 {
-    return zzip_disk_feof (file);
+    return zzip_disk_feof(file);
 }
 
 /* convert dostime of entry to unix time_t */
-long zzip_disk_entry_get_mktime(ZZIP_DISK_ENTRY* entry) 
+long
+zzip_disk_entry_get_mktime(ZZIP_DISK_ENTRY * entry)
 {
-    uint16_t dostime = ZZIP_GET16 (entry->z_dostime.time);
-    uint16_t dosdate = ZZIP_GET16 (entry->z_dostime.date);
+    uint16_t dostime = ZZIP_GET16(entry->z_dostime.time);
+    uint16_t dosdate = ZZIP_GET16(entry->z_dostime.date);
     struct tm date;
-    date.tm_sec =  (dostime) & 0x1F;       /* bits 0..4 */
-    date.tm_min =  (dostime >> 5) & 0x3F;  /* bits 5..10 */
-    date.tm_hour = (dostime >> 11);       /* bits 11..15 */
-    date.tm_mday = (dosdate) & 0x1F;      /* bits 16..20 */
-    date.tm_mon =  (dosdate >> 5) & 0xF;  /* bits 21..24 */
-    date.tm_year = (dosdate >> 9) + 80;   /* bits 25..31 */
-    return mktime (&date); /* well, unix has that function... */
+    date.tm_sec = (dostime) & 0x1F;     /* bits 0..4 */
+    date.tm_min = (dostime >> 5) & 0x3F;        /* bits 5..10 */
+    date.tm_hour = (dostime >> 11);     /* bits 11..15 */
+    date.tm_mday = (dosdate) & 0x1F;    /* bits 16..20 */
+    date.tm_mon = (dosdate >> 5) & 0xF; /* bits 21..24 */
+    date.tm_year = (dosdate >> 9) + 80; /* bits 25..31 */
+    return mktime(&date);       /* well, unix has that function... */
 }

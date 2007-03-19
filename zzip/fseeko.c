@@ -1,3 +1,4 @@
+
 /*
  * NOTE: this is part of libzzipfseeko (i.e. it is not libzzip).
  *                                           ==================
@@ -79,6 +80,7 @@
 #define PAGESIZE 8192
 
 /* ====================================================================== */
+
 /*                      helper functions                                  */
 
 /** => zzip_entry_data_offset
@@ -89,16 +91,19 @@
  * the file_header. The return value is null on error.
  */
 static zzip_off_t
-zzip_entry_fread_file_header (ZZIP_ENTRY* entry, 
-			     struct zzip_file_header* file_header)
+zzip_entry_fread_file_header(ZZIP_ENTRY * entry,
+                             struct zzip_file_header *file_header)
 {
-    if (! entry || ! file_header) return 0;
-    ___ zzip_off_t offset = zzip_disk_entry_fileoffset (disk_(entry));
-    if (0 > offset || offset >= entry->disksize) return 0;
+    if (! entry || ! file_header)
+        return 0;
+    ___ zzip_off_t offset = zzip_disk_entry_fileoffset(disk_(entry));
+    if (0 > offset || offset >= entry->disksize)
+        return 0;
 
-    fseeko (entry->diskfile, offset, SEEK_SET);
-    return (fread (file_header, sizeof(*file_header), 1, entry->diskfile)
-	    ? offset+sizeof(*file_header) : 0 ); ____;
+    fseeko(entry->diskfile, offset, SEEK_SET);
+    return (fread(file_header, sizeof(*file_header), 1, entry->diskfile)
+            ? offset + sizeof(*file_header) : 0);
+    ____;
 }
 
 /** helper functions for (fseeko) zip access api
@@ -110,16 +115,18 @@ zzip_entry_fread_file_header (ZZIP_ENTRY* entry,
  * data_offset returned here. On error -1 is returned.
  */
 zzip_off_t
-zzip_entry_data_offset(ZZIP_ENTRY* entry)
+zzip_entry_data_offset(ZZIP_ENTRY * entry)
 {
     struct zzip_file_header file_header;
-    if (! entry) return -1;
-    ___ zzip_off_t offset = 
-	zzip_entry_fread_file_header (entry, & file_header);
-    if (! offset) return -1;
-    offset += zzip_file_header_sizeof_tails (& file_header);
-    fseeko (entry->diskfile, offset, SEEK_SET);
-    return offset; ____;
+    if (! entry)
+        return -1;
+    ___ zzip_off_t offset = zzip_entry_fread_file_header(entry, &file_header);
+    if (! offset)
+        return -1;
+    offset += zzip_file_header_sizeof_tails(&file_header);
+    fseeko(entry->diskfile, offset, SEEK_SET);
+    return offset;
+    ____;
 }
 
 /** => zzip_entry_data_offset
@@ -129,54 +136,65 @@ zzip_entry_data_offset(ZZIP_ENTRY* entry)
  * in the zip central directory but if not then we fallback to the filename
  * given in the file_header of each compressed data portion.
  */
-zzip__new__ char*
-zzip_entry_strdup_name(ZZIP_ENTRY* entry)
+zzip__new__ char *
+zzip_entry_strdup_name(ZZIP_ENTRY * entry)
 {
-    if (! entry) return 0;
+    if (! entry)
+        return 0;
 
     ___ zzip_size_t len;
-    if ((len = zzip_disk_entry_namlen (disk_(entry)))) {
-	char* name = malloc (len+1);
-	if (! name) return 0;
-	memcpy (name, entry->tail, len);
-	name[len] = '\0';
-	return name;
+    if ((len = zzip_disk_entry_namlen(disk_(entry))))
+    {
+        char *name = malloc(len + 1);
+        if (! name)
+            return 0;
+        memcpy(name, entry->tail, len);
+        name[len] = '\0';
+        return name;
     }
     ___ auto struct zzip_file_header header;
-    if (zzip_entry_fread_file_header (entry, &header) 
-	&& ( len = zzip_file_header_namlen(&header) )) {
-	char* name = malloc (len+1);
-	if (! name) return 0;
-	fread (name, 1, len, entry->diskfile);
-	name[len] = '\0';
-	return name;
+    if (zzip_entry_fread_file_header(entry, &header)
+        && (len = zzip_file_header_namlen(&header)))
+    {
+        char *name = malloc(len + 1);
+        if (! name)
+            return 0;
+        fread(name, 1, len, entry->diskfile);
+        name[len] = '\0';
+        return name;
     }
     return 0;
-    ____;____;
+    ____;
+    ____;
 }
 
 static int
-prescan_entry(ZZIP_ENTRY* entry) 
+prescan_entry(ZZIP_ENTRY * entry)
 {
-    assert (entry);
-    ___ zzip_off_t tailsize = zzip_disk_entry_sizeof_tails (disk_(entry));
-    if (tailsize+1 > entry->tailalloc) {
-	char* newtail = realloc (entry->tail, tailsize+1);
-	if (! newtail) return ENOMEM;
-	entry->tail = newtail;
-	entry->tailalloc = tailsize+1;
+    assert(entry);
+    ___ zzip_off_t tailsize = zzip_disk_entry_sizeof_tails(disk_(entry));
+    if (tailsize + 1 > entry->tailalloc)
+    {
+        char *newtail = realloc(entry->tail, tailsize + 1);
+        if (! newtail)
+            return ENOMEM;
+        entry->tail = newtail;
+        entry->tailalloc = tailsize + 1;
     }
-    fread (entry->tail, 1, tailsize, entry->diskfile);
+    fread(entry->tail, 1, tailsize, entry->diskfile);
     /* name + comment + extras */
-    return 0; ____;
+    return 0;
+    ____;
 }
 
 static void
-prescan_clear(ZZIP_ENTRY* entry)
+prescan_clear(ZZIP_ENTRY * entry)
 {
-    assert (entry);
-    if (entry->tail) free (entry->tail);
-    entry->tail = 0; entry->tailalloc = 0;
+    assert(entry);
+    if (entry->tail)
+        free(entry->tail);
+    entry->tail = 0;
+    entry->tailalloc = 0;
 }
 
 /* ====================================================================== */
@@ -208,71 +226,101 @@ prescan_clear(ZZIP_ENTRY* entry)
  * catch a common brokeness with zip archives that still allows us to find
  * the start of the zip central directory.
  */
-zzip__new__ ZZIP_ENTRY*
-zzip_entry_findfirst(FILE* disk)
+zzip__new__ ZZIP_ENTRY *
+zzip_entry_findfirst(FILE * disk)
 {
-    if (! disk) return 0;
-    fseeko (disk, 0, SEEK_END);
-    ___ zzip_off_t disksize = ftello (disk);
-    if (disksize < (zzip_off_t) sizeof(struct zzip_disk_trailer)) return 0;
+    if (! disk)
+        return 0;
+    fseeko(disk, 0, SEEK_END);
+    ___ zzip_off_t disksize = ftello(disk);
+    if (disksize < (zzip_off_t) sizeof(struct zzip_disk_trailer))
+        return 0;
     /* we read out chunks of 8 KiB in the hope to match disk granularity */
     ___ zzip_off_t pagesize = PAGESIZE; /* getpagesize() */
-    ___ ZZIP_ENTRY* entry = malloc (sizeof(*entry));  if (! entry) return 0;
-    ___ unsigned char* buffer = malloc (pagesize);    if (! buffer) goto nomem;
+    ___ ZZIP_ENTRY *entry = malloc(sizeof(*entry));
+    if (! entry)
+        return 0;
+    ___ unsigned char *buffer = malloc(pagesize);
+    if (! buffer)
+        goto nomem;
 
-    assert (pagesize/2 > (zzip_off_t) sizeof (struct zzip_disk_trailer));
+    assert(pagesize / 2 > (zzip_off_t) sizeof(struct zzip_disk_trailer));
     /* at each step, we will fread a pagesize block which overlaps with the
      * previous read by means of pagesize/2 step at the end of the while(1) */
-    ___ zzip_off_t mapoffs = disksize &~ (pagesize-1);
+    ___ zzip_off_t mapoffs = disksize & ~(pagesize - 1);
     ___ zzip_off_t mapsize = disksize - mapoffs;
-    if (mapoffs && mapsize < pagesize/2) { 
-	mapoffs -= pagesize/2; mapsize += pagesize/2; }
-    while(1) {
-	fseeko (disk, mapoffs, SEEK_SET);
-	fread (buffer, 1, mapsize, disk);
-	___ unsigned char* p = 
-	    buffer + mapsize - sizeof(struct zzip_disk_trailer);
-	for (; p >= buffer ; p--)
-	{
-	    zzip_off_t root;  /* (struct zzip_disk_entry*) */
-	    if (zzip_disk_trailer_check_magic(p)) {
-		root = zzip_disk_trailer_rootseek (
-		    (struct zzip_disk_trailer*)p);
-		if (root > disksize - (long)sizeof(struct zzip_disk_trailer)) {
-		    /* first disk_entry is after the disk_trailer? can't be! */
-		    zzip_off_t rootsize = zzip_disk_trailer_rootsize (
-			(struct zzip_disk_trailer*)p);
-		    if (rootsize > mapoffs) continue;
-		    /* a common brokeness that can be fixed: we just assume the
-		     * central directory was written directly before : */
-		    root = mapoffs - rootsize;
-		}
-	    } else if (zzip_disk64_trailer_check_magic(p)) {
-		if (sizeof(zzip_off_t) < 8) return 0;
-		root = zzip_disk64_trailer_rootseek (
-		    (struct zzip_disk64_trailer*)p);
-	    } else continue;
-
-	    assert (0 <= root && root < mapsize);
-	    fseeko (disk, root, SEEK_SET);
-	    fread (disk_(entry), 1, sizeof(*disk_(entry)), disk);
-	    if (zzip_disk_entry_check_magic(entry)) {
-		free (buffer);
-		entry->headseek = root;
-		entry->diskfile = disk;
-		entry->disksize = disksize;
-		if (prescan_entry(entry)) goto nomem;
-		return entry;
-	    }
-	} ____;
-	if (! mapoffs) break;             assert (mapsize >= pagesize/2);
-	mapoffs -= pagesize/2;            /* mapsize += pagesize/2; */
-	mapsize = pagesize;               /* if (mapsize > pagesize) ... */
-	if (disksize - mapoffs > 64*1024) break;
+    if (mapoffs && mapsize < pagesize / 2)
+    {
+        mapoffs -= pagesize / 2;
+        mapsize += pagesize / 2;
     }
-    free (buffer);
- nomem:
-    free (entry);                         ____;____;____;____;____;____;
+    while (1)
+    {
+        fseeko(disk, mapoffs, SEEK_SET);
+        fread(buffer, 1, mapsize, disk);
+        ___ unsigned char *p =
+            buffer + mapsize - sizeof(struct zzip_disk_trailer);
+        for (; p >= buffer; p--)
+        {
+            zzip_off_t root;    /* (struct zzip_disk_entry*) */
+            if (zzip_disk_trailer_check_magic(p))
+            {
+                root = zzip_disk_trailer_rootseek((struct zzip_disk_trailer *)
+                                                  p);
+                if (root > disksize - (long) sizeof(struct zzip_disk_trailer))
+                {
+                    /* first disk_entry is after the disk_trailer? can't be! */
+                    struct zzip_disk_trailer *trailer =
+                        (struct zzip_disk_trailer *) p;
+                    zzip_off_t rootsize = zzip_disk_trailer_rootsize(trailer);
+                    if (rootsize > mapoffs)
+                        continue;
+                    /* a common brokeness that can be fixed: we just assume the
+                     * central directory was written directly before : */
+                    root = mapoffs - rootsize;
+                }
+            } else if (zzip_disk64_trailer_check_magic(p))
+            {
+                struct zzip_disk64_trailer *trailer =
+                    (struct zzip_disk64_trailer *) p;
+                if (sizeof(zzip_off_t) < 8)
+                    return 0;
+                root = zzip_disk64_trailer_rootseek(trailer);
+            } else
+                continue;
+
+            assert(0 <= root && root < mapsize);
+            fseeko(disk, root, SEEK_SET);
+            fread(disk_(entry), 1, sizeof(*disk_(entry)), disk);
+            if (zzip_disk_entry_check_magic(entry))
+            {
+                free(buffer);
+                entry->headseek = root;
+                entry->diskfile = disk;
+                entry->disksize = disksize;
+                if (prescan_entry(entry))
+                    goto nomem;
+                return entry;
+            }
+        }
+        ____;
+        if (! mapoffs)
+            break;
+        assert(mapsize >= pagesize / 2);
+        mapoffs -= pagesize / 2;        /* mapsize += pagesize/2; */
+        mapsize = pagesize;     /* if (mapsize > pagesize) ... */
+        if (disksize - mapoffs > 64 * 1024)
+            break;
+    }
+    free(buffer);
+  nomem:
+    free(entry);
+    ____;
+    ____;
+    ____;
+    ____;
+    ____;
+    ____;
     return 0;
 }
 
@@ -285,24 +333,30 @@ zzip_entry_findfirst(FILE* disk)
  * to stop searching for matches before that case then please call 
  * => zzip_entry_free on the cursor struct ZZIP_ENTRY.
  */
-zzip__new__ ZZIP_ENTRY*
-zzip_entry_findnext(ZZIP_ENTRY* _zzip_restrict entry)
+zzip__new__ ZZIP_ENTRY *
+zzip_entry_findnext(ZZIP_ENTRY * _zzip_restrict entry)
 {
-    if (! entry) return entry;
-    if (! zzip_disk_entry_check_magic (entry)) goto err;
-    ___ zzip_off_t seek = 
-	entry->headseek + zzip_disk_entry_sizeto_end (disk_(entry));
-    if (seek + (zzip_off_t) sizeof(*disk_(entry)) > entry->disksize) goto err;
+    if (! entry)
+        return entry;
+    if (! zzip_disk_entry_check_magic(entry))
+        goto err;
+    ___ zzip_off_t seek =
+        entry->headseek + zzip_disk_entry_sizeto_end(disk_(entry));
+    if (seek + (zzip_off_t) sizeof(*disk_(entry)) > entry->disksize)
+        goto err;
 
-    fseeko (entry->diskfile, seek, SEEK_SET);
-    fread (disk_(entry), 1, sizeof(*disk_(entry)), entry->diskfile);
+    fseeko(entry->diskfile, seek, SEEK_SET);
+    fread(disk_(entry), 1, sizeof(*disk_(entry)), entry->diskfile);
     entry->headseek = seek;
-    if (! zzip_disk_entry_check_magic (entry)) goto err;
-    if (prescan_entry(entry)) goto err;
+    if (! zzip_disk_entry_check_magic(entry))
+        goto err;
+    if (prescan_entry(entry))
+        goto err;
     return entry;
- err:
-    zzip_entry_free (entry);
-    return 0; ____;
+  err:
+    zzip_entry_free(entry);
+    return 0;
+    ____;
 }
 
 /** => zzip_entry_findfile
@@ -311,11 +365,12 @@ zzip_entry_findnext(ZZIP_ENTRY* _zzip_restrict entry)
  * zzip_entry_findlast(), zzip_entry_findlastfile(), zzip_entry_findlastmatch()
  */
 int
-zzip_entry_free(ZZIP_ENTRY* entry)
+zzip_entry_free(ZZIP_ENTRY * entry)
 {
-    if (! entry) return 0;
-    prescan_clear (entry);
-    free (entry);
+    if (! entry)
+        return 0;
+    prescan_clear(entry);
+    free(entry);
     return 1;
 }
 
@@ -330,25 +385,35 @@ zzip_entry_free(ZZIP_ENTRY* entry)
  * is rather useless with this variant of _findfile). If no further entry is
  * found then null is returned and any "old"-entry gets already free()d.
  */
-zzip__new__ ZZIP_ENTRY*
-zzip_entry_findfile(FILE* disk, char* filename, 
-		    ZZIP_ENTRY* _zzip_restrict entry, 
-		    zzip_strcmp_fn_t compare)
+zzip__new__ ZZIP_ENTRY *
+zzip_entry_findfile(FILE * disk, char *filename,
+                    ZZIP_ENTRY * _zzip_restrict entry, zzip_strcmp_fn_t compare)
 {
-    if (! filename || ! disk) return 0;
-    entry = ( ! entry ) ? zzip_entry_findfirst (disk) 
-	: zzip_entry_findnext (entry);
-    if (! compare) compare = (zzip_strcmp_fn_t)(strcmp);
+    if (! filename || ! disk)
+        return 0;
+    if (! entry)
+        entry = zzip_entry_findfirst(disk);
+    else
+        entry = zzip_entry_findnext(entry);
 
-    for (; entry ; entry = zzip_entry_findnext (entry))
-    {	/* filenames within zip files are often not null-terminated! */
-	char* realname = zzip_entry_strdup_name (entry);
-	if (! realname) continue;
-	if (! compare (filename, realname)) {
-	    free (realname);    return entry;
-	} else {
-	    free (realname);    continue;
-	}
+    if (! compare)
+        compare = (zzip_strcmp_fn_t) (strcmp);
+
+    for (; entry; entry = zzip_entry_findnext(entry))
+    {
+        /* filenames within zip files are often not null-terminated! */
+        char *realname = zzip_entry_strdup_name(entry);
+        if (! realname)
+            continue;
+        if (! compare(filename, realname))
+        {
+            free(realname);
+            return entry;
+        } else
+        {
+            free(realname);
+            continue;
+        }
     }
     return 0;
 }
@@ -367,25 +432,36 @@ zzip_entry_findfile(FILE* disk, char* filename,
  * next entry matching the given filespec. If no further entry is
  * found then null is returned and any "old"-entry gets already free()d.
  */
-zzip__new__ ZZIP_ENTRY*
-zzip_entry_findmatch(FILE* disk, char* filespec, 
-		     ZZIP_ENTRY* _zzip_restrict entry,
-		     zzip_fnmatch_fn_t compare, int flags)
+zzip__new__ ZZIP_ENTRY *
+zzip_entry_findmatch(FILE * disk, char *filespec,
+                     ZZIP_ENTRY * _zzip_restrict entry,
+                     zzip_fnmatch_fn_t compare, int flags)
 {
-    if (! filespec || ! disk) return 0;
-    entry = ( ! entry ) ? zzip_entry_findfirst (disk) 
-	: zzip_entry_findnext (entry);
-    if (! compare) compare = (zzip_fnmatch_fn_t) _zzip_fnmatch; 
+    if (! filespec || ! disk)
+        return 0;
+    if (! entry)
+        entry = zzip_entry_findfirst(disk);
+    else
+        entry = zzip_entry_findnext(entry);
 
-    for (; entry ; entry = zzip_entry_findnext (entry))
-    {	/* filenames within zip files are often not null-terminated! */
-	char* realname = zzip_entry_strdup_name (entry);
-	if (! realname) continue;
-	if (! compare (filespec, realname, flags)) {
-	    free (realname);    return entry;
-	} else {
-	    free (realname);    continue;
-	}
+    if (! compare)
+        compare = (zzip_fnmatch_fn_t) _zzip_fnmatch;
+
+    for (; entry; entry = zzip_entry_findnext(entry))
+    {
+        /* filenames within zip files are often not null-terminated! */
+        char *realname = zzip_entry_strdup_name(entry);
+        if (! realname)
+            continue;
+        if (! compare(filespec, realname, flags))
+        {
+            free(realname);
+            return entry;
+        } else
+        {
+            free(realname);
+            continue;
+        }
     }
     return 0;
 }
@@ -395,16 +471,16 @@ zzip_entry_findmatch(FILE* disk, char* filespec,
 /**
  * typedef struct zzip_disk_file ZZIP_ENTRY_FILE;
  */
-struct zzip_entry_file /* : zzip_file_header */
+struct zzip_entry_file          /* : zzip_file_header */
 {
-    struct zzip_file_header header;    /* fopen detected header */
-    ZZIP_ENTRY*   entry;               /* fopen entry */
-    zzip_off_t    data;                /* for stored blocks */
-    zzip_size_t   avail;               /* memorized for checks on EOF */
-    zzip_size_t   compressed;          /* compressed flag and datasize */
-    zzip_size_t   dataoff;             /* offset from data start */
-    z_stream      zlib;                /* for inflated blocks */
-    unsigned char buffer[PAGESIZE];    /* work buffer for inflate algorithm */
+    struct zzip_file_header header;     /* fopen detected header */
+    ZZIP_ENTRY *entry;          /* fopen entry */
+    zzip_off_t data;            /* for stored blocks */
+    zzip_size_t avail;          /* memorized for checks on EOF */
+    zzip_size_t compressed;     /* compressed flag and datasize */
+    zzip_size_t dataoff;        /* offset from data start */
+    z_stream zlib;              /* for inflated blocks */
+    unsigned char buffer[PAGESIZE];     /* work buffer for inflate algorithm */
 };
 
 /** open a file within a zip disk for reading
@@ -419,54 +495,63 @@ struct zzip_entry_file /* : zzip_file_header */
  * the size of the internal readahead buffer. If an error occurs then null
  * is returned.
  */
-zzip__new__ ZZIP_ENTRY_FILE*
-zzip_entry_fopen (ZZIP_ENTRY* entry, int takeover)
+zzip__new__ ZZIP_ENTRY_FILE *
+zzip_entry_fopen(ZZIP_ENTRY * entry, int takeover)
 {
-    if (! entry) return 0;
-    if (! takeover) {
-	ZZIP_ENTRY* found = malloc (sizeof(*entry));
-	if (! found) return 0;
-	memcpy (found, entry, sizeof(*entry));   /* prescan_copy */
-	found->tail = malloc (found->tailalloc);
-	if (! found->tail) { free (found); return 0; }
-	memcpy (found->tail, entry->tail, entry->tailalloc);
-	entry = found;
+    if (! entry)
+        return 0;
+    if (! takeover)
+    {
+        ZZIP_ENTRY *found = malloc(sizeof(*entry));
+        if (! found)
+            return 0;
+        memcpy(found, entry, sizeof(*entry));   /* prescan_copy */
+        found->tail = malloc(found->tailalloc);
+        if (! found->tail)
+            { free (found); return 0; }
+        memcpy(found->tail, entry->tail, entry->tailalloc);
+        entry = found;
     }
-    ___ ZZIP_ENTRY_FILE* file = malloc(sizeof(*file));
-    if (! file) goto fail1;
+    ___ ZZIP_ENTRY_FILE *file = malloc(sizeof(*file));
+    if (! file)
+        goto fail1;
     file->entry = entry;
-    if (! zzip_entry_fread_file_header (entry, &file->header))
-	goto fail2;
-    file->avail = zzip_file_header_usize (&file->header);
-    file->data = zzip_entry_data_offset (entry);
+    if (! zzip_entry_fread_file_header(entry, &file->header))
+        goto fail2;
+    file->avail = zzip_file_header_usize(&file->header);
+    file->data = zzip_entry_data_offset(entry);
     file->dataoff = 0;
 
-    if (! file->avail || zzip_file_header_data_stored (&file->header))
-    { file->compressed = 0; return file; }
+    if (! file->avail || zzip_file_header_data_stored(&file->header))
+        { file->compressed = 0; return file; }
 
-    file->compressed = zzip_file_header_csize (&file->header);
+    file->compressed = zzip_file_header_csize(&file->header);
     file->zlib.opaque = 0;
     file->zlib.zalloc = Z_NULL;
     file->zlib.zfree = Z_NULL;
 
     ___ zzip_off_t seek = file->data;
-    seek += sizeof(file->buffer); seek -= seek & (sizeof(file->buffer)-1);
-    assert (file->data < seek); /* pre-read to next PAGESIZE boundary... */
-    fseeko (file->entry->diskfile, file->data + file->dataoff, SEEK_SET);
+    seek += sizeof(file->buffer);
+    seek -= seek & (sizeof(file->buffer) - 1);
+    assert(file->data < seek);  /* pre-read to next PAGESIZE boundary... */
+    fseeko(file->entry->diskfile, file->data + file->dataoff, SEEK_SET);
     file->zlib.next_in = file->buffer;
-    file->zlib.avail_in = fread (file->buffer, 1, seek - file->data,
-				 file->entry->diskfile);
-    file->dataoff += file->zlib.avail_in; ____;
+    file->zlib.avail_in = fread(file->buffer, 1, seek - file->data,
+                                file->entry->diskfile);
+    file->dataoff += file->zlib.avail_in;
+    ____;
 
-    if (! zzip_file_header_data_deflated (&file->header) 
-	|| inflateInit2 (& file->zlib, -MAX_WBITS) != Z_OK) goto fail2;
+    if (! zzip_file_header_data_deflated(&file->header)
+        || inflateInit2(&file->zlib, -MAX_WBITS) != Z_OK)
+        goto fail2;
 
     return file;
- fail2:
-    free (file);
- fail1:
-    zzip_entry_free (entry);
-    return 0; ____;
+  fail2:
+    free(file);
+  fail1:
+    zzip_entry_free(entry);
+    return 0;
+    ____;
 }
 
 /** => zzip_entry_fopen
@@ -475,12 +560,13 @@ zzip_entry_fopen (ZZIP_ENTRY* entry, int takeover)
  * the zip central directory with => zzip_entry_findfile and whatever
  * is found first is given to => zzip_entry_fopen
  */
-zzip__new__ ZZIP_ENTRY_FILE*
-zzip_entry_ffile (FILE* disk, char* filename)
+zzip__new__ ZZIP_ENTRY_FILE *
+zzip_entry_ffile(FILE * disk, char *filename)
 {
-    ZZIP_ENTRY* entry = zzip_entry_findfile (disk, filename, 0, 0);
-    if (! entry) return 0;
-    return zzip_entry_fopen (entry, 1);
+    ZZIP_ENTRY *entry = zzip_entry_findfile(disk, filename, 0, 0);
+    if (! entry)
+        return 0;
+    return zzip_entry_fopen(entry, 1);
 }
 
 
@@ -492,45 +578,55 @@ zzip_entry_ffile (FILE* disk, char* filename)
  * with => zzip_entry_feof for the difference.
  */
 zzip_size_t
-zzip_entry_fread (void* ptr, zzip_size_t sized, zzip_size_t nmemb,
-		  ZZIP_ENTRY_FILE* file)
+zzip_entry_fread(void *ptr, zzip_size_t sized, zzip_size_t nmemb,
+                 ZZIP_ENTRY_FILE * file)
 {
-    if (! file) return 0;
-    ___ zzip_size_t size = sized*nmemb;
-    if (! file->compressed) {
-	if (size > file->avail) size = file->avail;
-	fread (ptr, 1, size, file->entry->diskfile);
-	file->dataoff += size;
-	file->avail -= size;
-	return size;
+    if (! file)
+        return 0;
+    ___ zzip_size_t size = sized * nmemb;
+    if (! file->compressed)
+    {
+        if (size > file->avail)
+            size = file->avail;
+        fread(ptr, 1, size, file->entry->diskfile);
+        file->dataoff += size;
+        file->avail -= size;
+        return size;
     }
-    
+
     file->zlib.avail_out = size;
     file->zlib.next_out = ptr;
     ___ zzip_size_t total_old = file->zlib.total_out;
-    while (1) {
-	if (! file->zlib.avail_in) {   
-	    size = file->compressed - file->dataoff;
-	    if (size > sizeof(file->buffer)) size = sizeof(file->buffer);
-	    /* fseek (file->data + file->dataoff, file->entry->diskfile); */
-	    file->zlib.avail_in = fread (file->buffer, 1, size,
-					 file->entry->diskfile);
-	    file->zlib.next_in = file->buffer;
-	    file->dataoff += file->zlib.avail_in;
-	}
-	if (! file->zlib.avail_in) return 0;
-	
-	___ int err = inflate (& file->zlib, Z_NO_FLUSH);
-	if (err == Z_STREAM_END)
-	    file->avail = 0;
-	else if (err == Z_OK)
-	    file->avail -= file->zlib.total_out - total_old;
-	else
-	    return 0;
-	____;
-	if (file->zlib.avail_out && ! file->zlib.avail_in) continue;
-	return file->zlib.total_out - total_old;
-    }____;____;
+    while (1)
+    {
+        if (! file->zlib.avail_in)
+        {
+            size = file->compressed - file->dataoff;
+            if (size > sizeof(file->buffer))
+                size = sizeof(file->buffer);
+            /* fseek (file->data + file->dataoff, file->entry->diskfile); */
+            file->zlib.avail_in = fread(file->buffer, 1, size,
+                                        file->entry->diskfile);
+            file->zlib.next_in = file->buffer;
+            file->dataoff += file->zlib.avail_in;
+        }
+        if (! file->zlib.avail_in)
+            return 0;
+
+        ___ int err = inflate(&file->zlib, Z_NO_FLUSH);
+        if (err == Z_STREAM_END)
+            file->avail = 0;
+        else if (err == Z_OK)
+            file->avail -= file->zlib.total_out - total_old;
+        else
+            return 0;
+        ____;
+        if (file->zlib.avail_out && ! file->zlib.avail_in)
+            continue;
+        return file->zlib.total_out - total_old;
+    }
+    ____;
+    ____;
 }
 
 /** => zzip_entry_fopen
@@ -538,13 +634,14 @@ zzip_entry_fread (void* ptr, zzip_size_t sized, zzip_size_t nmemb,
  * and dumps the ZZIP_ENTRY_FILE struct then.
  */
 int
-zzip_entry_fclose (ZZIP_ENTRY_FILE* file)
+zzip_entry_fclose(ZZIP_ENTRY_FILE * file)
 {
-    if (! file) return 0;
+    if (! file)
+        return 0;
     if (file->compressed)
-	inflateEnd (& file->zlib);
-    zzip_entry_free (file->entry);
-    free (file);
+        inflateEnd(&file->zlib);
+    zzip_entry_free(file->entry);
+    free(file);
     return 0;
 }
 
@@ -553,9 +650,9 @@ zzip_entry_fclose (ZZIP_ENTRY_FILE* file)
  * This function allows to distinguish an error from an eof condition. 
  * Actually, if we found an error but we did already reach eof then we
  * just keep on saying that it was an eof, so the app can just continue.
- */ 
+ */
 int
-zzip_entry_feof (ZZIP_ENTRY_FILE* file)
+zzip_entry_feof(ZZIP_ENTRY_FILE * file)
 {
     return ! file || ! file->avail;
 }

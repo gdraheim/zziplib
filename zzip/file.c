@@ -260,8 +260,9 @@ zzip_file_open(ZZIP_DIR * dir, zzip_char_t * name, int o_mode)
             if (dir->io->fd.seeks(dir->fd, hdr->d_off, SEEK_SET) < 0)
                 { err = ZZIP_DIR_SEEK; goto error; }
 
-            {                   /* skip local header - should test tons of other info, 
-                                 * but trust that those are correct */
+            {
+                /* skip local header - should test tons of other info, 
+                 * but trust that those are correct */
                 zzip_ssize_t dataoff;
                 struct zzip_file_header *p = (void *) fp->buf32k;
 
@@ -342,8 +343,8 @@ zzip_fclose(ZZIP_FILE * fp)
 {
     if (! fp)
         return 0;
-    if (! fp->dir)
-        { int r = fp->io->fd.close(fp->fd); free(fp); return r; }        /* stat fd */
+    if (! fp->dir)               /* stat fd */
+        { int r = fp->io->fd.close(fp->fd); free(fp); return r; }
     else
         return zzip_file_close(fp);
 }
@@ -413,13 +414,15 @@ zzip_file_read(ZZIP_FILE * fp, void *buf, zzip_size_t len)
             {
                 zzip_size_t cl = (fp->crestlen < ZZIP_32K ?
                                   fp->crestlen : ZZIP_32K);
-                /*  zzip_size_t cl = fp->crestlen > 128 ? 128 : fp->crestlen; */
-
+                /*  zzip_size_t cl = 
+                 *      fp->crestlen > 128 ? 128 : fp->crestlen; 
+                 */
                 zzip_ssize_t i = fp->io->fd.read(dir->fd, fp->buf32k, cl);
 
                 if (i <= 0)
                 {
-                    dir->errcode = ZZIP_DIR_READ;       /* or ZZIP_DIR_READ_EOF ? */
+                    dir->errcode = ZZIP_DIR_READ;
+                    /* or ZZIP_DIR_READ_EOF ? */
                     return -1;
                 }
                 fp->crestlen -= i;
@@ -822,14 +825,14 @@ zzip_open_shared_io(ZZIP_FILE * stream,
             ZZIP_FILE *fp;
             int fd;
 
-            *p = '\0';          /* cut at path separator == possible zipfile basename */
-            fd = __zzip_try_open(basename, o_flags | O_RDONLY | O_BINARY, ext,
-                                 io);
+            *p = '\0';
+            /* i.e. cut at path separator == possible zipfile basename */
+            fd = __zzip_try_open(basename, o_flags | O_RDONLY | O_BINARY,
+                                 ext, io);
             if (fd == -1)
                 { continue; }
 
-/*    found: */
-            /* found zip-file, now try to parse it */
+            /* found zip-file ....  now try to parse it */
             dir = zzip_dir_fdopen_ext_io(fd, &e, ext, io);
             if (e)
                 { errno = zzip_errno(e); io->fd.close(fd); return 0; }
@@ -846,7 +849,7 @@ zzip_open_shared_io(ZZIP_FILE * stream,
             /* but (dir) is implicitly closed on next zzip_close(fp) */
 
             return fp;
-        }                       /*again */
+        }
 
         if (o_modes & ZZIP_PREFERZIP)
             goto try_real;
@@ -860,25 +863,22 @@ zzip_open_shared_io(ZZIP_FILE * stream,
 #undef zzip_open_ext_io         /* zzip_open_ext_io64 */
 #undef zzip_opendir_ext_io      /* zzip_opendir_ext_io64 */
 
-_zzip_export
-    ZZIP_FILE * zzip_open_shared_io(ZZIP_FILE * stream,
-                                    zzip_char_t * name, int o_flags,
-                                    int o_modes, zzip_strings_t * ext,
-                                    zzip_plugin_io_t io);
-_zzip_export ZZIP_FILE *zzip_open_ext_io(zzip_char_t * name, int o_flags,
-                                         int o_modes, zzip_strings_t * ext,
-                                         zzip_plugin_io_t io);
-_zzip_export ZZIP_DIR *zzip_opendir_ext_io(zzip_char_t * name, int o_modes,
-                                           zzip_strings_t * ext,
-                                           zzip_plugin_io_t io);
+ZZIP_FILE *zzip_open_shared_io(ZZIP_FILE * stream,
+                               zzip_char_t * name, int o_flags,
+                               int o_modes, zzip_strings_t * ext,
+                               zzip_plugin_io_t io);
+ZZIP_FILE *zzip_open_ext_io(zzip_char_t * name, int o_flags,
+                            int o_modes, zzip_strings_t * ext,
+                            zzip_plugin_io_t io);
+ZZIP_DIR *zzip_opendir_ext_io(zzip_char_t * name, int o_modes,
+                              zzip_strings_t * ext, zzip_plugin_io_t io);
 
 /* DLL compatibility layer - so that 32bit code can link with this lib too */
 
-_zzip_export
-    ZZIP_FILE * zzip_open_shared_io(ZZIP_FILE * stream,
-                                    zzip_char_t * name, int o_flags,
-                                    int o_modes, zzip_strings_t * ext,
-                                    zzip_plugin_io_t io)
+ZZIP_FILE *
+zzip_open_shared_io(ZZIP_FILE * stream,
+                    zzip_char_t * name, int o_flags,
+                    int o_modes, zzip_strings_t * ext, zzip_plugin_io_t io)
 {
     if (! io)
         return zzip_open_shared_io64(stream, name, o_flags, o_modes, ext, io);
@@ -886,9 +886,9 @@ _zzip_export
     return NULL;
 }
 
-_zzip_export
-    ZZIP_FILE * zzip_open_ext_io(zzip_char_t * name, int o_flags, int o_modes,
-                                 zzip_strings_t * ext, zzip_plugin_io_t io)
+ZZIP_FILE *
+zzip_open_ext_io(zzip_char_t * name, int o_flags, int o_modes,
+                 zzip_strings_t * ext, zzip_plugin_io_t io)
 {
     if (! io)
         return zzip_open_ext_io64(name, o_flags, o_modes, ext, io);
@@ -896,9 +896,9 @@ _zzip_export
     return NULL;
 }
 
-_zzip_export
-    ZZIP_DIR * zzip_opendir_ext_io(zzip_char_t * name, int o_modes,
-                                   zzip_strings_t * ext, zzip_plugin_io_t io)
+ZZIP_DIR *
+zzip_opendir_ext_io(zzip_char_t * name, int o_modes,
+                    zzip_strings_t * ext, zzip_plugin_io_t io)
 {
     if (! io)
         return zzip_opendir_ext_io64(name, o_modes, ext, io);
