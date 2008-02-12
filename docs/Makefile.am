@@ -135,6 +135,8 @@ manpages.ar : zziplib.xml zzipmmapped.xml zzipfseeko.xml
 	;       $(XMLTO) -o man3 man zzipmmapped.xml  \
 	; echo '$(XMLTO) -o man3 man zzipfseeko.xml' \
 	;       $(XMLTO) -o man3 man zzipfseeko.xml  \
+	; echo 'chmod 664 man3/*.3' \
+	;       chmod 664 man3/*.3  \
 	; echo 'ar qc "$@" man3/*.3' \
 	;       ar qc "$@" man3/*.3  \
 	; echo '$(DELETE); rm man3/*.3 ; rmdir man3' \
@@ -170,7 +172,7 @@ htmpages.ar : zziplib.xml zzipmmapped.xml zzipfseeko.xml zziplib-manpages.dbk
 install-man3 : manpages.ar
 	$(mkinstalldirs) $(DESTDIR)$(mandir)/man3
 	P=`pwd` ; cd $(DESTDIR)$(mandir)/man3 \
-        && ar x $$P/manpages.ar && chmod 664 *
+        && ar x $$P/manpages.ar
 
 unpack : manpages.ar htmpages.ar
 	(rm -rf _htm && mkdir _htm && cd _htm && ar x ../htmpages.ar)
