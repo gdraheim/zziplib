@@ -1,6 +1,12 @@
+2008-03-03  guidod  <guidod@pc3>
+
+	* TODO: update to recent problems. Need to check my mail stack next time.
+
 2008-03-02  guidod  <guidod@pc3>
 
 	* zzip/info.c: reverted.
+	* also: note that the Makefiles have been update to the newest autotools.
+	  The project itself has been imported to an Eclipse based CDT project.
 
 2007-03-19
  * enforce indent by automatic indentic-check
