@@ -63,10 +63,10 @@ typedef struct _zzip_extra_zip64
 
 /*forward*/
 
-zzip__new__ static ZZIP_MEM_ENTRY *zzip_mem_entry_new(ZZIP_DISK * disk,
-                                                      ZZIP_DISK_ENTRY * entry);
-zzip__new__ static void zzip_mem_entry_free(ZZIP_MEM_ENTRY *
-                                            _zzip_restrict item);
+static zzip__new__ ZZIP_MEM_ENTRY *
+zzip_mem_entry_new(ZZIP_DISK * disk, ZZIP_DISK_ENTRY * entry);
+static void 
+zzip_mem_entry_free(ZZIP_MEM_ENTRY * _zzip_restrict item);
 
 zzip__new__ ZZIP_MEM_DISK *
 zzip_mem_disk_new(void)

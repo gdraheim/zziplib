@@ -1,7 +1,7 @@
 AC_INIT(zziplib.spec)
 AC_PREREQ(2.49)
 AC_COPYRIGHT([Guido Draheim <guido@gmx.de> for ZZipLib.SF.net])
-AC_REVISION($Revision: 1.9 $)
+AC_REVISION($Revision: 1.10 $)
 AC_CONFIG_AUX_DIR(uses)
 # =======================================================================
 AC_CANONICAL_SYSTEM
@@ -9,8 +9,8 @@ dnl AM_ENABLE_MULTILIB([Makefile],[$host])
 AX_ENABLE_BUILDDIR_UNAME
 AC_SET_DEFAULT_PATHS_SYSTEM
 # -----------------------------------------------------------------------
-AC_ARG_ENABLE(thread-safe,AC_HELP_STRING(
-   [--disable-thread-safe],[disable thread-safe libtool option])
+AC_ARG_ENABLE([thread-safe],
+AC_HELP_STRING([--disable-thread-safe],[disable thread-safe libtool option])
    ,,[ enable_thread_safe="yes"])
 THREAD_SAFE=""
 test "$enable_thread_safe" = "yes" && THREAD_SAFE="-thread-safe"

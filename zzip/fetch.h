@@ -25,6 +25,11 @@ extern void     __zzip_set64(zzip_byte_t * s, uint64_t v);
 
 #ifdef ZZIP_WORDS_BIGENDIAN
 # if defined bswap_16 && defined bswap_32 && defined bswap_64 /* i.e. linux */
+# ifndef ZZIP_HAVE_ALIGNED_ACCESS_REQUIRED
+# define _ZZIP_USE_BSWAP
+# endif
+# endif
+# ifdef _ZZIP_USE_BSWAP
 # define ZZIP_GET16(__p)                        bswap_16(*(uint16_t*)(__p))
 # define ZZIP_GET32(__p)                        bswap_32(*(uint32_t*)(__p))
 # define ZZIP_GET64(__p)                        bswap_64(*(uint64_t*)(__p))

@@ -1,3 +1,8 @@
+2008-03-22  guidod  <guidod@pc3>
+
+	* zzip/fetch.h: honor ZZIP_HAVE_ALIGNED_ACCESS_REQUIRED for the Linux bswap
+	optimization. See also 443880@bugs.debian "SIGBUS on Sparc".
+
 2008-03-03  guidod  <guidod@pc3>
 
 	* TODO: update to recent problems. Need to check my mail stack next time.
