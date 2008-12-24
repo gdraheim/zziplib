@@ -720,7 +720,7 @@ uninstall-am:
 	tags tags-recursive uninstall uninstall-am
 
 
-rpm: dist-bzip $(PACKAGE).spec
+rpm: dist-bzip2 $(PACKAGE).spec
 	rpmbuild -ta $(PACKAGE)-$(VERSION).tar.bz2
 	test -d ../pub && cp $(PACKAGE)-$(VERSION).tar.bz2 ../pub/
 

@@ -14,7 +14,7 @@ boottrap:
 	autoheader 
 	automake -a -c 
 
-rpm: dist-bzip $(PACKAGE).spec
+rpm2: dist-bzip $(PACKAGE).spec
 	rpmbuild -ta pub/$(PACKAGE)-$(VERSION).tar.bz2
 
 dist-bzip : dist-bzip2
