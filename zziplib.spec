@@ -75,7 +75,11 @@ Requires:     zziplib-%lib = %version
 # fixing relink problems during install too
 LDFLAGS="-L%buildroot%_libdir" \
 CFLAGS="$RPM_OPT_FLAGS" \
-sh configure --prefix=%{_prefix} --with-docdir=%{_docdir} --mandir=%{_mandir} \
+sh configure --prefix=%{_prefix} \
+             --with-docdir=%{_docdir} \
+             --mandir=%{_mandir} \
+             --bindir=%{_bindir} \
+             --libdir=%{_libdir} \
              --enable-sdl  TIMEOUT=9
 make zzip64-setup
 

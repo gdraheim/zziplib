@@ -1,6 +1,7 @@
 2008-12-24 guidod <guidod@pc3>
 	* add the dir-zzip-* to the cvs repo (as used on some webs)
 	* move "make rpm" to *.am (instead of *.mk)
+	* amd64 should be in libdir=$prefix/lib64 (in the spec file)
 
 2008-11-24 guidod <guidod@pc3>
 	* BuildRequires: python (for %package doc)
