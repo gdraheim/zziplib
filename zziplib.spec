@@ -1,7 +1,7 @@
 %define lib   lib010
 Summary:      ZZipLib - libZ-based ZIP-access Library
 Name:         zziplib
-Version:      0.13.49
+Version:      0.13.50
 Release:      1
 License:      LGPL
 Group:        Development/Libraries
@@ -36,6 +36,7 @@ Provides:     libzzip-0.so.10
 %package doc
 Summary:      ZZipLib - Documentation Files
 Group:        Development/Libraries
+BuildRequires: python
 
 %package devel
 Summary:      ZZipLib - Development Files
