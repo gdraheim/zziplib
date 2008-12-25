@@ -37,6 +37,7 @@ Provides:     libzzip-0.so.10
 Summary:      ZZipLib - Documentation Files
 Group:        Development/Libraries
 BuildRequires: python
+BuildRequires: xmlto
 
 %package devel
 Summary:      ZZipLib - Development Files
@@ -73,7 +74,9 @@ Requires:     zziplib-%lib = %version
 #'
 %setup
 # fixing relink problems during install too
-LDFLAGS="-L%buildroot%_libdir" \
+# LDFLAGS="-L%buildroot%_libdir" \
+#
+
 CFLAGS="$RPM_OPT_FLAGS" \
 sh configure --prefix=%{_prefix} \
              --with-docdir=%{_docdir} \
