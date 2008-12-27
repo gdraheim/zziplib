@@ -1,3 +1,8 @@
+2008-12-27 guidod <guidod@pc3>
+    * ax_create_pkgconfig_info needs a definition for datarootdir (introduced
+       in latest autoconf/automake making for an error in ogre3d configuration
+       as reported by Ignaz Forster)
+
 2008-12-24 guidod <guidod@pc3>
 	* add the dir-zzip-* to the cvs repo (as used on some webs)
 	* move "make rpm" to *.am (instead of *.mk)
