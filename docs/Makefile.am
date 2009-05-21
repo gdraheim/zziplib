@@ -58,21 +58,24 @@ docu :
 	- rm zziplib2.html zzipmmapped.html zzipfseeko.html
 	$(MAKE) manpages.ar htmpages.ar DELETE=exit
 
-zziplib.html zziplib.xml : zziplib.spec $(srcdir)/Makefile.am \
+zziplib.html: zziplib.xml
+zziplib.xml: zziplib.spec $(srcdir)/Makefile.am \
                  $(srcdir)/zzipdoc/*.py \
                  $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c
 	$(PYRUN) $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c $(zziplib) \
                    "--package=$(PACKAGE)" "--version=$(VERSION)" \
                    "--onlymainheader=zzip/lib.h" "--output=zziplib"
 	test -s zziplib.docbook && mv zziplib.docbook zziplib.xml
-zzipmmapped.html zzipmmapped.xml : zziplib.spec $(srcdir)/Makefile.am \
+zzipmmapped.html: zzipmmapped.xml 
+zzipmmapped.xml: zziplib.spec $(srcdir)/Makefile.am \
                  $(srcdir)/zzipdoc/*.py \
                  $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c
 	$(PYRUN) $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c $(zziplib) \
                    "--package=$(PACKAGE)" "--version=$(VERSION)" \
                    "--onlymainheader=zzip/mmapped.h" "--output=zzipmmapped"
 	test -s zzipmmapped.docbook && mv zzipmmapped.docbook zzipmmapped.xml
-zzipfseeko.html zzipfseeko.xml : zziplib.spec $(srcdir)/Makefile.am \
+zzipfseeko.html: zzipfseeko.xml 
+zzipfseeko.xml: zziplib.spec $(srcdir)/Makefile.am \
                  $(srcdir)/zzipdoc/*.py \
                  $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c
 	$(PYRUN) $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c $(zziplib) \

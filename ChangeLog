@@ -1,4 +1,8 @@
 2009-05-21  guidod  <guidod@gmx.de>
+	* docs/Makefile.am: break a dual target into two lines as
+	   suggested by ticket:2405440
+
+2009-05-21  guidod  <guidod@gmx.de>
 
 	* docs/Makefile.am: make install-docs install-man3 rules so that
 	     a failing "ar x" (on OpenBSD/vax) will not kill the whole
