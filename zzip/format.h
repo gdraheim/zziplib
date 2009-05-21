@@ -18,6 +18,7 @@
 #define _ZZIP_FORMAT_H
 
 #include <zzip/types.h>
+#include <zzip/__hints.h>
 /* we have ICO C 9X types defined */
 
 /*
