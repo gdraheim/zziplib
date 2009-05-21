@@ -6,6 +6,7 @@
 	* m4/ax_check_aligned_access_required.m4 update for the cross_compiling
 	   case with libpcap-list of host_cpu targets thare require aligned access
 	   suggested by ticket:2479788
+	* 0.13.52
 
 2009-05-21  guidod  <guidod@gmx.de>
 
@@ -15,6 +16,7 @@
 	     means that there will be no manpages on such platforms.
 	     May be OpenBSD/vax has a "gar" (gnu ar) installed somewhere?
 	* closes Patches item #2716806, was opened at 2009-03-27 13:01
+	* 0.13.51
 
 2009-05-21 guidod <guidod@gmx.de>
     * zzip/fetch.h: ensure that either direct-bswap or direc-deref is only used
