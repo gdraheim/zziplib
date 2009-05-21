@@ -1,6 +1,11 @@
-2009-05-21  guidod  <guidod@gmx.de>
+2009-05-22  guidod  <guidod@gmx.de>
 	* docs/Makefile.am: break a dual target into two lines as
 	   suggested by ticket:2405440
+	* m4/ax_cflags_no_writable_strings.m4 update with sed-call
+	   suggested by ticket:2155649
+	* m4/ax_check_aligned_access_required.m4 update for the cross_compiling
+	   case with libpcap-list of host_cpu targets thare require aligned access
+	   suggested by ticket:2479788
 
 2009-05-21  guidod  <guidod@gmx.de>
 
