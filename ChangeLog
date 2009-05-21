@@ -1,3 +1,13 @@
+2009-05-21 guidod <guidod@gmx.de>
+    * zzip/fetch.h: ensure that either direct-bswap or direc-deref is only used
+               on platforms that do not require aligned memory access. The
+               latest report from Sylvain Beucler has shown an error a MIPS
+               platform (named  http://www.freedink.org/ running on PSP).
+    * zzip/fetch.h: replace _zzip_attribute(const) with defines from zzip/__hints.h
+    * zzip/__hints.h: introduced ZZIP_GNUC_PACKED for __attribute__((packed))
+    * zzip/format.h: replace _zzip_attribute(packed) with defines from zzip/__hints.h
+    * zzip/conf.h: remove _zzip_attribute - not needed anymore.
+
 2008-12-27 guidod <guidod@pc3>
     * ax_create_pkgconfig_info needs a definition for datarootdir (introduced
        in latest autoconf/automake making for an error in ogre3d configuration
@@ -12,7 +22,7 @@
 2008-11-24 guidod <guidod@pc3>
 	* BuildRequires: python (for %package doc)
 
-	
+
 2008-03-22  guidod  <guidod@pc3>
 
 	* zzip/fetch.h: honor ZZIP_HAVE_ALIGNED_ACCESS_REQUIRED for the Linux bswap
