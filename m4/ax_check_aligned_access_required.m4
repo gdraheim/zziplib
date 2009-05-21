@@ -14,12 +14,16 @@ dnl should be accessed per-byte in that case to avoid segfault type errors.
 dnl
 dnl @category C
 dnl @author Guido U. Draheim <guidod@gmx.de>
-dnl @version 2006-08-17
+dnl @version 2009-05-22
 dnl @license GPLWithACException
 
 AC_DEFUN([AX_CHECK_ALIGNED_ACCESS_REQUIRED],
 [AC_CACHE_CHECK([if pointers to integers require aligned access],
   [ax_cv_have_aligned_access_required],
+if test "$cross_compiling" = "yes"; then
+  case "$host_cpu" in alpha*|arm*|bfin*|hp*|mips*|sh*|sparc*|ia64|nv1)
+    ax_cv_have_aligned_access_required="yes"
+  ;; *)
   [AC_TRY_RUN([
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,6 +47,7 @@ int main()
      [ax_cv_have_aligned_access_required=no],
      [ax_cv_have_aligned_access_required=no])
   ])
+;; esac
 if test "$ax_cv_have_aligned_access_required" = yes ; then
   AC_DEFINE([HAVE_ALIGNED_ACCESS_REQUIRED], [1],
     [Define if pointers to integers require aligned access])

@@ -1,14 +1,8 @@
 SHORTTERM
-- single-file documentation (a docbook?)
 - handle international filenames more gracefully (unicode API?)
 - most is multithreaded ... but zzip_dir_open (Thorsten Schöning)
 - rboerdijk@ does also report errors on overlapping reads, another
    one pointed to the usage of seek_set that may cause the problems
-- extend aligned-access check in the autoconf macro such that it can
-  cover the cross-compiling case - libpcap AC_LBL_UNALIGNED_ACCESS
-  uses         alpha*|arm*|bfin*|hp*|mips*|sh*|sparc*|ia64|nv1)
-                ac_cv_lbl_unaligned_fail=yes
-  for that.
 
 WISHLIST
 
@@ -88,5 +82,8 @@ here or there - the code however should be prepared to get around any
 problems easily. Send patches! (especially Linux distributions makers
 are usually not sending their patches to upstream maintainers).
 
+Note: the latest cross platform tests are done indirectly by using
+the build.opensuse.org rpm packaging where one can run "make check"
+just before doing the "make install" of the compiled library.
 
 
