@@ -100,7 +100,8 @@ install-docs: $(doc_FILES) $(man_FILES) site.html htmpages.ar
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/man
 	@ echo ar x htmpages.ar '>>>' $(DESTDIR)$(pkgdocdir)/man/ \
 	; test -f htmpages.ar || cd "$srcdir" ; P=`pwd` \
-	; cd $(DESTDIR)$(pkgdocdir)/man && ar x $$P/htmpages.ar
+	; cd $(DESTDIR)$(pkgdocdir)/man && ar x $$P/htmpages.ar \
+	; true
 
 install-doc : install-docs $(PACKAGE)-doc.omf
 	$(mkinstalldirs) $(DESTDIR)$(pkgomfdir)
@@ -172,7 +173,8 @@ htmpages.ar : zziplib.xml zzipmmapped.xml zzipfseeko.xml zziplib-manpages.dbk
 install-man3 : manpages.ar
 	$(mkinstalldirs) $(DESTDIR)$(mandir)/man3
 	P=`pwd` ; cd $(DESTDIR)$(mandir)/man3 \
-        && ar x $$P/manpages.ar
+        && ar x $$P/manpages.ar \
+        ; true
 
 unpack : manpages.ar htmpages.ar
 	(rm -rf _htm && mkdir _htm && cd _htm && ar x ../htmpages.ar)
