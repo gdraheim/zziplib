@@ -1,7 +1,7 @@
 %define lib   lib010
 Summary:      ZZipLib - libZ-based ZIP-access Library
 Name:         zziplib
-Version:      0.13.50
+Version:      0.13.51
 Release:      1
 License:      LGPL
 Group:        Development/Libraries
@@ -58,7 +58,7 @@ Requires:     zziplib-%lib = %version
  zip file - as it is sometimes used with gamedata or script repositories.
  The library itself is fully multithreaded, and it is namespace clean
  using the zzip_ prefix for its exports and declarations.
- 
+
 %description doc
  : zziplib provides read access to zipped files in a zip-archive,
  : using compression based solely on free algorithms provided by zlib.
@@ -87,7 +87,7 @@ sh configure --prefix=%{_prefix} \
 make zzip64-setup
 
 %build
-make 
+make
 make zzip64-build
 make doc
 
@@ -107,7 +107,7 @@ rm -rf %{buildroot}
       %defattr(-,root,root)
       %{_libdir}/lib*.so.*
 
-%post %lib 
+%post %lib
 /sbin/ldconfig || true
 %postun %lib
 /sbin/ldconfig || true
@@ -135,4 +135,4 @@ test ! -f %_bindir/scrollkeeper-update || %_bindir/scrollkeeper-update
 %dir  %{_datadir}/%{name}
       %{_datadir}/%{name}/*
       %{_datadir}/aclocal/%{name}*.m4
-      %{_mandir}/man3/*	
+      %{_mandir}/man3/*
