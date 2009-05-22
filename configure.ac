@@ -1,8 +1,9 @@
-AC_INIT(zziplib.spec)
+AC_INIT([zziplib.spec])
 AC_PREREQ(2.49)
 AC_COPYRIGHT([Guido Draheim <guido@gmx.de> for ZZipLib.SF.net])
-AC_REVISION($Revision: 1.10 $)
-AC_CONFIG_AUX_DIR(uses)
+AC_REVISION($Revision: 1.11 $)
+AC_CONFIG_AUX_DIR([uses])
+AC_CONFIG_MACRO_DIR([m4])
 # =======================================================================
 AC_CANONICAL_SYSTEM
 dnl AM_ENABLE_MULTILIB([Makefile],[$host])
@@ -36,7 +37,7 @@ fi
 
 case ".$with_zlib" in
    .no|.no,*)
-      AC_MSG_RESULT(none) 
+      AC_MSG_RESULT(none)
       with_zlib="no, not configured" ;;
   ./usr)
       AC_MSG_RESULT([oops, ignored (may try --with-zlib=/usr/.)])
@@ -63,7 +64,7 @@ AC_SUBST(ZLIB_LDIR)
 # -----------------------------------------------------------------------
 AX_SPEC_DEFAULTS
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
-dnl test ".$CFLAGS" = "." && CFLAGS="" 
+dnl test ".$CFLAGS" = "." && CFLAGS=""
 AC_PROG_CC
 dnl test ".$CFLAGS" = "." && test "$GCC" = "yes" && CFLAGS="-O3"
 AC_PROG_INSTALL
@@ -83,6 +84,9 @@ AM_MAINTAINER_MODE
 AX_CREATE_PKGCONFIG_INFO(dnl
 [zzip/zziplib.pc], [zzip-zlib-config],[-lzzip])
 # -----------------------------------------------------------------------
+echo extrac.t..
+AX_PAX_TAR_CREATE
+AX_PAX_TAR_EXTRACT
 AC_PATH_PROGS(PERL, perl5 perl, echo no perl found for)
 AC_PATH_PROGS(PYTHON, python2.2 python2.3 python, echo no python found for)
 AC_PATH_PROGS(MKZIP, zip pkzip, :)
@@ -122,7 +126,7 @@ if test ".$ac_cv_sys_largefile_sensitive" = ".no" ; then
 elif test ".$with_largefile" != ".no" ; then
   AC_MSG_RESULT(compiles library as 64bit off_t variant dnl
 - and renaming some function names)
-  LARGEFILE_CFLAGS="$LARGEFILE_CFLAGS -D_LARGEFILE_SOURCE"  
+  LARGEFILE_CFLAGS="$LARGEFILE_CFLAGS -D_LARGEFILE_SOURCE"
   AC_MSG_RESULT(..adding CFLAGS $LARGEFILE_CFLAGS)
   CFLAGS="$CFLAGS $LARGEFILE_CFLAGS"
   AC_MSG_RESULT(..adding 64 into RELEASE_INFO for the libraries)
@@ -140,7 +144,7 @@ if test "_$ac_cv_header_zlib_h" != "_yes" ; then
          AC_MSG_RESULT(dnl
 ...note: and when linkage fails you might also need to set some LDFLAGS)
   case "$prefix" in
-    NONE|/usr) 
+    NONE|/usr)
             AC_MSG_RESULT(dnl
 ...note: both can be set by specifying the install prefix of the zlib library)
             AC_MSG_RESULT(dnl
@@ -180,7 +184,7 @@ case "${with_docdir}" in
  no)  docdir='${datadir}/doc' ;;
  /*|\\*|[a-zA-Z]:*) docdir="$with_docdir"  ;;
  *) AC_MSG_RESULT(oops)
-    AC_MSG_ERROR(bad value ${withval} for --with-docdir) 
+    AC_MSG_ERROR(bad value ${withval} for --with-docdir)
  ;;
 esac
 AC_SUBST(docdir)
@@ -195,7 +199,7 @@ AC_ARG_WITH(debug, AC_HELP_STRING(
                    AC_MSG_ERROR(bad value ${withval} for --with-debug) ;;
        esac], [with_debug="no"])
 test "$with_debug" != "yes" && with_debug="no" # yes or no
-test "$with_debug" = "yes" && export CFLAGS="$CFLAGS -DDEBUG" 
+test "$with_debug" = "yes" && export CFLAGS="$CFLAGS -DDEBUG"
 result="$with_debug" ; test "$result" = "yes" && result="yes, added -DDEBUG"
 AC_MSG_RESULT($result)
 if test "$with_debug" = "yes" ; then if test -n "$RELEASE_INFO" ; then
@@ -219,7 +223,7 @@ if test "$with_lowstk" = "auto"; then
   esac
 fi
 test "$with_lowstk" != "yes" && with_lowstk="no" # yes or no
-test "$with_lowstk" = "yes" && CFLAGS="$CFLAGS -D_LOWSTK" 
+test "$with_lowstk" = "yes" && CFLAGS="$CFLAGS -D_LOWSTK"
 result="$with_lowstk" ; test "$result" = "yes" && result="yes, added -D_LOWSTK"
 AC_MSG_RESULT($with_lowstk)
 # ---------------------------------------------------------------
@@ -276,7 +280,7 @@ AC_SUBST(ZIPTESTS)
 # ---------------------------------------------------------------
 AC_MSG_CHECKING(link options)
 case "$host_os" in
-  mingw*) 
+  mingw*)
     ZZIPLIB_LDFLAGS="-no-undefined -export-all-symbols -mconsole"
     RESOLVES=' '
   ;;
@@ -303,7 +307,7 @@ AX_CFLAGS_GCC_OPTION(-Werror-implicit-function-declaration)
 AX_ENABLE_DEFAULT_PKGCONFIGDIR
 AX_ENABLE_DEFAULT_ACLOCALDIR
 AC_SUBST([CONFIG_FILES])
-AC_OUTPUT([Makefile 
+AC_OUTPUT([Makefile
            zzip/Makefile zzipwrap/Makefile SDL/Makefile
            docs/Makefile test/Makefile bins/Makefile])
 dnl -------------------------------------------------------------
