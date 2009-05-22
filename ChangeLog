@@ -6,6 +6,7 @@
 	* m4/ax_check_aligned_access_required.m4 update for the cross_compiling
 	   case with libpcap-list of host_cpu targets thare require aligned access
 	   suggested by ticket:2479788
+	* introduce ax_pax_tar.m4 to use *.tar format for manpages.tar (instead of .ar)
 	* 0.13.52
 
 2009-05-21  guidod  <guidod@gmx.de>

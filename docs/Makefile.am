@@ -101,7 +101,7 @@ install-docs: $(doc_FILES) $(man_FILES) site.html htmpages.tar
 	    $(DESTDIR)$(pkgdocdir) ; done
 	cd $(DESTDIR)$(pkgdocdir) && ln -sf zzip-index.html index.html
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/man
-	@ echo extract htmpages.tar '>>>' $(DESTDIR)$(pkgdocdir)/man/ \
+	@ echo $(PAX_TAR_EXTRACT) htmpages.tar '>>>' $(DESTDIR)$(pkgdocdir)/man/ \
 	; test -f htmpages.tar || cd "$srcdir" ; P=`pwd` \
 	; cd $(DESTDIR)$(pkgdocdir)/man && $(PAX_TAR_EXTRACT) $$P/htmpages.tar \
 	; true

@@ -62,7 +62,7 @@ AC_DEFUN([_AX_PAX_TAR_CREATE],[
   _AX_PAX_TAR_TOOL
   AC_MSG_CHECKING([for invokation create portable tar archives])
   if test "$ac_cv_pax_tar_tool" = "pax"; then
-    ax_pax_tar_create="'$ac_cv_path_PAX' -wf"
+    ax_pax_tar_create="'$ac_cv_path_PAX' -w -f"
   elif test "$ac_cv_pax_tar_tool" = "gnutar"; then
     ax_pax_tar_create="'$ac_cv_path_GNUTAR' cf"
   elif test "$ac_cv_pax_tar_tool" = "gtar"; then
@@ -79,7 +79,7 @@ AC_DEFUN([_AX_PAX_TAR_EXTRACT],[
   _AX_PAX_TAR_TOOL
   AC_MSG_CHECKING([for invokation extract portable tar archives])
   if test "$ac_cv_pax_tar_tool" = "pax"; then
-    ax_pax_tar_extract="'$ac_cv_path_PAX' -rf"
+    ax_pax_tar_extract="'$ac_cv_path_PAX' -r -f"
   elif test "$ac_cv_pax_tar_tool" = "gnutar"; then
     ax_pax_tar_extract="'$ac_cv_path_GNUTAR' xf"
   elif test "$ac_cv_pax_tar_tool" = "gtar"; then
