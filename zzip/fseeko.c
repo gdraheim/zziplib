@@ -5,7 +5,7 @@
  *
  * These routines are fully independent from the traditional zzip
  * implementation. They assume a readonly seekable stdio handle
- * representing a complete zip file. The functions show how to 
+ * representing a complete zip file. The functions show how to
  * parse the structure, find files and return a decoded bytestream.
  *
  * These routines are a bit simple and really here for documenting
@@ -21,14 +21,14 @@
  * since we can fallback to fseek/ftell which limits the zip disk size
  * to 2MiBs but the zip-storable seek values are 32bit limited anyway.
  *
- * Author: 
+ * Author:
  *      Guido Draheim <guidod@gmx.de>
  *
  * Copyright (c) 2003,2004 Guido Draheim
  *          All rights reserved,
- *          use under the restrictions of the 
+ *          use under the restrictions of the
  *          Lesser GNU General Public License
- *          or alternatively the restrictions 
+ *          or alternatively the restrictions
  *          of the Mozilla Public License 1.1
  */
 
@@ -84,7 +84,7 @@
 /*                      helper functions                                  */
 
 /** => zzip_entry_data_offset
- * This functions read the correspoding struct zzip_file_header from 
+ * This functions read the correspoding struct zzip_file_header from
  * the zip disk of the given "entry". The returned off_t points to the
  * end of the file_header where the current fseek pointer has stopped.
  * This is used to immediatly parse out any filename/extras block following
@@ -110,8 +110,8 @@ zzip_entry_fread_file_header(ZZIP_ENTRY * entry,
  *
  * This functions returns the seekval offset of the data portion of the
  * file referenced by the given zzip_entry. It requires an intermediate
- * check of the file_header structure (i.e. it reads it from disk). After 
- * this call, the contained diskfile readposition is already set to the 
+ * check of the file_header structure (i.e. it reads it from disk). After
+ * this call, the contained diskfile readposition is already set to the
  * data_offset returned here. On error -1 is returned.
  */
 zzip_off_t
@@ -157,11 +157,17 @@ zzip_entry_strdup_name(ZZIP_ENTRY * entry)
         && (len = zzip_file_header_namlen(&header)))
     {
         char *name = malloc(len + 1);
-        if (! name)
+        if (! name) {
             return 0;
-        fread(name, 1, len, entry->diskfile);
-        name[len] = '\0';
-        return name;
+        } else {
+            zzip_size_t n = fread(name, 1, len, entry->diskfile);
+            if (n != len) {
+                free (name);
+                return 0;
+            }
+            name[n] = '\0';
+            return name;
+        }
     }
     return 0;
     ____;
@@ -181,10 +187,13 @@ prescan_entry(ZZIP_ENTRY * entry)
         entry->tail = newtail;
         entry->tailalloc = tailsize + 1;
     }
-    fread(entry->tail, 1, tailsize, entry->diskfile);
+    ___  zzip_size_t n = fread(entry->tail, 1, tailsize, entry->diskfile);
     /* name + comment + extras */
-    return 0;
-    ____;
+    if (n != tailsize) {
+        return errno;
+    } else {
+        return 0;
+    } ____;
 }
 
 static void
@@ -202,26 +211,26 @@ prescan_clear(ZZIP_ENTRY * entry)
 /** => zzip_entry_findfile
  *
  * This function is the first call of all the zip access functions here.
- * It contains the code to find the first entry of the zip central directory. 
+ * It contains the code to find the first entry of the zip central directory.
  * Here we require the stdio handle to represent a real zip file where the
- * disk_trailer is _last_ in the file area, so that its position would be at 
- * a fixed offset from the end of the file area if not for the comment field 
+ * disk_trailer is _last_ in the file area, so that its position would be at
+ * a fixed offset from the end of the file area if not for the comment field
  * allowed to be of variable length (which needs us to do a little search
  * for the disk_tailer). However, in this simple implementation we disregard
  * any disk_trailer info telling about multidisk archives, so we just return
  * a pointer to the first entry in the zip central directory of that file.
- * 
- * For an actual means, we are going to search backwards from the end 
- * of the mmaped block looking for the PK-magic signature of a 
+ *
+ * For an actual means, we are going to search backwards from the end
+ * of the mmaped block looking for the PK-magic signature of a
  * disk_trailer. If we see one then we check the rootseek value to
  * find the first disk_entry of the root central directory. If we find
- * the correct PK-magic signature of a disk_entry over there then we 
+ * the correct PK-magic signature of a disk_entry over there then we
  * assume we are done and we are going to return a pointer to that label.
  *
  * The return value is a pointer to the first zzip_disk_entry being checked
  * to be within the bounds of the file area specified by the arguments. If
- * no disk_trailer was found then null is returned, and likewise we only 
- * accept a disk_trailer with a seekvalue that points to a disk_entry and 
+ * no disk_trailer was found then null is returned, and likewise we only
+ * accept a disk_trailer with a seekvalue that points to a disk_entry and
  * both parts have valid PK-magic parts. Beyond some sanity check we try to
  * catch a common brokeness with zip archives that still allows us to find
  * the start of the zip central directory.
@@ -330,7 +339,7 @@ zzip_entry_findfirst(FILE * disk)
  * (e.g. from zzip_entry_findfirst) and moves it to point to the next entry.
  * On error it returns 0, otherwise the old entry. If no further match is
  * found then null is returned and the entry already free()d. If you want
- * to stop searching for matches before that case then please call 
+ * to stop searching for matches before that case then please call
  * => zzip_entry_free on the cursor struct ZZIP_ENTRY.
  */
 zzip__new__ ZZIP_ENTRY *
@@ -376,10 +385,10 @@ zzip_entry_free(ZZIP_ENTRY * entry)
 
 /** search for files in the (fseeko) zip central directory
  *
- * This function is given a filename as an additional argument, to find the 
- * disk_entry matching a given filename. The compare-function is usually 
- * strcmp or strcasecmp or perhaps strcoll, if null then strcmp is used. 
- * - use null as argument for "old"-entry when searching the first 
+ * This function is given a filename as an additional argument, to find the
+ * disk_entry matching a given filename. The compare-function is usually
+ * strcmp or strcasecmp or perhaps strcoll, if null then strcmp is used.
+ * - use null as argument for "old"-entry when searching the first
  * matching entry, otherwise the last returned value if you look for other
  * entries with a special "compare" function (if null then a doubled search
  * is rather useless with this variant of _findfile). If no further entry is
@@ -427,7 +436,7 @@ zzip_entry_findfile(FILE * disk, char *filename,
  * platform has fnmatch available then null-compare will use that one
  * and otherwise we fall back to mere strcmp, so if you need fnmatch
  * searching then please provide an implementation somewhere else.
- * - use null as argument for "after"-entry when searching the first 
+ * - use null as argument for "after"-entry when searching the first
  * matching entry, or the last disk_entry return-value to find the
  * next entry matching the given filespec. If no further entry is
  * found then null is returned and any "old"-entry gets already free()d.
@@ -647,7 +656,7 @@ zzip_entry_fclose(ZZIP_ENTRY_FILE * file)
 
 /** => zzip_entry_fopen
  *
- * This function allows to distinguish an error from an eof condition. 
+ * This function allows to distinguish an error from an eof condition.
  * Actually, if we found an error but we did already reach eof then we
  * just keep on saying that it was an eof, so the app can just continue.
  */
