@@ -102,7 +102,8 @@ install-docs: $(doc_FILES) $(man_FILES) site.html htmpages.tar
 	cd $(DESTDIR)$(pkgdocdir) && ln -sf zzip-index.html index.html
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/man
 	@ echo $(PAX_TAR_EXTRACT) htmpages.tar '>>>' $(DESTDIR)$(pkgdocdir)/man/ \
-	; test -f htmpages.tar || cd "$srcdir" ; P=`pwd` \
+	; test -f htmpages.tar || cd "$srcdir" \
+	; P=`pwd` ; test -s htmpages.tar || exit 1 \
 	; cd $(DESTDIR)$(pkgdocdir)/man && $(PAX_TAR_EXTRACT) $$P/htmpages.tar \
 	; true
 
@@ -163,8 +164,8 @@ htmpages.tar : zziplib.xml zzipmmapped.xml zzipfseeko.xml zziplib-manpages.dbk
 	;       cp $(srcdir)/zziplib-manpages.dbk zziplib-manpages.xml \
 	; echo '$(XMLTO) -o html html zziplib-manpages.xml | tee written.lst' \
 	;       $(XMLTO) -o html html zziplib-manpages.xml | tee written.lst \
-	; echo 'ar qc $@ html/*.*' \
-	;       ar qc $@ html/*.*  \
+	; echo '$(PAX_TAR_CREATE) $@ html/*.*' \
+	;       $(PAX_TAR_CREATE) $@ html/*.*  \
 	; echo '$(DELETE); rm html/*.* ; rmdir html' \
 	;       $(DELETE); rm html/*.* ; rmdir html  \
 	; fi ; true
@@ -175,11 +176,12 @@ htmpages.tar : zziplib.xml zzipmmapped.xml zzipfseeko.xml zziplib-manpages.dbk
 
 install-man3 : manpages.tar
 	$(mkinstalldirs) $(DESTDIR)$(mandir)/man3
-	P=`pwd` ; cd $(DESTDIR)$(mandir)/man3 \
-        && $(PAX_TAR_EXTRACT) $$P/manpages.tar \
+	P=`pwd` ; test -s manpages.tar || exit 1 \
+	; cd $(DESTDIR)$(mandir)/man3 && $(PAX_TAR_EXTRACT) $$P/manpages.tar \
         ; true
 
 unpack : manpages.tar htmpages.tar
+	test -s manpages.tar && test -s htmpages.tar
 	(rm -rf _htm && mkdir _htm && cd _htm && $(PAX_TAR_EXTRACT) ../htmpages.tar)
 	(rm -rf _man && mkdir _man && cd _man && $(PAX_TAR_EXTRACT) ../manpages.tar)
 clean-unpack : 

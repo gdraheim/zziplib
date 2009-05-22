@@ -1,4 +1,4 @@
-dnl @synopsis AC_CHECK_ALIGNED_ACCESS_REQUIRED
+dnl @synopsis AX_PAX_TAR
 dnl
 dnl Most people will not know about the "tar"-wars a long while back.
 dnl In the end the proponents of cpio lost just as all the oldish
@@ -39,17 +39,17 @@ if test -z "$ac_cv_pax_tar_tool"; then
   AC_PATH_PROG([PAX],[pax], :)
   if test "$ac_cv_path_PAX" != ":"; then
     ac_cv_pax_tar_tool="pax"
-  else #1
+  else #3
   AC_PATH_PROG([GNUTAR],[gnutar], :)
   if test "$ac_cv_path_GNUTAR" != ":"; then
     ac_cv_pax_tar_tool="gnutar"
-  else #2
+  else #1
   AC_PATH_PROG([GTAR],[gtar], :)
   if test "$ac_cv_path_GTAR" != ":"; then
     ac_cv_pax_tar_tool="gtar"
-  else #3
+  else #2
   AC_PATH_PROG([TAR],[tar], :)
-  if test "$ac_cv_path_GTAR" != ":"; then
+  if test "$ac_cv_path_TAR" != ":"; then
     ac_cv_pax_tar_tool="tar"
   fi
   fi fi fi #3 #2 #1
@@ -61,12 +61,16 @@ fi
 AC_DEFUN([_AX_PAX_TAR_CREATE],[
   _AX_PAX_TAR_TOOL
   AC_MSG_CHECKING([for invokation create portable tar archives])
-  if test "$ac_cv_pax_tar_tool" = "pax"; then
-    ax_pax_tar_create="'$ac_cv_path_PAX' -w -f"
-  elif test "$ac_cv_pax_tar_tool" = "gnutar"; then
+  if test "$ac_cv_pax_tar_tool" = "gnutar"; then
     ax_pax_tar_create="'$ac_cv_path_GNUTAR' cf"
   elif test "$ac_cv_pax_tar_tool" = "gtar"; then
     ax_pax_tar_create="'$ac_cv_path_GTAR' cf"
+  elif test "$ac_cv_pax_tar_tool" = "pax"; then
+    ax_pax_tar_create="'$ac_cv_path_PAX' -w -f"
+    dnl BSD PAX has the nuisiance to prompt for a new archive on errors
+    if "$ac_cv_path_PAX" --help 2>&1 | grep "pax.*-[[a-zA-Z]]*O" ; then
+       ax_pax_tar_extract="'$ac_cv_path_PAX' -w -O -f"
+    fi
   elif test "$ac_cv_pax_tar_tool" = "tar"; then
     ax_pax_tar_create="'$ac_cv_path_TAR' cf"
   else
@@ -78,12 +82,16 @@ AC_DEFUN([_AX_PAX_TAR_CREATE],[
 AC_DEFUN([_AX_PAX_TAR_EXTRACT],[
   _AX_PAX_TAR_TOOL
   AC_MSG_CHECKING([for invokation extract portable tar archives])
-  if test "$ac_cv_pax_tar_tool" = "pax"; then
-    ax_pax_tar_extract="'$ac_cv_path_PAX' -r -f"
-  elif test "$ac_cv_pax_tar_tool" = "gnutar"; then
+  if test "$ac_cv_pax_tar_tool" = "gnutar"; then
     ax_pax_tar_extract="'$ac_cv_path_GNUTAR' xf"
   elif test "$ac_cv_pax_tar_tool" = "gtar"; then
     ax_pax_tar_extract="'$ac_cv_path_GTAR' xf"
+  elif test "$ac_cv_pax_tar_tool" = "pax"; then
+    ax_pax_tar_extract="'$ac_cv_path_PAX' -r -f"
+    dnl BSD PAX has the nuisiance to prompt for a new archive on errors
+    if "$ac_cv_path_PAX" --help 2>&1 | grep "pax.*-[[a-zA-Z]]*O" ; then
+       ax_pax_tar_extract="'$ac_cv_path_PAX' -r -O -f"
+    fi
   elif test "$ac_cv_pax_tar_tool" = "tar"; then
     ax_pax_tar_extract="'$ac_cv_path_TAR' xf"
   else

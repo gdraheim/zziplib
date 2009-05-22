@@ -50,12 +50,16 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ac_compile_check_sizeof.m4 \
 	$(top_srcdir)/m4/ax_expand_prefix.m4 \
 	$(top_srcdir)/m4/ax_maintainer_mode_auto_silent.m4 \
 	$(top_srcdir)/m4/ax_not_enable_frame_pointer.m4 \
+	$(top_srcdir)/m4/ax_pax_tar.m4 \
 	$(top_srcdir)/m4/ax_prefix_config_h.m4 \
 	$(top_srcdir)/m4/ax_set_version_info.m4 \
 	$(top_srcdir)/m4/ax_spec_file.m4 \
 	$(top_srcdir)/m4/ax_spec_package_version.m4 \
 	$(top_srcdir)/m4/ax_warning_default_aclocaldir.m4 \
 	$(top_srcdir)/m4/ax_warning_default_pkgconfig.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 \
 	$(top_srcdir)/m4/patch_libtool_on_darwin_zsh_overquoting.m4 \
 	$(top_srcdir)/m4/patch_libtool_sys_lib_search_path_spec.m4 \
 	$(top_srcdir)/m4/patch_libtool_to_add_host_cc.m4 \
@@ -82,43 +86,45 @@ CFLAGS = @CFLAGS@
 CONFIG_FILES = @CONFIG_FILES@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
-CXX = @CXX@
-CXXCPP = @CXXCPP@
-CXXDEPMODE = @CXXDEPMODE@
-CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
-ECHO = @ECHO@
+DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
-F77 = @F77@
-FFLAGS = @FFLAGS@
+FGREP = @FGREP@
+GNUTAR = @GNUTAR@
 GREP = @GREP@
+GTAR = @GTAR@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LARGEFILE_CFLAGS = @LARGEFILE_CFLAGS@
+LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
+LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
 MKZIP = @MKZIP@
+NM = @NM@
 NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
+OTOOL = @OTOOL@
+OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -126,6 +132,9 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PAX = @PAX@
+PAX_TAR_CREATE = @PAX_TAR_CREATE@
+PAX_TAR_EXTRACT = @PAX_TAR_EXTRACT@
 PERL = @PERL@
 PKG_CONFIG = @PKG_CONFIG@
 PYTHON = @PYTHON@
@@ -137,6 +146,7 @@ SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+TAR = @TAR@
 THREAD_SAFE = @THREAD_SAFE@
 VERSION = @VERSION@
 VERSION_INFO = @VERSION_INFO@
@@ -151,8 +161,7 @@ abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
 ac_ct_CC = @ac_ct_CC@
-ac_ct_CXX = @ac_ct_CXX@
-ac_ct_F77 = @ac_ct_F77@
+ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 aclocaldir = @aclocaldir@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
@@ -185,6 +194,7 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
+lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -204,6 +214,7 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
+top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = 1.4 foreign
@@ -231,10 +242,10 @@ EXTRA_DIST = make-doc.py $(doc_FILES) $(htm_FILES) $(SDL_RWOPS) \
              make-doc.pl make-dbk.pl   mksite.sh mksite.pl body.htm \
              $(zzipdoc_FILES) sdocbook.css \
              zziplib-manpages.dbk zziplib-master.dbk \
-             zziplib-manpages.ar 
+             zziplib-manpages.tar
 
 CLEANFILES = *.pc *.omf
-DISTCLEANFILES = zziplib.spec manpages.ar htmpages.ar *.html *.xml
+DISTCLEANFILES = zziplib.spec manpages.tar htmpages.tar *.html *.xml
 zzipdoc_FILES = makedocs.py               zzipdoc/__init__.py \
 	zzipdoc/commentmarkup.py          zzipdoc/match.py    \
 	zzipdoc/dbk2htm.py                zzipdoc/htm2dbk.py  \
@@ -448,27 +459,30 @@ install-data-local : @MAINTAINER_MODE_FALSE@ install-mans
 zziplib.spec : @top_srcdir@/$(PACKAGE).spec
 	@ $(LN_S) $? $@ # the two zzip-doc.* will grep thru zziplib.spec
 doc  : $(doc_FILES) site.html
-docs : doc manpages.ar htmpages.ar
+docs : doc manpages.tar htmpages.tar
 # docu : docs
 docu : 
 	- rm zziplib2.html zzipmmapped.html zzipfseeko.html
-	$(MAKE) manpages.ar htmpages.ar DELETE=exit
+	$(MAKE) manpages.tar htmpages.tar DELETE=exit
 
-zziplib.html zziplib.xml : zziplib.spec $(srcdir)/Makefile.am \
+zziplib.html: zziplib.xml
+zziplib.xml: zziplib.spec $(srcdir)/Makefile.am \
                  $(srcdir)/zzipdoc/*.py \
                  $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c
 	$(PYRUN) $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c $(zziplib) \
                    "--package=$(PACKAGE)" "--version=$(VERSION)" \
                    "--onlymainheader=zzip/lib.h" "--output=zziplib"
 	test -s zziplib.docbook && mv zziplib.docbook zziplib.xml
-zzipmmapped.html zzipmmapped.xml : zziplib.spec $(srcdir)/Makefile.am \
+zzipmmapped.html: zzipmmapped.xml 
+zzipmmapped.xml: zziplib.spec $(srcdir)/Makefile.am \
                  $(srcdir)/zzipdoc/*.py \
                  $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c
 	$(PYRUN) $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c $(zziplib) \
                    "--package=$(PACKAGE)" "--version=$(VERSION)" \
                    "--onlymainheader=zzip/mmapped.h" "--output=zzipmmapped"
 	test -s zzipmmapped.docbook && mv zzipmmapped.docbook zzipmmapped.xml
-zzipfseeko.html zzipfseeko.xml : zziplib.spec $(srcdir)/Makefile.am \
+zzipfseeko.html: zzipfseeko.xml 
+zzipfseeko.xml: zziplib.spec $(srcdir)/Makefile.am \
                  $(srcdir)/zzipdoc/*.py \
                  $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c
 	$(PYRUN) $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c $(zziplib) \
@@ -476,7 +490,7 @@ zzipfseeko.html zzipfseeko.xml : zziplib.spec $(srcdir)/Makefile.am \
                    "--onlymainheader=zzip/fseeko.h" "--output=zzipfseeko"
 	test -s zzipfseeko.docbook && mv zzipfseeko.docbook zzipfseeko.xml
 
-install-docs: $(doc_FILES) $(man_FILES) site.html htmpages.ar
+install-docs: $(doc_FILES) $(man_FILES) site.html htmpages.tar
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
 	$(INSTALL_DATA) $(html_FILES) $(DESTDIR)$(pkgdocdir)
 	for i in $(doc_FILES) $(DOCEXAMPLES) $(changelog) $(srcdir)/README.* \
@@ -484,9 +498,11 @@ install-docs: $(doc_FILES) $(man_FILES) site.html htmpages.ar
 	    $(DESTDIR)$(pkgdocdir) ; done
 	cd $(DESTDIR)$(pkgdocdir) && ln -sf zzip-index.html index.html
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/man
-	@ echo ar x htmpages.ar '>>>' $(DESTDIR)$(pkgdocdir)/man/ \
-	; test -f htmpages.ar || cd "$srcdir" ; P=`pwd` \
-	; cd $(DESTDIR)$(pkgdocdir)/man && ar x $$P/htmpages.ar
+	@ echo $(PAX_TAR_EXTRACT) htmpages.tar '>>>' $(DESTDIR)$(pkgdocdir)/man/ \
+	; test -f htmpages.tar || cd "$srcdir" \
+	; P=`pwd` ; test -s htmpages.tar || exit 1 \
+	; cd $(DESTDIR)$(pkgdocdir)/man && $(PAX_TAR_EXTRACT) $$P/htmpages.tar \
+	; true
 
 install-doc : install-docs $(PACKAGE)-doc.omf
 	$(mkinstalldirs) $(DESTDIR)$(pkgomfdir)
@@ -504,12 +520,12 @@ install-sf:
 mans : manpages
 install-mans : install-man3
 
-man3 man manpages : manpages.ar
-html htm htmpages : htmpages.ar
+man3 man manpages : manpages.tar
+html htm htmpages : htmpages.tar
 
-zziplib-manpages.ar : manpages.ar
+zziplib-manpages.tar : manpages.tar
 	test -s "$@" || test -s "$(srcdir)/$@"
-manpages.ar : zziplib.xml zzipmmapped.xml zzipfseeko.xml
+manpages.tar : zziplib.xml zzipmmapped.xml zzipfseeko.xml
 	: "unix man format of the manpages - goes to ../share/man/man3"
 	@ if test "$(XMLTO)" != ":" \
 	; then echo going to regenerate "$@" in subdir "'"man"'" \
@@ -523,8 +539,8 @@ manpages.ar : zziplib.xml zzipmmapped.xml zzipfseeko.xml
 	;       $(XMLTO) -o man3 man zzipfseeko.xml  \
 	; echo 'chmod 664 man3/*.3' \
 	;       chmod 664 man3/*.3  \
-	; echo 'ar qc "$@" man3/*.3' \
-	;       ar qc "$@" man3/*.3  \
+	; echo '$(PAX_TAR_CREATE) "$@" man3/*.3' \
+	;       $(PAX_TAR_CREATE) "$@" man3/*.3  \
 	; echo '$(DELETE); rm man3/*.3 ; rmdir man3' \
 	;       $(DELETE); rm man3/*.3 ; rmdir man3  \
 	; fi ; true
@@ -533,9 +549,9 @@ manpages.ar : zziplib.xml zzipmmapped.xml zzipfseeko.xml
 	; else echo cp $(srcdir)/zziplib-$@ $@; cp $(srcdir)/zziplib-$@ $@ \
 	; fi
 
-zziplib-htmpages.ar : htmpages.ar
+zziplib-htmpages.tar : htmpages.tar
 	test -s "$@" || test -s "$(srcdir)/$@"
-htmpages.ar : zziplib.xml zzipmmapped.xml zzipfseeko.xml zziplib-manpages.dbk
+htmpages.tar : zziplib.xml zzipmmapped.xml zzipfseeko.xml zziplib-manpages.dbk
 	: "html format of the manpages - put into zziplib/htdocs/man/*"
 	@ if test "$(XMLTO)" != ":" \
 	; then echo going to regenerate "$@" in subdir "'"html"'" \
@@ -545,8 +561,8 @@ htmpages.ar : zziplib.xml zzipmmapped.xml zzipfseeko.xml zziplib-manpages.dbk
 	;       cp $(srcdir)/zziplib-manpages.dbk zziplib-manpages.xml \
 	; echo '$(XMLTO) -o html html zziplib-manpages.xml | tee written.lst' \
 	;       $(XMLTO) -o html html zziplib-manpages.xml | tee written.lst \
-	; echo 'ar qc $@ html/*.*' \
-	;       ar qc $@ html/*.*  \
+	; echo '$(PAX_TAR_CREATE) $@ html/*.*' \
+	;       $(PAX_TAR_CREATE) $@ html/*.*  \
 	; echo '$(DELETE); rm html/*.* ; rmdir html' \
 	;       $(DELETE); rm html/*.* ; rmdir html  \
 	; fi ; true
@@ -555,14 +571,16 @@ htmpages.ar : zziplib.xml zzipmmapped.xml zzipfseeko.xml zziplib-manpages.dbk
 	; else echo cp $(srcdir)/zziplib-$@ $@; cp $(srcdir)/zziplib-$@ $@ \
 	; fi
 
-install-man3 : manpages.ar
+install-man3 : manpages.tar
 	$(mkinstalldirs) $(DESTDIR)$(mandir)/man3
-	P=`pwd` ; cd $(DESTDIR)$(mandir)/man3 \
-        && ar x $$P/manpages.ar
+	P=`pwd` ; test -s manpages.tar || exit 1 \
+	; cd $(DESTDIR)$(mandir)/man3 && $(PAX_TAR_EXTRACT) $$P/manpages.tar \
+        ; true
 
-unpack : manpages.ar htmpages.ar
-	(rm -rf _htm && mkdir _htm && cd _htm && ar x ../htmpages.ar)
-	(rm -rf _man && mkdir _man && cd _man && ar x ../manpages.ar)
+unpack : manpages.tar htmpages.tar
+	test -s manpages.tar && test -s htmpages.tar
+	(rm -rf _htm && mkdir _htm && cd _htm && $(PAX_TAR_EXTRACT) ../htmpages.tar)
+	(rm -rf _man && mkdir _man && cd _man && $(PAX_TAR_EXTRACT) ../manpages.tar)
 clean-unpack : 
 	rm -rf _htm
 	rm -rf _man

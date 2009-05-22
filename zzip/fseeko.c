@@ -193,7 +193,7 @@ prescan_entry(ZZIP_ENTRY * entry)
         return errno;
     } else {
         return 0;
-    } ____;
+    } ____; ____;
 }
 
 static void
