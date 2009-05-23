@@ -29,8 +29,8 @@ BuildRequires: SDL-devel
 %package %lib
 Summary:      ZZipLib - Documentation Files
 Group:        Development/Libraries
-Provides:     zziplib
-Provides:     libzzip0
+Provides:     zziplib = %version
+Provides:     libzzip0 = %version
 Provides:     libzzip-0.so.10
 
 %package doc
