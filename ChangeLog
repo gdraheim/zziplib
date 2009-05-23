@@ -18,6 +18,7 @@
          pre-installation check.
     * Makefile.am: fix zzip-postinstall
     * zziplib.spec: specifiy %version for the Provides:-clauses
+    * configure.ac: do not let autoconfigured LDFLAGS/LIBS bleed into zziplib.pc
 
 2009-05-22  guidod  <guidod@gmx.de>
 	* docs/Makefile.am: break a dual target into two lines as

@@ -1,7 +1,7 @@
 AC_INIT([zziplib.spec])
 AC_PREREQ(2.49)
 AC_COPYRIGHT([Guido Draheim <guido@gmx.de> for ZZipLib.SF.net])
-AC_REVISION($Revision: 1.11 $)
+AC_REVISION($Revision: 1.12 $)
 AC_CONFIG_AUX_DIR([uses])
 AC_CONFIG_MACRO_DIR([m4])
 # =======================================================================
@@ -82,7 +82,7 @@ AX_PREFIX_CONFIG_H([zzip/_msvc.h],[zzip],[zzip/_msvc.in])
 AM_MAINTAINER_MODE
 
 AX_CREATE_PKGCONFIG_INFO(dnl
-[zzip/zziplib.pc], [zzip-zlib-config],[-lzzip])
+[zzip/zziplib.pc], [zzip-zlib-config],[-lzzip],,[ ])
 # -----------------------------------------------------------------------
 echo extrac.t..
 AX_PAX_TAR_CREATE
