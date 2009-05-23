@@ -364,7 +364,7 @@ zzip_entry_findnext(ZZIP_ENTRY * _zzip_restrict entry)
     if (fseeko(entry->diskfile, seek, SEEK_SET) == -1)
         goto err;
     if (fread(disk_(entry), 1, sizeof(*disk_(entry)), entry->diskfile)
-            != sizeof(*disk_(entry)) goto err;
+            != sizeof(*disk_(entry))) goto err;
     entry->headseek = seek;
     if (! zzip_disk_entry_check_magic(entry))
         goto err;
