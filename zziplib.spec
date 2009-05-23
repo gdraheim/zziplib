@@ -1,7 +1,7 @@
 %define lib   lib010
 Summary:      ZZipLib - libZ-based ZIP-access Library
 Name:         zziplib
-Version:      0.13.52
+Version:      0.13.53
 Release:      1
 License:      LGPL
 Group:        Development/Libraries
@@ -45,6 +45,12 @@ Group:        Development/Libraries
 Requires:     zziplib-%lib = %version
 # Requires: pkgconfig (not yet)
 
+%package SDL_rwops-devel
+Summary:      ZZipLib - Development Files for SDL_rwops
+Group:        Development/Libraries
+Requires:     zziplib-%lib = %version
+Requires:     pkgconfig
+
 %description
  : zziplib provides read access to zipped files in a zip-archive,
  : using compression based solely on free algorithms provided by zlib.
@@ -70,6 +76,12 @@ Requires:     zziplib-%lib = %version
  these are the header files needed to develop programs using zziplib.
  there are test binaries to hint usage of the library in user programs.
 
+%description SDL_rwops-devel
+ : zziplib provides read access to zipped files in a zip-archive,
+ : using compression based solely on free algorithms provided by zlib.
+ these are example headers and implementation along with a pkgconfig
+ script that allows to easily use zziplib through SDL_rwops calls.
+
 %prep
 #'
 %setup
@@ -88,6 +100,8 @@ sh configure --prefix=%{_prefix} \
 
 %build
 %__make %{?jobs:-j%jobs}
+%__make check
+%__make test-sdl
 %__make %{?jobs:-j%jobs} zzip64-build
 %__make %{?jobs:-j%jobs} doc
 
@@ -99,6 +113,7 @@ sh configure --prefix=%{_prefix} \
 %__make zzip-postinstall
 %__make install-doc DESTDIR=%{buildroot}
 %__make install-mans DESTDIR=%{buildroot}
+%__make install-sdl DESTDIR=%{buildroot}
 
 %clean
 %__rm -rf %{buildroot}
@@ -131,8 +146,13 @@ test ! -f %_bindir/scrollkeeper-update || %_bindir/scrollkeeper-update
       %{_libdir}/lib*.so
       %{_libdir}/lib*.a
       %{_libdir}/lib*.la
-      %{_libdir}/pkgconfig/*
-%dir  %{_datadir}/%{name}
-      %{_datadir}/%{name}/*
+      %{_libdir}/pkgconfig/zzip*
       %{_datadir}/aclocal/%{name}*.m4
       %{_mandir}/man3/*
+
+%files SDL_rwops-devel
+      %defattr(-,root,root)
+      %{_libdir}/pkgconfig/SDL*zzip*
+%dir  %{_includedir}/SDL_rwops_zzip
+      %{_includedir}/SDL_rwops_zzip/*
+

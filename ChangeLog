@@ -1,3 +1,22 @@
+2009-05-23  guidod  <guidod@gmx.de>
+    * SDL/Makefile.am - remove dependency on zzip-config (and sdl-config)
+       which do not exist any since quite a time - instead use pkg-config
+       > Thanks to Michael Sterret for bringing it up
+    * SDL/SDL_rwops_zzcat.c: the SDL_rwops example was fixed, as the
+         nmemb/size of the sdl-read call were swapped over. The testsdl
+         self check (based on zzcatsdl) works OK.
+    * SDL/Makefile.am - the targe installation paths for the example
+         was fixed to include/SDL_rwops_zzip - additionally there is now
+         an SDL_rwops_zzip.pc pkgconfig script that will refer to the new
+         location (it had been previously installed in include/SDL, ouch).
+    * Note that the old zzip-sdl pkgconfig-files are gone now. Given that the
+         example was not quite working, it is improbable that anyone had
+         been using them in real code, so there's nothing breaking here.
+    * create a new package SDL_rwops-devel in zziplib.spec that will catch
+         the example code, SDL_rwops_zzip includes and SDL_rwops_zzip pkgconfig
+    * append "make check" and "make test-sdl" to zziplib.spec for  minimal
+         pre-installation check.
+
 2009-05-22  guidod  <guidod@gmx.de>
 	* docs/Makefile.am: break a dual target into two lines as
 	   suggested by ticket:2405440
