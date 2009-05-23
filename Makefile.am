@@ -118,9 +118,9 @@ zzip-postinstall:
 	: "the 12.8x and 11.8x and 10.8x packages are all the same actually"
 	cd $(DESTDIR)$(libdir) || exit 1 \
 	; for i in libzzip*.so.1? ; do : \
-	; v10=`echo $i | sed -e "s/.so.../.so.10/"` \
-	; v11=`echo $i | sed -e "s/.so.../.so.11/"` \
-	; v12=`echo $i | sed -e "s/.so.../.so.12/"` \
-	; test ! -e $v10 && test -e $v12 && ln -s $v12 $v10 \
-	; test ! -e $v12 && test -e $v10 && ln -s $v10 $v12 \
-	; ln -s $v10 $v11 || true; done
+	; v10=`echo $$i | sed -e "s/.so.../.so.10/"` \
+	; v11=`echo $$i | sed -e "s/.so.../.so.11/"` \
+	; v12=`echo $$i | sed -e "s/.so.../.so.12/"` \
+	; test ! -e $$v10 && test -e $$v12 && test "$v10" != "$v12" && ln -s $$v12 $$v10 \
+	; test ! -e $$v12 && test -e $$v10 && test "$v12" != "$v10" && ln -s $$v10 $$v12 \
+	; test "$v10" != "$v11" && ln -s $v10 $v11 || true; done

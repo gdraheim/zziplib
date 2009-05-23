@@ -16,6 +16,7 @@
          the example code, SDL_rwops_zzip includes and SDL_rwops_zzip pkgconfig
     * append "make check" and "make test-sdl" to zziplib.spec for  minimal
          pre-installation check.
+    * Makefile.am: fix zzip-postinstall
 
 2009-05-22  guidod  <guidod@gmx.de>
 	* docs/Makefile.am: break a dual target into two lines as
