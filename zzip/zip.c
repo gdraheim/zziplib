@@ -1,14 +1,14 @@
 
 /*
- * Author: 
+ * Author:
  *      Guido Draheim <guidod@gmx.de>
  *      Tomi Ollila <too@iki.fi>
  *
  * Copyright (c) 1999,2000,2001,2002,2003 Guido Draheim
  *          All rights reserved,
- *          use under the restrictions of the 
+ *          use under the restrictions of the
  *          Lesser GNU General Public License
- *          or alternatively the restrictions 
+ *          or alternatively the restrictions
  *          of the Mozilla Public License 1.1
  */
 
@@ -43,7 +43,7 @@
 #define _255 255
 #endif
 
-#define ZZIP_DISK64_TRAILER
+#define ZZIP_DISK64_TRAILER 1
 
 #ifdef ZZIP_DISK64_TRAILER
 struct _disk_trailer
@@ -117,7 +117,7 @@ __fixup_rootseek(zzip_off_t offset_of_trailer, struct _disk_trailer *trailer)
 
 #elif defined ZZIP_CORRECT_ROOTSEEK
 
-/* store the seekvalue of the trailer into the "z_magic" field and with 
+/* store the seekvalue of the trailer into the "z_magic" field and with
  * a 64bit off_t we overwrite z_disk/z_finaldisk as well. If you change
  * anything in zziplib or dump the trailer structure then watch out that
  * these are still unused, so that this code may still (ab)use those. */
@@ -140,15 +140,15 @@ __debug_dir_hdr(struct zzip_dir_hdr *hdr)
         { WARN1("internal sizeof-mismatch may break wreakage"); }
     /*  the internal directory structure is never bigger than the
      *  external zip central directory space had been beforehand
-     *  (as long as the following assertion holds...) 
+     *  (as long as the following assertion holds...)
      */
 
     if (((zzip_off_t) hdr) & 3)
     {
         NOTE1("this machine's malloc(3) returns sth. not u32-aligned");
     }
-    /* we assume that if this machine's malloc has returned a non-aligned 
-     * memory block, then it is actually safe to access misaligned data, and 
+    /* we assume that if this machine's malloc has returned a non-aligned
+     * memory block, then it is actually safe to access misaligned data, and
      * since it does only affect the first hdr it should not even bring about
      * too much of that cpu's speed penalty
      */
@@ -400,7 +400,7 @@ __zzip_parse_root_directory(int fd,
     struct zzip_dir_hdr *hdr;
     struct zzip_dir_hdr *hdr0;
     uint16_t *p_reclen = 0;
-    unsigned long entries;      /* 32bit is enough */
+    zzip_off64_t entries;
     zzip_off64_t zz_offset;     /* offset from start of root directory */
     char *fd_map = 0;
     zzip_off64_t zz_fd_gap = 0;
@@ -557,7 +557,7 @@ zzip_get_default_ext(void)
        ".zip", ".ZIP", /* common extension */
 #     ifdef ZZIP_USE_ZIPLIKES
        ".pk3", ".PK3", /* ID Software's Quake3 zipfiles */
-       ".jar", ".JAR", /* Java zipfiles */ 
+       ".jar", ".JAR", /* Java zipfiles */
 #      endif
 	/* *INDENT-ON* */
         0
@@ -567,7 +567,7 @@ zzip_get_default_ext(void)
 }
 
 /**
- * allocate a new ZZIP_DIR handle and do basic 
+ * allocate a new ZZIP_DIR handle and do basic
  * initializations before usage by => zzip_dir_fdopen
  * => zzip_dir_open => zzip_file_open or through
  * => zzip_open
@@ -600,11 +600,11 @@ zzip_dir_alloc(zzip_strings_t * fileext)
 }
 
 /**
- * will free the zzip_dir handle unless there are still 
+ * will free the zzip_dir handle unless there are still
  * zzip_files attached (that may use its cache buffer).
  * This is the inverse of => zzip_dir_alloc , and both
  * are helper functions used implicitly in other zzipcalls
- * e.g. => zzip_dir_close = zzip_close 
+ * e.g. => zzip_dir_close = zzip_close
  *
  * returns zero on sucess
  * returns the refcount when files are attached.
@@ -630,7 +630,7 @@ zzip_dir_free(ZZIP_DIR * dir)
 }
 
 /** => zzip_dir_free
- * It will also => free(2) the => ZZIP_DIR-handle given. 
+ * It will also => free(2) the => ZZIP_DIR-handle given.
  * the counterpart for => zzip_dir_open
  * see also => zzip_dir_free
  */
@@ -641,14 +641,14 @@ zzip_dir_close(ZZIP_DIR * dir)
     return zzip_dir_free(dir);
 }
 
-/** 
+/**
  * used by the => zzip_dir_open and zzip_opendir(2) call. Opens the
  * zip-archive as specified with the fd which points to an
  * already openend file. This function then search and parse
  * the zip's central directory.
- *  
- * NOTE: refcount is zero, so an _open/_close pair will also delete 
- *       this _dirhandle 
+ *
+ * NOTE: refcount is zero, so an _open/_close pair will also delete
+ *       this _dirhandle
  */
 ZZIP_DIR *
 zzip_dir_fdopen(int fd, zzip_error_t * errcode_p)
@@ -659,7 +659,7 @@ zzip_dir_fdopen(int fd, zzip_error_t * errcode_p)
 static zzip_error_t __zzip_dir_parse(ZZIP_DIR * dir);   /* forward */
 
 /** => zzip_dir_fdopen
- * this function uses explicit ext and io instead of the internal 
+ * this function uses explicit ext and io instead of the internal
  * defaults, setting these to zero is equivalent to => zzip_dir_fdopen
  */
 ZZIP_DIR *
@@ -696,8 +696,8 @@ __zzip_dir_parse(ZZIP_DIR * dir)
     zzip_error_t rv;
     zzip_off_t filesize;
     struct _disk_trailer trailer;
-    /* if (! dir || dir->fd < 0) 
-     *     { rv = EINVAL; goto error; } 
+    /* if (! dir || dir->fd < 0)
+     *     { rv = EINVAL; goto error; }
      */
 
     HINT2("------------------ fd=%i", (int) dir->fd);
@@ -724,7 +724,7 @@ __zzip_dir_parse(ZZIP_DIR * dir)
 
 /**
  * This function will attach any of the .zip extensions then
- * trying to open it the with => open(2). This is a helper 
+ * trying to open it the with => open(2). This is a helper
  * function for => zzip_dir_open, => zzip_opendir and => zzip_open.
  *
  * This function returns a new system file handle or -1 on error.
@@ -760,7 +760,7 @@ __zzip_try_open(zzip_char_t * filename, int filemode,
 
 /**
  * Opens the zip-archive (if available).
- * the two ext_io arguments will default to use posix io and 
+ * the two ext_io arguments will default to use posix io and
  * a set of default fileext that can atleast add .zip ext itself.
  */
 ZZIP_DIR *
@@ -770,7 +770,7 @@ zzip_dir_open(zzip_char_t * filename, zzip_error_t * e)
 }
 
 /** => zzip_dir_open
- * this function uses explicit ext and io instead of the internal 
+ * this function uses explicit ext and io instead of the internal
  * defaults. Setting these to zero is equivalent to => zzip_dir_open
  */
 ZZIP_DIR *
@@ -804,9 +804,9 @@ zzip_dir_open_ext_io(zzip_char_t * filename, zzip_error_t * e,
 }
 
 /** => zzip_dir_open
- * fills the dirent-argument with the values and 
+ * fills the dirent-argument with the values and
  * increments the read-pointer of the dir-argument.
- * 
+ *
  * returns 0 if there no entry (anymore).
  */
 int
@@ -832,7 +832,7 @@ zzip_dir_read(ZZIP_DIR * dir, ZZIP_DIRENT * d)
     return 1;
 }
 
-/* 
+/*
  * Local variables:
  * c-file-style: "stroustrup"
  * End:

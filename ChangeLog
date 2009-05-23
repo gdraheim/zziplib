@@ -19,6 +19,12 @@
     * Makefile.am: fix zzip-postinstall
     * zziplib.spec: specifiy %version for the Provides:-clauses
     * configure.ac: do not let autoconfigured LDFLAGS/LIBS bleed into zziplib.pc
+    * zip.c: ensure that the zzip64_trailer entries is being used and that the
+        parse_root_directory function honours the full 64bit in the "entries" counter
+        (rejecting the patch from Tulipánt Gergely which would allow to get away with
+        non-standard zip archives that do use a normal zzip_trailer with a 16bit entries
+        counter that happens to store only the modulo value of the real entries in the
+        archive - zippers should fail beyond 65535 entries or switch to the ZIP64 format).
 
 2009-05-22  guidod  <guidod@gmx.de>
 	* docs/Makefile.am: break a dual target into two lines as
