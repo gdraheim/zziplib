@@ -84,24 +84,24 @@ sh configure --prefix=%{_prefix} \
              --bindir=%{_bindir} \
              --libdir=%{_libdir} \
              --enable-sdl  TIMEOUT=9
-make zzip64-setup
+%__make zzip64-setup
 
 %build
-make
-make zzip64-build
-make doc
+%__make %{?jobs:-j%jobs}
+%__make %{?jobs:-j%jobs} zzip64-build
+%__make %{?jobs:-j%jobs} doc
 
 %install
-rm -rf %{buildroot}
-make zzip64-install DESTDIR=%{buildroot}
-make install DESTDIR=%{buildroot}
-make zzip32-postinstall DESTDIR=%{buildroot}
-make zzip-postinstall
-make install-doc DESTDIR=%{buildroot}
-make install-mans DESTDIR=%{buildroot}
+%__rm -rf %{buildroot}
+%__make zzip64-install DESTDIR=%{buildroot}
+%__make install DESTDIR=%{buildroot}
+%__make zzip32-postinstall DESTDIR=%{buildroot}
+%__make zzip-postinstall
+%__make install-doc DESTDIR=%{buildroot}
+%__make install-mans DESTDIR=%{buildroot}
 
 %clean
-rm -rf %{buildroot}
+%__rm -rf %{buildroot}
 
 %files %lib
       %defattr(-,root,root)
