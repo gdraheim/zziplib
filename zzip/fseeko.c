@@ -100,7 +100,7 @@ zzip_entry_fread_file_header(ZZIP_ENTRY * entry,
     if (0 > offset || offset >= entry->disksize)
         return 0;
 
-    fseeko(entry->diskfile, offset, SEEK_SET);
+    if (fseeko(entry->diskfile, offset, SEEK_SET) == -1) return 0;
     return (fread(file_header, sizeof(*file_header), 1, entry->diskfile)
             ? offset + sizeof(*file_header) : 0);
     ____;
@@ -124,7 +124,8 @@ zzip_entry_data_offset(ZZIP_ENTRY * entry)
     if (! offset)
         return -1;
     offset += zzip_file_header_sizeof_tails(&file_header);
-    fseeko(entry->diskfile, offset, SEEK_SET);
+    if (fseeko(entry->diskfile, offset, SEEK_SET) == -1)
+        return -1;
     return offset;
     ____;
 }
@@ -240,7 +241,8 @@ zzip_entry_findfirst(FILE * disk)
 {
     if (! disk)
         return 0;
-    fseeko(disk, 0, SEEK_END);
+    if (fseeko(disk, 0, SEEK_END) == -1)
+        return 0;
     ___ zzip_off_t disksize = ftello(disk);
     if (disksize < (zzip_off_t) sizeof(struct zzip_disk_trailer))
         return 0;
@@ -265,8 +267,10 @@ zzip_entry_findfirst(FILE * disk)
     }
     while (1)
     {
-        fseeko(disk, mapoffs, SEEK_SET);
-        fread(buffer, 1, mapsize, disk);
+        if (fseeko(disk, mapoffs, SEEK_SET) == -1)
+            goto error;
+        if (fread(buffer, 1, mapsize, disk) != mapsize)
+            goto error;
         ___ unsigned char *p =
             buffer + mapsize - sizeof(struct zzip_disk_trailer);
         for (; p >= buffer; p--)
@@ -299,8 +303,10 @@ zzip_entry_findfirst(FILE * disk)
                 continue;
 
             assert(0 <= root && root < mapsize);
-            fseeko(disk, root, SEEK_SET);
-            fread(disk_(entry), 1, sizeof(*disk_(entry)), disk);
+            if (fseeko(disk, root, SEEK_SET) == -1)
+                goto error;
+            if (fread(disk_(entry), 1, sizeof(*disk_(entry)), disk)
+                    != sizeof(*disk_(entry))) goto error;
             if (zzip_disk_entry_check_magic(entry))
             {
                 free(buffer);
@@ -321,6 +327,7 @@ zzip_entry_findfirst(FILE * disk)
         if (disksize - mapoffs > 64 * 1024)
             break;
     }
+  error:
     free(buffer);
   nomem:
     free(entry);
@@ -354,8 +361,10 @@ zzip_entry_findnext(ZZIP_ENTRY * _zzip_restrict entry)
     if (seek + (zzip_off_t) sizeof(*disk_(entry)) > entry->disksize)
         goto err;
 
-    fseeko(entry->diskfile, seek, SEEK_SET);
-    fread(disk_(entry), 1, sizeof(*disk_(entry)), entry->diskfile);
+    if (fseeko(entry->diskfile, seek, SEEK_SET) == -1)
+        goto err;
+    if (fread(disk_(entry), 1, sizeof(*disk_(entry)), entry->diskfile)
+            != sizeof(*disk_(entry)) goto err;
     entry->headseek = seek;
     if (! zzip_disk_entry_check_magic(entry))
         goto err;
@@ -543,7 +552,8 @@ zzip_entry_fopen(ZZIP_ENTRY * entry, int takeover)
     seek += sizeof(file->buffer);
     seek -= seek & (sizeof(file->buffer) - 1);
     assert(file->data < seek);  /* pre-read to next PAGESIZE boundary... */
-    fseeko(file->entry->diskfile, file->data + file->dataoff, SEEK_SET);
+    if (fseeko(file->entry->diskfile, file->data + file->dataoff, SEEK_SET) == -1)
+        goto fail2;
     file->zlib.next_in = file->buffer;
     file->zlib.avail_in = fread(file->buffer, 1, seek - file->data,
                                 file->entry->diskfile);
@@ -597,7 +607,7 @@ zzip_entry_fread(void *ptr, zzip_size_t sized, zzip_size_t nmemb,
     {
         if (size > file->avail)
             size = file->avail;
-        fread(ptr, 1, size, file->entry->diskfile);
+        if (fread(ptr, 1, size, file->entry->diskfile) != size) return 0;
         file->dataoff += size;
         file->avail -= size;
         return size;

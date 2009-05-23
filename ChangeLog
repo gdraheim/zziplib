@@ -26,6 +26,7 @@
         counter that happens to store only the modulo value of the real entries in the
         archive - zippers should fail beyond 65535 entries or switch to the ZIP64 format).
      * docs/referentials.htm - include reference to  http://www.ogre3d.org/
+     * zzip/fseeko.c: check some more return values from fseeko/fread calls.
      * 0.13.53
 
 2009-05-22  guidod  <guidod@gmx.de>
