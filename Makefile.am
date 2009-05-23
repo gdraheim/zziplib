@@ -121,6 +121,6 @@ zzip-postinstall:
 	; v10=`echo $$i | sed -e "s/.so.../.so.10/"` \
 	; v11=`echo $$i | sed -e "s/.so.../.so.11/"` \
 	; v12=`echo $$i | sed -e "s/.so.../.so.12/"` \
-	; test ! -e $$v10 && test -e $$v12 && test "$v10" != "$v12" && ln -s $$v12 $$v10 \
-	; test ! -e $$v12 && test -e $$v10 && test "$v12" != "$v10" && ln -s $$v10 $$v12 \
-	; test "$v10" != "$v11" && ln -s $v10 $v11 || true; done
+	; test ! -e "$$v10" && test -e "$$v12" && test "$$v10" != "$$v12" && ln -s "$$v12" "$$v10" \
+	; test ! -e "$$v12" && test -e "$$v10" && test "$$v12" != "$$v10" && ln -s "$$v10" "$$v12" \
+	; test "$$v10" != "$$v11" && ln -s "$$v10" "$$v11" || true; done
