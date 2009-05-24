@@ -4,29 +4,18 @@
  * zip-access variants that refer to <zzip/format.h>. On the x86 platform the
  * actual definitions will be empty - fetching is done on native machine-level
  *
- * Author: 
+ * Author:
  *      Guido Draheim <guidod@gmx.de>
  *
  * Copyright (c) 2004,2005,2006 Guido Draheim
  *          All rights reserved,
- *          use under the restrictions of the 
+ *          use under the restrictions of the
  *          Lesser GNU General Public License
- *          or alternatively the restrictions 
+ *          or alternatively the restrictions
  *          of the Mozilla Public License 1.1
  */
 
 #include <zzip/fetch.h>
-
-#if defined ZZIP_WORDS_BIGENDIAN && \
-   defined bswap_16 && defined bswap_32 && defined bswap_64
-# define __ZZIP_GET16(__p)                        bswap_16(*(uint16_t*)(__p))
-# define __ZZIP_GET32(__p)                        bswap_32(*(uint32_t*)(__p))
-# define __ZZIP_SET16(__p,__x) (*(uint16_t*)(__p) = bswap_16((uint16_t)(__x)))
-# define __ZZIP_SET32(__p,__x) (*(uint32_t*)(__p) = bswap_32((uint32_t)(__x)))
-# define __ZZIP_GET64(__p)                    bswap_64(*(zzip_off64_t*)(__p))
-# define __ZZIP_SET64(__p,__x) \
-                     (*(zzip_off64_t*)(__p) = bswap_64((zzip_off64_t)(__x)))
-#endif
 
 /* ------------------------- fetch helpers --------------------------------- */
 

@@ -1,3 +1,7 @@
+2009-05-24 guidod <guidod@gmx.de>
+    * zzip/fetch.c - remove SET/GET fetch definitions that already
+       exist in zzip/fetch.h where they have been corrected lately.
+
 2009-05-23  guidod  <guidod@gmx.de>
     * SDL/Makefile.am - remove dependency on zzip-config (and sdl-config)
        which do not exist any since quite a time - instead use pkg-config
