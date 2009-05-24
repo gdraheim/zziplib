@@ -132,6 +132,9 @@ sh configure --prefix=%{_prefix} \
       %{_datadir}/doc/*
 %dir  %{_datadir}/omf/%{name}
       %{_datadir}/omf/%{name}/*
+      %{_datadir}/doc
+      %{_datadir}/omf
+
 %post doc
 test ! -f %_bindir/scrollkeeper-update || %_bindir/scrollkeeper-update
 %postun doc
