@@ -3,6 +3,8 @@
        exist in zzip/fetch.h where they have been corrected lately.
     * docs/Makefile.am - change from install-sf via shell.sf.net to
        upload-sourceforge via web.sf.net - and alias to "www" shorthand
+    * docs/referentials.htm - fix typo.
+    * 0.13.54
 
 2009-05-23  guidod  <guidod@gmx.de>
     * SDL/Makefile.am - remove dependency on zzip-config (and sdl-config)
