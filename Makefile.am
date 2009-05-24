@@ -15,7 +15,8 @@ indent-check:
 
 doc docs docu clean-doc clean-docs clean-docu   zzip.html zzip.xml zzip.pdf \
 man mans manpages htmpages unpack clean-unpack  changes.htm pdfs \
-omf install-omf install-doc install-docs install-sf install-man3 install-mans :
+omf install-omf install-doc install-docs install-man3 install-mans \
+upload-sourceforge www:
 	(cd docs && $(MAKE) `basename $@`)
 
 sdl testsdl test-sdl install-sdl :

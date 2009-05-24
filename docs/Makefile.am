@@ -85,7 +85,6 @@ zzipfseeko.xml: zziplib.spec $(srcdir)/Makefile.am \
 
 omfdir=${datadir}/omf
 pkgomfdir=${omfdir}/${PACKAGE}
-SFNETDIR=/groups/z/zz/zziplib/htdocs
 pkgdocdir=${mandir}/../doc/${PACKAGE}
 bins = @top_srcdir@/bins
 DOCEXAMPLES = $(bins)/zzdir.c $(bins)/zzcat.c \
@@ -112,11 +111,15 @@ install-doc : install-docs $(PACKAGE)-doc.omf
 	$(INSTALL_DATA) $(PACKAGE)-doc.omf $(DESTDIR)$(pkgomfdir)/
 	- test ".$(DESTDIR)" != "." || scrollkeeper-update
 
-install-sf:
+SOURCEFORGE_GROUP=zziplib
+SOURCEFORGE_HOST=web.sourceforge.net
+SOURCEFORGE_PATH=/home/groups/z/zz/zziplib/htdocs
+www: upload-sourceforge
+upload-sourceforge:
 	$(MAKE) install-docs DESTDIR=/tmp/zziplib-htdocs-$$USER/
-	echo scp ... shell.sf.net:$(pkgdocdir)/ ; sleep 4
+	echo scp ... $(SOURCEFORGE_HOST):$(SOURCEFORGE_PATH)/ ; sleep 4
 	scp -r /tmp/zziplib-htdocs-$$USER/$(pkgdocdir)/* \
-               shell.sf.net:/home/$(SFNETDIR)/
+               $$USER,$(SOURCEFORGE_GROUP)@$(SOURCEFORGE_HOST):$(SOURCEFORGE_PATH)
 	rm -r /tmp/zziplib-htdocs-$$USER/
 
 # ------------------------------------------------------------ package manpages
