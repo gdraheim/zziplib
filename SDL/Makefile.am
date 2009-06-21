@@ -8,12 +8,17 @@ EXTRA_DIST = $(sdl_DATA)
 check_PROGRAMS = zzcatsdl
 
 zzcatsdl_SOURCES = SDL_rwops_zzcat.c SDL_rwops_zzip.c
-ZZIP_CFLAGS= `PKG_CONFIG_PATH=../zzip; pkg-config zziplib --cflags` 
-ZZIP_LIBS= `PKG_CONFIG_PATH=../zzip; pkg-config zziplib --libs`
+ZZIP_CFLAGS= `export PKG_CONFIG_PATH=../zzip; pkg-config zziplib --cflags` 
+ZZIP_LIBS= `export PKG_CONFIG_PATH=../zzip; pkg-config zziplib --libs`
 SDL_CFLAGS= `pkg-config sdl --cflags` 
 SDL_LIBS= `pkg-config sdl --libs`
 CFLAGS= -I$(srcdir) $(ZZIP_CFLAGS) $(SDL_CFLAGS)
 LIBS= $(ZZIP_LIBS) $(SDL_LIBS)
+
+default: test-sdl
+*.$(OBJEXT): ../zzip/zziplib.pc
+../zzip/zziplib.pc : ../zzip/Makefile
+	cd ../zzip && $(MAKE) zziplib.pc
 
 test.zip : @top_srcdir@/test/test.zip
 	$(LN_S) $? $@

@@ -1,3 +1,8 @@
+2009-06-22  guidod  <guidod@gmx.de>
+
+	* zzip/__hints.h: add else-part for ZZIP_GNUC_PACKED
+		(makes for problems for MSVC as reported by Denny Kunker)
+
 2009-05-24 guidod <guidod@gmx.de>
     * zzip/fetch.c - remove SET/GET fetch definitions that already
        exist in zzip/fetch.h where they have been corrected lately.

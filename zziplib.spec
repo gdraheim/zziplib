@@ -16,6 +16,13 @@ Requires:      zlib
 BuildRequires: zlib-devel
 BuildRequires: SDL-devel
 
+# make the build.opensuse.org happy
+%if %_os == linux
+BuildRequires: zip
+BuildRequires: scrollkeeper
+%endif
+
+
 #Begin3
 # Author1:        too@iki.fi (Tomi Ollila)
 # Author2:        guidod@gmx.de (Guido Draheim)
@@ -132,8 +139,6 @@ sh configure --prefix=%{_prefix} \
       %{_datadir}/doc/*
 %dir  %{_datadir}/omf/%{name}
       %{_datadir}/omf/%{name}/*
-      %{_datadir}/doc
-      %{_datadir}/omf
 
 %post doc
 test ! -f %_bindir/scrollkeeper-update || %_bindir/scrollkeeper-update
