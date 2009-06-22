@@ -1,7 +1,13 @@
 2009-06-22  guidod  <guidod@gmx.de>
 
-	* docs/Makefile.am: fixup for newer xmlto (0.0.18?) that generates
-	   a subdirectory "man3" inside of our output directory "man3".
+	* zzip/file.c: errornous usage of currentfp before setting it to
+	   the new fp value in zzip_seek(). In the good case it would seek
+	   on the wrong file and in the bad case it goes off on sigbus/NPE.
+	   The problem occurs only if two+ zips are accessed simultanously.
+	   (problem reported and patch kindly provided by Evgeniy Muhin)
+	* docs/Makefile.am: fixup for newer xmlto may be to generate
+	   a subdirectory "man3" inside of our output directory "man3"
+	   and gard against usage of man3/man3 for the tarball unpacking.
 	   (problem reported by Liu Qi [debian package maintainer])
 	* zzip/__hints.h: add else-part for ZZIP_GNUC_PACKED
 		(makes for problems with MSVC as reported by Denny Kunker)

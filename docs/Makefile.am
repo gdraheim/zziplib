@@ -143,7 +143,7 @@ manpages.tar : zziplib.xml zzipmmapped.xml zzipfseeko.xml
 	;       $(XMLTO) -o man3 man zzipmmapped.xml  \
 	; echo '$(XMLTO) -o man3 man zzipfseeko.xml' \
 	;       $(XMLTO) -o man3 man zzipfseeko.xml  \
-	; if test -d man3/man3; then mv man3 man3_; \
+	; if test -d man3/man3; then mv man3 man3_ \
 	;   mv man3_/man3 man3; rm -r man3_; fi \
 	; echo 'chmod 664 man3/*.3' \
 	;       chmod 664 man3/*.3  \
@@ -182,7 +182,7 @@ htmpages.tar : zziplib.xml zzipmmapped.xml zzipfseeko.xml zziplib-manpages.dbk
 install-man3 : manpages.tar
 	$(mkinstalldirs) $(DESTDIR)$(mandir)/man3
 	P=`pwd` ; test -s manpages.tar || exit 1 \
-	; cd $(DESTDIR)$(mandir)/man3 && $(PAX_TAR_EXTRACT) $$P/manpages.tar \
+	; cd $(DESTDIR)$(mandir) && $(PAX_TAR_EXTRACT) $$P/manpages.tar \
         ; true
 
 unpack : manpages.tar htmpages.tar
