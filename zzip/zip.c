@@ -436,10 +436,20 @@ __zzip_parse_root_directory(int fd,
         }
     }
 
-    for (entries = zz_entries, zz_offset = 0; entries; entries--)
+    for (entries=0, zz_offset=0; ; entries++)
     {
         register struct zzip_disk_entry *d;
         uint16_t u_extras, u_comment, u_namlen;
+
+#     ifndef ZZIP_ALLOW_MODULO_ENTRIES
+        if (entries >= zz_entries) {
+            if (zz_offset + 256 < zz_rootsize) {
+                FAIL4("%li's entry is long before the end of directory - enable modulo_entries? (O:%li R:%li)",
+                      (long) entries, (long) (zz_offset), (long) zz_rootsize);
+            }
+            break;
+        }
+#     endif
 
         if (fd_map)
             { d = (void*)(fd_map+zz_fd_gap+zz_offset); } /* fd_map+fd_gap==u_rootseek */
@@ -450,6 +460,14 @@ __zzip_parse_root_directory(int fd,
             if (io->fd.read(fd, &dirent, sizeof(dirent)) < __sizeof(dirent))
                 return ZZIP_DIR_READ;
             d = &dirent;
+        }
+
+        if (! zzip_disk_entry_check_magic(d)) {
+#        ifndef ZZIP_ALLOW_MODULO_ENTRIES
+            FAIL4("%li's entry has no disk_entry magic indicator (O:%li R:%li)",
+                  (long) entries, (long) (zz_offset), (long) zz_rootsize);
+#        endif
+            break;
         }
 
         if ((zzip_off64_t) (zz_offset + sizeof(*d)) > zz_rootsize ||
@@ -506,7 +524,7 @@ __zzip_parse_root_directory(int fd,
         {
             FAIL3("%li's entry stretches beyond root directory (O:%li)",
                   (long) entries, (long) (zz_offset));
-            entries--;
+            entries ++;
             break;
         }
 
@@ -540,7 +558,11 @@ __zzip_parse_root_directory(int fd,
         if (hdr_return)
             *hdr_return = hdr0;
     }                           /* else zero (sane) entries */
-    return (entries ? ZZIP_CORRUPTED : 0);
+#  ifndef ZZIP_ALLOW_MODULO_ENTRIES
+    return (entries != zz_entries ? ZZIP_CORRUPTED : 0);
+#  else
+    return (entries & (unsigned)0xFFFF) != zz_entries ? ZZIP_CORRUPTED : 0);
+#  endif
 }
 
 /* ------------------------- high-level interface ------------------------- */

@@ -1,5 +1,13 @@
 2009-06-22  guidod  <guidod@gmx.de>
 
+	* zzip/zip.c (__zzip_parse_root_directory): rework parse_directory
+	   to allow for ZZIP_ALLOW_MODULO_ENTRIES version as required for
+	   some cases where more than 65535 entries are packed into a
+	   non-ZIP64 archive. The modulo_entries variant is disabled by
+	   default but the know for the problem space was put into code to
+	   check for two more error conditions and report them in debug mode.
+	   (problem space was described carefully by Tulipánt Gergely and
+	    the provided patch was a good foundation for the ifdef code)
 	* configure.ac: use $can_build_shared from linker-config to allow
 	    build on platforms that do not support a shared library concept
 	    or where it is disabled (the commandline switch overrides it?)
