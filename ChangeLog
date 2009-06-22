@@ -1,7 +1,10 @@
 2009-06-22  guidod  <guidod@gmx.de>
 
+	* docs/Makefile.am: fixup for newer xmlto (0.0.18?) that generates
+	   a subdirectory "man3" inside of our output directory "man3".
+	   (problem reported by Liu Qi [debian package maintainer])
 	* zzip/__hints.h: add else-part for ZZIP_GNUC_PACKED
-		(makes for problems for MSVC as reported by Denny Kunker)
+		(makes for problems with MSVC as reported by Denny Kunker)
 
 2009-05-24 guidod <guidod@gmx.de>
     * zzip/fetch.c - remove SET/GET fetch definitions that already

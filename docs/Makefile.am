@@ -143,10 +143,12 @@ manpages.tar : zziplib.xml zzipmmapped.xml zzipfseeko.xml
 	;       $(XMLTO) -o man3 man zzipmmapped.xml  \
 	; echo '$(XMLTO) -o man3 man zzipfseeko.xml' \
 	;       $(XMLTO) -o man3 man zzipfseeko.xml  \
+	; if test -d man3/man3; then mv man3 man3_; \
+	;   mv man3_/man3 man3; rm -r man3_; fi \
 	; echo 'chmod 664 man3/*.3' \
 	;       chmod 664 man3/*.3  \
-	; echo '$(PAX_TAR_CREATE) "$@" man3/*.3' \
-	;       $(PAX_TAR_CREATE) "$@" man3/*.3  \
+	; echo '$(PAX_TAR_CREATE) "$@" man3/' \
+	;       $(PAX_TAR_CREATE) "$@" man3/  \
 	; echo '$(DELETE); rm man3/*.3 ; rmdir man3' \
 	;       $(DELETE); rm man3/*.3 ; rmdir man3  \
 	; fi ; true
