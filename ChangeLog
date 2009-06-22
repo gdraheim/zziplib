@@ -1,5 +1,9 @@
 2009-06-22  guidod  <guidod@gmx.de>
 
+	* configure.ac: use $can_build_shared from linker-config to allow
+	    build on platforms that do not support a shared library concept
+	    or where it is disabled (the commandline switch overrides it?)
+	    (should fix the SF bug ID 2796485 reported by Giovanni Bechis)
 	* zzip/file.c: errornous usage of currentfp before setting it to
 	   the new fp value in zzip_seek(). In the good case it would seek
 	   on the wrong file and in the bad case it goes off on sigbus/NPE.

@@ -1,7 +1,7 @@
 AC_INIT([zziplib.spec])
 AC_PREREQ(2.49)
 AC_COPYRIGHT([Guido Draheim <guido@gmx.de> for ZZipLib.SF.net])
-AC_REVISION($Revision: 1.12 $)
+AC_REVISION($Revision: 1.13 $)
 AC_CONFIG_AUX_DIR([uses])
 AC_CONFIG_MACRO_DIR([m4])
 # =======================================================================
@@ -285,7 +285,11 @@ case "$host_os" in
     RESOLVES=' '
   ;;
   *)
-    ZZIPLIB_LDFLAGS="--export-dynamic"
+
+    if ".$can_build_shared" = .no
+    then ZZIPLIB_LDFLAGS=""
+    else ZZIPLIB_LDFLAGS="--export-dynamic"
+    fi
     RESOLVES=' # '
   ;;
 esac
