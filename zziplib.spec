@@ -1,3 +1,4 @@
+# norootforbuild
 %define lib   lib010
 Summary:      ZZipLib - libZ-based ZIP-access Library
 Name:         zziplib
@@ -45,6 +46,11 @@ Summary:      ZZipLib - Documentation Files
 Group:        Development/Libraries
 BuildRequires: python
 BuildRequires: xmlto
+
+# make the build.opensuse.org happy
+%if %suse_version == 1110
+BuildRequires: scrollkeeper
+%endif
 
 %package devel
 Summary:      ZZipLib - Development Files

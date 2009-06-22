@@ -1,5 +1,5 @@
 2009-06-22  guidod  <guidod@gmx.de>
-
+    * zziplib.spec: 0.13.55 and integrate patches for build.opensuse.org
 	* zzip/zip.c (__zzip_parse_root_directory): rework parse_directory
 	   to allow for ZZIP_ALLOW_MODULO_ENTRIES version as required for
 	   some cases where more than 65535 entries are packed into a
