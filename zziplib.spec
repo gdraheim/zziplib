@@ -16,13 +16,7 @@ Packager:     Guido Draheim <guidod@gmx.de>
 Requires:      zlib
 BuildRequires: zlib-devel
 BuildRequires: SDL-devel
-
-# make the build.opensuse.org happy
-%if %_os == linux
 BuildRequires: zip
-BuildRequires: scrollkeeper
-%endif
-
 
 #Begin3
 # Author1:        too@iki.fi (Tomi Ollila)
@@ -46,23 +40,20 @@ Summary:      ZZipLib - Documentation Files
 Group:        Development/Libraries
 BuildRequires: python
 BuildRequires: xmlto
-
-# make the build.opensuse.org happy
-%if %suse_version == 1110
-BuildRequires: scrollkeeper
-%endif
+PreReq: scrollkeeper
 
 %package devel
 Summary:      ZZipLib - Development Files
 Group:        Development/Libraries
 Requires:     zziplib-%lib = %version
-# Requires: pkgconfig (not yet)
+Requires:     pkgconfig
 
 %package SDL_rwops-devel
 Summary:      ZZipLib - Development Files for SDL_rwops
 Group:        Development/Libraries
 Requires:     zziplib-%lib = %version
 Requires:     pkgconfig
+BuildRequires: SDL-devel
 
 %description
  : zziplib provides read access to zipped files in a zip-archive,
