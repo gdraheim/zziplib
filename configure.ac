@@ -1,7 +1,7 @@
 AC_INIT([zziplib.spec])
 AC_PREREQ(2.49)
 AC_COPYRIGHT([Guido Draheim <guido@gmx.de> for ZZipLib.SF.net])
-AC_REVISION($Revision: 1.13 $)
+AC_REVISION($Revision: 1.14 $)
 AC_CONFIG_AUX_DIR([uses])
 AC_CONFIG_MACRO_DIR([m4])
 # =======================================================================
@@ -88,7 +88,7 @@ echo extrac.t..
 AX_PAX_TAR_CREATE
 AX_PAX_TAR_EXTRACT
 AC_PATH_PROGS(PERL, perl5 perl, echo no perl found for)
-AC_PATH_PROGS(PYTHON, python2.2 python2.3 python, echo no python found for)
+AC_PATH_PROGS(PYTHON, python, echo no python found for)
 AC_PATH_PROGS(MKZIP, zip pkzip, :)
 AC_PATH_PROGS(XMLTO, xmlto, :)
 
