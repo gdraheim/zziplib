@@ -1,5 +1,10 @@
 2009-06-27  guidod  <guidod@gmx.de>
 
+	* zziplib.spec: 0.13.56 - and make build.opensuse.org happy by
+	   removing the %if/%endif sections. (it seems one buildserver
+	   script understands it while the other don't - and effectivly
+	   all variants fail if it is left in. Hopefully no other platforms
+	   have problems with the additional buildrequires that are put here)
 	* zzip/mmapped.c (zzip_disk_new): malloc(sizof()) was errornously
 	    using a pointer instead of ZZIP_DISK. Not part of libzzip but
 	    of the extra library libzzipmmapped that is in-memory-only.
