@@ -5,7 +5,7 @@
  *
  * These routines are fully independent from the traditional zzip
  * implementation. They assume a readonly mmapped sharedmem block
- * representing a complete zip file. The functions show how to 
+ * representing a complete zip file. The functions show how to
  * parse the structure, find files and return a decoded bytestream.
  *
  * These routines are a bit simple and really here for documenting
@@ -15,14 +15,14 @@
  * Plus varaints of drop-in stdio replacements, obfuscation routines,
  * auto fileextensions, drop-in dirent replacements, and so on...
  *
- * Author: 
+ * Author:
  *      Guido Draheim <guidod@gmx.de>
  *
  * Copyright (c) 2003,2004,2006 Guido Draheim
  *          All rights reserved,
- *          use under the restrictions of the 
+ *          use under the restrictions of the
  *          Lesser GNU General Public License
- *          or alternatively the restrictions 
+ *          or alternatively the restrictions
  *          of the Mozilla Public License 1.1
  */
 
@@ -84,7 +84,7 @@ zzip_disk_init(ZZIP_DISK * disk, void *buffer, zzip_size_t buflen)
 zzip__new__ ZZIP_DISK *
 zzip_disk_new(void)
 {
-    ZZIP_DISK *disk = malloc(sizeof(disk));
+    ZZIP_DISK *disk = malloc(sizeof(ZZIP_DISK));
     if (! disk)
         return disk;
     zzip_disk_init(disk, 0, 0);
@@ -93,9 +93,9 @@ zzip_disk_new(void)
 
 /** turn a filehandle into a mmapped zip disk archive handle
  *
- * This function uses the given file-descriptor to detect the length of the 
+ * This function uses the given file-descriptor to detect the length of the
  * file and calls the system => mmap(2) to put it in main memory. If it is
- * successful then a newly allocated ZZIP_DISK* is returned with 
+ * successful then a newly allocated ZZIP_DISK* is returned with
  * disk->buffer pointing to the mapview of the zipdisk content.
  */
 zzip__new__ ZZIP_DISK *
@@ -131,7 +131,7 @@ zzip_disk_munmap(ZZIP_DISK * disk)
 
 /** => zzip_disk_mmap
  *
- * This function opens the given archive by name and turn the filehandle 
+ * This function opens the given archive by name and turn the filehandle
  * to  => zzip_disk_mmap for bringing it to main memory. If it can not
  * be => mmap(2)'ed then we slurp the whole file into a newly => malloc(2)'ed
  * memory block. Only if that fails too then we return null. Since handling
@@ -170,7 +170,7 @@ zzip_disk_open(char *filename)
 }
 
 /** => zzip_disk_mmap
- * 
+ *
  * This function will release all data needed to access a (mmapped)
  * zip archive, including any malloc()ed blocks, sharedmem mappings
  * and it dumps the handle struct as well.
@@ -240,7 +240,7 @@ _zzip_strcasecmp(char *__zzip_restrict a, char *_zzip_restrict b)
 
 /** helper functions for (mmapped) zip access api
  *
- * This function augments the other zzip_disk_entry_* helpers: here we move 
+ * This function augments the other zzip_disk_entry_* helpers: here we move
  * a disk_entry pointer (as returned by _find* functions) into a pointer to
  * the data block right after the file_header. Only disk->buffer would be
  * needed to perform the seek but we check the mmapped range end as well.
@@ -330,26 +330,26 @@ zzip_disk_entry_strdup_comment(ZZIP_DISK * disk, struct zzip_disk_entry *entry)
 /** => zzip_disk_findfile
  *
  * This function is the first call of all the zip access functions here.
- * It contains the code to find the first entry of the zip central directory. 
+ * It contains the code to find the first entry of the zip central directory.
  * Here we require the mmapped block to represent a real zip file where the
- * disk_trailer is _last_ in the file area, so that its position would be at 
- * a fixed offset from the end of the file area if not for the comment field 
+ * disk_trailer is _last_ in the file area, so that its position would be at
+ * a fixed offset from the end of the file area if not for the comment field
  * allowed to be of variable length (which needs us to do a little search
- * for the disk_tailer). However, in this simple implementation we disregard 
+ * for the disk_tailer). However, in this simple implementation we disregard
  * any disk_trailer info telling about multidisk archives, so we just return
  * a pointer to the zip central directory.
- * 
- * For an actual means, we are going to search backwards from the end 
- * of the mmaped block looking for the PK-magic signature of a 
+ *
+ * For an actual means, we are going to search backwards from the end
+ * of the mmaped block looking for the PK-magic signature of a
  * disk_trailer. If we see one then we check the rootseek value to
  * find the first disk_entry of the root central directory. If we find
- * the correct PK-magic signature of a disk_entry over there then we 
+ * the correct PK-magic signature of a disk_entry over there then we
  * assume we are done and we are going to return a pointer to that label.
  *
  * The return value is a pointer to the first zzip_disk_entry being checked
  * to be within the bounds of the file area specified by the arguments. If
- * no disk_trailer was found then null is returned, and likewise we only 
- * accept a disk_trailer with a seekvalue that points to a disk_entry and 
+ * no disk_trailer was found then null is returned, and likewise we only
+ * accept a disk_trailer with a seekvalue that points to a disk_entry and
  * both parts have valid PK-magic parts. Beyond some sanity check we try to
  * catch a common brokeness with zip archives that still allows us to find
  * the start of the zip central directory.
@@ -425,10 +425,10 @@ zzip_disk_findnext(ZZIP_DISK * disk, struct zzip_disk_entry *entry)
 
 /** search for files in the (mmapped) zip central directory
  *
- * This function is given a filename as an additional argument, to find the 
- * disk_entry matching a given filename. The compare-function is usually 
- * strcmp or strcasecmp or perhaps strcoll, if null then strcmp is used. 
- * - use null as argument for "after"-entry when searching the first 
+ * This function is given a filename as an additional argument, to find the
+ * disk_entry matching a given filename. The compare-function is usually
+ * strcmp or strcasecmp or perhaps strcoll, if null then strcmp is used.
+ * - use null as argument for "after"-entry when searching the first
  * matching entry, otherwise the last returned value if you look for other
  * entries with a special "compare" function (if null then a doubled search
  * is rather useless with this variant of _findfile).
@@ -465,7 +465,7 @@ zzip_disk_findfile(ZZIP_DISK * disk, char *filename,
  * platform has fnmatch available then null-compare will use that one
  * and otherwise we fall back to mere strcmp, so if you need fnmatch
  * searching then please provide an implementation somewhere else.
- * - use null as argument for "after"-entry when searching the first 
+ * - use null as argument for "after"-entry when searching the first
  * matching entry, or the last disk_entry return-value to find the
  * next entry matching the given filespec.
  */
@@ -611,7 +611,7 @@ zzip_disk_fclose(ZZIP_DISK_FILE * file)
 
 /** => zzip_disk_fopen
  *
- * This function allows to distinguish an error from an eof condition. 
+ * This function allows to distinguish an error from an eof condition.
  * Actually, if we found an error but we did already reach eof then we
  * just keep on saying that it was an eof, so the app can just continue.
  */

@@ -1,5 +1,9 @@
 2009-06-27  guidod  <guidod@gmx.de>
 
+	* zzip/mmapped.c (zzip_disk_new): malloc(sizof()) was errornously
+	    using a pointer instead of ZZIP_DISK. Not part of libzzip but
+	    of the extra library libzzipmmapped that is in-memory-only.
+	    (problem reported and solution shown by JP Dai [Goldleaf])
 	* configure.ac: disable search for python2.2 (gentoo bug 275247+174189)
 
 2009-06-22  guidod  <guidod@gmx.de>
