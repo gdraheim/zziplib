@@ -9,18 +9,18 @@
  * needed. If zzip is compiled with zip extensions then it is about
  * the only way to build maintainable code around the zip format.
  *
- * Note that 64bit support is almost entirely living in extension 
+ * Note that 64bit support is almost entirely living in extension
  * blocks as well as different character encodings and file access
  * control bits that are mostly platform specific.
  *
  * Author:
  *    Guido Draheim <guidod@gmx.de>
- * 
+ *
  * Copyright (c) 1999,2000,2001,2002,2003 Guido Draheim
  *          All rights reserved,
- *          use under the restrictions of the 
+ *          use under the restrictions of the
  *          Lesser GNU General Public License
- *          or alternatively the restrictions 
+ *          or alternatively the restrictions
  *          of the Mozilla Public License 1.1
  */
 #define _ZZIP_DISK_FILE_STRUCT 1
@@ -48,6 +48,8 @@ static const char *error[] = {
     "zzip_mem_disk_open: zzip_disk_open did fail",
 #   define _zzip_mem_disk_fdopen_fail 2
     "zzip_mem_disk_fdopen: zzip_disk_mmap did fail"
+#   define _zzip_mem_disk_buffer_fail 3
+    "zzip_mem_disk_buffer: zzip_disk_buffer did fail",
 };
 
 #define ZZIP_EXTRA_zip64 0x0001
@@ -65,7 +67,7 @@ typedef struct _zzip_extra_zip64
 
 static zzip__new__ ZZIP_MEM_ENTRY *
 zzip_mem_entry_new(ZZIP_DISK * disk, ZZIP_DISK_ENTRY * entry);
-static void 
+static void
 zzip_mem_entry_free(ZZIP_MEM_ENTRY * _zzip_restrict item);
 
 zzip__new__ ZZIP_MEM_DISK *
@@ -74,7 +76,7 @@ zzip_mem_disk_new(void)
     return calloc(1, sizeof(ZZIP_MEM_DISK));
 }
 
-/** create new diskdir handle. 
+/** create new diskdir handle.
  *  wraps underlying zzip_disk_open. */
 zzip__new__ ZZIP_MEM_DISK *
 zzip_mem_disk_open(char *filename)
@@ -88,7 +90,7 @@ zzip_mem_disk_open(char *filename)
     ____;
 }
 
-/** create new diskdir handle. 
+/** create new diskdir handle.
  *  wraps underlying zzip_disk_open. */
 zzip__new__ ZZIP_MEM_DISK *
 zzip_mem_disk_fdopen(int fd)
@@ -96,6 +98,20 @@ zzip_mem_disk_fdopen(int fd)
     ZZIP_DISK *disk = zzip_disk_mmap(fd);
     if (! disk)
         { perror(error[_zzip_mem_disk_fdopen_fail]); return 0; }
+    ___ ZZIP_MEM_DISK *dir = zzip_mem_disk_new();
+    zzip_mem_disk_load(dir, disk);
+    return dir;
+    ____;
+}
+
+/** create new diskdir handle.
+ *  wraps underlying zzip_disk_buffer. */
+zzip__new__ ZZIP_MEM_DISK *
+zzip_mem_disk_buffer(char *buffer, int n)
+{
+    ZZIP_DISK *disk = zzip_disk_buffer(buffer, n);
+    if (! disk)
+        { perror(error[_zzip_mem_disk_buffer_fail]); return 0; }
     ___ ZZIP_MEM_DISK *dir = zzip_mem_disk_new();
     zzip_mem_disk_load(dir, disk);
     return dir;
@@ -207,7 +223,7 @@ zzip_mem_entry_new(ZZIP_DISK * disk, ZZIP_DISK_ENTRY * entry)
             item->zz_diskstart = __zzip_get32(block->z_diskstart);
         }
     }
-    /* NOTE: 
+    /* NOTE:
      * All information from the central directory entry is now in memory.
      * Effectivly that allows us to modify it and write it back to disk.
      */
@@ -216,7 +232,7 @@ zzip_mem_entry_new(ZZIP_DISK * disk, ZZIP_DISK_ENTRY * entry)
     ____;
 }
 
-/* find an extra block for the given datatype code. 
+/* find an extra block for the given datatype code.
  * We assume that the central directory has been preparsed to memory.
  */
 ZZIP_EXTRA_BLOCK *
@@ -274,6 +290,7 @@ zzip_mem_disk_unload(ZZIP_MEM_DISK * dir)
         item = next;
     }
     dir->list = dir->last = 0;
+    zzip_disk_close(dir->disk);
     dir->disk = 0;
 }
 

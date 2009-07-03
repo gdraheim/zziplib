@@ -161,12 +161,35 @@ zzip_disk_open(char *filename)
         disk->buffer = buffer;
         disk->endbuf = buffer + st.st_size;
         disk->mapped = -1;
-    } else
+        disk->flags |= ZZIP_DISK_FLAGS_OWNED_BUFFER;
+    } else {
         free(buffer);
+    }
     return disk;
     ____;
     ____;
     ____;
+}
+
+/** => zzip_disk_mmap
+ * This function will attach a buffer with a zip image
+ * that was acquired from another source than a file.
+ * Note that if zzip_disk_mmap fails then zzip_disk_open
+ * will fall back and try to read the full file to memory
+ * wrapping a ZZIP_DISK around the memory buffer just as
+ * this function will do. Note that this function will not
+ * own the buffer, it will neither be written nor free()d.
+ */
+ZZIP_DISK *zzip__new__
+zzip_disk_buffer(char *buffer, int n) {
+    ZZIP_DISK *disk = zzip_disk_new();
+    if (disk)
+    {
+        disk->buffer = buffer;
+        disk->endbuf = buffer + n;
+        disk->mapped = -1;
+    }
+    return disk;
 }
 
 /** => zzip_disk_mmap
@@ -182,7 +205,8 @@ zzip_disk_close(ZZIP_DISK * disk)
         return 0;
     if (disk->mapped != -1)
         return zzip_disk_munmap(disk);
-    free(disk->buffer);
+    if (disk->flags & ZZIP_DISK_FLAGS_OWNED_BUFFER)
+        free(disk->buffer);
     free(disk);
     return 0;
 }
@@ -440,7 +464,7 @@ zzip_disk_findfile(ZZIP_DISK * disk, char *filename,
     struct zzip_disk_entry *entry = (! after ? zzip_disk_findfirst(disk)
                                      : zzip_disk_findnext(disk, after));
     if (! compare)
-        compare = (zzip_strcmp_fn_t) ((disk->flags & 1) ?
+        compare = (zzip_strcmp_fn_t) ((disk->flags & ZZIP_DISK_FLAGS_MATCH_NOCASE) ?
                                       (_zzip_strcasecmp) : (strcmp));
     for (; entry; entry = zzip_disk_findnext(disk, entry))
     {
@@ -479,8 +503,8 @@ zzip_disk_findmatch(ZZIP_DISK * disk, char *filespec,
     if (! compare)
     {
         compare = (zzip_fnmatch_fn_t) _zzip_fnmatch;
-        if (disk->flags & 1)
-            disk->flags |= _zzip_fnmatch_CASEFOLD;
+        if (disk->flags & ZZIP_DISK_FLAGS_MATCH_NOCASE)
+            flags |= _zzip_fnmatch_CASEFOLD;
     }
     for (; entry; entry = zzip_disk_findnext(disk, entry))
     {

@@ -1,3 +1,17 @@
+2009-07-03  guidod  <guidod@gmx.de>
+
+	* zzip/mmapped.c: insert zzip_disk_buffer and
+	* zzip/memdisk.c: zzip_mem_disk_buffer where both functions
+	    will actually wrap an external buffer (e.g. mmapped from
+	    another resource such as shared memory).
+	* zzip/mmapped.c and zzip/mmapped.h: uncovered a bug for the
+	   MATCH_NOCASE handling and WRAPPED_BUFFER handling that is
+	   now handled by explicit ->flags values. The actual flag
+	   values are now exported to the header instead of just using
+	   a simple "1".
+	* ideas for zzip_disk_buffer / zzip_mem_disk_buffer sprang from
+	   a proposal by JP Dai [Goldleaf] who offerd very similar code.
+
 2009-06-27  guidod  <guidod@gmx.de>
 
 	* zziplib.spec: 0.13.56 - and make build.opensuse.org happy by
