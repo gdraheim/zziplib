@@ -71,6 +71,9 @@ zzip_disk_munmap(ZZIP_DISK* disk);
 zzip_disk_extern zzip__new__ ZZIP_DISK*
 zzip_disk_open(char* filename);
 
+zzip_disk_extern zzip__new__ ZZIP_DISK *
+zzip_disk_buffer(char *buffer, size_t buflen);
+
 zzip_disk_extern int
 zzip_disk_close(ZZIP_DISK* disk);
 

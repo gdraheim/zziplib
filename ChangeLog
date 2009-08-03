@@ -1,3 +1,8 @@
+2009-08-04  guidod  <guidod@gmx.de>
+
+	* zzip/mmapped.h: zzip/memdisk.h: replace buflen argument
+	  from "int" to "size_t" type for init from some mem area.
+
 2009-08-03  guidod  <guidod@gmx.de>
 
 	* zziplib.spec: prepare 0.13.57

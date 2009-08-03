@@ -137,7 +137,7 @@ zzip_disk_munmap(ZZIP_DISK * disk)
  * memory block. Only if that fails too then we return null. Since handling
  * of disk->buffer is ambigous it should not be snatched away please.
  */
-ZZIP_DISK *zzip__new__
+zzip__new__ ZZIP_DISK *
 zzip_disk_open(char *filename)
 {
 #  ifndef O_BINARY
@@ -180,13 +180,13 @@ zzip_disk_open(char *filename)
  * this function will do. Note that this function will not
  * own the buffer, it will neither be written nor free()d.
  */
-ZZIP_DISK *zzip__new__
-zzip_disk_buffer(char *buffer, int n) {
+zzip__new__ ZZIP_DISK *
+zzip_disk_buffer(char *buffer, size_t buflen) {
     ZZIP_DISK *disk = zzip_disk_new();
     if (disk)
     {
         disk->buffer = buffer;
-        disk->endbuf = buffer + n;
+        disk->endbuf = buffer + buflen;
         disk->mapped = -1;
     }
     return disk;

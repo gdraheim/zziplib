@@ -107,9 +107,9 @@ zzip_mem_disk_fdopen(int fd)
 /** create new diskdir handle.
  *  wraps underlying zzip_disk_buffer. */
 zzip__new__ ZZIP_MEM_DISK *
-zzip_mem_disk_buffer(char *buffer, int n)
+zzip_mem_disk_buffer(char *buffer, size_t buflen)
 {
-    ZZIP_DISK *disk = zzip_disk_buffer(buffer, n);
+    ZZIP_DISK *disk = zzip_disk_buffer(buffer, buflen);
     if (! disk)
         { perror(error[_zzip_mem_disk_buffer_fail]); return 0; }
     ___ ZZIP_MEM_DISK *dir = zzip_mem_disk_new();
