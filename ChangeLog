@@ -1,5 +1,6 @@
 2009-08-03  guidod  <guidod@gmx.de>
 
+	* zziplib.spec: prepare 0.13.57
 	* bins/zziptest.c: redefine to win32-Sleep() when seen WINDOWS_H
 	  which allows it to compile also with a gcc/mingw/msvcrt target
 	* bins/Makefile.am: ZZIP_LDFLAGS are not needed for *.exe targets
