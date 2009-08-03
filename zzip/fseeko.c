@@ -61,7 +61,7 @@
 
 #ifndef ZZIP_HAVE_FSEEKO
 #define fseeko fseek
-#define ftello ftello
+#define ftello ftell
 #endif
 
 /* note that the struct zzip_entry inherits the zzip_disk_entry values

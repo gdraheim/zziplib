@@ -1,3 +1,9 @@
+2009-08-03  guidod  <guidod@gmx.de>
+
+	* zzip/fseeko.c: typo "fseeko" -> "fseek" made for a compile error
+	  on systems that do not have fseeko like windows msvcrt
+	  (reported by Josh Sickmate)
+
 2009-07-03  guidod  <guidod@gmx.de>
 
 	* zzip/mmapped.c: insert zzip_disk_buffer and
