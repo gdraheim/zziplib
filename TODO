@@ -87,3 +87,21 @@ the build.opensuse.org rpm packaging where one can run "make check"
 just before doing the "make install" of the compiled library.
 
 
+SUSE BUILDSERVER INFO
+
+I: A function overflows or underflows an array access. This could be a real error,
+but occasionaly this condition is also misdetected due to loop unrolling or strange pointer
+handling. So this is warning only, please review.
+W: zziplib arraysubscript ../../zzip/memdisk.c:114
+
+I: File is compiled without RPM_OPT_FLAGS
+W: zziplib no-rpm-opt-flags <cmdline>:../../SDL/SDL_rwops_zzcat.c, ../../SDL/SDL_rwops_zzip.c
+
+I: Program is likely to break with new gcc. Try -fno-strict-aliasing.
+W: zziplib strict-aliasing-punning ../../zzip/file.c:275
+W: zziplib strict-aliasing-punning ../../zzip/fseeko.c:99, 126, 147, 158, 182, 281, 288, 301, 360, 539, 543, 546, 563
+W: zziplib strict-aliasing-punning ../../zzip/memdisk.c:181, 182, 183, 185, 186, 187, 188, 189, 192, 193, 194, 195, 247, 455, 456
+W: zziplib strict-aliasing-punning ../../zzip/mmapped.c:277, 289, 311, 314, 339, 340, 393, 397, 410, 438, 440, 443, 444, 549, 551, 552, 558, 559, 561
+W: zziplib strict-aliasing-punning ../../zzip/zip.c:318, 320, 321, 322, 339, 341, 342, 343, 484, 485, 486, 497, 498, 499, 500, 501
+E: zziplib 64bit-portability-issue ../../zzip/memdisk.c:112
+System halted.

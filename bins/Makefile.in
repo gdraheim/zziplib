@@ -84,90 +84,48 @@ PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
 unzip_mem_SOURCES = unzip-mem.c
 unzip_mem_OBJECTS = unzip-mem.$(OBJEXT)
 unzip_mem_DEPENDENCIES = ../zzip/libzzipmmapped.la
-unzip_mem_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(unzip_mem_LDFLAGS) $(LDFLAGS) -o $@
 unzzip_SOURCES = unzzip.c
 unzzip_OBJECTS = unzzip.$(OBJEXT)
 unzzip_DEPENDENCIES = ../zzip/libzzip.la
-unzzip_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(unzzip_LDFLAGS) \
-	$(LDFLAGS) -o $@
 unzzipcat_SOURCES = unzzipcat.c
 unzzipcat_OBJECTS = unzzipcat.$(OBJEXT)
 unzzipcat_DEPENDENCIES = ../zzip/libzzipmmapped.la
-unzzipcat_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(unzzipcat_LDFLAGS) $(LDFLAGS) -o $@
 unzzipcat_mem_SOURCES = unzzipcat-mem.c
 unzzipcat_mem_OBJECTS = unzzipcat-mem.$(OBJEXT)
 unzzipcat_mem_DEPENDENCIES = ../zzip/libzzipmmapped.la
-unzzipcat_mem_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(unzzipcat_mem_LDFLAGS) $(LDFLAGS) -o $@
 unzzipcat_seeko_SOURCES = unzzipcat-seeko.c
 unzzipcat_seeko_OBJECTS = unzzipcat-seeko.$(OBJEXT)
 unzzipcat_seeko_DEPENDENCIES = ../zzip/libzzipfseeko.la
-unzzipcat_seeko_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(unzzipcat_seeko_LDFLAGS) $(LDFLAGS) -o $@
 unzzipdir_SOURCES = unzzipdir.c
 unzzipdir_OBJECTS = unzzipdir.$(OBJEXT)
 unzzipdir_DEPENDENCIES = ../zzip/libzzipmmapped.la
-unzzipdir_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(unzzipdir_LDFLAGS) $(LDFLAGS) -o $@
 unzzipdir_mem_SOURCES = unzzipdir-mem.c
 unzzipdir_mem_OBJECTS = unzzipdir-mem.$(OBJEXT)
 unzzipdir_mem_DEPENDENCIES = ../zzip/libzzipmmapped.la
-unzzipdir_mem_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(unzzipdir_mem_LDFLAGS) $(LDFLAGS) -o $@
 zzcat_SOURCES = zzcat.c
 zzcat_OBJECTS = zzcat.$(OBJEXT)
 zzcat_DEPENDENCIES = ../zzip/libzzip.la
-zzcat_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(zzcat_LDFLAGS) \
-	$(LDFLAGS) -o $@
 zzdir_SOURCES = zzdir.c
 zzdir_OBJECTS = zzdir.$(OBJEXT)
 zzdir_DEPENDENCIES = ../zzip/libzzip.la
-zzdir_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(zzdir_LDFLAGS) \
-	$(LDFLAGS) -o $@
 zzip_SOURCES = zzip.c
 zzip_OBJECTS = zzip.$(OBJEXT)
 zzip_DEPENDENCIES = ../zzip/libzzip.la
-zzip_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(zzip_LDFLAGS) \
-	$(LDFLAGS) -o $@
 zziptest_SOURCES = zziptest.c
 zziptest_OBJECTS = zziptest.$(OBJEXT)
 zziptest_DEPENDENCIES = ../zzip/libzzip.la
-zziptest_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(zziptest_LDFLAGS) \
-	$(LDFLAGS) -o $@
 zzobfuscated_SOURCES = zzobfuscated.c
 zzobfuscated_OBJECTS = zzobfuscated.$(OBJEXT)
 zzobfuscated_DEPENDENCIES = ../zzip/libzzip.la
-zzobfuscated_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
-	$(zzobfuscated_LDFLAGS) $(LDFLAGS) -o $@
 zzxorcat_SOURCES = zzxorcat.c
 zzxorcat_OBJECTS = zzxorcat.$(OBJEXT)
 zzxorcat_DEPENDENCIES = ../zzip/libzzip.la
-zzxorcat_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(zzxorcat_LDFLAGS) \
-	$(LDFLAGS) -o $@
 zzxorcopy_SOURCES = zzxorcopy.c
 zzxorcopy_OBJECTS = zzxorcopy.$(OBJEXT)
 zzxorcopy_LDADD = $(LDADD)
 zzxordir_SOURCES = zzxordir.c
 zzxordir_OBJECTS = zzxordir.$(OBJEXT)
 zzxordir_DEPENDENCIES = ../zzip/libzzip.la
-zzxordir_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
-	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(zzxordir_LDFLAGS) \
-	$(LDFLAGS) -o $@
 depcomp = $(SHELL) $(top_srcdir)/uses/depcomp
 am__depfiles_maybe = depfiles
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
@@ -352,36 +310,22 @@ aclocal_DATA = zziplib.m4
 WCC10_CLEAN = *.obj *.lk1 *.mk1 *.mk *.sym *.tgt
 EXTRA_DIST = $(aclocal_DATA)
 CLEANFILES = $(WCC10_CLEAN)
-unzzip_LDFLAGS = @ZZIPLIB_LDFLAGS@
 unzzip_LDADD = ../zzip/libzzip.la @RESOLVES@ -lz
-zzip_LDFLAGS = @ZZIPLIB_LDFLAGS@
 zzip_LDADD = ../zzip/libzzip.la @RESOLVES@ -lz
-zziptest_LDFLAGS = @ZZIPLIB_LDFLAGS@
 zziptest_LDADD = ../zzip/libzzip.la @RESOLVES@ -lz
-zzcat_LDFLAGS = @ZZIPLIB_LDFLAGS@
 zzcat_LDADD = ../zzip/libzzip.la @RESOLVES@ -lz
-zzdir_LDFLAGS = @ZZIPLIB_LDFLAGS@
 zzdir_LDADD = ../zzip/libzzip.la @RESOLVES@ -lz
-zzxorcat_LDFLAGS = @ZZIPLIB_LDFLAGS@
 zzxorcat_LDADD = ../zzip/libzzip.la @RESOLVES@ -lz
-zzxordir_LDFLAGS = @ZZIPLIB_LDFLAGS@
 zzxordir_LDADD = ../zzip/libzzip.la @RESOLVES@ -lz
-zzobfuscated_LDFLAGS = @ZZIPLIB_LDFLAGS@
 zzobfuscated_LDADD = ../zzip/libzzip.la @RESOLVES@ -lz
 
 # these use the simplified mmapped disk version
-unzzipdir_LDFLAGS = @ZZIPLIB_LDFLAGS@
 unzzipdir_LDADD = ../zzip/libzzipmmapped.la @RESOLVES@ -lz
-unzzipcat_LDFLAGS = @ZZIPLIB_LDFLAGS@
 unzzipcat_LDADD = ../zzip/libzzipmmapped.la @RESOLVES@ -lz
-unzzipdir_mem_LDFLAGS = @ZZIPLIB_LDFLAGS@
 unzzipdir_mem_LDADD = ../zzip/libzzipmmapped.la @RESOLVES@ -lz
-unzzipcat_mem_LDFLAGS = @ZZIPLIB_LDFLAGS@
 unzzipcat_mem_LDADD = ../zzip/libzzipmmapped.la @RESOLVES@ -lz
-unzip_mem_LDFLAGS = @ZZIPLIB_LDFLAGS@
 unzip_mem_LDADD = ../zzip/libzzipmmapped.la @RESOLVES@ -lz
 # and this uses the simplified fseeko stdio version
-unzzipcat_seeko_LDFLAGS = @ZZIPLIB_LDFLAGS@
 unzzipcat_seeko_LDADD = ../zzip/libzzipfseeko.la @RESOLVES@ -lz
 all: all-am
 
@@ -453,49 +397,49 @@ clean-noinstPROGRAMS:
 	done
 unzip-mem$(EXEEXT): $(unzip_mem_OBJECTS) $(unzip_mem_DEPENDENCIES) 
 	@rm -f unzip-mem$(EXEEXT)
-	$(unzip_mem_LINK) $(unzip_mem_OBJECTS) $(unzip_mem_LDADD) $(LIBS)
+	$(LINK) $(unzip_mem_OBJECTS) $(unzip_mem_LDADD) $(LIBS)
 unzzip$(EXEEXT): $(unzzip_OBJECTS) $(unzzip_DEPENDENCIES) 
 	@rm -f unzzip$(EXEEXT)
-	$(unzzip_LINK) $(unzzip_OBJECTS) $(unzzip_LDADD) $(LIBS)
+	$(LINK) $(unzzip_OBJECTS) $(unzzip_LDADD) $(LIBS)
 unzzipcat$(EXEEXT): $(unzzipcat_OBJECTS) $(unzzipcat_DEPENDENCIES) 
 	@rm -f unzzipcat$(EXEEXT)
-	$(unzzipcat_LINK) $(unzzipcat_OBJECTS) $(unzzipcat_LDADD) $(LIBS)
+	$(LINK) $(unzzipcat_OBJECTS) $(unzzipcat_LDADD) $(LIBS)
 unzzipcat-mem$(EXEEXT): $(unzzipcat_mem_OBJECTS) $(unzzipcat_mem_DEPENDENCIES) 
 	@rm -f unzzipcat-mem$(EXEEXT)
-	$(unzzipcat_mem_LINK) $(unzzipcat_mem_OBJECTS) $(unzzipcat_mem_LDADD) $(LIBS)
+	$(LINK) $(unzzipcat_mem_OBJECTS) $(unzzipcat_mem_LDADD) $(LIBS)
 unzzipcat-seeko$(EXEEXT): $(unzzipcat_seeko_OBJECTS) $(unzzipcat_seeko_DEPENDENCIES) 
 	@rm -f unzzipcat-seeko$(EXEEXT)
-	$(unzzipcat_seeko_LINK) $(unzzipcat_seeko_OBJECTS) $(unzzipcat_seeko_LDADD) $(LIBS)
+	$(LINK) $(unzzipcat_seeko_OBJECTS) $(unzzipcat_seeko_LDADD) $(LIBS)
 unzzipdir$(EXEEXT): $(unzzipdir_OBJECTS) $(unzzipdir_DEPENDENCIES) 
 	@rm -f unzzipdir$(EXEEXT)
-	$(unzzipdir_LINK) $(unzzipdir_OBJECTS) $(unzzipdir_LDADD) $(LIBS)
+	$(LINK) $(unzzipdir_OBJECTS) $(unzzipdir_LDADD) $(LIBS)
 unzzipdir-mem$(EXEEXT): $(unzzipdir_mem_OBJECTS) $(unzzipdir_mem_DEPENDENCIES) 
 	@rm -f unzzipdir-mem$(EXEEXT)
-	$(unzzipdir_mem_LINK) $(unzzipdir_mem_OBJECTS) $(unzzipdir_mem_LDADD) $(LIBS)
+	$(LINK) $(unzzipdir_mem_OBJECTS) $(unzzipdir_mem_LDADD) $(LIBS)
 zzcat$(EXEEXT): $(zzcat_OBJECTS) $(zzcat_DEPENDENCIES) 
 	@rm -f zzcat$(EXEEXT)
-	$(zzcat_LINK) $(zzcat_OBJECTS) $(zzcat_LDADD) $(LIBS)
+	$(LINK) $(zzcat_OBJECTS) $(zzcat_LDADD) $(LIBS)
 zzdir$(EXEEXT): $(zzdir_OBJECTS) $(zzdir_DEPENDENCIES) 
 	@rm -f zzdir$(EXEEXT)
-	$(zzdir_LINK) $(zzdir_OBJECTS) $(zzdir_LDADD) $(LIBS)
+	$(LINK) $(zzdir_OBJECTS) $(zzdir_LDADD) $(LIBS)
 zzip$(EXEEXT): $(zzip_OBJECTS) $(zzip_DEPENDENCIES) 
 	@rm -f zzip$(EXEEXT)
-	$(zzip_LINK) $(zzip_OBJECTS) $(zzip_LDADD) $(LIBS)
+	$(LINK) $(zzip_OBJECTS) $(zzip_LDADD) $(LIBS)
 zziptest$(EXEEXT): $(zziptest_OBJECTS) $(zziptest_DEPENDENCIES) 
 	@rm -f zziptest$(EXEEXT)
-	$(zziptest_LINK) $(zziptest_OBJECTS) $(zziptest_LDADD) $(LIBS)
+	$(LINK) $(zziptest_OBJECTS) $(zziptest_LDADD) $(LIBS)
 zzobfuscated$(EXEEXT): $(zzobfuscated_OBJECTS) $(zzobfuscated_DEPENDENCIES) 
 	@rm -f zzobfuscated$(EXEEXT)
-	$(zzobfuscated_LINK) $(zzobfuscated_OBJECTS) $(zzobfuscated_LDADD) $(LIBS)
+	$(LINK) $(zzobfuscated_OBJECTS) $(zzobfuscated_LDADD) $(LIBS)
 zzxorcat$(EXEEXT): $(zzxorcat_OBJECTS) $(zzxorcat_DEPENDENCIES) 
 	@rm -f zzxorcat$(EXEEXT)
-	$(zzxorcat_LINK) $(zzxorcat_OBJECTS) $(zzxorcat_LDADD) $(LIBS)
+	$(LINK) $(zzxorcat_OBJECTS) $(zzxorcat_LDADD) $(LIBS)
 zzxorcopy$(EXEEXT): $(zzxorcopy_OBJECTS) $(zzxorcopy_DEPENDENCIES) 
 	@rm -f zzxorcopy$(EXEEXT)
 	$(LINK) $(zzxorcopy_OBJECTS) $(zzxorcopy_LDADD) $(LIBS)
 zzxordir$(EXEEXT): $(zzxordir_OBJECTS) $(zzxordir_DEPENDENCIES) 
 	@rm -f zzxordir$(EXEEXT)
-	$(zzxordir_LINK) $(zzxordir_OBJECTS) $(zzxordir_LDADD) $(LIBS)
+	$(LINK) $(zzxordir_OBJECTS) $(zzxordir_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
