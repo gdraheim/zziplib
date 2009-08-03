@@ -1,5 +1,7 @@
 2009-08-03  guidod  <guidod@gmx.de>
 
+	* bins/Makefile.am: ZZIP_LDFLAGS are not needed for *.exe targets
+	  in fact they make for problems in crosscompiling without libtool
 	* zzip/fseeko.c: typo "fseeko" -> "fseek" made for a compile error
 	  on systems that do not have fseeko like windows msvcrt
 	  (reported by Josh Sickmate)
