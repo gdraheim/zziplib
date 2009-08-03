@@ -1,5 +1,7 @@
 2009-08-03  guidod  <guidod@gmx.de>
 
+	* bins/zziptest.c: redefine to win32-Sleep() when seen WINDOWS_H
+	  which allows it to compile also with a gcc/mingw/msvcrt target
 	* bins/Makefile.am: ZZIP_LDFLAGS are not needed for *.exe targets
 	  in fact they make for problems in crosscompiling without libtool
 	* zzip/fseeko.c: typo "fseeko" -> "fseek" made for a compile error
