@@ -1,5 +1,6 @@
 2009-08-04  guidod  <guidod@gmx.de>
 
+        * m4/ac_sys_largefile_sensitive.m4: update, fixes ticket:2825391
 	* zzip/mmapped.h: zzip/memdisk.h: replace buflen argument
 	  from "int" to "size_t" type for init from some mem area.
 
