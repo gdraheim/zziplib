@@ -1,4 +1,3 @@
-dnl /usr/share/aclocal/guidod-cvs/ac_sys_largefile_sensitive.m4
 dnl @synopsis AC_SYS_LARGEFILE_SENSITIVE
 dnl
 dnl checker whether the current system is sensitive to -Ddefines making
@@ -30,7 +29,7 @@ dnl in an installed header file. -> see AX_PREFIX_CONFIG_H
 dnl
 dnl @category Misc
 dnl @author Guido U. Draheim <guidod@gmx.de>
-dnl @version 2003-02-02
+dnl @version 2009-07-27
 dnl @license GPLWithACException
 
 AC_DEFUN([AC_SYS_LARGEFILE_SENSITIVE],[dnl
@@ -38,11 +37,10 @@ AC_REQUIRE([AC_SYS_LARGEFILE])dnl
 # we know about some internals of ac_sys_largefile here...
 AC_MSG_CHECKING(whether system differentiates 64bit off_t by defines)
 ac_cv_sys_largefile_sensitive="no"
-if test ".$ac_cv_sys_file_offset_bits$ac_cv_sys_large_files" != ".nono"
+if test ".${ac_cv_sys_file_offset_bits-no}${ac_cv_sys_large_files-no}" != ".nono"
 then ac_cv_sys_largefile_sensitive="yes"
   AC_DEFINE(LARGEFILE_SENSITIVE, 1,
   [whether the system defaults to 32bit off_t but can do 64bit when requested])
 fi
 AC_MSG_RESULT([$ac_cv_sys_largefile_sensitive])
 ])
-
