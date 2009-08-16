@@ -533,7 +533,7 @@ zzip_fread(void *ptr, zzip_size_t size, zzip_size_t nmemb, ZZIP_FILE * file)
  *
  * Note that if the file is found in the normal fs-directory the
  * returned structure is mostly empty and the => zzip_read call will
- * use the libc => read to obtain data. Otherwise a => zzip_file_open
+ * use the libc => read(2) to obtain data. Otherwise a => zzip_file_open
  * is performed and any error mapped to => errno(3).
  *
  * unlike the posix-wrapper => zzip_open the mode-argument is
@@ -672,7 +672,7 @@ zzip_freopen(zzip_char_t * filename, zzip_char_t * mode, ZZIP_FILE * stream)
  *
  * Note that if the file is found in the normal fs-directory the
  * returned structure is mostly empty and the => zzip_read call will
- * use the libc => read to obtain data. Otherwise a => zzip_file_open
+ * use the libc => read(2) to obtain data. Otherwise a => zzip_file_open
  * is performed and any error mapped to => errno(3).
  *
  * There was a possibility to transfer zziplib-specific openmodes
