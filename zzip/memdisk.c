@@ -50,6 +50,7 @@ static const char *error[] = {
     "zzip_mem_disk_fdopen: zzip_disk_mmap did fail"
 #   define _zzip_mem_disk_buffer_fail 3
     "zzip_mem_disk_buffer: zzip_disk_buffer did fail",
+    0
 };
 
 #define ZZIP_EXTRA_zip64 0x0001

@@ -1,5 +1,8 @@
 2009-08-16  guidod  <guidod@gmx.de>
 
+	* configure.ac: reorder ax_gcc_flags as the extra options were
+	  disabled (do not know why) and add -Wstrict-aliasing to the set.
+	  Then fix issues in source files (mostly signed-comparision warnings)
 	* zzip/file.c (zzip_file_open): ZZIP_CASELESS will include a
 	   mapping of "\" into "/" to get away with windows-orientied
 	   programs. The backslash however is only active for those

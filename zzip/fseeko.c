@@ -51,6 +51,10 @@
 #include <strings.h>
 #endif
 
+#if   defined ZZIP_HAVE_STDINT_H
+#include <stdint.h>
+#endif
+
 #if __STDC_VERSION__+0 > 199900L
 #define ___
 #define ____
@@ -188,9 +192,12 @@ prescan_entry(ZZIP_ENTRY * entry)
         entry->tail = newtail;
         entry->tailalloc = tailsize + 1;
     }
-    ___  zzip_size_t n = fread(entry->tail, 1, tailsize, entry->diskfile);
+#  ifdef SIZE_MAX /* from stdint.h */
+    if (tailsize > (zzip_off_t)(SIZE_MAX)) { return EFBIG; }
+#  endif
+    ___ zzip_size_t readsize = fread(entry->tail, 1, tailsize, entry->diskfile);
     /* name + comment + extras */
-    if (n != tailsize) {
+    if ((zzip_off_t)readsize != tailsize) {
         return errno;
     } else {
         return 0;
@@ -265,11 +272,12 @@ zzip_entry_findfirst(FILE * disk)
         mapoffs -= pagesize / 2;
         mapsize += pagesize / 2;
     }
+    assert(mapsize < 3*8192);
     while (1)
     {
         if (fseeko(disk, mapoffs, SEEK_SET) == -1)
             goto error;
-        if (fread(buffer, 1, mapsize, disk) != mapsize)
+        if (fread(buffer, 1, mapsize, disk) != (zzip_size_t)mapsize)
             goto error;
         ___ unsigned char *p =
             buffer + mapsize - sizeof(struct zzip_disk_trailer);

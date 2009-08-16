@@ -1,7 +1,7 @@
 AC_INIT([zziplib.spec])
 AC_PREREQ(2.49)
 AC_COPYRIGHT([Guido Draheim <guido@gmx.de> for ZZipLib.SF.net])
-AC_REVISION($Revision: 1.14 $)
+AC_REVISION($Revision: 1.15 $)
 AC_CONFIG_AUX_DIR([uses])
 AC_CONFIG_MACRO_DIR([m4])
 # =======================================================================
@@ -286,7 +286,7 @@ case "$host_os" in
   ;;
   *)
 
-    if ".$can_build_shared" = .no
+    if test ".$can_build_shared" = .no
     then ZZIPLIB_LDFLAGS=""
     else ZZIPLIB_LDFLAGS="--export-dynamic"
     fi
@@ -300,13 +300,15 @@ AC_SUBST([RESOLVES])
 AX_MAINTAINER_MODE_AUTO_SILENT
 AX_NOT_ENABLE_FRAME_POINTER
 AX_CFLAGS_WARN_ALL
-AX_CFLAGS_NO_WRITABLE_STRINGS
-AX_CFLAGS_STRICT_PROTOTYPES
 AX_CFLAGS_GCC_OPTION(-Wpointer-arith)
 AX_CFLAGS_GCC_OPTION(-Wsign-compare)
 AX_CFLAGS_GCC_OPTION(-Wmissing-declarations)
 AX_CFLAGS_GCC_OPTION(-Wdeclaration-after-statement)
 AX_CFLAGS_GCC_OPTION(-Werror-implicit-function-declaration)
+AX_CFLAGS_GCC_OPTION(-Wstrict-aliasing)
+AX_CFLAGS_GCC_OPTION(-Warray-bounds)
+AX_CFLAGS_NO_WRITABLE_STRINGS
+AX_CFLAGS_STRICT_PROTOTYPES
 # ---------------------------------------------------------------
 AX_ENABLE_DEFAULT_PKGCONFIGDIR
 AX_ENABLE_DEFAULT_ACLOCALDIR
