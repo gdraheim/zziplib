@@ -1,3 +1,10 @@
+2009-08-16  guidod  <guidod@gmx.de>
+
+	* zzip/file.c (zzip_file_open): ZZIP_CASELESS will include a
+	   mapping of "\" into "/" to get away with windows-orientied
+	   programs. The backslash however is only active for those
+	   windows' binaries. Fixes an issue with non-msvc win32-builds.
+
 2009-08-04  guidod  <guidod@gmx.de>
 
         * m4/ac_sys_largefile_sensitive.m4: update, fixes ticket:2825391

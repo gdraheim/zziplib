@@ -102,20 +102,18 @@ zzip_file_saveoffset(ZZIP_FILE * fp)
     return 0;
 }
 
-# ifndef ZZIP_CHECK_BACKSLASH_DIRSEPARATOR      /* NOTE: also default */
-# define ZZIP_CHECK_BACKSLASH_DIRSEPARATOR 0    /* to "NO" on win32 ! */
-# endif
 
-# if ! defined strcasecmp && ! defined ZZIP_HAVE_STRCASECMP
-# define ZZIP_CHECK_BACKSLASH_DIRSEPARATOR 1
-# endif
+/* user-definition */
+#ifndef ZZIP_BACKSLASH_DIRSEP
+#if defined HAVE_WINDOWS_H || defined ZZIP_HAVE_WINDOWS_H || defined _WIN32
+#define ZZIP_BACKSLASH_DIRSEP 1
+#endif
+#endif
 
-#if ! ZZIP_CHECK_BACKSLASH_DIRSEPARATOR+0
+#ifndef ZZIP_BACKSLASH_DIRSEP
 #define dirsep_strrchr(N,C) strrchr(N,C)
-#define dirsep_casecmp strcasecmp
 #else
 #define dirsep_strrchr(N,C) _dirsep_strrchr(N)
-#define dirsep_casecmp _dirsep_casecmp
 static zzip_char_t *
 _dirsep_strrchr(zzip_char_t * name)
 {
@@ -126,6 +124,12 @@ _dirsep_strrchr(zzip_char_t * name)
         n = m;
     return n;
 }
+#endif
+
+#if defined strcasecmp
+#define zzip_dirsep_casecmp strcasecmp
+#else
+#define dirsep_casecmp _dirsep_casecmp
 static int
 _dirsep_casecmp(zzip_char_t * s1, zzip_char_t * s2)
 {
@@ -170,9 +174,11 @@ zzip_file_open(ZZIP_DIR * dir, zzip_char_t * name, int o_mode)
     zzip_error_t err = 0;
     struct zzip_file *fp = 0;
     struct zzip_dir_hdr *hdr = dir->hdr0;
-    int (*cmp) (zzip_char_t *, zzip_char_t *);
+    int (*filename_strcmp) (zzip_char_t *, zzip_char_t *);
+    zzip_char_t* (*filename_strrchr)(zzip_char_t*, zzip_char_t);
 
-    cmp = (o_mode & ZZIP_CASELESS) ? dirsep_casecmp : strcmp;
+    filename_strcmp = (o_mode & ZZIP_CASELESS) ? zzip_dirsep_casecmp : strcmp;
+    filename_strrchr = (o_mode & ZZIP_CASELESS) ? zzip_dirsep_strrchr : strrchr;
 
     if (! dir)
         return NULL;
@@ -183,7 +189,7 @@ zzip_file_open(ZZIP_DIR * dir, zzip_char_t * name, int o_mode)
 
     if (o_mode & ZZIP_NOPATHS)
     {
-        register zzip_char_t *n = dirsep_strrchr(name, '/');
+        register zzip_char_t *n = filename_strrchr(name, '/');
 
         if (n)
             name = n + 1;
@@ -195,7 +201,7 @@ zzip_file_open(ZZIP_DIR * dir, zzip_char_t * name, int o_mode)
 
         if (o_mode & ZZIP_NOPATHS)
         {
-            register zzip_char_t *n = dirsep_strrchr(hdr_name, '/');
+            register zzip_char_t *n = filename_strrchr(hdr_name, '/');
 
             if (n)
                 hdr_name = n + 1;
@@ -204,7 +210,7 @@ zzip_file_open(ZZIP_DIR * dir, zzip_char_t * name, int o_mode)
         HINT4("name='%s', compr=%d, size=%d\n",
               hdr->d_name, hdr->d_compr, hdr->d_usize);
 
-        if (! cmp(hdr_name, name))
+        if (! filename_strcmp(hdr_name, name))
         {
             switch (hdr->d_compr)
             {
@@ -292,7 +298,7 @@ zzip_file_open(ZZIP_DIR * dir, zzip_char_t * name, int o_mode)
             if (hdr->d_reclen == 0)
                 break;
             hdr = (struct zzip_dir_hdr *) ((char *) hdr + hdr->d_reclen);
-        }                       /*cmp name */
+        }                       /*filename_strcmp */
     }                           /*forever */
     dir->errcode = ZZIP_ENOENT;
     return NULL;
