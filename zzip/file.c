@@ -107,31 +107,42 @@ zzip_file_saveoffset(ZZIP_FILE * fp)
 #ifndef ZZIP_BACKSLASH_DIRSEP
 #if defined HAVE_WINDOWS_H || defined ZZIP_HAVE_WINDOWS_H || defined _WIN32
 #define ZZIP_BACKSLASH_DIRSEP 1
-#endif
-#endif
-
-#ifndef ZZIP_BACKSLASH_DIRSEP
-#define dirsep_strrchr(N,C) strrchr(N,C)
+#elif defined ZZIP_CHECK_BACKSLASH_DIRSEPARATOR
+#define ZZIP_BACKSLASH_DIRSEP 1
 #else
-#define dirsep_strrchr(N,C) _dirsep_strrchr(N)
-static zzip_char_t *
-_dirsep_strrchr(zzip_char_t * name)
-{
-    char *n = strrchr(name, '/');
-    char *m = strrchr(name, '\\');
-
-    if (m && n && m > n)
-        n = m;
-    return n;
-}
+#define ZZIP_BACKSLASH_DIRSEP 0
 #endif
+#endif
+
+static zzip_char_t*
+strrchr_basename(zzip_char_t* name)
+{
+    register zzip_char_t *n = strrchr(name, '/');
+    if (n) return n + 1;
+    return name;
+}
+
+static zzip_char_t*
+dirsep_basename(zzip_char_t* name)
+{
+    register zzip_char_t *n = strrchr(name, '/');
+
+    if (ZZIP_BACKSLASH_DIRSEP)
+    {
+        register zzip_char_t *m = strrchr(name, '\\');
+        if (!n || (m && n < m))
+            n = m;
+    }
+
+    if (n) return n + 1;
+    return name;
+}
 
 #if defined strcasecmp
-#define zzip_dirsep_casecmp strcasecmp
+#define dirsep_strcasecmp strcasecmp
 #else
-#define dirsep_casecmp _dirsep_casecmp
 static int
-_dirsep_casecmp(zzip_char_t * s1, zzip_char_t * s2)
+dirsep_strcasecmp(zzip_char_t * s1, zzip_char_t * s2)
 {
     /* ASCII tolower - including mapping of backslash in normal slash */
     static const char mapping[] = "@abcdefghijklmnopqrstuvwxyz[/]^_";
@@ -175,10 +186,10 @@ zzip_file_open(ZZIP_DIR * dir, zzip_char_t * name, int o_mode)
     struct zzip_file *fp = 0;
     struct zzip_dir_hdr *hdr = dir->hdr0;
     int (*filename_strcmp) (zzip_char_t *, zzip_char_t *);
-    zzip_char_t* (*filename_strrchr)(zzip_char_t*, zzip_char_t);
+    zzip_char_t* (*filename_basename)(zzip_char_t*);
 
-    filename_strcmp = (o_mode & ZZIP_CASELESS) ? zzip_dirsep_casecmp : strcmp;
-    filename_strrchr = (o_mode & ZZIP_CASELESS) ? zzip_dirsep_strrchr : strrchr;
+    filename_strcmp = (o_mode & ZZIP_CASELESS) ? dirsep_strcasecmp : strcmp;
+    filename_basename = (o_mode & ZZIP_CASELESS) ? dirsep_basename : strrchr_basename;
 
     if (! dir)
         return NULL;
@@ -188,24 +199,14 @@ zzip_file_open(ZZIP_DIR * dir, zzip_char_t * name, int o_mode)
         { dir->errcode = ENOENT; return NULL; }
 
     if (o_mode & ZZIP_NOPATHS)
-    {
-        register zzip_char_t *n = filename_strrchr(name, '/');
-
-        if (n)
-            name = n + 1;
-    }
+        name = filename_basename(name);
 
     while (1)
     {
         register zzip_char_t *hdr_name = hdr->d_name;
 
         if (o_mode & ZZIP_NOPATHS)
-        {
-            register zzip_char_t *n = filename_strrchr(hdr_name, '/');
-
-            if (n)
-                hdr_name = n + 1;
-        }
+            hdr_name = filename_basename(hdr_name);
 
         HINT4("name='%s', compr=%d, size=%d\n",
               hdr->d_name, hdr->d_compr, hdr->d_usize);
