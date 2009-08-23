@@ -1,3 +1,7 @@
+2009-08-23  guidod  <guidod@gmx.de>
+
+	* zzip/mmapped.c (zzip_disk_mmap): compile error on win32-mingw [1771707]
+
 2009-08-16  guidod  <guidod@gmx.de>
 
 	* configure.ac: reorder ax_gcc_flags as the extra options were
