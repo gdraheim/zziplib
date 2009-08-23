@@ -89,9 +89,7 @@ BuildRequires: SDL-devel
 %prep
 #'
 %setup
-# fixing relink problems during install too
-# LDFLAGS="-L%buildroot%_libdir" \
-#
+
 
 CFLAGS="$RPM_OPT_FLAGS" \
 sh configure --prefix=%{_prefix} \
