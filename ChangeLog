@@ -1,5 +1,6 @@
 2009-08-23  guidod  <guidod@gmx.de>
 
+	* Makefile.mk: remove some old stuff related to the compilefarm
 	* zziplib.spec: prepare 0.13.58
     * add ports/symbian-S60/zziplib-symbian.zip (thanks to Rangel Reale)
 	* switch from CVS to SVN (!!!!) and update some docs/*.htm files
