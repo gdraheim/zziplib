@@ -1,5 +1,6 @@
 2009-08-23  guidod  <guidod@gmx.de>
 
+	* switch from CVS to SVN (!!!!) and update some docs/*.htm files
 	* zzip/mmapped.c (zzip_disk_mmap): compile error on win32-mingw [1771707]
 
 2009-08-16  guidod  <guidod@gmx.de>
