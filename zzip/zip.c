@@ -561,7 +561,7 @@ __zzip_parse_root_directory(int fd,
 #  ifndef ZZIP_ALLOW_MODULO_ENTRIES
     return (entries != zz_entries ? ZZIP_CORRUPTED : 0);
 #  else
-    return (entries & (unsigned)0xFFFF) != zz_entries ? ZZIP_CORRUPTED : 0);
+    return ((entries & (unsigned)0xFFFF) != zz_entries ? ZZIP_CORRUPTED : 0);
 #  endif
 }
 

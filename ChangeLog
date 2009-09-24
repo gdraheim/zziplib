@@ -1,5 +1,7 @@
 2009-09-24  guidod  <guidod@gmx.de>
 
+	* zzip/zip.c (__zzip_parse_root_directory): add parenthesis to fix
+		ZZIP_ALLOW_MODULO_ENTRIES (as reported by Tulipánt Gergely)
 	* zzip/fetch.h: add MSVC defines for x86/x64 that allows direct access
 
 2009-08-23  guidod  <guidod@gmx.de>
