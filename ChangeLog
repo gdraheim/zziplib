@@ -1,5 +1,6 @@
 
 2009-09-24  guidod  <guidod@gmx.de>
+    * zziplib.spec: prepare 0.13.59
     * configure.ac: add --with-defines to allow compile-definitions
         for easy,harden,allow_modulo_entries (also for documentation)
 	* zzip/zip.c: add ZZIP_EASY to disable the ZZIP_CORRECT_ROOTSEEK
