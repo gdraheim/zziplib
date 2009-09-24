@@ -1,5 +1,9 @@
-2009-09-24  guidod  <guidod@gmx.de>
 
+2009-09-24  guidod  <guidod@gmx.de>
+    * configure.ac: add --with-defines to allow compile-definitions
+        for easy,harden,allow_modulo_entries (also for documentation)
+	* zzip/zip.c: add ZZIP_EASY to disable the ZZIP_CORRECT_ROOTSEEK
+	    feature
 	* zzip/zip.c (__zzip_parse_root_directory): add parenthesis to fix
 		ZZIP_ALLOW_MODULO_ENTRIES (as reported by Tulipánt Gergely)
 	* zzip/fetch.h: add MSVC defines for x86/x64 that allows direct access

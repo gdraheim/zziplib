@@ -296,6 +296,24 @@ esac
 AC_MSG_RESULT([$ZZIPLIB_LDFLAGS $RESOLVES])
 AC_SUBST([ZZIPLIB_LDFLAGS])
 AC_SUBST([RESOLVES])
+AC_ARG_WITH([defines], AC_HELP_STRING(
+    [--with-defines],[easy,harden,allow_modulo_entries]),
+    ,[with_defines="normal"])
+
+#
+case ",$with_defines," in *,easy,*)
+  AC_MSG_RESULT([..adding CFLAGS -DZZIP_EASY])
+  CFLAGS="$CFLAGS -DZZIP_EASY"
+;; esac
+case ",$with_defines," in *,harden,*)
+  AC_MSG_RESULT([..adding CFLAGS -DZZIP_HARDEN])
+  CFLAGS="$CFLAGS -DZZIP_HARDEN"
+;; esac
+case ",$with_defines," in *,allow_modulo_entries,*)
+  AC_MSG_RESULT([..adding CFLAGS -DZZIP_ALLOW_MODULO_ENTRIES])
+  CFLAGS="$CFLAGS -DZZIP_ALLOW_MODULO_ENTRIES"
+;; esac
+
 # ---------------------------------------------------------------
 AX_MAINTAINER_MODE_AUTO_SILENT
 AX_NOT_ENABLE_FRAME_POINTER

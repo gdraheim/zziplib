@@ -31,8 +31,10 @@
 
 #define __sizeof(X) ((zzip_ssize_t)(sizeof(X)))
 
+#ifndef ZZIP_EASY
 /* per default, we use a little hack to correct bad z_rootseek parts */
 #define ZZIP_CORRECT_ROOTSEEK 1
+#endif
 
 #if (__GNUC__ == 3 && __GNUC_MINOR__ >= 3) || (__GNUC__ >= 4)
 # ifdef DEBUG
