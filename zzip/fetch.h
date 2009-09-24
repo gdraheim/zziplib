@@ -43,7 +43,7 @@ extern void     __zzip_set64(zzip_byte_t * s, uint64_t v);
 /* little endian on intel cisc processors is the original zip format byteorder */
 #ifndef ZZIP_WORDS_BIGENDIAN
 # ifndef ZZIP_HAVE_ALIGNED_ACCESS_REQUIRED
-#  if defined __i386__ || defined __x86_64__
+#  if defined __i386__ || defined __x86_64__ || defined _M_X86 || defined _M_X64
 #  define _ZZIP_USE_DEREF
 # endif
 #endif

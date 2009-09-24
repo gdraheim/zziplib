@@ -1,3 +1,7 @@
+2009-09-24  guidod  <guidod@gmx.de>
+
+	* zzip/fetch.h: add MSVC defines for x86/x64 that allows direct access
+
 2009-08-23  guidod  <guidod@gmx.de>
 
 	* Makefile.mk: remove some old stuff related to the compilefarm
