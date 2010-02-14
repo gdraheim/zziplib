@@ -50,7 +50,7 @@ install-data-local : @MAINTAINER_MODE_FALSE@ install-mans
 
 # -------------------------------------------------------------------
 zziplib.spec : @top_srcdir@/$(PACKAGE).spec
-	@ $(LN_S) $? $@ # the two zzip-doc.* will grep thru zziplib.spec
+	@ cp $? $@ # the two zzip-doc.* will grep thru zziplib.spec
 doc  : $(doc_FILES) site.html
 docs : doc manpages.tar htmpages.tar
 # docu : docs
