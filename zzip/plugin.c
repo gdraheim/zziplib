@@ -58,7 +58,7 @@ static const struct zzip_plugin_io default_io = {
  * wrapping the posix io file functions for actual file access.
  */
 zzip_plugin_io_t
-zzip_get_default_io()
+zzip_get_default_io(void)
 {
     return (zzip_plugin_io_t) & default_io;
 }

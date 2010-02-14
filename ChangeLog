@@ -1,5 +1,7 @@
 2010-02-14  guidod  <guidod@gmx.de>
 
+	* zzip/plugin.c: missing "void"
+	   again thanks to Peter Breitenlohner (tex-live tug org)
 	* test/Makefile.am: build-zips outside of source tree
 	* m4/ax_prefix_config_h.m4: reduce error to warning as suggested
 	* m4/ax_check_aligned_access_required.m4: merging with derived
