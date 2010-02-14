@@ -20,14 +20,14 @@ $(zzcat) $(zzdir) $(zziptest) $(zzxorcat) $(zzxordir) $(xorcopy) : \
 # -------------------------------------------------------------------
 NULL=/dev/null
 README = $(top_srcdir)/README
-testdatadir = $(top_srcdir)/testdata.d
+testdatadir = $(top_builddir)/testdata.d
 
 testzip testzips : test.zip test1.zip test2.zip test3.zip 
 
 test.zip tmp/../test.zip : $(README)
 	- test -d tmp || mkdir tmp
 	- $(MAKE) test0.zip && mv test0.zip $@
-	test -s $@ || cp $(srcdir)/test.zip $@
+	- test -s $@ || cp $(srcdir)/test.zip $@
 test0.zip : $(README)
 	test -f README || ln -s $(README) .
 	- $(MKZIP) test_.zip README
