@@ -1,5 +1,6 @@
 2010-02-14  guidod  <guidod@gmx.de>
 
+	* m4/ax_prefix_config_h.m4: reduce error to warning as suggested
 	* m4/ax_check_aligned_access_required.m4: merging with derived
 	    macro zziplib-aligned-access.m4 by Peter Breitenlohner
 

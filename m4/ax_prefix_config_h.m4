@@ -86,7 +86,8 @@ dnl @author Guido U. Draheim <guidod@gmx.de>
 dnl @version 2003-07-03
 dnl @license GPLWithACException
 AC_DEFUN([AX_PREFIX_CONFIG_H],[dnl
-AC_BEFORE([AC_CONFIG_HEADERS],[$0])dnl
+AC_PROVIDE_IFELSE([AC_CONFIG_HEADERS], dnl
+   ,[warning if no AC_CONFIG_HEADERS precedes $ ])dnl 
 AC_CONFIG_COMMANDS([ifelse($1,,$PACKAGE-config.h,$1)],[dnl
 AS_VAR_PUSHDEF([_OUT],[ac_prefix_conf_OUT])dnl
 AS_VAR_PUSHDEF([_DEF],[ac_prefix_conf_DEF])dnl
