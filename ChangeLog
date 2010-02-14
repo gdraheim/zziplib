@@ -1,5 +1,6 @@
 2010-02-14  guidod  <guidod@gmx.de>
 
+	* zzip/Makefile.am: use install-*-hook instead of install-*-local
 	* docs/Makefile.am: PYTHONDONTWRITEBYTECODE=1 to ensure running
 	   python with a read-only source code repository (dynamic workspaces)
 	   NOTE: python -B was introduced with Python 2.6 (so use environment)
