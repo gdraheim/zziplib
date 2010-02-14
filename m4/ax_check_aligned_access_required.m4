@@ -1,5 +1,11 @@
-dnl /usr/share/aclocal/guidod-cvs/ax_check_aligned_access_required.m4
-dnl @synopsis AC_CHECK_ALIGNED_ACCESS_REQUIRED
+dnl @synopsis AX_CHECK_ALIGNED_ACCESS_REQUIRED
+dnl
+dnl Copyright (C) 2006, 2009 Guido U. Draheim <guidod@gmx.de>
+dnl Copyright (C) 2010 Peter Breitenlohner <tex-live@tug.org>
+dnl
+dnl This file is free software; the copyright holders
+dnl give unlimited permission to copy and/or distribute it,
+dnl with or without modifications, as long as this notice is preserved.
 dnl
 dnl While the x86 CPUs allow access to memory objects to be unaligned
 dnl it happens that most of the modern designs require objects to be
@@ -14,8 +20,10 @@ dnl should be accessed per-byte in that case to avoid segfault type errors.
 dnl
 dnl @category C
 dnl @author Guido U. Draheim <guidod@gmx.de>
-dnl @version 2009-05-22
+dnl @author Peter Breitenlohner <tex-live@tug.org>
+dnl @version 2010-02-01
 dnl @license GPLWithACException
+dnl @license BSD
 
 AC_DEFUN([AX_CHECK_ALIGNED_ACCESS_REQUIRED],
 [AC_CACHE_CHECK([if pointers to integers require aligned access],
@@ -54,4 +62,3 @@ if test "$ax_cv_have_aligned_access_required" = yes ; then
     [Define if pointers to integers require aligned access])
 fi
 ])
-

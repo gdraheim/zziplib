@@ -1,3 +1,8 @@
+2010-02-14  guidod  <guidod@gmx.de>
+
+	* m4/ax_check_aligned_access_required.m4: merging with derived
+	    macro zziplib-aligned-access.m4 by Peter Breitenlohner
+
 
 2009-09-24  guidod  <guidod@gmx.de>
     * zziplib.spec: prepare 0.13.59
