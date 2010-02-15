@@ -10,6 +10,47 @@ rpm: dist-bzip2 $(PACKAGE).spec
 	rpmbuild -ta $(PACKAGE)-$(VERSION).tar.bz2
 	test -d ../pub && cp $(PACKAGE)-$(VERSION).tar.bz2 ../pub/
 
+OSC_ROOT = /my/own/osc
+OSC_SRCDIR = $(OSC_ROOT)
+OSC_PROJECT = home:guidod:devel
+OSC_PACKAGE = $(PACKAGE)
+OSC_SPECFILE = $(top_srcdir)/$(PACKAGE).spec
+OSC_TARBALL = $(PACKAGE)-$(VERSION).tar.bz2
+OSC_BUILDDIR = $(OSC_ROOT)
+OSC_PACKAGECACHEDIR = $(OSC_BUILDDIR)/packagecache
+OSC_BUILDROOT = $(OSC_BUILDDIR)/buildroot
+OSC_REPOSITORY = openSUSE_11.2
+OSC_ARCH = x86_64
+osc-copy:
+	test -s $(OSC_TARBALL)
+	test -s $(OSC_SPECFILE)
+	test -d $(OSC_SRCDIR)
+	test -d $(OSC_SRCDIR)/$(OSC_PROJECT) \
+	|| ( cd $(OSC_SRCDIR) && osc co $(OSC_PROJECT) )
+	cd $(OSC_SRCDIR)/$(OSC_PROJECT) && osc up
+	cp $(OSC_TARBALL)  $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)
+	cp $(OSC_SPECFILE) $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)
+
+osc-ci osc-commit upload-osc: osc-copy
+	osc add $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)/$(TARBALL)
+	osc commit -m "$(TARBALL)" $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)
+
+osc-build: osc-copy
+	cd $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)/ \
+	BUILD_DESCR=`basename $(OSC_SPECFILE)` ;\
+	ls -l $$SPEC ; \
+	OSC_PACKAGECACHEDIR=$(OSC_PACKAGECACHEDIR) \
+	OSC_BUILD_ROOT=$(OSC_BUILDROOT) \
+	osc build --release=0 --local-package --clean \
+	$(OSC_REPOSITORY) $(OSC_ARCH) $$BUILD_DESCR
+osc-clean:
+	- test -f $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)/*.spec \
+	&& rm $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)/*
+osc-distclean:
+	- test -f $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)/*.spec \
+	&& rm -rf $(OSC_SRCDIR)/*
+		
+
 indent-check:
 	(cd zzip && $(MAKE) `basename $@`)
 

@@ -1,3 +1,7 @@
+2010-02-15  guidod  <guidod@gmx.de>
+
+	* Makefile.am: allow to build locally with "osc" (opensuse buildservice) 
+
 2010-02-14  guidod  <guidod@gmx.de>
 
 	* zzip/Makefile.am: use install-*-hook instead of install-*-local
