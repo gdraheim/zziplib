@@ -45,13 +45,15 @@ libzzip_la_LDFLAGS= @ZZIPLIB_LDFLAGS@ $(RELEASE_INFO) $(VERSION_INFO) \
 libzzip_la_LIBADD= -lz @RESOLVES@
 
 libzzipmmapped_la_SOURCES =  mmapped.c memdisk.c fetch.c
-libzzipmmapped_la_headers =  mmapped.h memdisk.h fetch.h
+libzzipmmapped____headers =  mmapped.h memdisk.h fetch.h
+libzzipmmapped_la_headers =  mmapped.h memdisk.h
 libzzipmmapped_la_LDFLAGS= @ZZIPLIB_LDFLAGS@ $(RELEASE_INFO) $(VERSION_INFO) \
                     $(THREAD_SAFE)
 libzzipmmapped_la_LIBADD= -lz @RESOLVES@
 
 libzzipfseeko_la_SOURCES = fseeko.c fetch.c
-libzzipfseeko_la_headers = fseeko.h fetch.h
+libzzipfseeko____headers = fseeko.h fetch.h
+libzzipfseeko_la_headers = fseeko.h
 libzzipfseeko_la_LDFLAGS= @ZZIPLIB_LDFLAGS@ $(RELEASE_INFO) $(VERSION_INFO) \
                     $(THREAD_SAFE)
 libzzipfseeko_la_LIBADD= -lz @RESOLVES@

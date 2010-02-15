@@ -1,5 +1,7 @@
 2010-02-15  guidod  <guidod@gmx.de>
 
+	* zzip/Makefile.am: newest "install" does not like to install fetch.h
+	                   three times ("...not overwite... it just installed")
 	* Makefile.am: allow to build locally with "osc" (opensuse buildservice) 
 
 2010-02-14  guidod  <guidod@gmx.de>
