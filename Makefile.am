@@ -31,9 +31,17 @@ osc-copy:
 	cp $(OSC_TARBALL)  $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)
 	cp $(OSC_SPECFILE) $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)
 
+DOIT = :
 osc-ci osc-commit upload-osc: osc-copy
-	osc add $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)/$(TARBALL)
-	osc commit -m "$(TARBALL)" $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)
+	tarball=`basename $(OSC_TARBALL)` \
+	; ls  $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)/*.tar.* \
+	| { while read f; do tarname=`basename $$f` \
+	; if test "$$tarname" != "$$tarball" \
+	; then echo osc rm $$f ; osc rm $$f \
+	; else echo osc add $$f ; osc add $$f \
+	; fi ; done }
+	osc status $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)/
+	$(DOIT) osc commit -m "update $(OSC_TARBALL)" $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)
 
 osc-build: osc-copy
 	cd $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)/ \
