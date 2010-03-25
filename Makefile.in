@@ -292,6 +292,7 @@ OSC_PACKAGECACHEDIR = $(OSC_BUILDDIR)/packagecache
 OSC_BUILDROOT = $(OSC_BUILDDIR)/buildroot
 OSC_REPOSITORY = openSUSE_11.2
 OSC_ARCH = x86_64
+DOIT = :
 MSVC8 = msvc8/README.TXT msvc8/zip.exe msvc8/test1.zip msvc8/test.zip \
 msvc8/zzdir.vcproj    msvc8/zzipself.vcproj     msvc8/zzip.vcproj \
 msvc8/zziplib.sln     msvc8/zzipsetstub.sln     msvc8/zzobfuscated.sln \
@@ -830,7 +831,6 @@ osc-copy:
 	cd $(OSC_SRCDIR)/$(OSC_PROJECT) && osc up
 	cp $(OSC_TARBALL)  $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)
 	cp $(OSC_SPECFILE) $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)
-
 osc-ci osc-commit upload-osc: osc-copy
 	tarball=`basename $(OSC_TARBALL)` \
 	; ls  $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)/*.tar.* \
@@ -840,8 +840,7 @@ osc-ci osc-commit upload-osc: osc-copy
 	; else echo osc add $$f ; osc add $$f \
 	; fi ; done }
 	osc status $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)/
-	: osc commit -m "update $(OSC_TARBALL)" \
-	            $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)
+	$(DOIT) osc commit -m "update $(OSC_TARBALL)" $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)
 
 osc-build: osc-copy
 	cd $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)/ \

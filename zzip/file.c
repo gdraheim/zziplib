@@ -1124,6 +1124,42 @@ zzip_tell(ZZIP_FILE * fp)
     return (fp->usize - fp->restlen);
 }
 
+long
+zzip_tell32(ZZIP_FILE * fp)
+{
+    if (sizeof(zzip_off_t) == sizeof(long))
+    {
+        return zzip_tell(fp);
+    } else
+    {
+        off_t off = zzip_tell(fp);
+        if (off >= 0) {
+            register long off32 = off;
+            if (off32 == off) return off32;
+            errno = EOVERFLOW;
+        }
+        return -1;
+    }
+}
+
+long
+zzip_seek32(ZZIP_FILE * fp, long offset, int whence)
+{
+    if (sizeof(zzip_off_t) == sizeof(long))
+    {
+        return zzip_seek(fp, offset, whence);
+    } else
+    {
+        off_t off = zzip_seek(fp, offset, whence);
+        if (off >= 0) {
+            register long off32 = off;
+            if (off32 == off) return off32;
+            errno = EOVERFLOW;
+        }
+        return -1;
+    }
+}
+
 /*
  * Local variables:
  * c-file-style: "stroustrup"

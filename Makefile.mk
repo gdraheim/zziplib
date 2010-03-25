@@ -1,7 +1,7 @@
 PUB=pub/
 
 auto:
-	aclocal && autoconf && autoheader && automake
+	aclocal -I m4 && autoconf -I m4 && autoheader && automake
 
 boottrap:
 	rm -rf .deps .libs

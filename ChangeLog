@@ -1,3 +1,14 @@
+2010-03-25  guidod  <guidod@gmx.de>
+
+	* Makefile.mk: add "-I m4" and re-autoconf with newest autotools.
+	* zzip/zzip32.h: introducing compat32 functions that take "long"
+	     arguments where the others use "off_t". Basically, there are
+	     two calls per each off_t-function on all systems where 
+	     previously that had been only done for those 64on32 systems. 
+	     This scheme maximized binary compatibility - if an application
+	     can not be compiled with _LARGEFILE_SOURCE then they can use
+	     the compat32 variants to be always sure to do the right thing.
+
 2010-02-15  guidod  <guidod@gmx.de>
 
 	* zzip/Makefile.am: newest "install" does not like to install fetch.h
