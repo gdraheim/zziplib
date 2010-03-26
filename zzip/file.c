@@ -1124,6 +1124,13 @@ zzip_tell(ZZIP_FILE * fp)
     return (fp->usize - fp->restlen);
 }
 
+#ifndef EOVERFLOW
+#define EOVERFLOW EFBIG
+#endif
+
+/** => zzip_tell
+ * This function is provided for users who can not use any largefile-mode.
+ */
 long
 zzip_tell32(ZZIP_FILE * fp)
 {
@@ -1142,6 +1149,9 @@ zzip_tell32(ZZIP_FILE * fp)
     }
 }
 
+/** => zzip_seek
+ * This function is provided for users who can not use any largefile-mode.
+ */
 long
 zzip_seek32(ZZIP_FILE * fp, long offset, int whence)
 {

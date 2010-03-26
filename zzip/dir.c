@@ -186,6 +186,13 @@ zzip_seekdir(ZZIP_DIR * dir, zzip_off_t offset)
     }
 }
 
+#ifndef EOVERFLOW
+#define EOVERFLOW EFBIG
+#endif
+
+/** => zzip_rewinddir
+ * This function is provided for users who can not use any largefile-mode.
+ */
 long
 zzip_telldir32(ZZIP_DIR * dir)
 {
@@ -204,6 +211,9 @@ zzip_telldir32(ZZIP_DIR * dir)
     }
 }
 
+/** => zzip_rewinddir
+ * This function is provided for users who can not use any largefile-mode.
+ */
 void
 zzip_seekdir32(ZZIP_DIR * dir, long offset)
 {

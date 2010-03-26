@@ -1,3 +1,9 @@
+2010-03-26  guidod  <guidod@gmx.de>
+
+	* zzip/dir.c: and zzip/file.c - adding comments to the compat32
+	   functions such that they appear near their off_t variants.
+	   Also added the ifdef-EOVERFLOW check that is needed on Win32.
+
 2010-03-25  guidod  <guidod@gmx.de>
 
 	* Makefile.mk: add "-I m4" and re-autoconf with newest autotools.
