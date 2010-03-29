@@ -1,4 +1,14 @@
 2010-03-30  guidod  <guidod@gmx.de>
+
+	* zzip/Makefile.am:  fixing symlinks for lib* - use only for Linux
+	    Thanks to Ryan Schmidt (macports):
+		... likes to install some symlinks that don't make sense on Mac OS X:
+		$ ls -l /opt/local/lib/*zzip*so*
+		lrwxr-xr-x  /opt/local/lib/libzzip*.so.10 -> libzzip*.so.13
+		lrwxr-xr-x  /opt/local/lib/libzzip*.so.11 -> libzzip*.so.13
+		lrwxr-xr-x  /opt/local/lib/libzzip*.so.12 -> libzzip*.so.13
+		Yes, the filenames literally contain an asterisk.
+	
     * prepare 0.13.60
 
 2010-03-29  guidod  <guidod@gmx.de>

@@ -87,7 +87,8 @@ install-data-hook : install-zzipHEADERS
 
 install-exec-hook:
 	@ for i in . $(DESTDIR)$(libdir)/libzzip*.so.13 \
-        ; do test -d $$i && continue ; lib=`basename "$$i" .so.13` \
+        ; do test -d $$i && continue ; test -f $$i || continue \
+        ; lib=`basename "$$i" .so.13` \
         ; echo "$(DESTDIR)$(libdir): ln -s $$lib.so.13 $$lib.so.10" \
         ; (cd $(DESTDIR)$(libdir) && ln -s $$lib.so.13 $$lib.so.10) \
         ; echo "$(DESTDIR)$(libdir): ln -s $$lib.so.13 $$lib.so.11" \
