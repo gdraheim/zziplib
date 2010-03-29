@@ -1,3 +1,11 @@
+2010-03-29  guidod  <guidod@gmx.de>
+
+	* configure.ac: update to autoconf 2.61 which does some things differently
+	* m4/ax_pax_tar.m4: bug report http://trac.macports.org/ticket/24227
+	  showed a problem on MacOsX where some "pax" tools where advertising
+	  an "-O" option in their "--help" page but it did not work. Therefore
+	  rewriting the macro to actually test some "-w -O" to create a tarfile.
+
 2010-03-26  guidod  <guidod@gmx.de>
 
 	* zzip/dir.c: and zzip/file.c - adding comments to the compat32

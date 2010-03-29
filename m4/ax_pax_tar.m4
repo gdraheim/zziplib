@@ -58,19 +58,32 @@ if test -z "$ac_cv_pax_tar_tool"; then
 fi
 ])
 
+dnl TODO: on MacOsX the "--help" documentation of the tool differs
+dnl from the capabilities of the installed pax tool. So test reality.
+AC_DEFUN([_AX_PAX_SINGLE_ARCHIVE],[
+  if test "$ac_cv_pax_tar_tool$ax_pax_single_archive" = "pax"; then
+    AC_MSG_CHECKING([for pax single archive option])
+       echo foo > conftest.txt ; rm -f conftest.tar
+       AC_RUN_LOG(["$ac_cv_path_PAX" -w -O -f conftest.tar conftest.txt])
+       if test -s conftest.tar; then
+           ax_pax_single_archive="-O" ; ac_hint="(probably a BSD pax)"
+       else
+           ax_pax_single_archive=" "  ; ac_hint="(the -O option did not work)"
+       fi
+     AC_MSG_RESULT([$ax_pax_single_archive $ac_hint])
+  fi
+])
+
 AC_DEFUN([_AX_PAX_TAR_CREATE],[
   _AX_PAX_TAR_TOOL
-  AC_MSG_CHECKING([for invokation create portable tar archives])
+  _AX_PAX_SINGLE_ARCHIVE
+  AC_MSG_CHECKING([for command to create portable tar archives])
   if test "$ac_cv_pax_tar_tool" = "gnutar"; then
     ax_pax_tar_create="'$ac_cv_path_GNUTAR' cf"
   elif test "$ac_cv_pax_tar_tool" = "gtar"; then
     ax_pax_tar_create="'$ac_cv_path_GTAR' cf"
   elif test "$ac_cv_pax_tar_tool" = "pax"; then
-    ax_pax_tar_create="'$ac_cv_path_PAX' -w -f"
-    dnl BSD PAX has the nuisiance to prompt for a new archive on errors
-    if "$ac_cv_path_PAX" --help 2>&1 | grep "pax.*-[[a-zA-Z]]*O" ; then
-       ax_pax_tar_extract="'$ac_cv_path_PAX' -w -O -f"
-    fi
+    ax_pax_tar_create="'$ac_cv_path_PAX' -w $ax_pax_single_archive -f"
   elif test "$ac_cv_pax_tar_tool" = "tar"; then
     ax_pax_tar_create="'$ac_cv_path_TAR' cf"
   else
@@ -81,17 +94,14 @@ AC_DEFUN([_AX_PAX_TAR_CREATE],[
 
 AC_DEFUN([_AX_PAX_TAR_EXTRACT],[
   _AX_PAX_TAR_TOOL
-  AC_MSG_CHECKING([for invokation extract portable tar archives])
+  _AX_PAX_SINGLE_ARCHIVE
+  AC_MSG_CHECKING([for command to extract portable tar archives])
   if test "$ac_cv_pax_tar_tool" = "gnutar"; then
     ax_pax_tar_extract="'$ac_cv_path_GNUTAR' xf"
   elif test "$ac_cv_pax_tar_tool" = "gtar"; then
     ax_pax_tar_extract="'$ac_cv_path_GTAR' xf"
   elif test "$ac_cv_pax_tar_tool" = "pax"; then
-    ax_pax_tar_extract="'$ac_cv_path_PAX' -r -f"
-    dnl BSD PAX has the nuisiance to prompt for a new archive on errors
-    if "$ac_cv_path_PAX" --help 2>&1 | grep "pax.*-[[a-zA-Z]]*O" ; then
-       ax_pax_tar_extract="'$ac_cv_path_PAX' -r -O -f"
-    fi
+    ax_pax_tar_extract="'$ac_cv_path_PAX' -r $ax_pax_single_archive -f"
   elif test "$ac_cv_pax_tar_tool" = "tar"; then
     ax_pax_tar_extract="'$ac_cv_path_TAR' xf"
   else

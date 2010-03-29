@@ -1,5 +1,5 @@
 AC_INIT([zziplib.spec])
-AC_PREREQ(2.49)
+AC_PREREQ(2.61)
 AC_COPYRIGHT([Guido Draheim <guido@gmx.de> for ZZipLib.SF.net])
 AC_REVISION($Revision: 1.15 $)
 AC_CONFIG_AUX_DIR([uses])
@@ -11,7 +11,7 @@ AX_ENABLE_BUILDDIR_UNAME
 AC_SET_DEFAULT_PATHS_SYSTEM
 # -----------------------------------------------------------------------
 AC_ARG_ENABLE([thread-safe],
-AC_HELP_STRING([--disable-thread-safe],[disable thread-safe libtool option])
+AS_HELP_STRING([--disable-thread-safe],[disable thread-safe libtool option])
    ,,[ enable_thread_safe="yes"])
 THREAD_SAFE=""
 test "$enable_thread_safe" = "yes" && THREAD_SAFE="-thread-safe"
@@ -24,12 +24,12 @@ else
 fi
 # ----------------------------------------------------------------
 AC_MSG_CHECKING(zlib install prefix)
-AC_ARG_WITH(zlib, AC_HELP_STRING(
-    [--with-zlib],[zlib prefix (e.g. '$HOME/software')])
+AC_ARG_WITH(zlib, 
+AS_HELP_STRING([--with-zlib],[zlib prefix (e.g. '$HOME/software')])
     ,,[with_zlib="no"])
 if test "${with_zlib}" = yes ; then # choose --prefix paths
    if test "${prefix}" = NONE ; then
-      AC_MSG_RESULT(oops, but only itself...)
+      AC_MSG_RESULT([oops, but only itself...])
       AC_MSG_ERROR(--with-zlib requires a path argument or a --prefix path set)
    fi
    with_zlib="$prefix"
@@ -43,11 +43,11 @@ case ".$with_zlib" in
       AC_MSG_RESULT([oops, ignored (may try --with-zlib=/usr/.)])
       with_zlib="no, /usr ignored" ;;
   *)  if test ! -d "$with_zlib/include" ; then
-         AC_MSG_RESULT(oops, given but...)
+         AC_MSG_RESULT([oops, given but...])
          AC_MSG_ERROR("$with_zlib/include" is not a directory)
       fi
       if test ! -d "$with_zlib/lib" ; then
-         AC_MSG_RESULT(oops, given but...)
+         AC_MSG_RESULT([oops, given but...])
          AC_MSG_ERROR("$with_zlib/lib" is not a directory)
       fi
       AC_MSG_RESULT($with_zlib)
@@ -84,7 +84,6 @@ AM_MAINTAINER_MODE
 AX_CREATE_PKGCONFIG_INFO(dnl
 [zzip/zziplib.pc], [zzip-zlib-config],[-lzzip],,[ ])
 # -----------------------------------------------------------------------
-echo extrac.t..
 AX_PAX_TAR_CREATE
 AX_PAX_TAR_EXTRACT
 AC_PATH_PROGS(PERL, perl5 perl, echo no perl found for)
@@ -278,26 +277,19 @@ else
 fi
 AC_SUBST(ZIPTESTS)
 # ---------------------------------------------------------------
-AC_MSG_CHECKING(link options)
-case "$host_os" in
-  mingw*)
+AC_MSG_CHECKING([link options])
+ZZIPLIB_LDFLAGS=""
+test ".$can_build_shared" != ".no" && ZZIPLIB_LDFLAGS="--export-dynamic"
+RESOLVES=" # "
+case "$host_os" in mingw*)
     ZZIPLIB_LDFLAGS="-no-undefined -export-all-symbols -mconsole"
     RESOLVES=' '
-  ;;
-  *)
-
-    if test ".$can_build_shared" = .no
-    then ZZIPLIB_LDFLAGS=""
-    else ZZIPLIB_LDFLAGS="--export-dynamic"
-    fi
-    RESOLVES=' # '
-  ;;
-esac
+;; esac
 AC_MSG_RESULT([$ZZIPLIB_LDFLAGS $RESOLVES])
 AC_SUBST([ZZIPLIB_LDFLAGS])
 AC_SUBST([RESOLVES])
-AC_ARG_WITH([defines], AC_HELP_STRING(
-    [--with-defines],[easy,harden,allow_modulo_entries]),
+AC_ARG_WITH([defines], 
+AS_HELP_STRING([--with-defines],[easy,harden,allow_modulo_entries]),
     ,[with_defines="normal"])
 
 #
@@ -341,6 +333,7 @@ PATCH_LIBTOOL_TO_ADD_HOST_CC
 # ---------------------------------------------------------------
 echo '-----' $PACKAGE $VERSION $prefix
 $SHELL libtool --features || true
+echo "CPPFLAGS=$CPPFLAGS"
 echo "CFLAGS=$CFLAGS"
 test "$enable_mmap" != "no" && echo "enable  mmap   ($enable_mmap)"
 test "$enable_mmap"  = "no" && echo "disable mmap   ($enable_mmap)"

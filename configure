@@ -2512,8 +2512,8 @@ fi
 
 if test "${with_zlib}" = yes ; then # choose --prefix paths
    if test "${prefix}" = NONE ; then
-      { $as_echo "$as_me:$LINENO: result: oops" >&5
-$as_echo "oops" >&6; }
+      { $as_echo "$as_me:$LINENO: result: oops, but only itself..." >&5
+$as_echo "oops, but only itself..." >&6; }
       { { $as_echo "$as_me:$LINENO: error: --with-zlib requires a path argument or a --prefix path set" >&5
 $as_echo "$as_me: error: --with-zlib requires a path argument or a --prefix path set" >&2;}
    { (exit 1); exit 1; }; }
@@ -2531,15 +2531,15 @@ $as_echo "none" >&6; }
 $as_echo "oops, ignored (may try --with-zlib=/usr/.)" >&6; }
       with_zlib="no, /usr ignored" ;;
   *)  if test ! -d "$with_zlib/include" ; then
-         { $as_echo "$as_me:$LINENO: result: oops" >&5
-$as_echo "oops" >&6; }
+         { $as_echo "$as_me:$LINENO: result: oops, given but..." >&5
+$as_echo "oops, given but..." >&6; }
          { { $as_echo "$as_me:$LINENO: error: \"$with_zlib/include\" is not a directory" >&5
 $as_echo "$as_me: error: \"$with_zlib/include\" is not a directory" >&2;}
    { (exit 1); exit 1; }; }
       fi
       if test ! -d "$with_zlib/lib" ; then
-         { $as_echo "$as_me:$LINENO: result: oops" >&5
-$as_echo "oops" >&6; }
+         { $as_echo "$as_me:$LINENO: result: oops, given but..." >&5
+$as_echo "oops, given but..." >&6; }
          { { $as_echo "$as_me:$LINENO: error: \"$with_zlib/lib\" is not a directory" >&5
 $as_echo "$as_me: error: \"$with_zlib/lib\" is not a directory" >&2;}
    { (exit 1); exit 1; }; }
@@ -12415,7 +12415,6 @@ fi
 ac_config_commands="$ac_config_commands $ax_create_pkgconfig_generate"
 
 # -----------------------------------------------------------------------
-echo extrac.t..
 
 
 if test -z "$ac_cv_pax_tar_tool"; then
@@ -12602,17 +12601,33 @@ $as_echo_n "checking for portable tar tool... " >&6; }
 $as_echo "$ac_cv_pax_tar_tool" >&6; }
 fi
 
-  { $as_echo "$as_me:$LINENO: checking for invokation create portable tar archives" >&5
-$as_echo_n "checking for invokation create portable tar archives... " >&6; }
+
+  if test "$ac_cv_pax_tar_tool$ax_pax_single_archive" = "pax"; then
+    { $as_echo "$as_me:$LINENO: checking for pax single archive option" >&5
+$as_echo_n "checking for pax single archive option... " >&6; }
+       echo foo > conftest.txt ; rm -f conftest.tar
+       { ($as_echo "$as_me:$LINENO: \"\$ac_cv_path_PAX\" -w -O -f conftest.tar conftest.txt") >&5
+  ("$ac_cv_path_PAX" -w -O -f conftest.tar conftest.txt) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }
+       if test -s conftest.tar; then
+           ax_pax_single_archive="-O" ; ac_hint="(probably a BSD pax)"
+       else
+           ax_pax_single_archive=" "  ; ac_hint="(the -O option did not work)"
+       fi
+     { $as_echo "$as_me:$LINENO: result: $ax_pax_single_archive $ac_hint" >&5
+$as_echo "$ax_pax_single_archive $ac_hint" >&6; }
+  fi
+
+  { $as_echo "$as_me:$LINENO: checking for command to create portable tar archives" >&5
+$as_echo_n "checking for command to create portable tar archives... " >&6; }
   if test "$ac_cv_pax_tar_tool" = "gnutar"; then
     ax_pax_tar_create="'$ac_cv_path_GNUTAR' cf"
   elif test "$ac_cv_pax_tar_tool" = "gtar"; then
     ax_pax_tar_create="'$ac_cv_path_GTAR' cf"
   elif test "$ac_cv_pax_tar_tool" = "pax"; then
-    ax_pax_tar_create="'$ac_cv_path_PAX' -w -f"
-        if "$ac_cv_path_PAX" --help 2>&1 | grep "pax.*-[a-zA-Z]*O" ; then
-       ax_pax_tar_extract="'$ac_cv_path_PAX' -w -O -f"
-    fi
+    ax_pax_tar_create="'$ac_cv_path_PAX' -w $ax_pax_single_archive -f"
   elif test "$ac_cv_pax_tar_tool" = "tar"; then
     ax_pax_tar_create="'$ac_cv_path_TAR' cf"
   else
@@ -12811,17 +12826,33 @@ $as_echo_n "checking for portable tar tool... " >&6; }
 $as_echo "$ac_cv_pax_tar_tool" >&6; }
 fi
 
-  { $as_echo "$as_me:$LINENO: checking for invokation extract portable tar archives" >&5
-$as_echo_n "checking for invokation extract portable tar archives... " >&6; }
+
+  if test "$ac_cv_pax_tar_tool$ax_pax_single_archive" = "pax"; then
+    { $as_echo "$as_me:$LINENO: checking for pax single archive option" >&5
+$as_echo_n "checking for pax single archive option... " >&6; }
+       echo foo > conftest.txt ; rm -f conftest.tar
+       { ($as_echo "$as_me:$LINENO: \"\$ac_cv_path_PAX\" -w -O -f conftest.tar conftest.txt") >&5
+  ("$ac_cv_path_PAX" -w -O -f conftest.tar conftest.txt) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }
+       if test -s conftest.tar; then
+           ax_pax_single_archive="-O" ; ac_hint="(probably a BSD pax)"
+       else
+           ax_pax_single_archive=" "  ; ac_hint="(the -O option did not work)"
+       fi
+     { $as_echo "$as_me:$LINENO: result: $ax_pax_single_archive $ac_hint" >&5
+$as_echo "$ax_pax_single_archive $ac_hint" >&6; }
+  fi
+
+  { $as_echo "$as_me:$LINENO: checking for command to extract portable tar archives" >&5
+$as_echo_n "checking for command to extract portable tar archives... " >&6; }
   if test "$ac_cv_pax_tar_tool" = "gnutar"; then
     ax_pax_tar_extract="'$ac_cv_path_GNUTAR' xf"
   elif test "$ac_cv_pax_tar_tool" = "gtar"; then
     ax_pax_tar_extract="'$ac_cv_path_GTAR' xf"
   elif test "$ac_cv_pax_tar_tool" = "pax"; then
-    ax_pax_tar_extract="'$ac_cv_path_PAX' -r -f"
-        if "$ac_cv_path_PAX" --help 2>&1 | grep "pax.*-[a-zA-Z]*O" ; then
-       ax_pax_tar_extract="'$ac_cv_path_PAX' -r -O -f"
-    fi
+    ax_pax_tar_extract="'$ac_cv_path_PAX' -r $ax_pax_single_archive -f"
   elif test "$ac_cv_pax_tar_tool" = "tar"; then
     ax_pax_tar_extract="'$ac_cv_path_TAR' xf"
   else
@@ -16225,20 +16256,13 @@ fi
 # ---------------------------------------------------------------
 { $as_echo "$as_me:$LINENO: checking link options" >&5
 $as_echo_n "checking link options... " >&6; }
-case "$host_os" in
-  mingw*)
+ZZIPLIB_LDFLAGS=""
+test ".$can_build_shared" != ".no" && ZZIPLIB_LDFLAGS="--export-dynamic"
+RESOLVES=" # "
+case "$host_os" in mingw*)
     ZZIPLIB_LDFLAGS="-no-undefined -export-all-symbols -mconsole"
     RESOLVES=' '
-  ;;
-  *)
-
-    if test ".$can_build_shared" = .no
-    then ZZIPLIB_LDFLAGS=""
-    else ZZIPLIB_LDFLAGS="--export-dynamic"
-    fi
-    RESOLVES=' # '
-  ;;
-esac
+;; esac
 { $as_echo "$as_me:$LINENO: result: $ZZIPLIB_LDFLAGS $RESOLVES" >&5
 $as_echo "$ZZIPLIB_LDFLAGS $RESOLVES" >&6; }
 
@@ -20651,6 +20675,7 @@ fi
 # ---------------------------------------------------------------
 echo '-----' $PACKAGE $VERSION $prefix
 $SHELL libtool --features || true
+echo "CPPFLAGS=$CPPFLAGS"
 echo "CFLAGS=$CFLAGS"
 test "$enable_mmap" != "no" && echo "enable  mmap   ($enable_mmap)"
 test "$enable_mmap"  = "no" && echo "disable mmap   ($enable_mmap)"
