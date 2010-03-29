@@ -1,5 +1,6 @@
 2010-03-29  guidod  <guidod@gmx.de>
 
+	* Makefile.am: change osc to new home:guidod:zziplib-13
 	* configure.ac: update to autoconf 2.61 which does some things differently
 	* m4/ax_pax_tar.m4: bug report http://trac.macports.org/ticket/24227
 	  showed a problem on MacOsX where some "pax" tools where advertising

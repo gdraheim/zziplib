@@ -12,7 +12,7 @@ rpm: dist-bzip2 $(PACKAGE).spec
 
 OSC_ROOT = /my/own/osc
 OSC_SRCDIR = $(OSC_ROOT)
-OSC_PROJECT = home:guidod:devel
+OSC_PROJECT = home:guidod:zziplib-13
 OSC_PACKAGE = $(PACKAGE)
 OSC_SPECFILE = $(top_srcdir)/$(PACKAGE).spec
 OSC_TARBALL = $(PACKAGE)-$(VERSION).tar.bz2
