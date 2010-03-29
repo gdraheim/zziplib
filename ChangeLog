@@ -1,3 +1,6 @@
+2010-03-30  guidod  <guidod@gmx.de>
+    * prepare 0.13.60
+
 2010-03-29  guidod  <guidod@gmx.de>
 
 	* Makefile.am: change osc to new home:guidod:zziplib-13
