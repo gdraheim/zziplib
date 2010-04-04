@@ -256,9 +256,9 @@ AC_ARG_ENABLE(sdl, AC_HELP_STRING(
 if test "$enable_sdl" = "no" ; then
    AC_MSG_RESULT([no, disabled])
 else
-   enable_sdl=`sdl-config --version 2>/dev/null`
+   enable_sdl=`pkg-config --modversion sdl 2>/dev/null`
    case ".$enable_sdl" in
-     .1.*) AC_MSG_RESULT([yes, for SDL $enable_sdl])
+     .1.*) AC_MSG_RESULT([yes, using SDL $enable_sdl])
            SDL="SDL" ;;
      .2.*) AC_MSG_RESULT([yes, untested $enable_sdl])
            SDL="SDL" ;;

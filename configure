@@ -16227,10 +16227,10 @@ if test "$enable_sdl" = "no" ; then
    { $as_echo "$as_me:$LINENO: result: no, disabled" >&5
 $as_echo "no, disabled" >&6; }
 else
-   enable_sdl=`sdl-config --version 2>/dev/null`
+   enable_sdl=`pkg-config --modversion sdl 2>/dev/null`
    case ".$enable_sdl" in
-     .1.*) { $as_echo "$as_me:$LINENO: result: yes, for SDL $enable_sdl" >&5
-$as_echo "yes, for SDL $enable_sdl" >&6; }
+     .1.*) { $as_echo "$as_me:$LINENO: result: yes, using SDL $enable_sdl" >&5
+$as_echo "yes, using SDL $enable_sdl" >&6; }
            SDL="SDL" ;;
      .2.*) { $as_echo "$as_me:$LINENO: result: yes, untested $enable_sdl" >&5
 $as_echo "yes, untested $enable_sdl" >&6; }

@@ -1,5 +1,10 @@
 2010-04-05  guidod  <guidod@gmx.de>
 
+	* Makefile.am: fix "osc rm" and fix "test-sdl" if SDL was not found.
+	* configure.ac: SDL example builds on pkgconfig/sdl.pc which
+	    was introduced with SDL 1.2.11 - CentOs5 ships 1.2.10 which
+	    does only have "sdl-config" and it made for a mismatch in
+	    in the build configuration: sdl-devel yes, pkgconfig sdl no.
 	* zzip/zip.c (__zzip_parse_root_directory): move the check for
 	     zzip_disk_entry_check_magic to be after the the check that
 	     the seek-value is more than a header's size before the end.

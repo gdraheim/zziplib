@@ -37,7 +37,7 @@ osc-ci osc-commit upload-osc: osc-copy
 	; ls  $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)/*.tar.* \
 	| { while read f; do tarname=`basename $$f` \
 	; if test "$$tarname" != "$$tarball" \
-	; then echo osc rm $$f ; osc rm $$f \
+	; then echo osc rm -f $$f ; osc rm -f $$f \
 	; else echo osc add $$f ; osc add $$f \
 	; fi ; done }
 	osc status $(OSC_SRCDIR)/$(OSC_PROJECT)/$(OSC_PACKAGE)/
@@ -69,7 +69,8 @@ upload-sourceforge www:
 	(cd docs && $(MAKE) `basename $@`)
 
 sdl testsdl test-sdl install-sdl :
-	(cd SDL && $(MAKE) `basename $@`)
+	if test -z "$(SDL)"; then echo "skip $@ (no SDL)"; else \
+	(cd SDL && $(MAKE) `basename $@`) ; fi
 
 check-test0 check-test1 check-zzdir check-zzcat \
 check-zzxor check-zzxordir check-zzxorcat \
