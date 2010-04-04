@@ -1,3 +1,11 @@
+2010-04-05  guidod  <guidod@gmx.de>
+
+	* zzip/zip.c (__zzip_parse_root_directory): move the check for
+	     zzip_disk_entry_check_magic to be after the the check that
+	     the seek-value is more than a header's size before the end.
+	     (based on a segfault report by Tulipánt Gergely when the
+	      new modulo_entries code is enabled (which is off by default))
+
 2010-03-30  guidod  <guidod@gmx.de>
 
 	* zzip/Makefile.am:  fixing symlinks for lib* - use only for Linux

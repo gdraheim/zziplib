@@ -464,6 +464,14 @@ __zzip_parse_root_directory(int fd,
             d = &dirent;
         }
 
+        if ((zzip_off64_t) (zz_offset + sizeof(*d)) > zz_rootsize ||
+            (zzip_off64_t) (zz_offset + sizeof(*d)) < 0)
+        {
+            FAIL4("%li's entry stretches beyond root directory (O:%li R:%li)",
+                  (long) entries, (long) (zz_offset), (long) zz_rootsize);
+            break;
+        }
+
         if (! zzip_disk_entry_check_magic(d)) {
 #        ifndef ZZIP_ALLOW_MODULO_ENTRIES
             FAIL4("%li's entry has no disk_entry magic indicator (O:%li R:%li)",
@@ -472,13 +480,6 @@ __zzip_parse_root_directory(int fd,
             break;
         }
 
-        if ((zzip_off64_t) (zz_offset + sizeof(*d)) > zz_rootsize ||
-            (zzip_off64_t) (zz_offset + sizeof(*d)) < 0)
-        {
-            FAIL4("%li's entry stretches beyond root directory (O:%li R:%li)",
-                  (long) entries, (long) (zz_offset), (long) zz_rootsize);
-            break;
-        }
 #       if 0 && defined DEBUG
         zzip_debug_xbuf((unsigned char *) d, sizeof(*d) + 8);
 #       endif
