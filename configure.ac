@@ -250,6 +250,7 @@ esac
 # ---------------------------------------------------------------
 AC_MSG_CHECKING(whether making SDL parts)
 SDL=""
+SDL_GENERATE=""
 AC_ARG_ENABLE(sdl, AC_HELP_STRING(
     [--enable-sdl],[enable SDL usage (if present)])
     ,,[enable_sdl="no"])
@@ -257,6 +258,14 @@ if test "$enable_sdl" = "no" ; then
    AC_MSG_RESULT([no, disabled])
 else
    enable_sdl=`pkg-config --modversion sdl 2>/dev/null`
+   if test -z "$enable_sdl"; then
+      enable_sdl=`sdl-config --version 2>/dev/null`
+      SDL_GENERATE="sdl-uninstalled.pc"
+      enable_sdl="$enable_sdl (sdl-config)"
+   else
+      enable_sdl="$enable_sdl (pkgconfig)"
+   fi
+   enable_sdl="$enable_sdl."
    case ".$enable_sdl" in
      .1.*) AC_MSG_RESULT([yes, using SDL $enable_sdl])
            SDL="SDL" ;;
@@ -264,8 +273,12 @@ else
            SDL="SDL" ;;
      *)    AC_MSG_RESULT([no, $enable_sdl]) ;;
    esac
+   if test -n "$SDL_GENERATE"; then
+      AC_MSG_RESULT([enabled SDL generation of... $SDL_GENERATE])
+   fi
 fi
-AC_SUBST(SDL)
+AC_SUBST([SDL])
+AC_SUBST([SDL_GENERATE])
 # ---------------------------------------------------------------
 AC_MSG_CHECKING(running extra tests on make check)
 if test "MKZIP" != ":" ; then

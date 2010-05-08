@@ -193,6 +193,7 @@ RANLIB = @RANLIB@
 RELEASE_INFO = @RELEASE_INFO@
 RESOLVES = @RESOLVES@
 SDL = @SDL@
+SDL_GENERATE = @SDL_GENERATE@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
@@ -278,8 +279,8 @@ EXTRA_DIST = $(sdl_DATA)
 zzcatsdl_SOURCES = SDL_rwops_zzcat.c SDL_rwops_zzip.c
 ZZIP_CFLAGS = `export PKG_CONFIG_PATH=../zzip; pkg-config zziplib --cflags` 
 ZZIP_LIBS = `export PKG_CONFIG_PATH=../zzip; pkg-config zziplib --libs`
-SDL_CFLAGS = `pkg-config sdl --cflags` 
-SDL_LIBS = `pkg-config sdl --libs`
+SDL_CFLAGS = `export PKG_CONFIG_PATH=.; pkg-config sdl --cflags` 
+SDL_LIBS = `export PKG_CONFIG_PATH=.; pkg-config sdl --libs`
 CLEANFILES = *.pc *.omf
 pkgconfig_HEADERS = SDL_rwops_zzip.pc
 ERRNULL = 2>/dev/null
@@ -622,6 +623,7 @@ testsdl test-sdl : test.zip zzcatsdl$(EXEEXT)
 	./zzcatsdl$(EXEEXT) test/README > test.out
 	diff -q @top_srcdir@/README test.out && rm test.out
 
+all: @SDL_GENERATE@
 sdl : all
 install-sdl : install-data # and not the binary
 
@@ -634,6 +636,15 @@ SDL_rwops_zzip.pc : Makefile
 	@ echo "Description: SDL_rwops for ZZipLib" >>$@
 	echo 'Requires: sdl, zziplib' >>$@
 	echo 'Cflags: -I$${zzipsdldir}' >>$@
+
+sdl-pc : sdl-uninstalled.pc
+sdl-uninstalled.pc : Makefile
+	@ echo "prefix=`sdl-config --prefix`" >$@
+	@ echo "Name: sdl" >>$@
+	@ echo "Version: `sdl-config --version`" >>$@
+	@ echo "Description: sdl - Simple DirectMedia Layer" >>$@
+	echo "Libs: `sdl-config --libs`" >> $@
+	echo "Cflags: `sdl-config --cflags`" >>$@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

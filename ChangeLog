@@ -1,3 +1,8 @@
+2010-05-08  guidod  <guidod@gmx.de>
+
+	* SDL/Makefile.am: fix generation of sdl-uninstalled.pc that was
+	   not recognized during compilation.
+
 2010-04-05  guidod  <guidod@gmx.de>
 
 	* Makefile.am: fix "osc rm" and fix "test-sdl" if SDL was not found.
