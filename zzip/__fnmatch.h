@@ -4,6 +4,7 @@
 
 #include <zzip/conf.h>
 #include <stdio.h>
+#include <string.h>
 
 #ifdef ZZIP_HAVE_FNMATCH_H
 #include <fnmatch.h>

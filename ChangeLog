@@ -1,3 +1,8 @@
+2010-05-09  guidod  <guidod@gmx.de>
+
+	* zzip/__fnmatch.h: add include <string.h> to make mingw32 happy.
+	     Patches item #2995373 by Gregory Smith 
+
 2010-05-08  guidod  <guidod@gmx.de>
 
 	* SDL/Makefile.am: fix generation of sdl-uninstalled.pc that was
