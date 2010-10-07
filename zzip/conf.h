@@ -75,7 +75,7 @@
 #endif
 #if defined __linux__ && __GNUC__+0 >= 4
 #define zzip__new__ __attribute__((malloc))
-#elif defined __linux__ && __GNUC__+0 >= 3 && __GNUC_MINOR_+0 >= 3
+#elif defined __linux__ && __GNUC__+0 >= 3 && __GNUC_MINOR__+0 >= 3
 #define zzip__new__  __attribute__((malloc))
 #else
 #define zzip__new__
