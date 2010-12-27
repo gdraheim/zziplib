@@ -1,3 +1,6 @@
+2010-12-27 guidod <guidod@gmx.de>
+        * add hints that the ext_io plugin handlers should be static.
+
 2010-05-09  guidod  <guidod@gmx.de>
 
 	* zzip/__fnmatch.h: add include <string.h> to make mingw32 happy.
@@ -12,6 +15,7 @@
 
 	* Makefile.am: fix "osc rm" and fix "test-sdl" if SDL was not found.
 	* configure.ac: SDL example builds on pkgconfig/sdl.pc which
+	
 	    was introduced with SDL 1.2.11 - CentOs5 ships 1.2.10 which
 	    does only have "sdl-config" and it made for a mismatch in
 	    in the build configuration: sdl-devel yes, pkgconfig sdl no.

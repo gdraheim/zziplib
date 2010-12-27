@@ -797,6 +797,8 @@ zzip_dir_open(zzip_char_t * filename, zzip_error_t * e)
 /** => zzip_dir_open
  * this function uses explicit ext and io instead of the internal
  * defaults. Setting these to zero is equivalent to => zzip_dir_open
+ * Note that the referenced ext_io plugin handlers structure must be 
+ * static as it is not copied to the returned ZZIP_DIR structure.
  */
 ZZIP_DIR *
 zzip_dir_open_ext_io(zzip_char_t * filename, zzip_error_t * e,
