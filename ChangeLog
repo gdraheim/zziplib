@@ -1,4 +1,8 @@
 2010-12-27 guidod <guidod@gmx.de>
+        * adding fetch.h/fetch.c to msvc8/zziplib.vcproj to allow
+          tests with Visual Studio C++ Express 2005
+
+2010-12-27 guidod <guidod@gmx.de>
         * fix stat.c to check ZZIP_CASELESS instead of the deprecated
           ZZIP_CASEINSENSITIVE. The latter is still recognized for
           compatibility reasons and implicitly mapped to ZZIP_CASELESS.
