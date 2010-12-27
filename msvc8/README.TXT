@@ -41,6 +41,10 @@ http://download.microsoft.com/download/A/9/1/A91D6B2B-A798-47DF-9C7E-A97854B7DD1
 http://download.microsoft.com/download/C/6/F/C6F4733B-67C7-4C15-9F21-61F7A3167505/VCS.iso 
 = Visual C# Express CD-image
 
+== Environment Variables ==
+On Windows-7 the environment variables can be found in the
+control panel > system information > change name settings > extras tab > click button
+
 == Compiling Error ==
 'can not delete debug/*.idb' - occurs when running MSVC in a VMWare box 
 pointing to a Unix drive; create a symlink `ln -s Debug debug` to fix it.
