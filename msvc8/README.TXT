@@ -23,12 +23,23 @@ going to be "patched away" with an explicit conversion in
 the source files (I expect Microsoft to get it right somewhen).
 
 == Download Places ==
-download.microsoft.com/download/a/5/f/a5f0d781-e201-4ab6-8c6a-9bb4efed1e1a/
-PSDK-x86.exe = Win32 SDK - online installer
-download.microsoft.com/download/A/9/1/A91D6B2B-A798-47DF-9C7E-A97854B7DD18/
-VC.iso = Visual C++ Express CD-image
-download.microsoft.com/download/C/6/F/C6F4733B-67C7-4C15-9F21-61F7A3167505/
-VCS.iso = Visual C# Express CD-image
+http://www.microsoft.com/msdownload/platformsdk/sdkupdate/ 
+= central place referenced a lot in the MSDN but the link is broken
+
+http://download.microsoft.com/download/a/5/f/a5f0d781-e201-4ab6-8c6a-9bb4efed1e1a/PSDK-x86.exe 
+http://download.microsoft.com/download/a/5/f/a5f0d781-e201-4ab6-8c6a-9bb4efed1e1a/PSDK-amd64.exe 
+http://download.microsoft.com/download/a/5/f/a5f0d781-e201-4ab6-8c6a-9bb4efed1e1a/PSDK-ia64.exe 
+= Windows Server 2003 SP1 Platform SDK Web Install (win32/win64/.. - but SDK for all CPU types)
+
+http://download.microsoft.com/download/f/a/d/fad9efde-8627-4e7a-8812-c351ba099151/PSDK-x86.exe
+http://download.microsoft.com/download/f/a/d/fad9efde-8627-4e7a-8812-c351ba099151/PSDK-ia64.exe
+http://download.microsoft.com/download/f/a/d/fad9efde-8627-4e7a-8812-c351ba099151/PSDK-amd64.exe
+= Windows Server 2003 R2 Platform SDK Web Install (win32/win64/.. - but SDK for all CPU types)
+
+http://download.microsoft.com/download/A/9/1/A91D6B2B-A798-47DF-9C7E-A97854B7DD18/VC.iso 
+= Visual C++ Express CD-image
+http://download.microsoft.com/download/C/6/F/C6F4733B-67C7-4C15-9F21-61F7A3167505/VCS.iso 
+= Visual C# Express CD-image
 
 == Compiling Error ==
 'can not delete debug/*.idb' - occurs when running MSVC in a VMWare box 
