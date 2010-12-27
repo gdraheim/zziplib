@@ -176,6 +176,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\zzip\fetch.c"
+				>
+			</File>
+			<File
 				RelativePath="..\zzip\file.c"
 				>
 			</File>
@@ -226,6 +230,10 @@
 			</File>
 			<File
 				RelativePath="..\zzip\conf.h"
+				>
+			</File>
+			<File
+				RelativePath="..\zzip\fetch.h"
 				>
 			</File>
 			<File
