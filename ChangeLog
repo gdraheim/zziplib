@@ -1,4 +1,9 @@
 2010-12-27 guidod <guidod@gmx.de>
+        * apply patches by Peter Breitenlohner for better compatibility
+          with AIX host system. Also the Sun Studio compiler insists on
+          static inline functions or else assumes extern inline.
+
+2010-12-27 guidod <guidod@gmx.de>
         * add hints that the ext_io plugin handlers should be static.
 
 2010-05-09  guidod  <guidod@gmx.de>
