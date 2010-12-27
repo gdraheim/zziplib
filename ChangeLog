@@ -1,7 +1,14 @@
 2010-12-27 guidod <guidod@gmx.de>
+        * fix stat.c to check ZZIP_CASELESS instead of the deprecated
+          ZZIP_CASEINSENSITIVE. The latter is still recognized for
+          compatibility reasons and implicitly mapped to ZZIP_CASELESS.
+        * fixes the zziplib-Patches-3078188 which reported the bug.
+
+2010-12-27 guidod <guidod@gmx.de>
         * apply patches by Peter Breitenlohner for better compatibility
           with AIX host system. Also the Sun Studio compiler insists on
           static inline functions or else assumes extern inline.
+        * also fixes zziplib-Patches-3011551 on the AIX problem.
 
 2010-12-27 guidod <guidod@gmx.de>
         * add hints that the ext_io plugin handlers should be static.
