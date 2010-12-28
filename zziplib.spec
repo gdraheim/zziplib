@@ -95,13 +95,12 @@ sh configure --prefix=%{_prefix} \
 
 %build
 %__make %{?jobs:-j%jobs}
-%__make check
-%__make test-sdl
 %__make %{?jobs:-j%jobs} zzip64-build
 %__make %{?jobs:-j%jobs} doc
 
 %check
 %__make check || exit 0
+%__make test-sdl || exit 0
 
 %install
 %__rm -rf %{buildroot}
