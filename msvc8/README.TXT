@@ -41,9 +41,19 @@ http://download.microsoft.com/download/A/9/1/A91D6B2B-A798-47DF-9C7E-A97854B7DD1
 http://download.microsoft.com/download/C/6/F/C6F4733B-67C7-4C15-9F21-61F7A3167505/VCS.iso 
 = Visual C# Express CD-image
 
+http://zlib.net/zlib123-dll.zip (broken)
+http://zlib.net/zlib125-dll.zip
+= unpack one of them into zzip-0/zlib (if using the subversion checkout)
+
 == Environment Variables ==
 On Windows-7 the environment variables can be found in the
 control panel > system information > change name settings > extras tab > click button
+
+== Debug Variables ==
+To run the zziptest for debugging the solution file has now a setting
+in Properties > Debugging > Environment > PATH=$(InputDir)\..\zlib\
+so that the zlib1.dll can be found. This needs to be adapted if the
+zlib123-dll.zip was unpackaged somewhere else.
 
 == Compiling Error ==
 'can not delete debug/*.idb' - occurs when running MSVC in a VMWare box 

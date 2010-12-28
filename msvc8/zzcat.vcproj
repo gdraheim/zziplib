@@ -63,6 +63,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				IgnoreImportLibrary="false"
+				AdditionalOptions="/NODEFAULTLIB:library"
 				AdditionalDependencies="zziplib-$(ConfigurationName).lib"
 				OutputFile="zziptest-$(ConfigurationName).exe"
 				LinkIncremental="2"
@@ -150,6 +152,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/NODEFAULTLIB:library"
 				AdditionalDependencies="zziplib-$(ConfigurationName).lib"
 				OutputFile="zziptest-$(ConfigurationName).exe"
 				LinkIncremental="1"
