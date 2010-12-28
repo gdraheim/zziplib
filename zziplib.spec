@@ -1,11 +1,10 @@
 # norootforbuild
-%define lib   lib010
-Summary:      ZZipLib - libZ-based ZIP-access Library
+Summary:      ZZipLib - libZ-based ZIP-access Library with an Easy-to-Use API
 Name:         zziplib
 Version:      0.13.60
 Release:      1
-License:      LGPL
-Group:        Development/Libraries
+License:      LGPLv2.1+
+Group:        System/Libraries
 URL:          http://zziplib.sf.net
 Vendor:       Guido Draheim <guidod@gmx.de>
 Source0:      http://prdownloads.sf.net/%{name}/%{name}-%{version}.tar.bz2
@@ -18,6 +17,10 @@ BuildRequires: zlib-devel
 BuildRequires: SDL-devel
 BuildRequires: zip
 
+Provides:     libzzip0 = %version
+Provides:     libzzip-0.so.10
+Provides:     zziplib-lib010 = %version
+
 #Begin3
 # Author1:        too@iki.fi (Tomi Ollila)
 # Author2:        guidod@gmx.de (Guido Draheim)
@@ -28,38 +31,27 @@ BuildRequires: zip
 # Copying-Policy: Lesser GPL Version 2
 #End
 
-%package %lib
-Summary:      ZZipLib - Documentation Files
-Group:        Development/Libraries
-Provides:     zziplib = %version
-Provides:     libzzip0 = %version
-Provides:     libzzip-0.so.10
-
 %package doc
 Summary:      ZZipLib - Documentation Files
-Group:        Development/Libraries
+Group:        Development/Libraries/C and C++
 BuildRequires: python
 BuildRequires: xmlto
 PreReq: scrollkeeper
 
 %package devel
 Summary:      ZZipLib - Development Files
-Group:        Development/Libraries
-Requires:     zziplib-%lib = %version
+Group:        Development/Libraries/C and C++
+Requires:     zziplib = %version
 Requires:     pkgconfig
 
 %package SDL_rwops-devel
 Summary:      ZZipLib - Development Files for SDL_rwops
-Group:        Development/Libraries
-Requires:     zziplib-%lib = %version
+Group:        Development/Libraries/C and C++
+Requires:     zziplib = %version
 Requires:     pkgconfig
 BuildRequires: SDL-devel
 
 %description
- : zziplib provides read access to zipped files in a zip-archive,
- : using compression based solely on free algorithms provided by zlib.
-
-%description %lib
  : zziplib provides read access to zipped files in a zip-archive,
  : using compression based solely on free algorithms provided by zlib.
  zziplib provides an additional API to transparently access files
@@ -93,10 +85,11 @@ BuildRequires: SDL-devel
 
 CFLAGS="$RPM_OPT_FLAGS" \
 sh configure --prefix=%{_prefix} \
-             --with-docdir=%{_docdir} \
              --mandir=%{_mandir} \
              --bindir=%{_bindir} \
              --libdir=%{_libdir} \
+             --with-docdir=%{_docdir} \
+             --disable-static --with-pic \
              --enable-sdl  TIMEOUT=9
 %__make zzip64-setup
 
@@ -106,6 +99,9 @@ sh configure --prefix=%{_prefix} \
 %__make test-sdl
 %__make %{?jobs:-j%jobs} zzip64-build
 %__make %{?jobs:-j%jobs} doc
+
+%check
+%__make check || exit 0
 
 %install
 %__rm -rf %{buildroot}
@@ -120,14 +116,12 @@ sh configure --prefix=%{_prefix} \
 %clean
 %__rm -rf %{buildroot}
 
-%files %lib
+%files
       %defattr(-,root,root)
       %{_libdir}/lib*.so.*
 
-%post %lib
-/sbin/ldconfig || true
-%postun %lib
-/sbin/ldconfig || true
+%post -p /sbin/ldconfig 
+%postun -p /sbin/ldconfig
 
 %files doc
       %defattr(-,root,root)
@@ -142,6 +136,7 @@ test ! -f %_bindir/scrollkeeper-update || %_bindir/scrollkeeper-update
 
 %files devel
       %defattr(-,root,root)
+%doc  ChangeLog README TODO
       %{_bindir}/*
 %dir  %{_includedir}/zzip
       %{_includedir}/zzip/*

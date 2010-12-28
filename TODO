@@ -3,6 +3,10 @@ SHORTTERM
 - most is multithreaded ... but zzip_dir_open (Thorsten Schöning)
 - rboerdijk@ does also report errors on overlapping reads, another
    one pointed to the usage of seek_set that may cause the problems
+- ubuntu packager added man.1 for the zz*-binaries, could be upstream.
+
+
+   
 
 WISHLIST
 
