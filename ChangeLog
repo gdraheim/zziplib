@@ -1,3 +1,7 @@
+2010-12-29 guidod <guidod@gmx.de>
+        * Makefile.am: allow nonstaic build
+        * wrap fd.open like in the Fedora patch
+
 2010-12-28 guidod <guidod@gmx.de>
         * zziplib.spec - simplify the spec based on distro specs.
 
