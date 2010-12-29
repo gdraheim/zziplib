@@ -146,25 +146,25 @@ zzip64-install: zzip64-install.tmp
 zzip64-install.tmp : zzip64-build.tmp
 	cd zzip64 && $(MAKE) install $(_RELEASEINFO64)
 	cd $(DESTDIR)$(libdir) && mv    libzzip.so   libzzip64.so
-	cd $(DESTDIR)$(libdir) && mv    libzzip.a    libzzip64.a
+	- cd $(DESTDIR)$(libdir) && mv    libzzip.a    libzzip64.a
 	cd $(DESTDIR)$(libdir) && \
-        sed -e 's/zzip.so/zzip64.so/' \
-            -e 's/zzip.a/zzip64.a/'     libzzip.la > libzzip64.la
+        sed -e 's/zzip.so/zzip64.so/' -e 's/zzip.a/zzip64.a/' \
+             libzzip.la > libzzip64.la
 	cd $(DESTDIR)$(libdir)/pkgconfig && \
 	sed -e 's/largefile=/largefile= %_FILE_OFFSET64/' \
-	    -e 's/-lzzip/-lzzip64/' \
-	    -e 's/zziplib/zziplib64/'   zziplib.pc > zziplib64.pc
+	    -e 's/-lzzip/-lzzip64/' -e 's/zziplib/zziplib64/' \
+	     zziplib.pc > zziplib64.pc
 zzip32-postinstall:
-	cd $(DESTDIR)$(libdir) && mv    libzzip.so   libzzip32.so
-	cd $(DESTDIR)$(libdir) && mv    libzzip.a    libzzip32.a
-	cd $(DESTDIR)$(libdir) && ln -s libzzip32.so libzzip.so
-	cd $(DESTDIR)$(libdir) && ln -s libzzip32.a  libzzip.a
+	cd   $(DESTDIR)$(libdir) && mv    libzzip.so   libzzip32.so
+	- cd $(DESTDIR)$(libdir) && mv    libzzip.a    libzzip32.a
+	cd   $(DESTDIR)$(libdir) && ln -s libzzip32.so libzzip.so
+	- cd $(DESTDIR)$(libdir) && ln -s libzzip32.a  libzzip.a
 	cd $(DESTDIR)$(libdir) && \
-	sed -e 's/zzip.so/zzip32.so/' \
-	    -e 's/zzip.a/zzip32.a/'     libzzip.la > libzzip32.la
+	sed -e 's/zzip.so/zzip32.so/' -e 's/zzip.a/zzip32.a/' \
+	    libzzip.la > libzzip32.la
 	cd $(DESTDIR)$(libdir)/pkgconfig && \
-	sed -e 's/-lzzip/-lzzip32/' \
-	     -e 's/zziplib/zziplib32/'  zziplib.pc > zziplib32.pc
+	sed -e 's/-lzzip/-lzzip32/' -e 's/zziplib/zziplib32/' \
+	    zziplib.pc > zziplib32.pc
 zzip-postinstall:
 	: "the 12.8x and 11.8x and 10.8x packages are all the same actually"
 	cd $(DESTDIR)$(libdir) || exit 1 \

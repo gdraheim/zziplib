@@ -33,20 +33,20 @@ Provides:     zziplib-lib010 = %version
 
 %package doc
 Summary:      ZZipLib - Documentation Files
-Group:        Development/Libraries/C and C++
+Group:        Development/Languages/C and C++
 BuildRequires: python
 BuildRequires: xmlto
 PreReq: scrollkeeper
 
 %package devel
 Summary:      ZZipLib - Development Files
-Group:        Development/Libraries/C and C++
+Group:        Development/Languages/C and C++
 Requires:     zziplib = %version
 Requires:     pkgconfig
 
 %package SDL_rwops-devel
 Summary:      ZZipLib - Development Files for SDL_rwops
-Group:        Development/Libraries/C and C++
+Group:        Development/Languages/C and C++
 Requires:     zziplib = %version
 Requires:     pkgconfig
 BuildRequires: SDL-devel
@@ -99,8 +99,8 @@ sh configure --prefix=%{_prefix} \
 %__make %{?jobs:-j%jobs} doc
 
 %check
-%__make check || exit 0
-%__make test-sdl || exit 0
+%__make check
+%__make test-sdl
 
 %install
 %__rm -rf %{buildroot}
