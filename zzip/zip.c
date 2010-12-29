@@ -776,7 +776,7 @@ __zzip_try_open(zzip_char_t * filename, int filemode,
     for (; *ext; ++ext)
     {
         strcpy(file + len, *ext);
-        fd = io->fd.open(file, filemode);
+        fd = (io->fd.open)(file, filemode);
         if (fd != -1)
             return fd;
     }
@@ -811,7 +811,7 @@ zzip_dir_open_ext_io(zzip_char_t * filename, zzip_error_t * e,
     if (! ext)
         ext = zzip_get_default_ext();
 
-    fd = io->fd.open(filename, O_RDONLY | O_BINARY);
+    fd = (io->fd.open)(filename, O_RDONLY | O_BINARY);
     if (fd != -1)
     {
         return zzip_dir_fdopen_ext_io(fd, e, ext, io);

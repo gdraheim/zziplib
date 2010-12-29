@@ -176,7 +176,7 @@ zzip_dir_creat_ext_io(zzip_char_t * name, int o_mode,
             memcpy(dir->realname + name_len, exx, exx_len);     /* append! */
         }
         ____;
-        fd = io->fd.open(dir->realname, O_CREAT | O_TRUNC | O_WRONLY, o_mode);
+        fd = (io->fd.open)(dir->realname, O_CREAT | O_TRUNC | O_WRONLY, o_mode);
         dir->realname[name_len] = '\0'; /* keep ummodified */
         if (fd != -1)
             { dir->fd = fd; return dir; }

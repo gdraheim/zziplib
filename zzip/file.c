@@ -771,7 +771,7 @@ zzip_open_shared_io(ZZIP_FILE * stream,
     {
         zzip_plugin_io_t os = (o_modes & ZZIP_ALLOWREAL)
             ? zzip_get_default_io() : io;
-        int fd = os->fd.open(filename, o_flags);        /* io->fd.open */
+        int fd = (os->fd.open)(filename, o_flags);        /* io->fd.open */
 
         if (fd != -1)
         {
