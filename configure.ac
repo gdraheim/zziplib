@@ -292,10 +292,10 @@ AC_SUBST(ZIPTESTS)
 # ---------------------------------------------------------------
 AC_MSG_CHECKING([link options])
 ZZIPLIB_LDFLAGS=""
-test ".$can_build_shared" != ".no" && ZZIPLIB_LDFLAGS="--export-dynamic"
+test ".$can_build_shared" != ".no" && ZZIPLIB_LDFLAGS="${wl}--export-dynamic"
 RESOLVES=" # "
 case "$host_os" in mingw*)
-    ZZIPLIB_LDFLAGS="-no-undefined -export-all-symbols -mconsole"
+    ZZIPLIB_LDFLAGS="${wl}-no-undefined ${wl}-export-all-symbols ${wl}-mconsole"
     RESOLVES=' '
 ;; esac
 AC_MSG_RESULT([$ZZIPLIB_LDFLAGS $RESOLVES])
