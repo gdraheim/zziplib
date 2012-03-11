@@ -292,11 +292,23 @@ AC_SUBST(ZIPTESTS)
 # ---------------------------------------------------------------
 AC_MSG_CHECKING([link options])
 ZZIPLIB_LDFLAGS=""
-test ".$can_build_shared" != ".no" && ZZIPLIB_LDFLAGS="${wl}--export-dynamic"
-RESOLVES=" # "
 case "$host_os" in mingw*)
+    # we may assume that the backend is gnu-ld but DLLs need full resolution
     ZZIPLIB_LDFLAGS="${wl}-no-undefined ${wl}-export-all-symbols ${wl}-mconsole"
     RESOLVES=' '
+;; darwin*)
+    # darwin never uses gnu-ld but the linker can do it anyway
+    ZZIPLIB_LDFLAGS="-export-dynamic"
+    RESOLVES=" # "
+;; *)
+    if test ".$can_build_shared" != ".no" ; then
+      ZZIPLIB_LDFLAGS="-export-dynamic"
+      if test ".$lt_cv_prog_gnu_ld" == ".yes" ; then
+         ZZIPLIB_LDFLAGS="${wl}--export-dynamic"
+         # TODO: that is for backward compatibility only
+      fi
+    fi
+    RESOLVES=" # "
 ;; esac
 AC_MSG_RESULT([$ZZIPLIB_LDFLAGS $RESOLVES])
 AC_SUBST([ZZIPLIB_LDFLAGS])
