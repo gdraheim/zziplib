@@ -154,5 +154,5 @@ test ! -f %_bindir/scrollkeeper-update || %_bindir/scrollkeeper-update
       %{_includedir}/SDL_rwops_zzip/*
 
 %changelog
-* So Mrz 11 2012 guidod <guidod@gmx.de> 0.13.62-1
+* So Mar 11 2012 guidod <guidod@gmx.de> 0.13.62-1
 - next version 
