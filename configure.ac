@@ -294,7 +294,7 @@ AC_MSG_CHECKING([link options])
 ZZIPLIB_LDFLAGS=""
 case "$host_os" in mingw*)
     # we may assume that the backend is gnu-ld but DLLs need full resolution
-    ZZIPLIB_LDFLAGS="${wl}-no-undefined ${wl}-export-all-symbols ${wl}-mconsole"
+    ZZIPLIB_LDFLAGS="${wl}-no-undefined ${wl}-export-all-symbols -mconsole"
     RESOLVES=' '
 ;; darwin*)
     # darwin never uses gnu-ld but the linker can do it anyway
