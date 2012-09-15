@@ -256,7 +256,7 @@ ZZIP_DIR *  zzip_dir_open_ext_io(zzip_char_t* filename,
 /* zzip_file_open_ext_io => zzip_dir_open_ext_io + zzip_file_open */
 
 #ifdef __cplusplus
-};
+}
 #endif
 
 #endif /* _ZZIPLIB_H */

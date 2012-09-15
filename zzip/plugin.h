@@ -93,7 +93,7 @@ int zzip_init_io(zzip_plugin_io_handlers_t io, int flags);
 # define ZZIP_IO_USE_MMAP 1
 
 #ifdef __cplusplus
-};
+}
 #endif
 
 #endif
