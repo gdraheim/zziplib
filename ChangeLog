@@ -1,4 +1,4 @@
-2012-03-11  guidod  <guidod@gmx.de>
+2012-09-15  guidod  <guidod@gmx.de>
     * zzip.h, plugin.h: "};" at end of extern-C produces build errors with
        the default --pedantic-errors on newer CMake. Thanks to Keith Thompson
        recognizing it - see http://stackoverflow.com/questions/12384280/ 
