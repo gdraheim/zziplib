@@ -68,12 +68,13 @@ class CppToMarkdown:
                 yield "## SOURCE " + filename.replace("../", "")
                 yield "    #" + text.replace("\n", "\n    ")
             elif token == FileComment:
-                yield "## INTRODUCTION"
+                yield "### INTRODUCTION"
                 yield self.commentblock(text)
             elif token == FunctionPrototype:
                 name = self.functionname(text)
                 yield "-----------------------------------------"
                 yield "### " + name
+                yield '<a id="%s"></a>' % name
                 yield "#### NAME"
                 yield "    " + name
                 yield "#### SYNOPSIS"
