@@ -27,6 +27,53 @@ class CppToMarkdown:
         self.comment_text = ""
         self.function_text = ""
         self.nesting = 0
+    def split_copyright(self, text):
+        # there are two modes - the copyright starts in the first line
+        # and the source description follows or the other way round.
+        lines = text.split("\n")
+        if len(lines) <= 2:
+            return "", text
+        introtext = [lines[0]]
+        copyright = [lines[0]]
+        check1 = re.compile(r"^\s[*]\s+[(][c][C][)]")
+        check2 = re.compile(r"^\s[*]\s+\b[Cc]opyright\b")
+        empty1 = re.compile(r"^\s[*]\s*$")
+        state = "intro"
+        for i in xrange(1,len(lines)-1):
+            line = lines[i]
+            if state == "intro":
+                if empty1.match(line):
+                    introtext += [ line ]
+                    continue
+                if check1.match(line) or check2.match(line):
+                    state = "copyrightfirst"
+                    copyright += [ line ]
+                else:
+                    state = "introtextfirst"
+                    introtext += [ line ]
+            elif state == "copyrightfirst":
+                if empty1.match(line):
+                    state = "introtextlast"
+                    introtext += [ line ]
+                else:
+                    copyright += [ line ]
+            elif state == "introtextfirst":
+                if check1.match(line) or check2.match(line):
+                    state = "copyrightlast"
+                    copyright += [ line ]
+                else:
+                    introtext += [ line ]
+            elif state == "copyrightlast":
+                copyright += [ line ]
+            elif state == "introtextlast":
+                introtext += [ line ]
+            else:
+                logg.fatal("UNKNOWN STATE %s", state)
+        introtext += [lines[-1]]
+        copyright += [lines[-1]]
+        logg.debug("@ COPYRIGHT\n %s", copyright)
+        logg.debug("@ INTROTEXT\n %s", introtext)
+        return "\n".join(copyright), "\n".join(introtext)
     def commentblock(self, text):
         prefix = re.compile(r"(?s)^\s*[/][*]+([^\n]*)(?=\n)")
         suffix = re.compile(r"(?s)\n [*][/]\s*")
@@ -63,16 +110,19 @@ class CppToMarkdown:
         for line in self.process(filetext, filename):
             print line
     def process(self, filetext, filename=""):
+        section_ruler = "-----------------------------------------"
+        copyright = ""
         for token, text in self.parse(filetext):
             if token == FileInclude:
                 yield "## SOURCE " + filename.replace("../", "")
                 yield "    #" + text.replace("\n", "\n    ")
             elif token == FileComment:
                 yield "### INTRODUCTION"
-                yield self.commentblock(text)
+                copyright, introduction = self.split_copyright(text)
+                yield self.commentblock(introduction)
             elif token == FunctionPrototype:
                 name = self.functionname(text)
-                yield "-----------------------------------------"
+                yield section_ruler
                 yield "### " + name
                 yield '<a id="%s"></a>' % name
                 yield "#### NAME"
@@ -87,6 +137,10 @@ class CppToMarkdown:
                 if text:
                     yield "#### NOTES"
                     print token, text.replace("\n", "\n  ")
+        if copyright:
+            yield section_ruler
+            yield "### COPYRIGHT"
+            yield self.commentblock(copyright)            
     def isexported_function(self):
         function = self.function_text.strip().replace("\n"," ")
         logg.debug("@ --------------------------------------") 
