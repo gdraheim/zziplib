@@ -124,7 +124,7 @@ class CppToMarkdown:
                 name = self.functionname(text)
                 yield section_ruler
                 yield "### " + name
-                yield '<a id="%s"></a>' % name
+                # yield '<a id="%s"></a>' % name
                 yield "#### NAME"
                 yield "    " + name
                 yield "#### SYNOPSIS"
