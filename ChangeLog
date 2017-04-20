@@ -1,3 +1,6 @@
+2017-04-20  guidod  <guidod@gmx.de>
+    * check patches in opensuse builds, mostly for some CVE reports
+
 2012-09-15  guidod  <guidod@gmx.de>
     * zzip.h, plugin.h: "};" at end of extern-C produces build errors with
        the default --pedantic-errors on newer CMake. Thanks to Keith Thompson
