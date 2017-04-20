@@ -193,6 +193,11 @@ zzip_mem_entry_new(ZZIP_DISK * disk, ZZIP_DISK_ENTRY * entry)
     item->zz_usize = zzip_disk_entry_get_usize(entry);
     item->zz_diskstart = zzip_disk_entry_get_diskstart(entry);
     item->zz_filetype = zzip_disk_entry_get_filetype(entry);
+    
+    if (! item->zz_comment || ! item->zz_name)
+    {
+        goto error; /* errno=ENOMEM */
+    }
 
     {   /* copy the extra blocks to memory as well (maximum 64K each) */
         zzip_size_t /*    */ ext1_len = zzip_disk_entry_get_extras(entry);
