@@ -268,6 +268,8 @@ _zzip_strcasecmp(char *__zzip_restrict a, char *_zzip_restrict b)
  * a disk_entry pointer (as returned by _find* functions) into a pointer to
  * the data block right after the file_header. Only disk->buffer would be
  * needed to perform the seek but we check the mmapped range end as well.
+ *
+ * returns: pointer into disk->buffer or 0 on error (bad format).
  */
 zzip_byte_t *
 zzip_disk_entry_to_data(ZZIP_DISK * disk, struct zzip_disk_entry * entry)
@@ -281,6 +283,8 @@ zzip_disk_entry_to_data(ZZIP_DISK * disk, struct zzip_disk_entry * entry)
 /** => zzip_disk_entry_to_data
  * This function does half the job of => zzip_disk_entry_to_data where it
  * can augment with => zzip_file_header_to_data helper from format/fetch.h
+ *
+ * returns: pointer into disk->buffer or 0 on error (bad format).
  */
 struct zzip_file_header *
 zzip_disk_entry_to_file_header(ZZIP_DISK * disk, struct zzip_disk_entry *entry)
@@ -289,7 +293,11 @@ zzip_disk_entry_to_file_header(ZZIP_DISK * disk, struct zzip_disk_entry *entry)
         (disk->buffer + zzip_disk_entry_fileoffset(entry));
     if (disk->buffer > file_header || file_header >= disk->endbuf)
         return 0;
-    return (struct zzip_file_header *) file_header;
+#   define as_file_header (struct zzip_file_header *) file_header
+    if (zzip_file_header_get_magic(as_file_header) != ZZIP_FILE_HEADER_MAGIC)
+        return 0;
+    return as_file_header;
+#   undef  as_file_header;
 }
 
 /** => zzip_disk_entry_to_data
