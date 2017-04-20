@@ -315,7 +315,9 @@ zzip_entry_findfirst(FILE * disk)
                 struct zzip_disk64_trailer *trailer =
                     (struct zzip_disk64_trailer *) p;
                 if (sizeof(zzip_off_t) < 8)
-                    return 0;
+                    goto error; /* can not seek in large files */
+                if ((void*)(trailer + 1) > (buffer + mapsize))
+                    goto error; /* trailer is not complete */
                 root = zzip_disk64_trailer_rootseek(trailer);
             } else
                 continue;
