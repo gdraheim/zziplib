@@ -218,10 +218,10 @@ zzip_mem_entry_new(ZZIP_DISK * disk, ZZIP_DISK_ENTRY * entry)
             zzip_mem_entry_extra_block(item, ZZIP_EXTRA_zip64);
         if (block)
         {
-            item->zz_usize = __zzip_get64(block->z_usize);
-            item->zz_csize = __zzip_get64(block->z_csize);
-            item->zz_offset = __zzip_get64(block->z_offset);
-            item->zz_diskstart = __zzip_get32(block->z_diskstart);
+            item->zz_usize = ZZIP_GET64(block->z_usize);
+            item->zz_csize = ZZIP_GET64(block->z_csize);
+            item->zz_offset = ZZIP_GET64(block->z_offset);
+            item->zz_diskstart = ZZIP_GET32(block->z_diskstart);
         }
     }
     /* NOTE:
