@@ -140,12 +140,17 @@ zzip_entry_data_offset(ZZIP_ENTRY * entry)
  * with libc we need it that way. Secondly, the filename SHOULD be present
  * in the zip central directory but if not then we fallback to the filename
  * given in the file_header of each compressed data portion.
+ *
+ * returns: new string buffer, or null on error (errno = EINVAL|ENOMEM|EBADMSG)
  */
 zzip__new__ char *
 zzip_entry_strdup_name(ZZIP_ENTRY * entry)
 {
     if (! entry)
+    {
+        errno = EINVAL;
         return 0;
+    }
 
     ___ zzip_size_t len;
     if ((len = zzip_disk_entry_namlen(disk_(entry))))
@@ -163,17 +168,19 @@ zzip_entry_strdup_name(ZZIP_ENTRY * entry)
     {
         char *name = malloc(len + 1);
         if (! name) {
-            return 0;
+            return 0; /* ENOMEM */
         } else {
             zzip_size_t n = fread(name, 1, len, entry->diskfile);
             if (n != len) {
                 free (name);
+                errno = EBADMSG;
                 return 0;
             }
             name[n] = '\0';
             return name;
         }
     }
+    errno = EBADMSG;
     return 0;
     ____;
     ____;
@@ -416,7 +423,10 @@ zzip_entry_findfile(FILE * disk, char *filename,
                     ZZIP_ENTRY * _zzip_restrict entry, zzip_strcmp_fn_t compare)
 {
     if (! filename || ! disk)
+    {
+        errno = EINVAL;
         return 0;
+    }
     if (! entry)
         entry = zzip_entry_findfirst(disk);
     else
@@ -430,7 +440,9 @@ zzip_entry_findfile(FILE * disk, char *filename,
         /* filenames within zip files are often not null-terminated! */
         char *realname = zzip_entry_strdup_name(entry);
         if (! realname)
-            continue;
+        {
+            return 0; /* errno = ENOMEM|EBADMSG */
+        }
         if (! compare(filename, realname))
         {
             free(realname);
@@ -441,6 +453,7 @@ zzip_entry_findfile(FILE * disk, char *filename,
             continue;
         }
     }
+    errno = ENOENT;
     return 0;
 }
 
@@ -464,7 +477,10 @@ zzip_entry_findmatch(FILE * disk, char *filespec,
                      zzip_fnmatch_fn_t compare, int flags)
 {
     if (! filespec || ! disk)
+    {
+        errno = EINVAL;
         return 0;
+    }
     if (! entry)
         entry = zzip_entry_findfirst(disk);
     else
@@ -478,7 +494,9 @@ zzip_entry_findmatch(FILE * disk, char *filespec,
         /* filenames within zip files are often not null-terminated! */
         char *realname = zzip_entry_strdup_name(entry);
         if (! realname)
-            continue;
+        {
+            return 0; /* ENOMEM|EBADMSG */
+        }
         if (! compare(filespec, realname, flags))
         {
             free(realname);
@@ -489,6 +507,7 @@ zzip_entry_findmatch(FILE * disk, char *filespec,
             continue;
         }
     }
+    errno = ENOENT;
     return 0;
 }
 

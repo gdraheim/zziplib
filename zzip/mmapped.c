@@ -311,54 +311,79 @@ zzip_disk_entry_to_file_header(ZZIP_DISK * disk, struct zzip_disk_entry *entry)
  * with libc we need it that way. Secondly, the filename SHOULD be present
  * in the zip central directory but if not then we fallback to the filename
  * given in the file_header of each compressed data portion.
+ *
+ * returns: a new string buffer, or null on error (errno=EINVAL|EBADMSG|ENOMEM)
  */
 zzip__new__ char *
 zzip_disk_entry_strdup_name(ZZIP_DISK * disk, struct zzip_disk_entry *entry)
 {
     if (! disk || ! entry)
+    {
+        errno=EINVAL;
         return 0;
+    }
 
     ___ char *name;
     zzip_size_t len;
     struct zzip_file_header *file;
     if ((len = zzip_disk_entry_namlen(entry)))
+    {
         name = zzip_disk_entry_to_filename(entry);
-    else if ((file = zzip_disk_entry_to_file_header(disk, entry)) &&
-             (len = zzip_file_header_namlen(file)))
+    } else if ((file = zzip_disk_entry_to_file_header(disk, entry)) &&
+             (len = zzip_file_header_namlen(file))) 
+    {
         name = zzip_file_header_to_filename(file);
-    else
+    } else 
+    {
+        errno=EBADMSG;
         return 0;
+    }
 
     if ((zzip_byte_t *) name < disk->buffer ||
         (zzip_byte_t *) name + len > disk->endbuf)
+    {
+        errno=EBADMSG;
         return 0;
+    }
 
-    return _zzip_strndup(name, len);
+    return _zzip_strndup(name, len); /* ENOMEM */
     ____;
 }
 
 /** => zzip_disk_entry_to_data
  * This function is similar creating a reference to a zero terminated
  * string but it can only exist in the zip central directory entry.
+ *
+ * returns: a new string buffer, or null on error (errno=EINVAL|EBADMSG|ENOMEM)
  */
 zzip__new__ char *
 zzip_disk_entry_strdup_comment(ZZIP_DISK * disk, struct zzip_disk_entry *entry)
 {
     if (! disk || ! entry)
+    {
+        errno = EINVAL;
         return 0;
+    }
 
     ___ char *text;
     zzip_size_t len;
-    if ((len = zzip_disk_entry_comment(entry)))
+    if ((len = zzip_disk_entry_comment(entry))) 
+    {
         text = zzip_disk_entry_to_comment(entry);
-    else
+    } else 
+    {
+        errno = EBADMSG;
         return 0;
+    }
 
     if ((zzip_byte_t *) text < disk->buffer ||
-        (zzip_byte_t *) text + len > disk->endbuf)
+        (zzip_byte_t *) text + len > disk->endbuf) 
+    {
+        errno = EBADMSG;
         return 0;
+    }
 
-    return _zzip_strndup(text, len);
+    return _zzip_strndup(text, len); /* ENOMEM */
     ____;
 }
 
@@ -469,6 +494,8 @@ zzip_disk_findnext(ZZIP_DISK * disk, struct zzip_disk_entry *entry)
  * matching entry, otherwise the last returned value if you look for other
  * entries with a special "compare" function (if null then a doubled search
  * is rather useless with this variant of _findfile).
+ *
+ * returns: entry pointer, or null on error (errno = ENOMEM|EBADMSG|ENOENT)
  */
 struct zzip_disk_entry *
 zzip_disk_findfile(ZZIP_DISK * disk, char *filename,
@@ -483,13 +510,18 @@ zzip_disk_findfile(ZZIP_DISK * disk, char *filename,
     {
         /* filenames within zip files are often not null-terminated! */
         char *realname = zzip_disk_entry_strdup_name(disk, entry);
-        if (realname && ! compare(filename, realname))
+        if (! realname)
+        {
+            return 0; /* ENOMEM | EBADMSG */
+        }
+        if (! compare(filename, realname))
         {
             free(realname);
             return entry;
         }
         free(realname);
     }
+    errno = ENOENT;
     return 0;
 }
 
@@ -505,6 +537,8 @@ zzip_disk_findfile(ZZIP_DISK * disk, char *filename,
  * - use null as argument for "after"-entry when searching the first
  * matching entry, or the last disk_entry return-value to find the
  * next entry matching the given filespec.
+ *
+ * returns: entry pointer, or null on error (errno = ENOMEM|EBADMSG|ENOENT)
  */
 struct zzip_disk_entry *
 zzip_disk_findmatch(ZZIP_DISK * disk, char *filespec,
@@ -523,13 +557,18 @@ zzip_disk_findmatch(ZZIP_DISK * disk, char *filespec,
     {
         /* filenames within zip files are often not null-terminated! */
         char *realname = zzip_disk_entry_strdup_name(disk, entry);
-        if (realname && ! compare(filespec, realname, flags))
+        if (! realname)
+        {
+            return 0; /* ENOMEM | EBADMSG */
+        }
+        if (compare(filespec, realname, flags))
         {
             free(realname);
             return entry;
         }
         free(realname);
     }
+    errno = ENOENT;
     return 0;
 }
 
