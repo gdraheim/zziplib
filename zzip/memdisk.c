@@ -161,7 +161,7 @@ zzip_mem_disk_load(ZZIP_MEM_DISK * dir, ZZIP_DISK * disk)
  * in the zip archive. This is a good place to extend functionality if
  * you have a project with extra requirements as you can push more bits
  * right into the diskdir_entry for later usage in higher layers.
- * returns: new item, or null on error (setting errno)
+ * returns: new item, or null on error (setting errno =  ENOMEM|EBADMSG)
  */
 zzip__new__ ZZIP_MEM_ENTRY *
 zzip_mem_entry_new(ZZIP_DISK * disk, ZZIP_DISK_ENTRY * entry)
@@ -189,27 +189,34 @@ zzip_mem_entry_new(ZZIP_DISK * disk, ZZIP_DISK_ENTRY * entry)
     item->zz_diskstart = zzip_disk_entry_get_diskstart(entry);
     item->zz_filetype = zzip_disk_entry_get_filetype(entry);
 
-    {                           /* copy the extra blocks to memory as well */
-        int /*            */ ext1 = zzip_disk_entry_get_extras(entry);
-        char *_zzip_restrict ptr1 = zzip_disk_entry_to_extras(entry);
-        int /*            */ ext2 = zzip_file_header_get_extras(header);
-        char *_zzip_restrict ptr2 = zzip_file_header_to_extras(header);
+    {   /* copy the extra blocks to memory as well (maximum 64K each) */
+        zzip_size_t /*    */ ext1_len = zzip_disk_entry_get_extras(entry);
+        char *_zzip_restrict ext1_ptr = zzip_disk_entry_to_extras(entry);
+        zzip_size_t /*    */ ext2_len = zzip_file_header_get_extras(header);
+        char *_zzip_restrict ext2_ptr = zzip_file_header_to_extras(header);
 
-        if (ext1)
+        if (ext1_ptr + ext1_len >= disk->endbuf ||
+            ext2_ptr + ext2_len >= disk->endbuf)
         {
-            void *mem = malloc(ext1 + 2);
-            item->zz_ext[1] = mem;
-            memcpy(mem, ptr1, ext1);
-            ((char *) (mem))[ext1 + 0] = 0;
-            ((char *) (mem))[ext1 + 1] = 0;
+            errno = EBADMSG; /* format error CVE-2017-5978 */
+            goto error; /* zzip_mem_entry_free(item); return 0; */
         }
-        if (ext2)
+
+        if (ext1_len)
         {
-            void *mem = malloc(ext2 + 2);
+            void *mem = malloc(ext1_len);
+            if (! mem) goto error; /* errno = ENOMEM */
+            item->zz_ext[1] = mem;
+            item->zz_extlen[1] = ext1_len;
+            memcpy(mem, ext1_ptr, ext1_len);
+        }
+        if (ext2_len)
+        {
+            void *mem = malloc(ext2_len);
+            if (! mem) goto error; /* errno = ENOMEM */
             item->zz_ext[2] = mem;
-            memcpy(mem, ptr2, ext2);
-            ((char *) (mem))[ext2 + 0] = 0;
-            ((char *) (mem))[ext2 + 1] = 0;
+            item->zz_extlen[2] = ext2_len;
+            memcpy(mem, ext2_ptr, ext2_len);
         }
     }
     {
@@ -230,11 +237,15 @@ zzip_mem_entry_new(ZZIP_DISK * disk, ZZIP_DISK_ENTRY * entry)
      */
     return item;
     ____;
+error:
+    zzip_mem_entry_free(item);
+    return 0;
     ____;
 }
 
 /* find an extra block for the given datatype code.
- * We assume that the central directory has been preparsed to memory.
+ * The returned EXTRA_BLOCK is still in disk-encoding but
+ * already a pointer into an allocated heap space block.
  */
 ZZIP_EXTRA_BLOCK *
 zzip_mem_entry_extra_block(ZZIP_MEM_ENTRY * entry, short datatype)
@@ -242,19 +253,20 @@ zzip_mem_entry_extra_block(ZZIP_MEM_ENTRY * entry, short datatype)
     int i = 2;
     while (1)
     {
-        ZZIP_EXTRA_BLOCK *ext = entry->zz_ext[i];
+        char* ext = (char*)( entry->zz_ext[i] );
+        char* ext_end = ext + entry->zz_extlen[i];
         if (ext)
         {
-            while (*(short *) (ext->z_datatype))
+            while (ext + zzip_extra_block_headerlength <= ext_end)
             {
                 if (datatype == zzip_extra_block_get_datatype(ext))
                 {
-                    return ext;
+                    return ((ZZIP_EXTRA_BLOCK*) ext);
                 }
-                ___ char *e = (char *) ext;
-                e += zzip_extra_block_headerlength;
-                e += zzip_extra_block_get_datasize(ext);
-                ext = (void *) e;
+                /* skip to start of next extra_block */
+                ___ zzip_size_t datasize = zzip_extra_block_get_datasize(ext);
+                ext += zzip_extra_block_headerlength;
+                ext += datasize;
                 ____;
             }
         }
@@ -310,6 +322,7 @@ zzip_mem_disk_close(ZZIP_MEM_DISK * _zzip_restrict dir)
 static void
 foo(short zz_datatype)
 {
+    /* Header IDs of 0 thru 31 are reserved for use by PKWARE.(APPNOTE.TXT) */
     switch (zz_datatype)
     {
     /* *INDENT-OFF* */
@@ -328,6 +341,7 @@ foo(short zz_datatype)
     case 0x0017: /* Strong Encryption Header */
     case 0x0018: /* Record Management Controls */
     case 0x0019: /* PKCS#7 Encryption Recipient Certificate List */
+    /* ......................................................... */
     case 0x0065: /* IBM S/390, AS/400 attributes - uncompressed */
     case 0x0066: /* Reserved for IBM S/390, AS/400 attr - compressed */
     case 0x07c8: /* Macintosh */
