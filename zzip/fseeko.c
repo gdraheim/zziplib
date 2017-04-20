@@ -41,7 +41,6 @@
 #include <zzip/__mmap.h>
 #include <zzip/__fnmatch.h>
 
-#include <assert.h>
 #include <stdlib.h>
 #include <sys/stat.h>
 
@@ -189,7 +188,8 @@ zzip_entry_strdup_name(ZZIP_ENTRY * entry)
 static int
 prescan_entry(ZZIP_ENTRY * entry)
 {
-    assert(entry);
+    if (! entry) 
+        return EINVAL;
     ___ zzip_off_t tailsize = zzip_disk_entry_sizeof_tails(disk_(entry));
     if (tailsize + 1 > entry->tailalloc)
     {
@@ -214,7 +214,8 @@ prescan_entry(ZZIP_ENTRY * entry)
 static void
 prescan_clear(ZZIP_ENTRY * entry)
 {
-    assert(entry);
+    if (! entry)
+        return;
     if (entry->tail)
         free(entry->tail);
     entry->tail = 0;
@@ -269,7 +270,8 @@ zzip_entry_findfirst(FILE * disk)
     if (! buffer)
         goto nomem;
 
-    assert(pagesize / 2 > (zzip_off_t) sizeof(struct zzip_disk_trailer));
+    if (pagesize / 2 <= (zzip_off_t) sizeof(struct zzip_disk_trailer));
+        goto error;
     /* at each step, we will fread a pagesize block which overlaps with the
      * previous read by means of pagesize/2 step at the end of the while(1) */
     ___ zzip_off_t mapoffs = disksize & ~(pagesize - 1);
@@ -279,7 +281,8 @@ zzip_entry_findfirst(FILE * disk)
         mapoffs -= pagesize / 2;
         mapsize += pagesize / 2;
     }
-    assert(mapsize < 3*8192);
+    if (mapsize >= 3*8192)
+        goto error;
     while (1)
     {
         if (fseeko(disk, mapoffs, SEEK_SET) == -1)
@@ -317,7 +320,8 @@ zzip_entry_findfirst(FILE * disk)
             } else
                 continue;
 
-            assert(0 <= root && root < mapsize);
+            if (!(0 <= root && root < mapsize))
+                goto error;
             if (fseeko(disk, root, SEEK_SET) == -1)
                 goto error;
             if (fread(disk_(entry), 1, sizeof(*disk_(entry)), disk)
@@ -336,7 +340,8 @@ zzip_entry_findfirst(FILE * disk)
         ____;
         if (! mapoffs)
             break;
-        assert(mapsize >= pagesize / 2);
+        if (mapsize < pagesize / 2)
+            goto error;
         mapoffs -= pagesize / 2;        /* mapsize += pagesize/2; */
         mapsize = pagesize;     /* if (mapsize > pagesize) ... */
         if (disksize - mapoffs > 64 * 1024)
@@ -578,7 +583,8 @@ zzip_entry_fopen(ZZIP_ENTRY * entry, int takeover)
     ___ zzip_off_t seek = file->data;
     seek += sizeof(file->buffer);
     seek -= seek & (sizeof(file->buffer) - 1);
-    assert(file->data < seek);  /* pre-read to next PAGESIZE boundary... */
+    if (file->data >= seek)  /* pre-read to next PAGESIZE boundary... */
+        goto fail2;
     if (fseeko(file->entry->diskfile, file->data + file->dataoff, SEEK_SET) == -1)
         goto fail2;
     file->zlib.next_in = file->buffer;
