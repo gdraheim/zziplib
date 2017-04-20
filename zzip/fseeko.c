@@ -91,21 +91,39 @@
  * the zip disk of the given "entry". The returned off_t points to the
  * end of the file_header where the current fseek pointer has stopped.
  * This is used to immediatly parse out any filename/extras block following
- * the file_header. The return value is null on error.
+ * the file_header. 
+ *
+ * Returns zero on error. (errno = EINVAL|EBADMSG|EBADF|EIO)
  */
 static zzip_off_t
 zzip_entry_fread_file_header(ZZIP_ENTRY * entry,
                              struct zzip_file_header *file_header)
 {
     if (! entry || ! file_header)
+    {
+        errno = EINVAL;
         return 0;
+    }
     ___ zzip_off_t offset = zzip_disk_entry_fileoffset(disk_(entry));
     if (0 > offset || offset >= entry->disksize)
+    {
+        errno = EBADMSG;
         return 0;
+    }
 
-    if (fseeko(entry->diskfile, offset, SEEK_SET) == -1) return 0;
-    return (fread(file_header, sizeof(*file_header), 1, entry->diskfile)
-            ? offset + sizeof(*file_header) : 0);
+    if (fseeko(entry->diskfile, offset, SEEK_SET) == -1) 
+    {
+        return 0; /* EBADF */
+    }
+
+    ___ zzip_size_t n = fread(file_header, sizeof(*file_header), 1, entry->diskfile);
+    if (n < sizeof(*file_header))
+    {
+        errno = ferror(entry->diskfile) ? EBADF : EIO;
+        return 0;
+    }
+    ____;
+    return offset + sizeof(*file_header);
     ____;
 }
 
@@ -115,20 +133,29 @@ zzip_entry_fread_file_header(ZZIP_ENTRY * entry,
  * file referenced by the given zzip_entry. It requires an intermediate
  * check of the file_header structure (i.e. it reads it from disk). After
  * this call, the contained diskfile readposition is already set to the
- * data_offset returned here. On error -1 is returned.
+ * data_offset returned here. 
+ *
+ * Returns -1 on error. (errno = EINVAL|EBADMSG)
  */
 zzip_off_t
 zzip_entry_data_offset(ZZIP_ENTRY * entry)
 {
     struct zzip_file_header file_header;
     if (! entry)
+    {
+        errno = EINVAL;
         return -1;
+    }
     ___ zzip_off_t offset = zzip_entry_fread_file_header(entry, &file_header);
     if (! offset)
-        return -1;
+    {
+        return -1; /* EBADMSG */
+    }
     offset += zzip_file_header_sizeof_tails(&file_header);
     if (fseeko(entry->diskfile, offset, SEEK_SET) == -1)
-        return -1;
+    {
+        return -1; /* EBADF */
+    }
     return offset;
     ____;
 }
@@ -140,7 +167,7 @@ zzip_entry_data_offset(ZZIP_ENTRY * entry)
  * in the zip central directory but if not then we fallback to the filename
  * given in the file_header of each compressed data portion.
  *
- * returns: new string buffer, or null on error (errno = EINVAL|ENOMEM|EBADMSG)
+ * returns: new string buffer, null on error (errno = EINVAL|ENOMEM|EBADMSG)
  */
 zzip__new__ char *
 zzip_entry_strdup_name(ZZIP_ENTRY * entry)
@@ -156,7 +183,9 @@ zzip_entry_strdup_name(ZZIP_ENTRY * entry)
     {
         char *name = malloc(len + 1);
         if (! name)
-            return 0;
+        {
+            return 0; /* ENOMEM */
+        }
         memcpy(name, entry->tail, len);
         name[len] = '\0';
         return name;
@@ -168,16 +197,17 @@ zzip_entry_strdup_name(ZZIP_ENTRY * entry)
         char *name = malloc(len + 1);
         if (! name) {
             return 0; /* ENOMEM */
-        } else {
-            zzip_size_t n = fread(name, 1, len, entry->diskfile);
-            if (n != len) {
-                free (name);
-                errno = EBADMSG;
-                return 0;
-            }
-            name[n] = '\0';
-            return name;
+        } 
+        ___ zzip_size_t n = fread(name, 1, len, entry->diskfile);
+        if (n < len) 
+        {
+            errno = ferror(entry->diskfile) ? EBADF : EIO;
+            free (name);
+            return 0;
         }
+        name[n] = '\0';
+        return name;
+        ____;
     }
     errno = EBADMSG;
     return 0;
@@ -250,28 +280,41 @@ prescan_clear(ZZIP_ENTRY * entry)
  * both parts have valid PK-magic parts. Beyond some sanity check we try to
  * catch a common brokeness with zip archives that still allows us to find
  * the start of the zip central directory.
+ *
+ * Returns null on error (errno = EINVAL|ENOMEM|EBADMSG|EBADF|ENOENT)
  */
 zzip__new__ ZZIP_ENTRY *
 zzip_entry_findfirst(FILE * disk)
 {
     if (! disk)
+    {
+        errno = EINVAL;
         return 0;
+    }
     if (fseeko(disk, 0, SEEK_END) == -1)
-        return 0;
+    {
+        return 0; /* EBADF */
+    }
     ___ zzip_off_t disksize = ftello(disk);
     if (disksize < (zzip_off_t) sizeof(struct zzip_disk_trailer))
+    {
+        errno = EBADMSG;
         return 0;
+    }
     /* we read out chunks of 8 KiB in the hope to match disk granularity */
     ___ zzip_off_t pagesize = PAGESIZE; /* getpagesize() */
     ___ ZZIP_ENTRY *entry = malloc(sizeof(*entry));
     if (! entry)
-        return 0;
+        goto error0; /* ENOMEM */
     ___ unsigned char *buffer = malloc(pagesize);
     if (! buffer)
-        goto nomem;
+        goto error1; /* ENOMEM */
 
-    if (pagesize / 2 <= (zzip_off_t) sizeof(struct zzip_disk_trailer));
-        goto error;
+    if (pagesize / 2 <= (zzip_off_t) sizeof(struct zzip_disk_trailer))
+    {
+        errno = EBADMSG;
+        goto error2;
+    }
     /* at each step, we will fread a pagesize block which overlaps with the
      * previous read by means of pagesize/2 step at the end of the while(1) */
     ___ zzip_off_t mapoffs = disksize & ~(pagesize - 1);
@@ -282,13 +325,19 @@ zzip_entry_findfirst(FILE * disk)
         mapsize += pagesize / 2;
     }
     if (mapsize >= 3*8192)
-        goto error;
+    {
+        errno = EBADMSG;
+        goto error2;
+    }
     while (1)
     {
         if (fseeko(disk, mapoffs, SEEK_SET) == -1)
-            goto error;
-        if (fread(buffer, 1, mapsize, disk) != (zzip_size_t)mapsize)
-            goto error;
+            goto error2; /* EBADF */
+        if (fread(buffer, 1, mapsize, disk) < (zzip_size_t)mapsize)
+        {
+            errno = ferror(disk) ? EBADF : EIO;
+            goto error2;
+        }
         ___ unsigned char *p =
             buffer + mapsize - sizeof(struct zzip_disk_trailer);
         for (; p >= buffer; p--)
@@ -315,43 +364,65 @@ zzip_entry_findfirst(FILE * disk)
                 struct zzip_disk64_trailer *trailer =
                     (struct zzip_disk64_trailer *) p;
                 if (sizeof(zzip_off_t) < 8)
-                    goto error; /* can not seek in large files */
+                {
+                    errno = EFBIG;
+                    goto error2; /* can not seek in large files */
+                }
                 if ((void*)(trailer + 1) > (buffer + mapsize))
-                    goto error; /* trailer is not complete */
+                {
+                    errno = EBADMSG;
+                    goto error2; /* trailer is not complete */
+                }
                 root = zzip_disk64_trailer_rootseek(trailer);
             } else
                 continue;
 
             if (!(0 <= root && root < mapsize))
-                goto error;
+            {
+                errno = EBADMSG;
+                goto error2; /* bogus rootseek value */
+            }
             if (fseeko(disk, root, SEEK_SET) == -1)
-                goto error;
+                goto error2; /* EBADF */
             if (fread(disk_(entry), 1, sizeof(*disk_(entry)), disk)
-                    != sizeof(*disk_(entry))) goto error;
+                    != sizeof(*disk_(entry))) 
+            {   
+                errno = ferror(disk) ? EBADF : EIO;
+                goto error2;
+            }
             if (zzip_disk_entry_check_magic(entry))
             {
                 free(buffer);
                 entry->headseek = root;
                 entry->diskfile = disk;
                 entry->disksize = disksize;
-                if (prescan_entry(entry))
-                    goto nomem;
+                ___ int err = prescan_entry(entry);
+                if (err) 
+                {
+                    errno = err;
+                    goto error2;
+                }
                 return entry;
+                ____;
             }
         }
         ____;
         if (! mapoffs)
             break;
         if (mapsize < pagesize / 2)
-            goto error;
+        {
+            errno = EBADMSG; /* should not be possible */
+            goto error2;
+        }
         mapoffs -= pagesize / 2;        /* mapsize += pagesize/2; */
         mapsize = pagesize;     /* if (mapsize > pagesize) ... */
         if (disksize - mapoffs > 64 * 1024)
             break;
     }
-  error:
+    errno = ENOENT; /* not found */
+  error2:
     free(buffer);
-  nomem:
+  error1:
     free(entry);
     ____;
     ____;
@@ -359,6 +430,7 @@ zzip_entry_findfirst(FILE * disk)
     ____;
     ____;
     ____;
+  error0:
     return 0;
 }
 
@@ -375,25 +447,39 @@ zzip__new__ ZZIP_ENTRY *
 zzip_entry_findnext(ZZIP_ENTRY * _zzip_restrict entry)
 {
     if (! entry)
+    {
+        errno = EINVAL;
         return entry;
+    }
     if (! zzip_disk_entry_check_magic(entry))
-        goto err;
+        goto error_EBADMSG;
     ___ zzip_off_t seek =
         entry->headseek + zzip_disk_entry_sizeto_end(disk_(entry));
     if (seek + (zzip_off_t) sizeof(*disk_(entry)) > entry->disksize)
-        goto err;
+        goto error_EBADMSG;
 
     if (fseeko(entry->diskfile, seek, SEEK_SET) == -1)
-        goto err;
+        goto error; /* EBADF */
     if (fread(disk_(entry), 1, sizeof(*disk_(entry)), entry->diskfile)
-            != sizeof(*disk_(entry))) goto err;
+            < sizeof(*disk_(entry))) 
+    {
+        errno = ferror(entry->diskfile) ? EBADF : EIO;
+        goto error;
+    }
     entry->headseek = seek;
     if (! zzip_disk_entry_check_magic(entry))
-        goto err;
-    if (prescan_entry(entry))
-        goto err;
+        goto error_EBADMSG;
+    ___ int err = prescan_entry(entry);
+    if (err)
+    {
+        errno = err;
+        goto error;
+    }
     return entry;
-  err:
+    ____;
+  error_EBADMSG:
+    errno = EBADMSG;
+  error:
     zzip_entry_free(entry);
     return 0;
     ____;
@@ -408,7 +494,10 @@ int
 zzip_entry_free(ZZIP_ENTRY * entry)
 {
     if (! entry)
+    {
+        errno = EINVAL;
         return 0;
+    }
     prescan_clear(entry);
     free(entry);
     return 1;
@@ -448,7 +537,7 @@ zzip_entry_findfile(FILE * disk, char *filename,
         char *realname = zzip_entry_strdup_name(entry);
         if (! realname)
         {
-            return 0; /* errno = ENOMEM|EBADMSG */
+            return 0; /* ENOMEM|EBADMSG */
         }
         if (! compare(filename, realname))
         {
@@ -551,25 +640,33 @@ zzip__new__ ZZIP_ENTRY_FILE *
 zzip_entry_fopen(ZZIP_ENTRY * entry, int takeover)
 {
     if (! entry)
+    {
+        errno = EINVAL;
         return 0;
+    }
     if (! takeover)
     {
         ZZIP_ENTRY *found = malloc(sizeof(*entry));
         if (! found)
-            return 0;
+        {
+            return 0; /* ENOMEM */
+        }
         memcpy(found, entry, sizeof(*entry));   /* prescan_copy */
         found->tail = malloc(found->tailalloc);
-        if (! found->tail)
-            { free (found); return 0; }
+        if (! found->tail) 
+        {
+            free (found); 
+            return 0; /* ENOMEM */
+        }
         memcpy(found->tail, entry->tail, entry->tailalloc);
         entry = found;
     }
     ___ ZZIP_ENTRY_FILE *file = malloc(sizeof(*file));
     if (! file)
-        goto fail1;
+        goto error1; /* ENOMEM */
     file->entry = entry;
     if (! zzip_entry_fread_file_header(entry, &file->header))
-        goto fail2;
+        goto error2; /* EIO|EBADMSG */
     file->avail = zzip_file_header_usize(&file->header);
     file->data = zzip_entry_data_offset(entry);
     file->dataoff = 0;
@@ -586,9 +683,14 @@ zzip_entry_fopen(ZZIP_ENTRY * entry, int takeover)
     seek += sizeof(file->buffer);
     seek -= seek & (sizeof(file->buffer) - 1);
     if (file->data >= seek)  /* pre-read to next PAGESIZE boundary... */
-        goto fail2;
+    {
+        errno = EBADMSG;
+        goto error2;
+    }
     if (fseeko(file->entry->diskfile, file->data + file->dataoff, SEEK_SET) == -1)
-        goto fail2;
+    {
+        goto error2; /* EBADF */
+    }
     file->zlib.next_in = file->buffer;
     file->zlib.avail_in = fread(file->buffer, 1, seek - file->data,
                                 file->entry->diskfile);
@@ -597,12 +699,15 @@ zzip_entry_fopen(ZZIP_ENTRY * entry, int takeover)
 
     if (! zzip_file_header_data_deflated(&file->header)
         || inflateInit2(&file->zlib, -MAX_WBITS) != Z_OK)
-        goto fail2;
+    {
+        errno = EBADMSG;
+        goto error2;
+    }
 
     return file;
-  fail2:
+  error2:
     free(file);
-  fail1:
+  error1:
     zzip_entry_free(entry);
     return 0;
     ____;
@@ -619,7 +724,9 @@ zzip_entry_ffile(FILE * disk, char *filename)
 {
     ZZIP_ENTRY *entry = zzip_entry_findfile(disk, filename, 0, 0);
     if (! entry)
-        return 0;
+    {
+        return 0; /* EBADMSG */
+    }
     return zzip_entry_fopen(entry, 1);
 }
 
@@ -636,13 +743,20 @@ zzip_entry_fread(void *ptr, zzip_size_t sized, zzip_size_t nmemb,
                  ZZIP_ENTRY_FILE * file)
 {
     if (! file)
+    {
+        errno = EINVAL;
         return 0;
+    }
     ___ zzip_size_t size = sized * nmemb;
     if (! file->compressed)
     {
         if (size > file->avail)
             size = file->avail;
-        if (fread(ptr, 1, size, file->entry->diskfile) != size) return 0;
+        if (fread(ptr, 1, size, file->entry->diskfile) != size) 
+        {
+            errno = ferror(file->entry->diskfile) ? EBADF : EIO;
+            return 0;
+        }
         file->dataoff += size;
         file->avail -= size;
         return size;
@@ -665,7 +779,10 @@ zzip_entry_fread(void *ptr, zzip_size_t sized, zzip_size_t nmemb,
             file->dataoff += file->zlib.avail_in;
         }
         if (! file->zlib.avail_in)
+        {
+            errno = EIO;
             return 0;
+        }
 
         ___ int err = inflate(&file->zlib, Z_NO_FLUSH);
         if (err == Z_STREAM_END)
@@ -673,7 +790,10 @@ zzip_entry_fread(void *ptr, zzip_size_t sized, zzip_size_t nmemb,
         else if (err == Z_OK)
             file->avail -= file->zlib.total_out - total_old;
         else
+        {
+            errno = EBADMSG;
             return 0;
+        }
         ____;
         if (file->zlib.avail_out && ! file->zlib.avail_in)
             continue;
@@ -691,7 +811,10 @@ int
 zzip_entry_fclose(ZZIP_ENTRY_FILE * file)
 {
     if (! file)
-        return 0;
+    {
+        errno = EINVAL;
+        return EOF;
+    }
     if (file->compressed)
         inflateEnd(&file->zlib);
     zzip_entry_free(file->entry);
