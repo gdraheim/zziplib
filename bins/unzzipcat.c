@@ -91,8 +91,11 @@ main (int argc, char ** argv)
 	for (; entry ; entry = zzip_disk_findnext(disk, entry))
 	{
 	    char* name = zzip_disk_entry_strdup_name (disk, entry);
-	    printf ("%s\n", name);
-	    free (name);
+	    if (name)
+	    {
+	         printf ("%s\n", name);
+	         free (name);
+	    }
 	}
 	return 0;
     }
@@ -112,10 +115,13 @@ main (int argc, char ** argv)
 	for (; entry ; entry = zzip_disk_findnext(disk, entry))
 	{
 	    char* name = zzip_disk_entry_strdup_name (disk, entry);
-	    if (! fnmatch (argv[argn], name, 
+	    if (name)
+	    {
+	        if (! fnmatch (argv[argn], name, 
 			   FNM_NOESCAPE|FNM_PATHNAME|FNM_PERIOD))
-		zzip_disk_cat_file (disk, name, stdout);
-	    free (name);
+		    zzip_disk_cat_file (disk, name, stdout);
+	        free (name);
+	    }
 	}
     }
     return 0;
