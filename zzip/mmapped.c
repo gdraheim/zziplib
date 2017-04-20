@@ -284,20 +284,25 @@ zzip_disk_entry_to_data(ZZIP_DISK * disk, struct zzip_disk_entry * entry)
  * This function does half the job of => zzip_disk_entry_to_data where it
  * can augment with => zzip_file_header_to_data helper from format/fetch.h
  *
- * returns: pointer into disk->buffer or 0 on error (bad format).
+ * returns: pointer into disk->buffer or 0 on error (errno = EBADMSG).
  */
 struct zzip_file_header *
 zzip_disk_entry_to_file_header(ZZIP_DISK * disk, struct zzip_disk_entry *entry)
 {
-    zzip_byte_t *file_header =  /* (struct zzip_file_header*) */
-        (disk->buffer + zzip_disk_entry_fileoffset(entry));
-    if (disk->buffer > file_header || file_header >= disk->endbuf)
+    zzip_byte_t *const ptr = disk->buffer + zzip_disk_entry_fileoffset(entry);
+    if (disk->buffer > ptr || ptr >= disk->endbuf)
+    {
+        errno = EBADMSG;
         return 0;
-#   define as_file_header (struct zzip_file_header *) file_header
-    if (zzip_file_header_get_magic(as_file_header) != ZZIP_FILE_HEADER_MAGIC)
+    }
+    ___  struct zzip_file_header *file_header = (void *) ptr;
+    if (zzip_file_header_get_magic(file_header) != ZZIP_FILE_HEADER_MAGIC)
+    {
+        errno = EBADMSG;
         return 0;
-    return as_file_header;
-#   undef  as_file_header;
+    }
+    return file_header;
+    ____;
 }
 
 /** => zzip_disk_entry_to_data

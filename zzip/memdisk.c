@@ -173,6 +173,11 @@ zzip_mem_entry_new(ZZIP_DISK * disk, ZZIP_DISK_ENTRY * entry)
         return 0;               /* errno=ENOMEM; */
     ___ struct zzip_file_header *header =
         zzip_disk_entry_to_file_header(disk, entry);
+    if (! header) 
+    {
+        free (item);
+        return 0; /* errno=EBADMSG; */
+    }
     /*  there is a number of duplicated information in the file header
      *  or the disk entry block. Theoretically some part may be missing
      *  that exists in the other, ... but we will prefer the disk entry.
