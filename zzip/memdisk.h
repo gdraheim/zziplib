@@ -1,7 +1,11 @@
 #ifndef __ZZIP_MEMDISK_H
 #define __ZZIP_MEMDISK_H
 
-/* NOTE: this is part of libzzipmmapped (i.e. it is not libzzip). */
+/*
+ * NOTE: this is part of libzzipmmapped (i.e. it is not libzzip).
+ *
+ * Copyright (c) Guido Draheim, use under copyleft (LGPL,MPL)
+ */
 
 #include <zzip/types.h>
 #include <zzip/mmapped.h>

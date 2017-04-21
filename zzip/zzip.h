@@ -3,12 +3,7 @@
  *	Guido Draheim <guidod@gmx.de>
  *	Tomi Ollila <Tomi.Ollila@iki.fi>
  *
- *	Copyright (c) 1999,2000,2001,2002,2003,2004 Guido Draheim
- * 	    All rights reserved, 
- *          usage allowed under the restrictions of the
- *	    Lesser GNU General Public License 
- *          or alternatively the restrictions 
- *          of the Mozilla Public License 1.1
+ * Copyright (c) Guido Draheim, use under copyleft (LPGL,MPL)
  *
  * if you see "unknown symbol" errors, check first that `-I ..` is part of
  * your compiler options - a special hint to VC/IDE users who tend to make up
