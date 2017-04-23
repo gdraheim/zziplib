@@ -2637,8 +2637,8 @@ $as_echo "$as_me: toplevel srcdir already configured... skipping subdir build" >
   else
     test ".$ax_enable_builddir" = "."  && ax_enable_builddir="."
     test ".$ax_enable_builddir" = ".no"  && ax_enable_builddir="."
-    test ".$BUILD" = "." && BUILD=`uname -msr | tr " /" "__"`.d
-    test ".$ax_enable_builddir" = ".yes" && ax_enable_builddir="$BUILD"
+    test ".$TARGET" = "." && TARGET="$target"
+    test ".$ax_enable_builddir" = ".yes" && ax_enable_builddir="$TARGET"
     if test ".$ax_enable_builddir" != ".." ; then    # we know where to go and
       as_dir=$ax_enable_builddir; as_fn_mkdir_p
       echo __.$ax_enable_builddir.__ > $ax_enable_builddir/conftest.tmp
@@ -2657,8 +2657,8 @@ $as_echo "continue configure in default builddir \"./$ax_enable_builddir\"" >&6;
       test -f $srcdir/confdefs.h   && mv $srcdir/confdefs.h   .
       test -f $srcdir/conftest.log && mv $srcdir/conftest.log .
       test -f $srcdir/$cache_file  && mv $srcdir/$cache_file  .
-      { $as_echo "$as_me:${as_lineno-$LINENO}: result: ....exec $SHELL \"$srcdir/$0\" \"--srcdir=$srcdir\" \"--enable-builddir=$ax_enable_builddir\" $ac_configure_args" >&5
-$as_echo "....exec $SHELL \"$srcdir/$0\" \"--srcdir=$srcdir\" \"--enable-builddir=$ax_enable_builddir\" $ac_configure_args" >&6; }
+      { $as_echo "$as_me:${as_lineno-$LINENO}: result: ....exec $SHELL $srcdir/$0 \"--srcdir=$srcdir\" \"--enable-builddir=$ax_enable_builddir\" ${1+\"$@\"}" >&5
+$as_echo "....exec $SHELL $srcdir/$0 \"--srcdir=$srcdir\" \"--enable-builddir=$ax_enable_builddir\" ${1+\"$@\"}" >&6; }
       case "$0" in # restart
        /\\*) eval $SHELL "'$0'" "'--srcdir=$srcdir'" "'--enable-builddir=$ax_enable_builddir'" $ac_configure_args ;;
        *) eval $SHELL "'$srcdir/$0'" "'--srcdir=$srcdir'" "'--enable-builddir=$ax_enable_builddir'" $ac_configure_args ;;
@@ -2707,6 +2707,10 @@ $as_echo "no" >&6; }
 fi
 
 
+ax_enable_builddir_auxdir="$ac_aux_dir"
+ax_enable_builddir_auxdir=`echo "$ax_enable_builddir_auxdir" | $ax_enable_builddir_sed -e "s|$ac_top_srcdir|.|"`
+test ".$ax_enable_builddir_auxdir" = "." && ax_enable_builddir_auxdir="$ac_aux_dir"
+test ".$ax_enable_builddir_auxdir" = "." && ax_enable_builddir_auxdir="."
 ac_config_commands="$ac_config_commands buildir"
 
  # --------------------------------------------
@@ -5602,13 +5606,13 @@ if ${lt_cv_nm_interface+:} false; then :
 else
   lt_cv_nm_interface="BSD nm"
   echo "int some_variable = 0;" > conftest.$ac_ext
-  (eval echo "\"\$as_me:5605: $ac_compile\"" >&5)
+  (eval echo "\"\$as_me:5609: $ac_compile\"" >&5)
   (eval "$ac_compile" 2>conftest.err)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:5608: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
+  (eval echo "\"\$as_me:5612: $NM \\\"conftest.$ac_objext\\\"\"" >&5)
   (eval "$NM \"conftest.$ac_objext\"" 2>conftest.err > conftest.out)
   cat conftest.err >&5
-  (eval echo "\"\$as_me:5611: output\"" >&5)
+  (eval echo "\"\$as_me:5615: output\"" >&5)
   cat conftest.out >&5
   if $GREP 'External.*some_variable' conftest.out > /dev/null; then
     lt_cv_nm_interface="MS dumpbin"
@@ -6811,7 +6815,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 6814 "configure"' > conftest.$ac_ext
+  echo '#line 6818 "configure"' > conftest.$ac_ext
   if { { eval echo "\"\$as_me\":${as_lineno-$LINENO}: \"$ac_compile\""; } >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -8338,11 +8342,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8341: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8345: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:8345: \$? = $ac_status" >&5
+   echo "$as_me:8349: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8677,11 +8681,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8680: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8684: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:8684: \$? = $ac_status" >&5
+   echo "$as_me:8688: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -8782,11 +8786,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8785: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8789: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8789: \$? = $ac_status" >&5
+   echo "$as_me:8793: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -8837,11 +8841,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:8840: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:8844: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:8844: \$? = $ac_status" >&5
+   echo "$as_me:8848: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11204,7 +11208,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11207 "configure"
+#line 11211 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -11300,7 +11304,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<_LT_EOF
-#line 11303 "configure"
+#line 11307 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -15737,6 +15741,7 @@ ax_enable_builddir_srcdir="$srcdir"                    # $srcdir
 ax_enable_builddir_host="$HOST"                        # $HOST / $host
 ax_enable_builddir_version="$VERSION"                  # $VERSION
 ax_enable_builddir_package="$PACKAGE"                  # $PACKAGE
+ax_enable_builddir_auxdir="$ax_enable_builddir_auxdir" # $AUX
 ax_enable_builddir_sed="$ax_enable_builddir_sed"       # $SED
 ax_enable_builddir="$ax_enable_builddir"               # $SUB
 
@@ -16649,9 +16654,22 @@ $as_echo "$as_me: skipping top_srcdir/Makefile - left untouched" >&6;}
 $as_echo "$as_me: skipping top_srcdir/Makefile - not created" >&6;}
     fi
   else
-    { $as_echo "$as_me:${as_lineno-$LINENO}: create top_srcdir/Makefile guessed from local Makefile" >&5
+    if test -f "$ac_top_srcdir/Makefile" ; then
+      a=`grep "^VERSION " "$ac_top_srcdir/Makefile"` ; b=`grep "^VERSION " Makefile`
+      test "$a" != "$b" && rm "$ac_top_srcdir/Makefile"
+    fi
+    if test -f "$ac_top_srcdir/Makefile" ; then
+	echo "$ac_top_srcdir/Makefile : $ac_top_srcdir/Makefile.in" > $tmp/conftemp.mk
+	echo "	@ echo 'REMOVED,,,' >\$@" >> $tmp/conftemp.mk
+      eval "${MAKE-make} -f $tmp/conftemp.mk 2>/dev/null >/dev/null"
+      if grep '^REMOVED,,,' "$ac_top_srcdir/Makefile" >/dev/null
+      then rm $ac_top_srcdir/Makefile ; fi
+      cp $tmp/conftemp.mk $ac_top_srcdir/makefiles.mk~      ## DEBUGGING
+    fi
+    if test ! -f "$ac_top_srcdir/Makefile" ; then
+      { $as_echo "$as_me:${as_lineno-$LINENO}: create top_srcdir/Makefile guessed from local Makefile" >&5
 $as_echo "$as_me: create top_srcdir/Makefile guessed from local Makefile" >&6;}
-     x='`' ; cat >$tmp/conftemp.sed <<_EOF
+      x='`' ; cat >$tmp/conftemp.sed <<_EOF
 /^\$/n
 x
 /^\$/bS
@@ -16674,22 +16692,83 @@ s/^top_srcdir *=.*/top_srcdir = ./
 /^\\./d
 s/:.*/:/
 /:\$/s/ /  /g
+/:\$/s/ \\([a-z][a-z-]*[a-z]\\) / \\1 \\1-all /g
+/:\$/s/^\\([a-z][a-z-]*[a-z]\\)\\([ :]\\)/\\1 \\1-all\\2/
 /:\$/s/  / /g
-/^.*[=]/!s%\$% ; (cd \$(BUILD) \\&\\& \$(ISNOTSRCDIR) \\&\\& \$(MAKE) "\$\@") || exit ; \$(MAKE) done "RULE=\$\@"%
+/^all all-all[ :]/i\\
+all-configured : all-all
+/-all-all/d
+/^.*[=]/!a\\
+	@ HOST="\$(HOST)\" \\\\\\
+	; test ".\$\$HOST" = "." && HOST=$x sh $ax_enable_builddir_auxdir/config.guess $x \\\\\\
+	; BUILD=$x grep "^#### \$\$HOST " Makefile | sed -e 's/.*|//' $x \\\\\\
+	; use=$x basename "\$\@" -all $x; n=$x echo \$\$BUILD | wc -w $x \\\\\\
+	; echo "MAKE \$\$HOST : \$\$n * \$\@"; if test "\$\$n" = "0" ; then : \\\\\\
+	; BUILD=$x grep "^####.*|" Makefile |tail -1| sed -e 's/.*|//' $x ; fi \\\\\\
+	; test ".\$\$BUILD" = "." && BUILD="." \\\\\\
+	; test "\$\$use" = "\$\@" && BUILD=$x echo "\$\$BUILD" | tail -1 $x \\\\\\
+	; for i in \$\$BUILD ; do test ".\$\$i" = "." && continue \\\\\\
+	; (cd "\$\$i" && test ! -f configure && \$(MAKE) \$\$use) || exit; done
+/dist-all *:/a\\
+	@ HOST="\$(HOST)\" \\\\\\
+	; test ".\$\$HOST" = "." && HOST=$x sh $ax_enable_builddir_auxdir/config.guess $x \\\\\\
+	; BUILD=$x grep "^#### \$\$HOST " Makefile | sed -e 's/.*|//' $x \\\\\\
+	; found=$x echo \$\$BUILD | wc -w $x \\\\\\
+	; echo "MAKE \$\$HOST : \$\$found \$(PACKAGE)-\$(VERSION).tar.*" \\\\\\
+	; if test "\$\$found" = "0" ; then : \\\\\\
+	; BUILD=$x grep "^#### .*|" Makefile |tail -1| sed -e 's/.*|//' $x \\\\\\
+	; fi ; for i in \$\$BUILD ; do test ".\$\$i" = "." && continue \\\\\\
+	; for f in \$\$i/\$(PACKAGE)-\$(VERSION).tar.* \\\\\\
+	; do test -f "\$\$f" && mv "\$\$f" \$(PUB). ; done ; break ; done
+/distclean-all *:/a\\
+	@ HOST="\$(HOST)\" \\\\\\
+	; test ".\$\$HOST" = "." && HOST=$x sh $ax_enable_builddir_auxdir/config.guess $x \\\\\\
+	; BUILD=$x grep "^#### .*| *\\./" Makefile | sed -e 's/.*|//' $x \\\\\\
+	; use=$x basename "\$\@" -all $x; n=$x echo \$\$BUILD | wc -w $x \\\\\\
+	; echo "MAKE \$\$HOST : \$\$n * \$\@ (all local builds)" \\\\\\
+	; test ".\$\$BUILD" = "." && BUILD="." \\\\\\
+	; for i in \$\$BUILD ; do test ".\$\$i" = "." && continue \\\\\\
+	; echo "# rm -r \$\$i"; done ; echo "# (sleep 3)" ; sleep 3 \\\\\\
+	; for i in \$\$BUILD ; do test ".\$\$i" = "." && continue \\\\\\
+	; echo "rm -r \$\$i"; (rm -r "\$\$i") ; done ; rm Makefile
 _EOF
-    test ".$USE_MAINTAINER_MODE" = ".no" || \
-  	cp "$tmp/conftemp.sed" "$ac_top_srcdir/makefile.sed~"            ## DEBUGGING
-    echo 'BUILD=`uname -msr | tr " /" "__"`.d' >$ac_top_srcdir/Makefile
-    echo 'ISNOTSRCDIR=test ! -f configure' >>$ac_top_srcdir/Makefile
-    $ax_enable_builddir_sed -f $tmp/conftemp.sed Makefile >>$ac_top_srcdir/Makefile
-    echo 'done: ;@ if grep "$(RULE)-done .*:" Makefile > /dev/null; then     echo $(MAKE) $(RULE)-done ; $(MAKE) $(RULE)-done ; else true ; fi'     >> $ac_top_srcdir/Makefile
-    if test -f "$ac_top_srcdir/Makefile.mk" ; then
-      { $as_echo "$as_me:${as_lineno-$LINENO}: extend top_srcdir/Makefile with top_srcdir/Makefile.mk" >&5
+      cp "$tmp/conftemp.sed" "$ac_top_srcdir/makefile.sed~"            ## DEBUGGING
+      $ax_enable_builddir_sed -f $tmp/conftemp.sed Makefile >$ac_top_srcdir/Makefile
+      if test -f "$ac_top_srcdir/Makefile.mk" ; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: extend top_srcdir/Makefile with top_srcdir/Makefile.mk" >&5
 $as_echo "$as_me: extend top_srcdir/Makefile with top_srcdir/Makefile.mk" >&6;}
-      cat $ac_top_srcdir/Makefile.mk >>$ac_top_srcdir/Makefile
+        cat $ac_top_srcdir/Makefile.mk >>$ac_top_srcdir/Makefile
+      fi ; xxxx="####"
+      echo "$xxxx CONFIGURATIONS FOR TOPLEVEL MAKEFILE: " >>$ac_top_srcdir/Makefile
+      # sanity check
+      if grep '^; echo "MAKE ' $ac_top_srcdir/Makefile >/dev/null ; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: buggy sed found - it deletes tab in \"a\" text parts" >&5
+$as_echo "$as_me: buggy sed found - it deletes tab in \"a\" text parts" >&6;}
+        $ax_enable_builddir_sed -e '/^@ HOST=/s/^/	/' -e '/^; /s/^/	/' $ac_top_srcdir/Makefile \
+          >$ac_top_srcdir/Makefile~
+        (test -s $ac_top_srcdir/Makefile~ && mv $ac_top_srcdir/Makefile~ $ac_top_srcdir/Makefile) 2>/dev/null
+      fi
+    else
+      xxxx="\\#\\#\\#\\#"
+      # echo "/^$xxxx *$ax_enable_builddir_host /d" >$tmp/conftemp.sed
+      echo "s!^$xxxx [^|]* | *$ax_enable_builddir *\$!$xxxx ...... $ax_enable_builddir!" >$tmp/conftemp.sed
+      $ax_enable_builddir_sed -f "$tmp/conftemp.sed" "$ac_top_srcdir/Makefile" >$tmp/mkfile.tmp
+        cp "$tmp/conftemp.sed" "$ac_top_srcdir/makefiles.sed~"         ## DEBUGGING
+        cp "$tmp/mkfile.tmp"   "$ac_top_srcdir/makefiles.out~"         ## DEBUGGING
+      if cmp -s "$ac_top_srcdir/Makefile" "$tmp/mkfile.tmp" 2>/dev/null ; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: keeping top_srcdir/Makefile from earlier configure" >&5
+$as_echo "$as_me: keeping top_srcdir/Makefile from earlier configure" >&6;}
+        rm "$tmp/mkfile.tmp"
+      else
+        { $as_echo "$as_me:${as_lineno-$LINENO}: reusing top_srcdir/Makefile from earlier configure" >&5
+$as_echo "$as_me: reusing top_srcdir/Makefile from earlier configure" >&6;}
+        mv "$tmp/mkfile.tmp" "$ac_top_srcdir/Makefile"
+      fi
     fi
-    { $as_echo "$as_me:${as_lineno-$LINENO}: make uses BUILD=$ax_enable_builddir (on $ax_enable_builddir_host:)" >&5
-$as_echo "$as_me: make uses BUILD=$ax_enable_builddir (on $ax_enable_builddir_host:)" >&6;}
+    { $as_echo "$as_me:${as_lineno-$LINENO}: build in $ax_enable_builddir (HOST=$ax_enable_builddir_host)" >&5
+$as_echo "$as_me: build in $ax_enable_builddir (HOST=$ax_enable_builddir_host)" >&6;}
+    xxxx="####"
+    echo "$xxxx" "$ax_enable_builddir_host" "|$ax_enable_builddir" >>$ac_top_srcdir/Makefile
   fi
  ;;
     "depfiles":C) test x"$AMDEP_TRUE" != x"" || {
