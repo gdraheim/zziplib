@@ -19,6 +19,16 @@
 #define O_BINARY 0
 #endif
 
+#ifdef DEBUG
+#define debug1(msg) do { fprintf(stderr, "%s : " msg "\n", __func__); } while(0)
+#define debug2(msg, arg1) do { fprintf(stderr, "%s : " msg "\n", __func__, arg1); } while(0)
+#define debug3(msg, arg1, arg2) do { fprintf(stderr, "%s : " msg "\n", __func__, arg1, arg2); } while(0)
+#else
+#define debug1(msg) 
+#define debug2(msg, arg1) 
+#define debug3(msg, arg1, arg2) 
+#endif
+
 static const char usage[] = 
 {
     "unzzipcat-seeko <zip> [names].. \n"
@@ -32,9 +42,15 @@ static void zzip_entry_fprint(ZZIP_ENTRY* entry, FILE* out)
     {
 	char buffer[1024]; int len;
 	while ((len = zzip_entry_fread (buffer, 1024, 1, file)))
+	{
+	    debug2("entry read %i", len);
 	    fwrite (buffer, len, 1, out);
-
+	}
+	debug2("entry done %s", strerror(errno));
 	zzip_entry_fclose (file);
+    } else
+    {
+        debug2("could not open entry: %s", strerror(errno));
     }
 }
 
@@ -77,7 +93,6 @@ main (int argc, char ** argv)
     if (argc == 2)
     {  /* print directory list */
 	ZZIP_ENTRY* entry = zzip_entry_findfirst(disk);
-	if (! entry) puts("no first entry!\n");
 	for (; entry ; entry = zzip_entry_findnext(entry))
 	{
 	    char* name = zzip_entry_strdup_name (entry);
@@ -91,8 +106,9 @@ main (int argc, char ** argv)
     {  /* list from one spec */
 	ZZIP_ENTRY* entry = 0;
 	while ((entry = zzip_entry_findmatch(disk, argv[2], entry, 0, 0)))
+	{
 	     zzip_entry_fprint (entry, stdout);
-
+	}
 	return 0;
     }
 
@@ -102,6 +118,7 @@ main (int argc, char ** argv)
 	for (; entry ; entry = zzip_entry_findnext(entry))
 	{
 	    char* name = zzip_entry_strdup_name (entry);
+	    debug3(".. check '%s' to zip '%s'", argv[argn], name);
 	    if (! fnmatch (argv[argn], name, 
 			   FNM_NOESCAPE|FNM_PATHNAME|FNM_PERIOD))
 		zzip_cat_file (disk, name, stdout);

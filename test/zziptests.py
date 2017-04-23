@@ -530,11 +530,10 @@ class ZZipTest(unittest.TestCase):
     logfile = "test1.readme.seeko.txt"
     exe = self.bins("unzzipcat-seeko")
     run = shell("{exe} {zipfile} {getfile} | tee {logfile}".format(**locals()))
-    run = shell("{exe} {getfile} | tee {logfile}".format(**locals()))
     self.assertGreater(os.path.getsize(logfile), 10)
     self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
-    getfile = "test1/file.1"
-    run = shell("{exe} {getfile}".format(**locals()))
+    getfile = "file.1"
+    run = shell("{exe} {zipfile} {getfile}".format(**locals()))
     self.assertEqual("file-1\n", run.output)
   def test_402_zzcat_seeko_seeko_test2_zip(self):
     """ run zzcat-seeke on test.zip using just archive README """
@@ -543,11 +542,10 @@ class ZZipTest(unittest.TestCase):
     logfile = "test2.readme.seeko.txt"
     exe = self.bins("unzzipcat-seeko")
     run = shell("{exe} {zipfile} {getfile} | tee {logfile}".format(**locals()))
-    run = shell("{exe} {getfile} | tee {logfile}".format(**locals()))
     self.assertGreater(os.path.getsize(logfile), 10)
     self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
-    getfile = "test2/file.22"
-    run = shell("{exe} {getfile}".format(**locals()))
+    getfile = "file.22"
+    run = shell("{exe} {zipfile} {getfile}".format(**locals()))
     self.assertEqual("file-22\n", run.output)
   def test_410_zzcat_test0_zip(self):
     """ run zzcat-mem on test.zip using just archive README """
