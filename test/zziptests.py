@@ -513,6 +513,27 @@ class ZZipTest(unittest.TestCase):
     getfile = "test4x/file.999"
     run = shell("{exe} {getfile}".format(**locals()))
     self.assertEqual("file-999\n", run.output)
+  def test_401_make_test1w_zip(self):
+    """ create a test1w.zip using zzip/write functions. """
+    exe=self.bins("zzip")
+    run = shell("{exe} --version".format(**locals()))
+    if "- NO -" in run.output:
+        self.skipTest("- NO -D_ZZIP_ENABLE_WRITE")
+        return
+    zipfile="test1w.zip"
+    tmpdir="test1w.tmp"
+    exe=self.bins("zzip")
+    for i in [1,2,3,4,5,6,7,8,9]:
+       filename = os.path.join(tmpdir,"file.%i" % i)
+       filetext = "file-%i\n" % i
+       self.mkfile(filename, filetext)
+    filename = os.path.join(tmpdir,"README")
+    filetext = self.readme()
+    self.mkfile(filename, filetext)
+    try: os.remove(zipfile)
+    except: pass
+    shell("../{exe} ../{zipfile} ??*.* README".format(**locals()), cwd=tmpdir)
+    self.assertGreater(os.path.getsize(zipfile), 10)
 
 
 
