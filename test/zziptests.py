@@ -513,7 +513,159 @@ class ZZipTest(unittest.TestCase):
     getfile = "test4x/file.999"
     run = shell("{exe} {getfile}".format(**locals()))
     self.assertEqual("file-999\n", run.output)
-  def test_401_make_test1w_zip(self):
+
+  def test_400_zzcat_seeko_test0_zip(self):
+    """ run zzcat-seeko on test.zip using just archive README """
+    zipfile = "test0.zip"
+    getfile = "README"
+    logfile = "test0.readme.seeko.txt"
+    exe = self.bins("unzzipcat-seeko")
+    run = shell("{exe} {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+  def test_401_zzcat_seeko_test1_zip(self):
+    """ run zzcat-seeko on test.zip using just archive README """
+    zipfile = "test1.zip"
+    getfile = "README"
+    logfile = "test1.readme.seeko.txt"
+    exe = self.bins("unzzipcat-seeko")
+    run = shell("{exe} {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    run = shell("{exe} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+    getfile = "test1/file.1"
+    run = shell("{exe} {getfile}".format(**locals()))
+    self.assertEqual("file-1\n", run.output)
+  def test_402_zzcat_seeko_seeko_test2_zip(self):
+    """ run zzcat-seeke on test.zip using just archive README """
+    zipfile = "test2.zip"
+    getfile = "README"
+    logfile = "test2.readme.seeko.txt"
+    exe = self.bins("unzzipcat-seeko")
+    run = shell("{exe} {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    run = shell("{exe} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+    getfile = "test2/file.22"
+    run = shell("{exe} {getfile}".format(**locals()))
+    self.assertEqual("file-22\n", run.output)
+  def test_410_zzcat_test0_zip(self):
+    """ run zzcat-mem on test.zip using just archive README """
+    zipfile = "test0.zip"
+    getfile = "README"
+    logfile = "test0.readme.mmapped.txt"
+    exe = self.bins("unzzipcat-mem")
+    run = shell("{exe} {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+  def test_411_zzcat_test1_zip(self):
+    """ run zzcat-mem on test.zip using archive README """
+    zipfile = "test1.zip"
+    getfile = "README"
+    logfile = "test1.readme.mmapped.txt"
+    exe = self.bins("unzzipcat-mem")
+    run = shell("{exe} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+    getfile = "test1/file.1"
+    run = shell("{exe} {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    run = shell("{exe} {getfile}".format(**locals()))
+    self.assertEqual("file-1\n", run.output)
+  def test_412_zzcat_test2_zip(self):
+    """ run zzcat-mem on test.zip using archive README """
+    zipfile = "test2.zip"
+    getfile = "README"
+    logfile = "test2.readme.mmapped.txt"
+    exe = self.bins("unzzipcat-mem")
+    run = shell("{exe} {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    run = shell("{exe} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+    getfile = "test2/file.22"
+    run = shell("{exe} {getfile}".format(**locals()))
+    self.assertEqual("file-22\n", run.output)
+  def test_413_zzcat_test3_zip(self):
+    """ run zzcat-mem on test.zip using archive README """
+    zipfile = "test3.zip"
+    getfile = "README"
+    logfile = "test3.readme.mmapped.txt"
+    exe = self.bins("unzzipcat-mem")
+    run = shell("{exe} {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    run = shell("{exe} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+    getfile = "test3/file.999"
+    run = shell("{exe} {getfile}".format(**locals()))
+    self.assertEqual("file-999\n", run.output)
+  def test_414_zzcat_test4_zip(self):
+    """ run zzcat-mem on test.zip using archive README """
+    zipfile = "test4.zip"
+    getfile = "README"
+    logfile = "test4.readme.mmapped.txt"
+    exe = self.bins("unzzipcat-mem")
+    run = shell("{exe} {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    run = shell("{exe} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+    getfile = "test4/file.999"
+    run = shell("{exe} {getfile}".format(**locals()))
+    self.assertEqual("file-999\n", run.output)
+  def test_420_zzdir_test0_zip(self):
+    """ run zzdir-me on test0.zip  """
+    zipfile = "test0.zip"
+    getfile = "test0.zip"
+    exe = self.bins("zzdir")
+    run = shell("{exe} {getfile} ".format(**locals()))
+    self.assertIn(' README ', run.output)
+    self.assertIn(' deflated ', run.output)
+    self.assertLess(len(run.output), 30)
+  def test_421_zzdir_test1_zip(self):
+    """ run zzdir-mem on test1.zip  """
+    zipfile = "test1.zip"
+    getfile = "test1.zip"
+    exe = self.bins("zzdir")
+    run = shell("{exe} {getfile} ".format(**locals()))
+    self.assertIn(' file.1 ', run.output)
+    self.assertIn(' file.2 ', run.output)
+    self.assertIn(' file.9 ', run.output)
+    self.assertIn(' README ', run.output)
+    self.assertIn(' deflated ', run.output)
+    self.assertIn(' stored ', run.output)
+  def test_422_zzdir_test2_zip(self):
+    """ run zzdir-mem on test2.zip """
+    zipfile = "test2.zip"
+    getfile = "test2.zip"
+    exe = self.bins("zzdir")
+    run = shell("{exe} {getfile} ".format(**locals()))
+    self.assertIn(' file.01 ', run.output)
+    self.assertIn(' file.22 ', run.output)
+    self.assertIn(' file.99 ', run.output)
+    self.assertIn(' deflated ', run.output)
+    self.assertIn(' stored ', run.output)
+  def test_423_zzdir_test3_zip(self):
+    """ run zzdir-mem on test3.zip  """
+    zipfile = "test3.zip"
+    getfile = "test3.zip"
+    exe = self.bins("zzdir")
+    run = shell("{exe} {getfile} ".format(**locals()))
+    self.assertIn(' file.001 ', run.output)
+    self.assertIn(' file.222 ', run.output)
+    self.assertIn(' file.999 ', run.output)
+    self.assertIn(' deflated ', run.output)
+    self.assertIn(' stored ', run.output)
+  def test_424_zzdir_test4_zip(self):
+    """ run zzdir-mem on test4.zip """
+    zipfile = "test4.zip"
+    getfile = "test4.zip"
+    exe = self.bins("zzdir")
+    run = shell("{exe} {getfile} ".format(**locals()))
+    self.assertIn(' file.001 ', run.output)
+    self.assertIn(' file.222 ', run.output)
+    self.assertIn(' file.999 ', run.output)
+    self.assertNotIn(' deflated ', run.output)
+    self.assertIn(' stored ', run.output)
+
+  def test_500_make_test1w_zip(self):
     """ create a test1w.zip using zzip/write functions. """
     exe=self.bins("zzip")
     run = shell("{exe} --version".format(**locals()))
