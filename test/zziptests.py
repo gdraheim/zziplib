@@ -547,7 +547,7 @@ class ZZipTest(unittest.TestCase):
     getfile = "file.22"
     run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
     self.assertEqual("file-22\n", run.output)
-  def test_410_zzcat_test0_zip(self):
+  def test_410_zzcat_mem_test0_zip(self):
     """ run zzcat-mem on test.zip using just archive README """
     zipfile = "test0.zip"
     getfile = "README"
@@ -604,6 +604,126 @@ class ZZipTest(unittest.TestCase):
     getfile = "file.999"
     run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
     self.assertEqual("file-999\n", run.output)
+  def test_420_zzcat_mix_test0_zip(self):
+    """ run zzcat-mix on test.zip using just archive README """
+    self.skipTest("todo")
+    zipfile = "test0.zip"
+    getfile = "README"
+    logfile = "test0.readme.mix.txt"
+    exe = self.bins("unzzip-mix")
+    run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+  def test_421_zzcat_mix_test1_zip(self):
+    """ run zzcat-mix on test.zip using archive README """
+    self.skipTest("todo")
+    zipfile = "test1.zip"
+    getfile = "README"
+    logfile = "test1.readme.mix.txt"
+    exe = self.bins("unzzip-mix")
+    run = shell("{exe} -p {zipfile}  {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+    getfile = "file.1"
+    run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    self.assertEqual("file-1\n", run.output)
+  def test_422_zzcat_mix_test2_zip(self):
+    """ run zzcat-mix on test.zip using archive README """
+    self.skipTest("todo")
+    zipfile = "test2.zip"
+    getfile = "README"
+    logfile = "test2.readme.mix.txt"
+    exe = self.bins("unzzip-mix")
+    run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+    getfile = "file.22"
+    run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
+    self.assertEqual("file-22\n", run.output)
+  def test_423_zzcat_mix_test3_zip(self):
+    """ run zzcat-mix on test.zip using archive README """
+    self.skipTest("todo")
+    zipfile = "test3.zip"
+    getfile = "README"
+    logfile = "test3.readme.mix.txt"
+    exe = self.bins("unzzip-mix")
+    run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+    getfile = "file.999"
+    run = shell("{exe} -p {zipfile}  {getfile}".format(**locals()))
+    self.assertEqual("file-999\n", run.output)
+  def test_424_zzcat_mix_test4_zip(self):
+    """ run zzcat-mix on test.zip using archive README """
+    self.skipTest("todo")
+    zipfile = "test4.zip"
+    getfile = "README"
+    logfile = "test4.readme.mix.txt"
+    exe = self.bins("unzzip-mix")
+    run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+    getfile = "file.999"
+    run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
+    self.assertEqual("file-999\n", run.output)
+  def test_440_zzcat_zap_test0_zip(self):
+    """ run zzcat-zap on test.zip using just archive README """
+    zipfile = "test0.zip"
+    getfile = "README"
+    logfile = "test0.readme.txt"
+    exe = self.bins("unzzip")
+    run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+  def test_441_zzcat_zap_test1_zip(self):
+    """ run zzcat-zap on test.zip using archive README """
+    zipfile = "test1.zip"
+    getfile = "README"
+    logfile = "test1.readme.zap.txt"
+    exe = self.bins("unzzip")
+    run = shell("{exe} -p {zipfile}  {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+    getfile = "file.1"
+    run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    self.assertEqual("file-1\n", run.output)
+  def test_442_zzcat_zap_test2_zip(self):
+    """ run zzcat-zap on test.zip using archive README """
+    zipfile = "test2.zip"
+    getfile = "README"
+    logfile = "test2.readme.zap.txt"
+    exe = self.bins("unzzip")
+    run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+    getfile = "file.22"
+    run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
+    self.assertEqual("file-22\n", run.output)
+  def test_443_zzcat_zap_test3_zip(self):
+    """ run zzcat-zap on test.zip using archive README """
+    zipfile = "test3.zip"
+    getfile = "README"
+    logfile = "test3.readme.zap.txt"
+    exe = self.bins("unzzip")
+    run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+    getfile = "file.999"
+    run = shell("{exe} -p {zipfile}  {getfile}".format(**locals()))
+    self.assertEqual("file-999\n", run.output)
+  def test_444_zzcat_zap_test4_zip(self):
+    """ run zzcat-zap on test.zip using archive README """
+    zipfile = "test4.zip"
+    getfile = "README"
+    logfile = "test4.readme.zap.txt"
+    exe = self.bins("unzzip")
+    run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+    getfile = "file.999"
+    run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
+    self.assertEqual("file-999\n", run.output)
+
   def test_500_zzdir_big_test0_zip(self):
     """ run zzdir-big on test0.zip  """
     zipfile = "test0.zip"
@@ -697,6 +817,70 @@ class ZZipTest(unittest.TestCase):
     zipfile = "test4.zip"
     getfile = "test4.zip"
     exe = self.bins("unzzip-mem")
+    run = shell("{exe} -l {getfile} ".format(**locals()))
+    self.assertIn(' file.001 ', run.output)
+    self.assertIn(' file.222 ', run.output)
+    self.assertIn(' file.999 ', run.output)
+    self.assertNotIn(' deflated ', run.output)
+    self.assertIn(' stored ', run.output)
+  def test_520_zzdir_mix_test0_zip(self):
+    """ run zzdir-mix on test0.zip  """
+    self.skipTest("todo")
+    zipfile = "test0.zip"
+    getfile = "test0.zip"
+    exe = self.bins("unzzip-mix")
+    run = shell("{exe} -l {getfile} ".format(**locals()))
+    self.assertIn(' README ', run.output)
+    self.assertIn(' deflated ', run.output)
+    self.assertLess(len(run.output), 30)
+  def test_540_zzdir_zap_test0_zip(self):
+    """ run zzdir-zap on test0.zip  """
+    zipfile = "test0.zip"
+    getfile = "test0.zip"
+    exe = self.bins("unzzip")
+    run = shell("{exe} -l {getfile} ".format(**locals()))
+    self.assertIn(' README ', run.output)
+    self.assertIn(' deflated ', run.output)
+    self.assertLess(len(run.output), 30)
+  def test_541_zzdir_zap_test1_zip(self):
+    """ run zzdir-zap on test1.zip  """
+    zipfile = "test1.zip"
+    getfile = "test1.zip"
+    exe = self.bins("unzzip")
+    run = shell("{exe} -l {getfile} ".format(**locals()))
+    self.assertIn(' file.1 ', run.output)
+    self.assertIn(' file.2 ', run.output)
+    self.assertIn(' file.9 ', run.output)
+    self.assertIn(' README ', run.output)
+    self.assertIn(' deflated ', run.output)
+    self.assertIn(' stored ', run.output)
+  def test_542_zzdir_zap_test2_zip(self):
+    """ run zzdir-zap on test2.zip """
+    zipfile = "test2.zip"
+    getfile = "test2.zip"
+    exe = self.bins("unzzip")
+    run = shell("{exe} -l {getfile} ".format(**locals()))
+    self.assertIn(' file.01 ', run.output)
+    self.assertIn(' file.22 ', run.output)
+    self.assertIn(' file.99 ', run.output)
+    self.assertIn(' deflated ', run.output)
+    self.assertIn(' stored ', run.output)
+  def test_543_zzdir_zap_test3_zip(self):
+    """ run zzdir-zap on test3.zip  """
+    zipfile = "test3.zip"
+    getfile = "test3.zip"
+    exe = self.bins("unzzip")
+    run = shell("{exe} -l {getfile} ".format(**locals()))
+    self.assertIn(' file.001 ', run.output)
+    self.assertIn(' file.222 ', run.output)
+    self.assertIn(' file.999 ', run.output)
+    self.assertIn(' deflated ', run.output)
+    self.assertIn(' stored ', run.output)
+  def test_544_zzdir_zap_test4_zip(self):
+    """ run zzdir-zap on test4.zip """
+    zipfile = "test4.zip"
+    getfile = "test4.zip"
+    exe = self.bins("unzzip")
     run = shell("{exe} -l {getfile} ".format(**locals()))
     self.assertIn(' file.001 ', run.output)
     self.assertIn(' file.222 ', run.output)
