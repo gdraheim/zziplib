@@ -825,7 +825,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' stored ', run.output)
   def test_520_zzdir_mix_test0_zip(self):
     """ run zzdir-mix on test0.zip  """
-    self.skipTest("todo")
+    # self.skipTest("todo")
     zipfile = "test0.zip"
     getfile = "test0.zip"
     exe = self.bins("unzzip-mix")
@@ -833,6 +833,51 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' README ', run.output)
     self.assertIn(' deflated ', run.output)
     self.assertLess(len(run.output), 30)
+  def test_521_zzdir_mix_test1_zip(self):
+    """ run zzdir-mix on test1.zip  """
+    zipfile = "test1.zip"
+    getfile = "test1.zip"
+    exe = self.bins("unzzip-mix")
+    run = shell("{exe} -l {getfile} ".format(**locals()))
+    self.assertIn(' file.1 ', run.output)
+    self.assertIn(' file.2 ', run.output)
+    self.assertIn(' file.9 ', run.output)
+    self.assertIn(' README ', run.output)
+    self.assertIn(' deflated ', run.output)
+    self.assertIn(' stored ', run.output)
+  def test_522_zzdir_mix_test2_zip(self):
+    """ run zzdir-mix on test2.zip """
+    zipfile = "test2.zip"
+    getfile = "test2.zip"
+    exe = self.bins("unzzip-mix")
+    run = shell("{exe} -l {getfile} ".format(**locals()))
+    self.assertIn(' file.01 ', run.output)
+    self.assertIn(' file.22 ', run.output)
+    self.assertIn(' file.99 ', run.output)
+    self.assertIn(' deflated ', run.output)
+    self.assertIn(' stored ', run.output)
+  def test_523_zzdir_mix_test3_zip(self):
+    """ run zzdir-mix on test3.zip  """
+    zipfile = "test3.zip"
+    getfile = "test3.zip"
+    exe = self.bins("unzzip-mix")
+    run = shell("{exe} -l {getfile} ".format(**locals()))
+    self.assertIn(' file.001 ', run.output)
+    self.assertIn(' file.222 ', run.output)
+    self.assertIn(' file.999 ', run.output)
+    self.assertIn(' deflated ', run.output)
+    self.assertIn(' stored ', run.output)
+  def test_524_zzdir_mix_test4_zip(self):
+    """ run zzdir-mix on test4.zip """
+    zipfile = "test4.zip"
+    getfile = "test4.zip"
+    exe = self.bins("unzzip-mix")
+    run = shell("{exe} -l {getfile} ".format(**locals()))
+    self.assertIn(' file.001 ', run.output)
+    self.assertIn(' file.222 ', run.output)
+    self.assertIn(' file.999 ', run.output)
+    self.assertNotIn(' deflated ', run.output)
+    self.assertIn(' stored ', run.output)
   def test_540_zzdir_zap_test0_zip(self):
     """ run zzdir-zap on test0.zip  """
     zipfile = "test0.zip"

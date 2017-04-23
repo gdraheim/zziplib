@@ -49,7 +49,7 @@ unzzip_list (int argc, char ** argv)
 
     if (argc == 2)
     {  /* list all */
-	ZZIP_DIRENT* entry = zzip_readdir(disk);
+	ZZIP_DIRENT* entry = 0;
 	while((entry = zzip_readdir(disk)))
 	{
 	    char* name = entry->d_name;
