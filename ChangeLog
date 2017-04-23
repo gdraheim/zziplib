@@ -1,3 +1,9 @@
+2017-04-23  guidod  <guidod@gmx.de>
+    * turn the testsuite from makefile into python unittest format
+    * extend 'make check' testsuite to cover non-libzzip extensions
+    * fix unzzipcat-seeko and unzzipcat-mem to match the testsuite
+    * release v0.13.65
+
 2017-04-20  guidod  <guidod@gmx.de>
     * check patches in opensuse builds, mostly for some CVE reports
 
