@@ -88,6 +88,7 @@ main (int argc, char ** argv)
     if (argc == 2)
     {  /* print directory list */
 	ZZIP_MEM_ENTRY* entry = zzip_mem_disk_findfirst(disk);
+	fprintf(stderr, "..%p\n", entry);
 	for (; entry ; entry = zzip_mem_disk_findnext(disk, entry))
 	{
 	    char* name = zzip_mem_entry_to_name (entry);

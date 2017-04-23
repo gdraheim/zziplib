@@ -37,6 +37,19 @@
 #define ___ {
 #define ____ }
 
+#define DEBUG 1
+#ifdef DEBUG
+#define debug1(msg) do { fprintf(stderr, "%s : " msg "\n", __func__); } while(0)
+#define debug2(msg, arg1) do { fprintf(stderr, "%s : " msg "\n", __func__, arg1); } while(0)
+#define debug3(msg, arg1, arg2) do { fprintf(stderr, "%s : " msg "\n", __func__, arg1, arg2); } while(0)
+#define debug4(msg, arg1, arg2, arg3) do { fprintf(stderr, "%s : " msg "\n", __func__, arg1, arg2, arg3); } while(0)
+#else
+#define debug1(msg) 
+#define debug2(msg, arg1) 
+#define debug3(msg, arg1, arg2) 
+#define debug4(msg, arg1, arg2, arg3) 
+#endif
+
 static const char *error[] = {
     "Ok",
 #   define _zzip_mem_disk_open_fail 1
@@ -81,7 +94,10 @@ zzip_mem_disk_open(char *filename)
     if (! disk)
         { perror(error[_zzip_mem_disk_open_fail]); return 0; }
     ___ ZZIP_MEM_DISK *dir = zzip_mem_disk_new();
-    zzip_mem_disk_load(dir, disk);
+    if (zzip_mem_disk_load(dir, disk) == -1)
+    {
+       debug2("unable to load disk %s", filename);
+    }
     return dir;
     ____;
 }
@@ -131,7 +147,10 @@ zzip_mem_disk_load(ZZIP_MEM_DISK * dir, ZZIP_DISK * disk)
     {
         ZZIP_MEM_ENTRY *item = zzip_mem_entry_new(disk, entry);
         if (! item)
+        {
+            debug1("unable to load entry");
             goto error;
+        }
         if (dir->last)
         {
             dir->last->zz_next = item;  /* chain last */
@@ -170,6 +189,7 @@ zzip_mem_entry_new(ZZIP_DISK * disk, ZZIP_DISK_ENTRY * entry)
         zzip_disk_entry_to_file_header(disk, entry);
     if (! header) 
     {
+        debug1("no header in entry");
         free (item);
         return 0; /* errno=EBADMSG; */
     }
@@ -188,7 +208,8 @@ zzip_mem_entry_new(ZZIP_DISK * disk, ZZIP_DISK_ENTRY * entry)
     item->zz_usize = zzip_disk_entry_get_usize(entry);
     item->zz_diskstart = zzip_disk_entry_get_diskstart(entry);
     item->zz_filetype = zzip_disk_entry_get_filetype(entry);
-    
+
+    /* zz_comment and zz_name are empty strings if not present on disk */
     if (! item->zz_comment || ! item->zz_name)
     {
         goto error; /* errno=ENOMEM */
