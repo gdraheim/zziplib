@@ -77,7 +77,7 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 
     if (argc == 2)
     {  /* list all */
-	ZZIP_DIRENT* entry = zzip_readdir(disk);
+	ZZIP_DIRENT* entry = 0;
 	while((entry = zzip_readdir(disk)))
 	{
 	    char* name = entry->d_name;
@@ -99,8 +99,18 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 			       FNM_NOESCAPE|FNM_PATHNAME|FNM_PERIOD))
 	        {
 	             FILE* out = stdout;
+	             char* zip_name = argv[1];
+	             int zip_name_len = strlen(zip_name);
+	             int name_len = strlen(name);
+	             char* mix_name = malloc(zip_name_len + 2 + name_len);
+	             if (zip_name_len > 4 && !strcmp(zip_name+zip_name_len-4, ".zip"))
+	                 zip_name_len -= 4;
+	             memcpy(mix_name, zip_name, zip_name_len);
+	             mix_name[zip_name_len] = '/';
+	             strcpy(mix_name + zip_name_len + 1, name);
 	             if (extract) out = create_fopen(name, "w", 1);
-		     unzzip_cat_file (disk, name, out);
+		     fprintf(stderr, "%s %s -> %s\n", zip_name, name, mix_name);
+		     unzzip_cat_file (disk, mix_name, out);
 		     if (extract) fclose(out);
 		     break; /* match loop */
 	        }

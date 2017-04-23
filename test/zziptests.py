@@ -606,7 +606,6 @@ class ZZipTest(unittest.TestCase):
     self.assertEqual("file-999\n", run.output)
   def test_420_zzcat_mix_test0_zip(self):
     """ run zzcat-mix on test.zip using just archive README """
-    self.skipTest("todo")
     zipfile = "test0.zip"
     getfile = "README"
     logfile = "test0.readme.mix.txt"
@@ -616,7 +615,6 @@ class ZZipTest(unittest.TestCase):
     self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
   def test_421_zzcat_mix_test1_zip(self):
     """ run zzcat-mix on test.zip using archive README """
-    self.skipTest("todo")
     zipfile = "test1.zip"
     getfile = "README"
     logfile = "test1.readme.mix.txt"
@@ -629,7 +627,6 @@ class ZZipTest(unittest.TestCase):
     self.assertEqual("file-1\n", run.output)
   def test_422_zzcat_mix_test2_zip(self):
     """ run zzcat-mix on test.zip using archive README """
-    self.skipTest("todo")
     zipfile = "test2.zip"
     getfile = "README"
     logfile = "test2.readme.mix.txt"
@@ -642,7 +639,6 @@ class ZZipTest(unittest.TestCase):
     self.assertEqual("file-22\n", run.output)
   def test_423_zzcat_mix_test3_zip(self):
     """ run zzcat-mix on test.zip using archive README """
-    self.skipTest("todo")
     zipfile = "test3.zip"
     getfile = "README"
     logfile = "test3.readme.mix.txt"
@@ -655,7 +651,6 @@ class ZZipTest(unittest.TestCase):
     self.assertEqual("file-999\n", run.output)
   def test_424_zzcat_mix_test4_zip(self):
     """ run zzcat-mix on test.zip using archive README """
-    self.skipTest("todo")
     zipfile = "test4.zip"
     getfile = "README"
     logfile = "test4.readme.mix.txt"
