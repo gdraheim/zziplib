@@ -100,7 +100,7 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/ac_compile_check_sizeof.m4 \
 	$(top_srcdir)/m4/ax_check_aligned_access_required.m4 \
 	$(top_srcdir)/m4/ax_configure_args.m4 \
 	$(top_srcdir)/m4/ax_create_pkgconfig_info.m4 \
-	$(top_srcdir)/m4/ax_enable_builddir_uname.m4 \
+	$(top_srcdir)/m4/ax_enable_builddir.m4 \
 	$(top_srcdir)/m4/ax_expand_prefix.m4 \
 	$(top_srcdir)/m4/ax_maintainer_mode_auto_silent.m4 \
 	$(top_srcdir)/m4/ax_not_enable_frame_pointer.m4 \
@@ -949,7 +949,7 @@ sdl testsdl test-sdl install-sdl :
 
 check-test0 check-test1 check-zzdir check-zzcat \
 check-zzxor check-zzxordir check-zzxorcat \
-check-sfx     check-readme : \
+check-sfx check-readme check-tests tests: 
 	(cd test && $(MAKE) `basename $@`)
 # ------------------------------------------------------------------------
 
