@@ -1,3 +1,9 @@
+
+2017-04-24  guidod  <guidod@gmx.de>
+    * common frontend 'unzzip.c' for example code in unzzip*-xx.c
+    * expand testcases to cover all of big/mem/mix/zap variants
+    * release v0.13.66
+
 2017-04-23  guidod  <guidod@gmx.de>
     * turn the testsuite from makefile into python unittest format
     * extend 'make check' testsuite to cover non-libzzip extensions

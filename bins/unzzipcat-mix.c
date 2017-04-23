@@ -110,6 +110,7 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	             strcpy(mix_name + zip_name_len + 1, name);
 	             if (extract) out = create_fopen(name, "w", 1);
 		     fprintf(stderr, "%s %s -> %s\n", zip_name, name, mix_name);
+		     /* 'test1.zip' 'README' -> 'test1/README' */
 		     unzzip_cat_file (disk, mix_name, out);
 		     if (extract) fclose(out);
 		     break; /* match loop */
