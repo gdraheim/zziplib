@@ -8,6 +8,7 @@
 #include <zzip/fseeko.h>
 #include <stdlib.h>
 #include <string.h>
+#include "unzzip.h"
 
 #ifdef ZZIP_HAVE_FNMATCH_H
 #include <fnmatch.h>
@@ -29,13 +30,7 @@
 #define debug3(msg, arg1, arg2) 
 #endif
 
-static const char usage[] = 
-{
-    "unzzipcat-seeko <zip> [names].. \n"
-    "  - unzzip data content of files contained in a zip archive.\n"
-};
-
-static void zzip_entry_fprint(ZZIP_ENTRY* entry, FILE* out)
+static void unzzip_big_entry_fprint(ZZIP_ENTRY* entry, FILE* out)
 {
     ZZIP_ENTRY_FILE* file = zzip_entry_fopen (entry, 0);
     if (file) 
@@ -54,7 +49,7 @@ static void zzip_entry_fprint(ZZIP_ENTRY* entry, FILE* out)
     }
 }
 
-static void zzip_cat_file(FILE* disk, char* name, FILE* out)
+static void unzzip_cat_file(FILE* disk, char* name, FILE* out)
 {
     ZZIP_ENTRY_FILE* file = zzip_entry_ffile (disk, name);
     if (file) 
@@ -67,22 +62,26 @@ static void zzip_cat_file(FILE* disk, char* name, FILE* out)
     }
 }
 
-int 
-main (int argc, char ** argv)
+
+static FILE* create_fopen(char* name, char* mode, int subdirs)
+{
+   if (subdirs)
+   {
+      char* p = strrchr(name, '/');
+      if (p) {
+          char* dir_name = strndup(name, p-name);
+          // makedirs(dir_name); // TODO
+          free (dir_name);
+      }
+   }
+   return fopen(name, mode);      
+}
+
+
+static int unzzip_cat (int argc, char ** argv, int extract)
 {
     int argn;
     FILE* disk;
-
-    if (argc <= 1 || ! strcmp (argv[1], "--help"))
-    {
-        printf (usage);
-	return 0;
-    }
-    if (! strcmp (argv[1], "--version"))
-    {
-	printf (__FILE__" version "ZZIP_PACKAGE" "ZZIP_VERSION"\n");
-	return 0;
-    }
 
     disk = fopen (argv[1], "r");
     if (! disk) {
@@ -96,18 +95,21 @@ main (int argc, char ** argv)
 	for (; entry ; entry = zzip_entry_findnext(entry))
 	{
 	    char* name = zzip_entry_strdup_name (entry);
-	    printf ("%s\n", name);
+	    FILE* out = stdout;
+	    if (extract) out = create_fopen(name, "w", 1);
+	    unzzip_cat_file (disk, name, out);
+	    if (extract) fclose(out);
 	    free (name);
 	}
 	return 0;
     }
 
-    if (argc == 3)
+    if (argc == 3 && !extract)
     {  /* list from one spec */
 	ZZIP_ENTRY* entry = 0;
 	while ((entry = zzip_entry_findmatch(disk, argv[2], entry, 0, 0)))
 	{
-	     zzip_entry_fprint (entry, stdout);
+	     unzzip_big_entry_fprint (entry, stdout);
 	}
 	return 0;
     }
@@ -121,12 +123,28 @@ main (int argc, char ** argv)
 	    debug3(".. check '%s' to zip '%s'", argv[argn], name);
 	    if (! fnmatch (argv[argn], name, 
 			   FNM_NOESCAPE|FNM_PATHNAME|FNM_PERIOD))
-		zzip_cat_file (disk, name, stdout);
+	    {
+	        FILE* out = stdout;
+	        if (extract) out = create_fopen(name, "w", 1);
+		unzzip_cat_file (disk, name, out);
+		if (extract) fclose(out);
+		break; /* match loop */
+	    }
 	    free (name);
 	}
     }
     return 0;
 } 
+
+int unzzip_print (int argc, char ** argv)
+{
+    return unzzip_cat(argc, argv, 0);
+}
+
+int unzzip_extract (int argc, char ** argv)
+{
+    return unzzip_cat(argc, argv, 1);
+}
 
 /* 
  * Local variables:
