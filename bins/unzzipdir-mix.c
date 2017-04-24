@@ -28,6 +28,9 @@
 #define O_BINARY 0
 #endif
 
+static const char* comprlevel[] = {
+    "stored",   "shrunk",   "redu:1",   "redu:2",   "redu:3",   "redu:4",
+    "impl:N",   "toknze",   "defl:N",   "defl:B",   "impl:B" };
 
 int 
 unzzip_list (int argc, char ** argv)
@@ -55,8 +58,9 @@ unzzip_list (int argc, char ** argv)
 	    char* name = entry->d_name;
 	    long long csize = entry->d_csize;
 	    long long usize = entry->st_size;
-	    char* defl = entry->d_compr ? "deflated" : "stored";
-            printf ("%lli/%lli %s %s \n", usize, csize, defl, name);
+	    unsigned compr = entry->d_compr;
+	    const char* defl = (compr < sizeof(comprlevel)) ? comprlevel[compr] : "(redu)";
+            printf ("%lli/%lli %s %s\n", usize, csize, defl, name);
 	}
     }
     else
@@ -72,8 +76,9 @@ unzzip_list (int argc, char ** argv)
 		{
 		    long long csize = entry->d_csize;
 		    long long usize = entry->st_size;
-		    char* defl = entry->d_compr ? "deflated" : "stored";
-            	    printf ("%lli/%lli %s %s \n", usize, csize, defl, name);
+		    unsigned compr = entry->d_compr;
+		    const char* defl = (compr < sizeof(comprlevel)) ? comprlevel[compr] : "(redu)";
+            	    printf ("%lli/%lli %s %s\n", usize, csize, defl, name);
 		    break; /* match loop */
 		}
 	    }

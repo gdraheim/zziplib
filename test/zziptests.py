@@ -320,8 +320,8 @@ class ZZipTest(unittest.TestCase):
     getfile = "test0"
     exe = self.bins("zzdir")
     run = shell("{exe} {getfile} ".format(**locals()))
-    self.assertIn(' README ', run.output)
-    self.assertIn(' deflated ', run.output)
+    self.assertIn(' README\n', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertLess(len(run.output), 30)
   def test_221_zzdir_test1_zip(self):
     """ run zzdir on test1.zip using just 'test1' """
@@ -329,11 +329,11 @@ class ZZipTest(unittest.TestCase):
     getfile = "test1"
     exe = self.bins("zzdir")
     run = shell("{exe} {getfile} ".format(**locals()))
-    self.assertIn(' file.1 ', run.output)
-    self.assertIn(' file.2 ', run.output)
-    self.assertIn(' file.9 ', run.output)
-    self.assertIn(' README ', run.output)
-    self.assertIn(' deflated ', run.output)
+    self.assertIn(' file.1\n', run.output)
+    self.assertIn(' file.2\n', run.output)
+    self.assertIn(' file.9\n', run.output)
+    self.assertIn(' README\n', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_222_zzdir_test2_zip(self):
     """ run zzdir on test2.zip using just 'test2' """
@@ -341,10 +341,10 @@ class ZZipTest(unittest.TestCase):
     getfile = "test2"
     exe = self.bins("zzdir")
     run = shell("{exe} {getfile} ".format(**locals()))
-    self.assertIn(' file.01 ', run.output)
-    self.assertIn(' file.22 ', run.output)
-    self.assertIn(' file.99 ', run.output)
-    self.assertIn(' deflated ', run.output)
+    self.assertIn(' file.01\n', run.output)
+    self.assertIn(' file.22\n', run.output)
+    self.assertIn(' file.99\n', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_223_zzdir_test3_zip(self):
     """ run zzdir on test3.zip using just 'test3' """
@@ -352,10 +352,10 @@ class ZZipTest(unittest.TestCase):
     getfile = "test3"
     exe = self.bins("zzdir")
     run = shell("{exe} {getfile} ".format(**locals()))
-    self.assertIn(' file.001 ', run.output)
-    self.assertIn(' file.222 ', run.output)
-    self.assertIn(' file.999 ', run.output)
-    self.assertIn(' deflated ', run.output)
+    self.assertIn(' file.001\n', run.output)
+    self.assertIn(' file.222\n', run.output)
+    self.assertIn(' file.999\n', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_224_zzdir_test4_zip(self):
     """ run zzdir on test4.zip using just 'test4' """
@@ -363,10 +363,10 @@ class ZZipTest(unittest.TestCase):
     getfile = "test4"
     exe = self.bins("zzdir")
     run = shell("{exe} {getfile} ".format(**locals()))
-    self.assertIn(' file.001 ', run.output)
-    self.assertIn(' file.222 ', run.output)
-    self.assertIn(' file.999 ', run.output)
-    self.assertNotIn(' deflated ', run.output)
+    self.assertIn(' file.001\n', run.output)
+    self.assertIn(' file.222\n', run.output)
+    self.assertIn(' file.999\n', run.output)
+    self.assertNotIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_320_zzxordir_test0_dat(self):
     """ run zzxordir on test0x.dat """
@@ -379,8 +379,8 @@ class ZZipTest(unittest.TestCase):
     self.assertIn("did not open test", run.errors)
     exe = self.bins("zzxordir")
     run = shell("{exe} {getfile} ".format(**locals()))
-    self.assertIn(' README ', run.output)
-    self.assertIn(' deflated ', run.output)
+    self.assertIn(' README\n', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertLess(len(run.output), 30)
   def test_321_zzxordir_test1_dat(self):
     """ run zzxordir on test1x.dat using just 'test1x' """
@@ -393,11 +393,11 @@ class ZZipTest(unittest.TestCase):
     self.assertIn("did not open test", run.errors)
     exe = self.bins("zzxordir")
     run = shell("{exe} {getfile} ".format(**locals()))
-    self.assertIn(' file.1 ', run.output)
-    self.assertIn(' file.2 ', run.output)
-    self.assertIn(' file.9 ', run.output)
-    self.assertIn(' README ', run.output)
-    self.assertIn(' deflated ', run.output)
+    self.assertIn(' file.1\n', run.output)
+    self.assertIn(' file.2\n', run.output)
+    self.assertIn(' file.9\n', run.output)
+    self.assertIn(' README\n', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_322_zzxordir_test2_dat(self):
     """ run zzxordir on test2x.dat using just 'test2x' """
@@ -410,10 +410,10 @@ class ZZipTest(unittest.TestCase):
     self.assertIn("did not open test", run.errors)
     exe = self.bins("zzxordir")
     run = shell("{exe} {getfile} ".format(**locals()))
-    self.assertIn(' file.01 ', run.output)
-    self.assertIn(' file.22 ', run.output)
-    self.assertIn(' file.99 ', run.output)
-    self.assertIn(' deflated ', run.output)
+    self.assertIn(' file.01\n', run.output)
+    self.assertIn(' file.22\n', run.output)
+    self.assertIn(' file.99\n', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_323_zzxordir_test3_dat(self):
     """ run zzxordir on test3x.dat using just 'test3x' """
@@ -426,10 +426,10 @@ class ZZipTest(unittest.TestCase):
     self.assertIn("did not open test", run.errors)
     exe = self.bins("zzxordir")
     run = shell("{exe} {getfile} ".format(**locals()))
-    self.assertIn(' file.001 ', run.output)
-    self.assertIn(' file.222 ', run.output)
-    self.assertIn(' file.999 ', run.output)
-    self.assertIn(' deflated ', run.output)
+    self.assertIn(' file.001\n', run.output)
+    self.assertIn(' file.222\n', run.output)
+    self.assertIn(' file.999\n', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_324_zzxordir_test4_zip(self):
     """ run zzxordir on test4x.dat using just 'test4x' """
@@ -442,10 +442,10 @@ class ZZipTest(unittest.TestCase):
     self.assertIn("did not open test", run.errors)
     exe = self.bins("zzxordir")
     run = shell("{exe} {getfile} ".format(**locals()))
-    self.assertIn(' file.001 ', run.output)
-    self.assertIn(' file.222 ', run.output)
-    self.assertIn(' file.999 ', run.output)
-    self.assertNotIn(' deflated ', run.output)
+    self.assertIn(' file.001\n', run.output)
+    self.assertIn(' file.222\n', run.output)
+    self.assertIn(' file.999\n', run.output)
+    self.assertNotIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_340_zzxorcat_test0_zip(self):
     """ run zzxorcat on testx.zip using just testx/README """
@@ -807,7 +807,7 @@ class ZZipTest(unittest.TestCase):
     getfile = "test0.zip"
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' README ', run.output)
+    self.assertIn(' README\n', run.output)
     self.assertLess(len(run.output), 30)
   def test_511_zzdir_big_test1_zip(self):
     """ run zzdir-big on test1.zip  """
@@ -815,45 +815,45 @@ class ZZipTest(unittest.TestCase):
     getfile = "test1.zip"
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' file.1 ', run.output)
-    self.assertIn(' file.2 ', run.output)
-    self.assertIn(' file.9 ', run.output)
-    self.assertIn(' README ', run.output)
+    self.assertIn(' file.1\n', run.output)
+    self.assertIn(' file.2\n', run.output)
+    self.assertIn(' file.9\n', run.output)
+    self.assertIn(' README\n', run.output)
   def test_512_zzdir_big_test2_zip(self):
     """ run zzdir-big on test2.zip """
     zipfile = "test2.zip"
     getfile = "test2.zip"
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' file.01 ', run.output)
-    self.assertIn(' file.22 ', run.output)
-    self.assertIn(' file.99 ', run.output)
+    self.assertIn(' file.01\n', run.output)
+    self.assertIn(' file.22\n', run.output)
+    self.assertIn(' file.99\n', run.output)
   def test_513_zzdir_big_test3_zip(self):
     """ run zzdir-big on test3.zip  """
     zipfile = "test3.zip"
     getfile = "test3.zip"
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' file.001 ', run.output)
-    self.assertIn(' file.222 ', run.output)
-    self.assertIn(' file.999 ', run.output)
+    self.assertIn(' file.001\n', run.output)
+    self.assertIn(' file.222\n', run.output)
+    self.assertIn(' file.999\n', run.output)
   def test_514_zzdir_big_test4_zip(self):
     """ run zzdir-big on test4.zip """
     zipfile = "test4.zip"
     getfile = "test4.zip"
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' file.001 ', run.output)
-    self.assertIn(' file.222 ', run.output)
-    self.assertIn(' file.999 ', run.output)
+    self.assertIn(' file.001\n', run.output)
+    self.assertIn(' file.222\n', run.output)
+    self.assertIn(' file.999\n', run.output)
   def test_520_zzdir_mem_test0_zip(self):
     """ run zzdir-mem on test0.zip  """
     zipfile = "test0.zip"
     getfile = "test0.zip"
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' README ', run.output)
-    self.assertIn(' deflated ', run.output)
+    self.assertIn(' README\n', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertLess(len(run.output), 30)
   def test_521_zzdir_mem_test1_zip(self):
     """ run zzdir-mem on test1.zip  """
@@ -861,11 +861,11 @@ class ZZipTest(unittest.TestCase):
     getfile = "test1.zip"
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' file.1 ', run.output)
-    self.assertIn(' file.2 ', run.output)
-    self.assertIn(' file.9 ', run.output)
-    self.assertIn(' README ', run.output)
-    self.assertIn(' deflated ', run.output)
+    self.assertIn(' file.1\n', run.output)
+    self.assertIn(' file.2\n', run.output)
+    self.assertIn(' file.9\n', run.output)
+    self.assertIn(' README\n', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_522_zzdir_mem_test2_zip(self):
     """ run zzdir-mem on test2.zip """
@@ -873,10 +873,10 @@ class ZZipTest(unittest.TestCase):
     getfile = "test2.zip"
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' file.01 ', run.output)
-    self.assertIn(' file.22 ', run.output)
-    self.assertIn(' file.99 ', run.output)
-    self.assertIn(' deflated ', run.output)
+    self.assertIn(' file.01\n', run.output)
+    self.assertIn(' file.22\n', run.output)
+    self.assertIn(' file.99\n', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_523_zzdir_mem_test3_zip(self):
     """ run zzdir-mem on test3.zip  """
@@ -884,10 +884,10 @@ class ZZipTest(unittest.TestCase):
     getfile = "test3.zip"
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' file.001 ', run.output)
-    self.assertIn(' file.222 ', run.output)
-    self.assertIn(' file.999 ', run.output)
-    self.assertIn(' deflated ', run.output)
+    self.assertIn(' file.001\n', run.output)
+    self.assertIn(' file.222\n', run.output)
+    self.assertIn(' file.999\n', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_524_zzdir_mem_test4_zip(self):
     """ run zzdir-mem on test4.zip """
@@ -895,10 +895,10 @@ class ZZipTest(unittest.TestCase):
     getfile = "test4.zip"
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' file.001 ', run.output)
-    self.assertIn(' file.222 ', run.output)
-    self.assertIn(' file.999 ', run.output)
-    self.assertNotIn(' deflated ', run.output)
+    self.assertIn(' file.001\n', run.output)
+    self.assertIn(' file.222\n', run.output)
+    self.assertIn(' file.999\n', run.output)
+    self.assertNotIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_530_zzdir_mix_test0_zip(self):
     """ run zzdir-mix on test0.zip  """
@@ -907,8 +907,8 @@ class ZZipTest(unittest.TestCase):
     getfile = "test0.zip"
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' README ', run.output)
-    self.assertIn(' deflated ', run.output)
+    self.assertIn(' README\n', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertLess(len(run.output), 30)
   def test_531_zzdir_mix_test1_zip(self):
     """ run zzdir-mix on test1.zip  """
@@ -916,11 +916,11 @@ class ZZipTest(unittest.TestCase):
     getfile = "test1.zip"
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' file.1 ', run.output)
-    self.assertIn(' file.2 ', run.output)
-    self.assertIn(' file.9 ', run.output)
-    self.assertIn(' README ', run.output)
-    self.assertIn(' deflated ', run.output)
+    self.assertIn(' file.1\n', run.output)
+    self.assertIn(' file.2\n', run.output)
+    self.assertIn(' file.9\n', run.output)
+    self.assertIn(' README\n', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_532_zzdir_mix_test2_zip(self):
     """ run zzdir-mix on test2.zip """
@@ -928,10 +928,10 @@ class ZZipTest(unittest.TestCase):
     getfile = "test2.zip"
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' file.01 ', run.output)
-    self.assertIn(' file.22 ', run.output)
-    self.assertIn(' file.99 ', run.output)
-    self.assertIn(' deflated ', run.output)
+    self.assertIn(' file.01\n', run.output)
+    self.assertIn(' file.22\n', run.output)
+    self.assertIn(' file.99\n', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_533_zzdir_mix_test3_zip(self):
     """ run zzdir-mix on test3.zip  """
@@ -939,10 +939,10 @@ class ZZipTest(unittest.TestCase):
     getfile = "test3.zip"
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' file.001 ', run.output)
-    self.assertIn(' file.222 ', run.output)
-    self.assertIn(' file.999 ', run.output)
-    self.assertIn(' deflated ', run.output)
+    self.assertIn(' file.001\n', run.output)
+    self.assertIn(' file.222\n', run.output)
+    self.assertIn(' file.999\n', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_534_zzdir_mix_test4_zip(self):
     """ run zzdir-mix on test4.zip """
@@ -950,10 +950,10 @@ class ZZipTest(unittest.TestCase):
     getfile = "test4.zip"
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' file.001 ', run.output)
-    self.assertIn(' file.222 ', run.output)
-    self.assertIn(' file.999 ', run.output)
-    self.assertNotIn(' deflated ', run.output)
+    self.assertIn(' file.001\n', run.output)
+    self.assertIn(' file.222\n', run.output)
+    self.assertIn(' file.999\n', run.output)
+    self.assertNotIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_540_zzdir_zap_test0_zip(self):
     """ run zzdir-zap on test0.zip  """
@@ -961,8 +961,8 @@ class ZZipTest(unittest.TestCase):
     getfile = "test0.zip"
     exe = self.bins("unzzip")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' README ', run.output)
-    self.assertIn(' deflated ', run.output)
+    self.assertIn(' README\n', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertLess(len(run.output), 30)
   def test_541_zzdir_zap_test1_zip(self):
     """ run zzdir-zap on test1.zip  """
@@ -970,11 +970,11 @@ class ZZipTest(unittest.TestCase):
     getfile = "test1.zip"
     exe = self.bins("unzzip")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' file.1 ', run.output)
-    self.assertIn(' file.2 ', run.output)
-    self.assertIn(' file.9 ', run.output)
-    self.assertIn(' README ', run.output)
-    self.assertIn(' deflated ', run.output)
+    self.assertIn(' file.1\n', run.output)
+    self.assertIn(' file.2\n', run.output)
+    self.assertIn(' file.9\n', run.output)
+    self.assertIn(' README\n', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_542_zzdir_zap_test2_zip(self):
     """ run zzdir-zap on test2.zip """
@@ -982,10 +982,10 @@ class ZZipTest(unittest.TestCase):
     getfile = "test2.zip"
     exe = self.bins("unzzip")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' file.01 ', run.output)
-    self.assertIn(' file.22 ', run.output)
-    self.assertIn(' file.99 ', run.output)
-    self.assertIn(' deflated ', run.output)
+    self.assertIn(' file.01\n', run.output)
+    self.assertIn(' file.22\n', run.output)
+    self.assertIn(' file.99\n', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_543_zzdir_zap_test3_zip(self):
     """ run zzdir-zap on test3.zip  """
@@ -993,10 +993,10 @@ class ZZipTest(unittest.TestCase):
     getfile = "test3.zip"
     exe = self.bins("unzzip")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' file.001 ', run.output)
-    self.assertIn(' file.222 ', run.output)
-    self.assertIn(' file.999 ', run.output)
-    self.assertIn(' deflated ', run.output)
+    self.assertIn(' file.001\n', run.output)
+    self.assertIn(' file.222\n', run.output)
+    self.assertIn(' file.999\n', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_544_zzdir_zap_test4_zip(self):
     """ run zzdir-zap on test4.zip """
@@ -1004,10 +1004,10 @@ class ZZipTest(unittest.TestCase):
     getfile = "test4.zip"
     exe = self.bins("unzzip")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' file.001 ', run.output)
-    self.assertIn(' file.222 ', run.output)
-    self.assertIn(' file.999 ', run.output)
-    self.assertNotIn(' deflated ', run.output)
+    self.assertIn(' file.001\n', run.output)
+    self.assertIn(' file.222\n', run.output)
+    self.assertIn(' file.999\n', run.output)
+    self.assertNotIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
 
   def test_900_make_test1w_zip(self):

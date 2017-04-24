@@ -28,6 +28,9 @@
 #define O_BINARY 0
 #endif
 
+static const char* comprlevel[] = {
+    "stored",   "shrunk",   "redu:1",   "redu:2",   "redu:3",   "redu:4",
+    "impl:N",   "toknze",   "defl:N",   "defl:B",   "impl:B" };
 
 int 
 unzzip_list (int argc, char ** argv)
@@ -53,11 +56,11 @@ unzzip_list (int argc, char ** argv)
 	for (; entry ; entry = zzip_mem_disk_findnext(disk, entry))
 	{
 	    char* name = zzip_mem_entry_to_name (entry);
-	    int compr = entry->zz_compr;
 	    long long usize = entry->zz_usize;
 	    long long csize = entry->zz_csize;
-	    char* defl = compr ? "deflated" : "stored";
-	    printf ("%lli/%lli %s %s \n", csize, usize, defl, name);
+	    unsigned compr = entry->zz_compr;
+            const char* defl = (compr < sizeof(comprlevel)) ? comprlevel[compr] : "(redu)";
+	    printf ("%lli/%lli %s %s\n", csize, usize, defl, name);
 	}
 	return 0;
     }
@@ -68,11 +71,11 @@ unzzip_list (int argc, char ** argv)
 	while ((entry = zzip_mem_disk_findmatch(disk, argv[2], entry, 0, 0)))
 	{
 	    char* name = zzip_mem_entry_to_name (entry);
-	    int compr = entry->zz_compr;
 	    long long usize = entry->zz_usize;
 	    long long csize = entry->zz_csize;
-	    char* defl = compr ? "deflated" : "stored";
-	    printf ("%lli/%lli %s %s \n", csize, usize, defl, name);
+	    unsigned compr = entry->zz_compr;
+            const char* defl = (compr < sizeof(comprlevel)) ? comprlevel[compr] : "(redu)";
+	    printf ("%lli/%lli %s %s\n", csize, usize, defl, name);
 	}
 	return 0;
     }
@@ -87,11 +90,11 @@ unzzip_list (int argc, char ** argv)
 		if (! fnmatch (argv[argn], name, 
 			       FNM_NOESCAPE|FNM_PATHNAME|FNM_PERIOD))
 		{
-		    int compr = entry->zz_compr;
 		    long long usize = entry->zz_usize;
 		    long long csize = entry->zz_csize;
-		    char* defl = compr ? "deflated" : "stored";
-	    	    printf ("%lli/%lli %s %s \n", csize, usize, defl, name);
+		    unsigned compr = entry->zz_compr;
+		    const char* defl = (compr < sizeof(comprlevel)) ? comprlevel[compr] : "(redu)";
+	    	    printf ("%lli/%lli %s %s\n", csize, usize, defl, name);
 		    break; /* match loop */
 		}
 	    }

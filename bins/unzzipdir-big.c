@@ -5,7 +5,10 @@
  *      This file is used as an example to clarify zzipfseeko api usage.
  */
 
+#define _ZZIP_ENTRY_STRUCT 1
+
 #include <zzip/fseeko.h>
+#include <zzip/fetch.h>
 #include <stdlib.h>
 #include <string.h>
 #include "unzzipdir-zip.h"
@@ -30,6 +33,10 @@
 #define debug3(msg, arg1, arg2) 
 #endif
 
+static const char* comprlevel[] = {
+    "stored",   "shrunk",   "redu:1",   "redu:2",   "redu:3",   "redu:4",
+    "impl:N",   "toknze",   "defl:N",   "defl:B",   "impl:B" };
+
 int unzzip_list (int argc, char ** argv)
 {
     int argn;
@@ -47,7 +54,9 @@ int unzzip_list (int argc, char ** argv)
 	for (; entry ; entry = zzip_entry_findnext(entry))
 	{
 	    char* name = zzip_entry_strdup_name (entry);
-	    printf (" %s \n", name);
+	    unsigned compr = zzip_entry_compr(entry);
+            const char* defl = (compr < sizeof(comprlevel)) ? comprlevel[compr] : "(redu)";
+	    printf (" %s %s\n", defl, name);
 	    free (name);
 	}
 	return 0;
@@ -59,7 +68,9 @@ int unzzip_list (int argc, char ** argv)
 	for (; entry ; entry = zzip_entry_findnext(entry))
 	{
 	    char* name = zzip_entry_strdup_name (entry);
-	    printf (" %s \n", name);
+	    unsigned compr = zzip_entry_compr(entry);
+            const char* defl = (compr < sizeof(comprlevel)) ? comprlevel[compr] : "(redu)";
+	    printf (" %s %s\n", defl, name);
 	    free (name);
 	}
     }
