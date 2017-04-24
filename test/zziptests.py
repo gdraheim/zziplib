@@ -98,6 +98,8 @@ class ZZipTest(unittest.TestCase):
     f.write(content)
     f.close()
   def bins(self, name):
+    if name == "unzip": return unzip
+    if name == "mkzip": return mkzip
     exe = os.path.join("..", "bins", name)
     if exeext: exe += exeext
     return exe
@@ -108,7 +110,7 @@ class ZZipTest(unittest.TestCase):
     the README file that we can check for equality later on. """
     zipfile="test0.zip"
     tmpdir="test0.tmp"
-    exe=mkzip
+    exe=self.bins("mkzip")
     filename = os.path.join(tmpdir,"README")
     filetext = self.readme()
     self.mkfile(filename, filetext)
@@ -121,7 +123,7 @@ class ZZipTest(unittest.TestCase):
     generic files that we can check for their content later. """
     zipfile="test1.zip"
     tmpdir="test1.tmp"
-    exe=mkzip
+    exe=self.bins("mkzip")
     for i in [1,2,3,4,5,6,7,8,9]:
        filename = os.path.join(tmpdir,"file.%i" % i)
        filetext = "file-%i\n" % i
@@ -137,7 +139,7 @@ class ZZipTest(unittest.TestCase):
     The archive has 100 generic files with known content. """
     zipfile="test2.zip"
     tmpdir="test2.tmp"
-    exe=mkzip
+    exe=self.bins("mkzip")
     for i in xrange(100):
        filename = os.path.join(tmpdir,"file.%02i" % i)
        filetext = "file-%02i\n" % i
@@ -153,7 +155,7 @@ class ZZipTest(unittest.TestCase):
     The archive has 1000 generic files with known content. """
     zipfile="test3.zip"
     tmpdir="test3.tmp"
-    exe=mkzip
+    exe=self.bins("mkzip")
     for i in xrange(1000):
        filename = os.path.join(tmpdir,"file.%03i" % i)
        filetext = "file-%03i\n" % i
@@ -170,7 +172,7 @@ class ZZipTest(unittest.TestCase):
     and they are NOT stored compressed in the archive. """
     zipfile="test4.zip"
     tmpdir="test4.tmp"
-    exe=mkzip
+    exe=self.bins("mkzip")
     for i in xrange(1000):
        filename = os.path.join(tmpdir,"file.%03i" % i)
        filetext = "file-%03i\n" % i
