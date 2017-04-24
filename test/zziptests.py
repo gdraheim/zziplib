@@ -518,6 +518,39 @@ class ZZipTest(unittest.TestCase):
   #####################################################################
   # check unzzip
   #####################################################################
+  def test_400_infozip_cat_test0_zip(self):
+    """ run inzo-zip cat test.zip using just archive README """
+    zipfile = "test0.zip"
+    getfile = "README"
+    logfile = "test0.readme.big.txt"
+    exe = self.bins("unzip")
+    run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+  def test_401_infozip_cat_test1_zip(self):
+    """ run info-zip cat test.zip using just archive README """
+    zipfile = "test1.zip"
+    getfile = "README"
+    logfile = "test1.readme.big.txt"
+    exe = self.bins("unzip")
+    run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+    getfile = "file.1"
+    run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
+    self.assertEqual("file-1\n", run.output)
+  def test_402_infozip_cat_test2_zip(self):
+    """ run info-zip cat test.zip using just archive README """
+    zipfile = "test2.zip"
+    getfile = "README"
+    logfile = "test2.readme.big.txt"
+    exe = self.bins("unzip")
+    run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+    getfile = "file.22"
+    run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
+    self.assertEqual("file-22\n", run.output)
   def test_410_zzcat_big_test0_zip(self):
     """ run zzcat-big on test.zip using just archive README """
     zipfile = "test0.zip"
