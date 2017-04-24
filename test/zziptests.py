@@ -723,6 +723,51 @@ class ZZipTest(unittest.TestCase):
     run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
     self.assertEqual("file-999\n", run.output)
 
+  def test_500_infozipdir_test0_zip(self):
+    """ run info-zip dir test0.zip  """
+    zipfile = "test0.zip"
+    getfile = "test0.zip"
+    exe = self.bins("unzip")
+    run = shell("{exe} -l {getfile} ".format(**locals()))
+    self.assertIn(' README\n', run.output)
+    self.assertLess(len(run.output), 230)
+  def test_501_infozipdir_test1_zip(self):
+    """ run info-zip dir test1.zip  """
+    zipfile = "test1.zip"
+    getfile = "test1.zip"
+    exe = self.bins("unzip")
+    run = shell("{exe} -l {getfile} ".format(**locals()))
+    self.assertIn(' file.1\n', run.output)
+    self.assertIn(' file.2\n', run.output)
+    self.assertIn(' file.9\n', run.output)
+    self.assertIn(' README\n', run.output)
+  def test_502_infozipdir_big_test2_zip(self):
+    """ run info-zip dir test2.zip """
+    zipfile = "test2.zip"
+    getfile = "test2.zip"
+    exe = self.bins("unzip")
+    run = shell("{exe} -l {getfile} ".format(**locals()))
+    self.assertIn(' file.01\n', run.output)
+    self.assertIn(' file.22\n', run.output)
+    self.assertIn(' file.99\n', run.output)
+  def test_503_infozipdir_big_test3_zip(self):
+    """ run info-zip dir test3.zip  """
+    zipfile = "test3.zip"
+    getfile = "test3.zip"
+    exe = self.bins("unzip")
+    run = shell("{exe} -l {getfile} ".format(**locals()))
+    self.assertIn(' file.001\n', run.output)
+    self.assertIn(' file.222\n', run.output)
+    self.assertIn(' file.999\n', run.output)
+  def test_504_infozipdir_big_test4_zip(self):
+    """ run info-zip dir test4.zip """
+    zipfile = "test4.zip"
+    getfile = "test4.zip"
+    exe = self.bins("unzip")
+    run = shell("{exe} -l {getfile} ".format(**locals()))
+    self.assertIn(' file.001\n', run.output)
+    self.assertIn(' file.222\n', run.output)
+    self.assertIn(' file.999\n', run.output)
   def test_510_zzdir_big_test0_zip(self):
     """ run zzdir-big on test0.zip  """
     zipfile = "test0.zip"
