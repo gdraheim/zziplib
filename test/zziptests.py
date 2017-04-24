@@ -851,7 +851,7 @@ class ZZipTest(unittest.TestCase):
     zipfile = "test0.zip"
     getfile = "test0.zip"
     exe = self.bins("unzzip-mem")
-    run = shell("{exe} -l {getfile} ".format(**locals()))
+    run = shell("{exe} -v {getfile} ".format(**locals()))
     self.assertIn(' README\n', run.output)
     self.assertIn(' defl:N ', run.output)
     self.assertLess(len(run.output), 30)
@@ -860,7 +860,7 @@ class ZZipTest(unittest.TestCase):
     zipfile = "test1.zip"
     getfile = "test1.zip"
     exe = self.bins("unzzip-mem")
-    run = shell("{exe} -l {getfile} ".format(**locals()))
+    run = shell("{exe} -v {getfile} ".format(**locals()))
     self.assertIn(' file.1\n', run.output)
     self.assertIn(' file.2\n', run.output)
     self.assertIn(' file.9\n', run.output)
@@ -872,7 +872,7 @@ class ZZipTest(unittest.TestCase):
     zipfile = "test2.zip"
     getfile = "test2.zip"
     exe = self.bins("unzzip-mem")
-    run = shell("{exe} -l {getfile} ".format(**locals()))
+    run = shell("{exe} -v {getfile} ".format(**locals()))
     self.assertIn(' file.01\n', run.output)
     self.assertIn(' file.22\n', run.output)
     self.assertIn(' file.99\n', run.output)
@@ -883,7 +883,7 @@ class ZZipTest(unittest.TestCase):
     zipfile = "test3.zip"
     getfile = "test3.zip"
     exe = self.bins("unzzip-mem")
-    run = shell("{exe} -l {getfile} ".format(**locals()))
+    run = shell("{exe} -v {getfile} ".format(**locals()))
     self.assertIn(' file.001\n', run.output)
     self.assertIn(' file.222\n', run.output)
     self.assertIn(' file.999\n', run.output)
@@ -894,7 +894,7 @@ class ZZipTest(unittest.TestCase):
     zipfile = "test4.zip"
     getfile = "test4.zip"
     exe = self.bins("unzzip-mem")
-    run = shell("{exe} -l {getfile} ".format(**locals()))
+    run = shell("{exe} -v {getfile} ".format(**locals()))
     self.assertIn(' file.001\n', run.output)
     self.assertIn(' file.222\n', run.output)
     self.assertIn(' file.999\n', run.output)
@@ -906,7 +906,7 @@ class ZZipTest(unittest.TestCase):
     zipfile = "test0.zip"
     getfile = "test0.zip"
     exe = self.bins("unzzip-mix")
-    run = shell("{exe} -l {getfile} ".format(**locals()))
+    run = shell("{exe} -v {getfile} ".format(**locals()))
     self.assertIn(' README\n', run.output)
     self.assertIn(' defl:N ', run.output)
     self.assertLess(len(run.output), 30)
@@ -915,7 +915,7 @@ class ZZipTest(unittest.TestCase):
     zipfile = "test1.zip"
     getfile = "test1.zip"
     exe = self.bins("unzzip-mix")
-    run = shell("{exe} -l {getfile} ".format(**locals()))
+    run = shell("{exe} -v {getfile} ".format(**locals()))
     self.assertIn(' file.1\n', run.output)
     self.assertIn(' file.2\n', run.output)
     self.assertIn(' file.9\n', run.output)
@@ -927,7 +927,7 @@ class ZZipTest(unittest.TestCase):
     zipfile = "test2.zip"
     getfile = "test2.zip"
     exe = self.bins("unzzip-mix")
-    run = shell("{exe} -l {getfile} ".format(**locals()))
+    run = shell("{exe} -v {getfile} ".format(**locals()))
     self.assertIn(' file.01\n', run.output)
     self.assertIn(' file.22\n', run.output)
     self.assertIn(' file.99\n', run.output)
@@ -938,7 +938,7 @@ class ZZipTest(unittest.TestCase):
     zipfile = "test3.zip"
     getfile = "test3.zip"
     exe = self.bins("unzzip-mix")
-    run = shell("{exe} -l {getfile} ".format(**locals()))
+    run = shell("{exe} -v {getfile} ".format(**locals()))
     self.assertIn(' file.001\n', run.output)
     self.assertIn(' file.222\n', run.output)
     self.assertIn(' file.999\n', run.output)
@@ -949,7 +949,7 @@ class ZZipTest(unittest.TestCase):
     zipfile = "test4.zip"
     getfile = "test4.zip"
     exe = self.bins("unzzip-mix")
-    run = shell("{exe} -l {getfile} ".format(**locals()))
+    run = shell("{exe} -v {getfile} ".format(**locals()))
     self.assertIn(' file.001\n', run.output)
     self.assertIn(' file.222\n', run.output)
     self.assertIn(' file.999\n', run.output)
@@ -960,7 +960,7 @@ class ZZipTest(unittest.TestCase):
     zipfile = "test0.zip"
     getfile = "test0.zip"
     exe = self.bins("unzzip")
-    run = shell("{exe} -l {getfile} ".format(**locals()))
+    run = shell("{exe} -v {getfile} ".format(**locals()))
     self.assertIn(' README\n', run.output)
     self.assertIn(' defl:N ', run.output)
     self.assertLess(len(run.output), 30)
@@ -969,7 +969,7 @@ class ZZipTest(unittest.TestCase):
     zipfile = "test1.zip"
     getfile = "test1.zip"
     exe = self.bins("unzzip")
-    run = shell("{exe} -l {getfile} ".format(**locals()))
+    run = shell("{exe} -v {getfile} ".format(**locals()))
     self.assertIn(' file.1\n', run.output)
     self.assertIn(' file.2\n', run.output)
     self.assertIn(' file.9\n', run.output)
@@ -981,7 +981,7 @@ class ZZipTest(unittest.TestCase):
     zipfile = "test2.zip"
     getfile = "test2.zip"
     exe = self.bins("unzzip")
-    run = shell("{exe} -l {getfile} ".format(**locals()))
+    run = shell("{exe} -v {getfile} ".format(**locals()))
     self.assertIn(' file.01\n', run.output)
     self.assertIn(' file.22\n', run.output)
     self.assertIn(' file.99\n', run.output)
@@ -992,7 +992,7 @@ class ZZipTest(unittest.TestCase):
     zipfile = "test3.zip"
     getfile = "test3.zip"
     exe = self.bins("unzzip")
-    run = shell("{exe} -l {getfile} ".format(**locals()))
+    run = shell("{exe} -v {getfile} ".format(**locals()))
     self.assertIn(' file.001\n', run.output)
     self.assertIn(' file.222\n', run.output)
     self.assertIn(' file.999\n', run.output)
@@ -1003,7 +1003,7 @@ class ZZipTest(unittest.TestCase):
     zipfile = "test4.zip"
     getfile = "test4.zip"
     exe = self.bins("unzzip")
-    run = shell("{exe} -l {getfile} ".format(**locals()))
+    run = shell("{exe} -v {getfile} ".format(**locals()))
     self.assertIn(' file.001\n', run.output)
     self.assertIn(' file.222\n', run.output)
     self.assertIn(' file.999\n', run.output)

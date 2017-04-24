@@ -37,7 +37,8 @@ static const char* comprlevel[] = {
     "stored",   "shrunk",   "redu:1",   "redu:2",   "redu:3",   "redu:4",
     "impl:N",   "toknze",   "defl:N",   "defl:B",   "impl:B" };
 
-int unzzip_list (int argc, char ** argv)
+static int 
+unzzip_list (int argc, char ** argv, int verbose)
 {
     int argn;
     FILE* disk;
@@ -76,6 +77,18 @@ int unzzip_list (int argc, char ** argv)
     }
     return 0;
 } 
+
+int 
+unzzip_long_list (int argc, char ** argv)
+{
+    return unzzip_list(argc, argv, 1);
+}
+
+int 
+unzzip_show_list (int argc, char ** argv)
+{
+    return unzzip_list(argc, argv, 0);
+}
 
 /* 
  * Local variables:

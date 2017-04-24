@@ -32,8 +32,9 @@ static const char* comprlevel[] = {
     "stored",   "shrunk",   "redu:1",   "redu:2",   "redu:3",   "redu:4",
     "impl:N",   "toknze",   "defl:N",   "defl:B",   "impl:B" };
 
-int 
-unzzip_list (int argc, char ** argv)
+
+static int 
+unzzip_list (int argc, char ** argv, int verbose)
 {
     int argn;
     ZZIP_DIR* disk;
@@ -57,11 +58,17 @@ unzzip_list (int argc, char ** argv)
 	while(zzip_dir_read(disk, &entry))
 	{
 	    char* name = entry.d_name;
-	    long long csize = entry.d_csize;
 	    long long usize = entry.st_size;
-	    unsigned compr = entry.d_compr;
-	    const char* defl = (compr < sizeof(comprlevel)) ? comprlevel[compr] : "(redu)";
-	    printf ("%lli/%lli %s %s\n", usize, csize, defl, name);
+	    if (!verbose)
+	    {
+		printf ("%22lli %s\n", usize, name);
+	    } else
+	    {
+		long long csize = entry.d_csize;
+		unsigned compr = entry.d_compr;
+		const char* defl = (compr < sizeof(comprlevel)) ? comprlevel[compr] : "(redu)";
+		printf ("%lli/%lli %s %s\n", usize, csize, defl, name);
+	    }
 	}
     }
     else
@@ -75,11 +82,17 @@ unzzip_list (int argc, char ** argv)
 		if (! fnmatch (argv[argn], name, 
 			       FNM_NOESCAPE|FNM_PATHNAME|FNM_PERIOD))
 		{
-		    long long csize = entry.d_csize;
 		    long long usize = entry.st_size;
-		    unsigned compr = entry.d_compr;
-		    const char* defl = (compr < sizeof(comprlevel)) ? comprlevel[compr] : "(redu)";
-	            printf ("%lli/%lli %s %s\n", usize, csize, defl, name);
+		    if (!verbose)
+		    {
+			printf ("%22lli %s\n", usize, name);
+		    } else
+		    {
+			long long csize = entry.d_csize;
+			unsigned compr = entry.d_compr;
+			const char* defl = (compr < sizeof(comprlevel)) ? comprlevel[compr] : "(redu)";
+			printf ("%lli/%lli %s %s\n", usize, csize, defl, name);
+		    }
 		    break; /* match loop */
 		}
 	    }
@@ -88,6 +101,18 @@ unzzip_list (int argc, char ** argv)
     zzip_dir_close(disk);
     return 0;
 } 
+
+int 
+unzzip_long_list (int argc, char ** argv)
+{
+    return unzzip_list(argc, argv, 1);
+}
+
+int 
+unzzip_show_list (int argc, char ** argv)
+{
+    return unzzip_list(argc, argv, 0);
+}
 
 /* 
  * Local variables:
