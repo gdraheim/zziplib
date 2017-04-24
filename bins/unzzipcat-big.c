@@ -8,6 +8,7 @@
 #include <zzip/fseeko.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include "unzzipcat-zip.h"
 
 #ifdef ZZIP_HAVE_FNMATCH_H
@@ -62,6 +63,18 @@ static void unzzip_cat_file(FILE* disk, char* name, FILE* out)
     }
 }
 
+static void makedirs(const char* name)
+{
+      char* p = strrchr(name, '/');
+      if (p) {
+          char* dir_name = strndup(name, p-name);
+          makedirs(dir_name);
+          free (dir_name);
+      } else {
+          mkdir(name, 775);
+          errno = 0;
+      }
+}
 
 static FILE* create_fopen(char* name, char* mode, int subdirs)
 {
@@ -70,7 +83,7 @@ static FILE* create_fopen(char* name, char* mode, int subdirs)
       char* p = strrchr(name, '/');
       if (p) {
           char* dir_name = strndup(name, p-name);
-          // makedirs(dir_name); // TODO
+          makedirs(dir_name); 
           free (dir_name);
       }
    }
