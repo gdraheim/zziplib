@@ -513,8 +513,10 @@ class ZZipTest(unittest.TestCase):
     getfile = "test4x/file.999"
     run = shell("{exe} {getfile}".format(**locals()))
     self.assertEqual("file-999\n", run.output)
-
-  def test_400_zzcat_big_test0_zip(self):
+  #####################################################################
+  # check unzzip
+  #####################################################################
+  def test_410_zzcat_big_test0_zip(self):
     """ run zzcat-big on test.zip using just archive README """
     zipfile = "test0.zip"
     getfile = "README"
@@ -523,7 +525,7 @@ class ZZipTest(unittest.TestCase):
     run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
     self.assertGreater(os.path.getsize(logfile), 10)
     self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
-  def test_401_zzcat_big_test1_zip(self):
+  def test_411_zzcat_big_test1_zip(self):
     """ run zzcat-big on test.zip using just archive README """
     zipfile = "test1.zip"
     getfile = "README"
@@ -535,7 +537,7 @@ class ZZipTest(unittest.TestCase):
     getfile = "file.1"
     run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
     self.assertEqual("file-1\n", run.output)
-  def test_402_zzcat_big_test2_zip(self):
+  def test_412_zzcat_big_test2_zip(self):
     """ run zzcat-seeke on test.zip using just archive README """
     zipfile = "test2.zip"
     getfile = "README"
@@ -547,7 +549,7 @@ class ZZipTest(unittest.TestCase):
     getfile = "file.22"
     run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
     self.assertEqual("file-22\n", run.output)
-  def test_410_zzcat_mem_test0_zip(self):
+  def test_420_zzcat_mem_test0_zip(self):
     """ run zzcat-mem on test.zip using just archive README """
     zipfile = "test0.zip"
     getfile = "README"
@@ -556,7 +558,7 @@ class ZZipTest(unittest.TestCase):
     run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
     self.assertGreater(os.path.getsize(logfile), 10)
     self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
-  def test_411_zzcat_mem_test1_zip(self):
+  def test_421_zzcat_mem_test1_zip(self):
     """ run zzcat-mem on test.zip using archive README """
     zipfile = "test1.zip"
     getfile = "README"
@@ -568,7 +570,7 @@ class ZZipTest(unittest.TestCase):
     getfile = "file.1"
     run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
     self.assertEqual("file-1\n", run.output)
-  def test_412_zzcat_mem_test2_zip(self):
+  def test_422_zzcat_mem_test2_zip(self):
     """ run zzcat-mem on test.zip using archive README """
     zipfile = "test2.zip"
     getfile = "README"
@@ -580,7 +582,7 @@ class ZZipTest(unittest.TestCase):
     getfile = "file.22"
     run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
     self.assertEqual("file-22\n", run.output)
-  def test_413_zzcat_mem_test3_zip(self):
+  def test_423_zzcat_mem_test3_zip(self):
     """ run zzcat-mem on test.zip using archive README """
     zipfile = "test3.zip"
     getfile = "README"
@@ -592,7 +594,7 @@ class ZZipTest(unittest.TestCase):
     getfile = "file.999"
     run = shell("{exe} -p {zipfile}  {getfile}".format(**locals()))
     self.assertEqual("file-999\n", run.output)
-  def test_414_zzcat_mem_test4_zip(self):
+  def test_424_zzcat_mem_test4_zip(self):
     """ run zzcat-mem on test.zip using archive README """
     zipfile = "test4.zip"
     getfile = "README"
@@ -604,7 +606,7 @@ class ZZipTest(unittest.TestCase):
     getfile = "file.999"
     run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
     self.assertEqual("file-999\n", run.output)
-  def test_420_zzcat_mix_test0_zip(self):
+  def test_430_zzcat_mix_test0_zip(self):
     """ run zzcat-mix on test.zip using just archive README """
     zipfile = "test0.zip"
     getfile = "README"
@@ -613,7 +615,7 @@ class ZZipTest(unittest.TestCase):
     run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
     self.assertGreater(os.path.getsize(logfile), 10)
     self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
-  def test_421_zzcat_mix_test1_zip(self):
+  def test_431_zzcat_mix_test1_zip(self):
     """ run zzcat-mix on test.zip using archive README """
     zipfile = "test1.zip"
     getfile = "README"
@@ -625,7 +627,7 @@ class ZZipTest(unittest.TestCase):
     getfile = "file.1"
     run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
     self.assertEqual("file-1\n", run.output)
-  def test_422_zzcat_mix_test2_zip(self):
+  def test_432_zzcat_mix_test2_zip(self):
     """ run zzcat-mix on test.zip using archive README """
     zipfile = "test2.zip"
     getfile = "README"
@@ -637,7 +639,7 @@ class ZZipTest(unittest.TestCase):
     getfile = "file.22"
     run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
     self.assertEqual("file-22\n", run.output)
-  def test_423_zzcat_mix_test3_zip(self):
+  def test_433_zzcat_mix_test3_zip(self):
     """ run zzcat-mix on test.zip using archive README """
     zipfile = "test3.zip"
     getfile = "README"
@@ -649,7 +651,7 @@ class ZZipTest(unittest.TestCase):
     getfile = "file.999"
     run = shell("{exe} -p {zipfile}  {getfile}".format(**locals()))
     self.assertEqual("file-999\n", run.output)
-  def test_424_zzcat_mix_test4_zip(self):
+  def test_434_zzcat_mix_test4_zip(self):
     """ run zzcat-mix on test.zip using archive README """
     zipfile = "test4.zip"
     getfile = "README"
@@ -719,7 +721,7 @@ class ZZipTest(unittest.TestCase):
     run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
     self.assertEqual("file-999\n", run.output)
 
-  def test_500_zzdir_big_test0_zip(self):
+  def test_510_zzdir_big_test0_zip(self):
     """ run zzdir-big on test0.zip  """
     zipfile = "test0.zip"
     getfile = "test0.zip"
@@ -727,7 +729,7 @@ class ZZipTest(unittest.TestCase):
     run = shell("{exe} -l {getfile} ".format(**locals()))
     self.assertIn(' README ', run.output)
     self.assertLess(len(run.output), 30)
-  def test_501_zzdir_big_test1_zip(self):
+  def test_511_zzdir_big_test1_zip(self):
     """ run zzdir-big on test1.zip  """
     zipfile = "test1.zip"
     getfile = "test1.zip"
@@ -737,7 +739,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' file.2 ', run.output)
     self.assertIn(' file.9 ', run.output)
     self.assertIn(' README ', run.output)
-  def test_502_zzdir_big_test2_zip(self):
+  def test_512_zzdir_big_test2_zip(self):
     """ run zzdir-big on test2.zip """
     zipfile = "test2.zip"
     getfile = "test2.zip"
@@ -746,7 +748,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' file.01 ', run.output)
     self.assertIn(' file.22 ', run.output)
     self.assertIn(' file.99 ', run.output)
-  def test_503_zzdir_big_test3_zip(self):
+  def test_513_zzdir_big_test3_zip(self):
     """ run zzdir-big on test3.zip  """
     zipfile = "test3.zip"
     getfile = "test3.zip"
@@ -755,7 +757,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' file.001 ', run.output)
     self.assertIn(' file.222 ', run.output)
     self.assertIn(' file.999 ', run.output)
-  def test_504_zzdir_big_test4_zip(self):
+  def test_514_zzdir_big_test4_zip(self):
     """ run zzdir-big on test4.zip """
     zipfile = "test4.zip"
     getfile = "test4.zip"
@@ -764,7 +766,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' file.001 ', run.output)
     self.assertIn(' file.222 ', run.output)
     self.assertIn(' file.999 ', run.output)
-  def test_510_zzdir_mem_test0_zip(self):
+  def test_520_zzdir_mem_test0_zip(self):
     """ run zzdir-mem on test0.zip  """
     zipfile = "test0.zip"
     getfile = "test0.zip"
@@ -773,7 +775,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' README ', run.output)
     self.assertIn(' deflated ', run.output)
     self.assertLess(len(run.output), 30)
-  def test_511_zzdir_mem_test1_zip(self):
+  def test_521_zzdir_mem_test1_zip(self):
     """ run zzdir-mem on test1.zip  """
     zipfile = "test1.zip"
     getfile = "test1.zip"
@@ -785,7 +787,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' README ', run.output)
     self.assertIn(' deflated ', run.output)
     self.assertIn(' stored ', run.output)
-  def test_512_zzdir_mem_test2_zip(self):
+  def test_522_zzdir_mem_test2_zip(self):
     """ run zzdir-mem on test2.zip """
     zipfile = "test2.zip"
     getfile = "test2.zip"
@@ -796,7 +798,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' file.99 ', run.output)
     self.assertIn(' deflated ', run.output)
     self.assertIn(' stored ', run.output)
-  def test_513_zzdir_mem_test3_zip(self):
+  def test_523_zzdir_mem_test3_zip(self):
     """ run zzdir-mem on test3.zip  """
     zipfile = "test3.zip"
     getfile = "test3.zip"
@@ -807,7 +809,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' file.999 ', run.output)
     self.assertIn(' deflated ', run.output)
     self.assertIn(' stored ', run.output)
-  def test_514_zzdir_mem_test4_zip(self):
+  def test_524_zzdir_mem_test4_zip(self):
     """ run zzdir-mem on test4.zip """
     zipfile = "test4.zip"
     getfile = "test4.zip"
@@ -818,7 +820,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' file.999 ', run.output)
     self.assertNotIn(' deflated ', run.output)
     self.assertIn(' stored ', run.output)
-  def test_520_zzdir_mix_test0_zip(self):
+  def test_530_zzdir_mix_test0_zip(self):
     """ run zzdir-mix on test0.zip  """
     # self.skipTest("todo")
     zipfile = "test0.zip"
@@ -828,7 +830,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' README ', run.output)
     self.assertIn(' deflated ', run.output)
     self.assertLess(len(run.output), 30)
-  def test_521_zzdir_mix_test1_zip(self):
+  def test_531_zzdir_mix_test1_zip(self):
     """ run zzdir-mix on test1.zip  """
     zipfile = "test1.zip"
     getfile = "test1.zip"
@@ -840,7 +842,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' README ', run.output)
     self.assertIn(' deflated ', run.output)
     self.assertIn(' stored ', run.output)
-  def test_522_zzdir_mix_test2_zip(self):
+  def test_532_zzdir_mix_test2_zip(self):
     """ run zzdir-mix on test2.zip """
     zipfile = "test2.zip"
     getfile = "test2.zip"
@@ -851,7 +853,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' file.99 ', run.output)
     self.assertIn(' deflated ', run.output)
     self.assertIn(' stored ', run.output)
-  def test_523_zzdir_mix_test3_zip(self):
+  def test_533_zzdir_mix_test3_zip(self):
     """ run zzdir-mix on test3.zip  """
     zipfile = "test3.zip"
     getfile = "test3.zip"
@@ -862,7 +864,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' file.999 ', run.output)
     self.assertIn(' deflated ', run.output)
     self.assertIn(' stored ', run.output)
-  def test_524_zzdir_mix_test4_zip(self):
+  def test_534_zzdir_mix_test4_zip(self):
     """ run zzdir-mix on test4.zip """
     zipfile = "test4.zip"
     getfile = "test4.zip"
