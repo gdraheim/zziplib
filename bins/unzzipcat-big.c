@@ -8,7 +8,7 @@
 #include <zzip/fseeko.h>
 #include <stdlib.h>
 #include <string.h>
-#include "unzzip.h"
+#include "unzzipcat-zip.h"
 
 #ifdef ZZIP_HAVE_FNMATCH_H
 #include <fnmatch.h>

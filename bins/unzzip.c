@@ -8,7 +8,8 @@
 #include <zzip/zzip.h>
 #include <stdio.h>
 #include <string.h>
-#include "unzzip.h"
+#include "unzzipcat-zip.h"
+#include "unzzipdir-zip.h"
 
 extern int unzzip_list(int argc, char** argv);
 extern int unzzip_print(int argc, char** argv);

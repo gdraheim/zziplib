@@ -6,6 +6,4 @@
  */
 
 extern int unzzip_list(int argc, char** argv);
-extern int unzzip_print(int argc, char** argv);
-extern int unzzip_extract(int argc, char** argv);
 
