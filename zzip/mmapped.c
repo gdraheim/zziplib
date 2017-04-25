@@ -30,6 +30,7 @@
 #include <zzip/mmapped.h>
 #include <zzip/format.h>
 #include <zzip/fetch.h>
+#include <zzip/__debug.h>
 #include <zzip/__mmap.h>
 #include <zzip/__fnmatch.h>
 
@@ -55,18 +56,6 @@
 #else
 #define ___ {
 #define ____ }
-#endif
-
-#ifdef DEBUG
-#define debug1(msg) do { fprintf(stderr, "%s : " msg "\n", __func__); } while(0)
-#define debug2(msg, arg1) do { fprintf(stderr, "%s : " msg "\n", __func__, arg1); } while(0)
-#define debug3(msg, arg1, arg2) do { fprintf(stderr, "%s : " msg "\n", __func__, arg1, arg2); } while(0)
-#define debug4(msg, arg1, arg2, arg3) do { fprintf(stderr, "%s : " msg "\n", __func__, arg1, arg2, arg3); } while(0)
-#else
-#define debug1(msg) 
-#define debug2(msg, arg1) 
-#define debug3(msg, arg1, arg2) 
-#define debug4(msg, arg1, arg2, arg3) 
 #endif
 
 /** => zzip_disk_mmap
@@ -453,16 +442,16 @@ zzip_disk_entry_strdup_comment(ZZIP_DISK * disk, struct zzip_disk_entry *entry)
 struct zzip_disk_entry *
 zzip_disk_findfirst(ZZIP_DISK * disk)
 {
-    debug1("findfirst");
+    DBG1("findfirst");
     if (! disk)
     {
-        debug1("non arg");
+        DBG1("non arg");
         errno = EINVAL;
         return 0;
     }
     if (disk->buffer > disk->endbuf - sizeof(struct zzip_disk_trailer))
     {
-        debug1("not enough data for a disk trailer");
+        DBG1("not enough data for a disk trailer");
         errno = EBADMSG;
         return 0;
     }
@@ -475,12 +464,12 @@ zzip_disk_findfirst(ZZIP_DISK * disk)
             struct zzip_disk_trailer *trailer = (struct zzip_disk_trailer *) p;
             zzip_size_t rootseek = zzip_disk_trailer_get_rootseek(trailer);
             root = disk->buffer + rootseek;
-            debug2("disk rootseek at %lli", (long long)rootseek);
+            DBG2("disk rootseek at %lli", (long long)rootseek);
             if (root > p)
             {
                 /* the first disk_entry is after the disk_trailer? can't be! */
                 zzip_size_t rootsize = zzip_disk_trailer_get_rootsize(trailer);
-                debug2("have rootsize at %lli", (long long)rootsize);
+                DBG2("have rootsize at %lli", (long long)rootsize);
                 if (disk->buffer + rootsize > p)
                     continue;
                 /* a common brokeness that can be fixed: we just assume the
@@ -493,12 +482,12 @@ zzip_disk_findfirst(ZZIP_DISK * disk)
                 (struct zzip_disk64_trailer *) p;
             if (sizeof(void *) < 8)
             {
-                debug1("disk64 trailer in non-largefile part");
+                DBG1("disk64 trailer in non-largefile part");
                 errno = EFBIG;
                 return 0;
             }
             zzip_size_t rootseek = zzip_disk64_trailer_get_rootseek(trailer);
-            debug2("disk64 rootseek at %lli", (long long)rootseek);
+            DBG2("disk64 rootseek at %lli", (long long)rootseek);
             root = disk->buffer + rootseek;
             if (root > p)
                 continue;
@@ -507,16 +496,16 @@ zzip_disk_findfirst(ZZIP_DISK * disk)
             continue;
         }
 
-        debug4("buffer %p root %p endbuf %p", disk->buffer, root, disk->endbuf);
+        DBG4("buffer %p root %p endbuf %p", disk->buffer, root, disk->endbuf);
         if (root < disk->buffer)
         {
-            debug1("root before buffer should be impossible");
+            DBG1("root before buffer should be impossible");
             errno = EBADMSG;
             return 0;
         }
         if (zzip_disk_entry_check_magic(root))
         {
-            debug1("found the disk root");
+            DBG1("found the disk root");
             return (struct zzip_disk_entry *) root;
         }
     } ____;

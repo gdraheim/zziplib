@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <zzip/__debug.h>
 #include "unzzipcat-zip.h"
 
 #ifdef ZZIP_HAVE_FNMATCH_H
@@ -21,16 +22,6 @@
 #define O_BINARY 0
 #endif
 
-#ifdef DEBUG
-#define debug1(msg) do { fprintf(stderr, "%s : " msg "\n", __func__); } while(0)
-#define debug2(msg, arg1) do { fprintf(stderr, "%s : " msg "\n", __func__, arg1); } while(0)
-#define debug3(msg, arg1, arg2) do { fprintf(stderr, "%s : " msg "\n", __func__, arg1, arg2); } while(0)
-#else
-#define debug1(msg) 
-#define debug2(msg, arg1) 
-#define debug3(msg, arg1, arg2) 
-#endif
-
 static void unzzip_big_entry_fprint(ZZIP_ENTRY* entry, FILE* out)
 {
     ZZIP_ENTRY_FILE* file = zzip_entry_fopen (entry, 0);
@@ -39,14 +30,14 @@ static void unzzip_big_entry_fprint(ZZIP_ENTRY* entry, FILE* out)
 	char buffer[1024]; int len;
 	while ((len = zzip_entry_fread (buffer, 1024, 1, file)))
 	{
-	    debug2("entry read %i", len);
+	    DBG2("entry read %i", len);
 	    fwrite (buffer, len, 1, out);
 	}
-	debug2("entry done %s", strerror(errno));
+	DBG2("entry done %s", strerror(errno));
 	zzip_entry_fclose (file);
     } else
     {
-        debug2("could not open entry: %s", strerror(errno));
+        DBG2("could not open entry: %s", strerror(errno));
     }
 }
 
@@ -133,7 +124,7 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	for (; entry ; entry = zzip_entry_findnext(entry))
 	{
 	    char* name = zzip_entry_strdup_name (entry);
-	    debug3(".. check '%s' to zip '%s'", argv[argn], name);
+	    DBG3(".. check '%s' to zip '%s'", argv[argn], name);
 	    if (! fnmatch (argv[argn], name, 
 			   FNM_NOESCAPE|FNM_PATHNAME|FNM_PERIOD))
 	    {

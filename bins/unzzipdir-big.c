@@ -23,16 +23,6 @@
 #define O_BINARY 0
 #endif
 
-#ifdef DEBUG
-#define debug1(msg) do { fprintf(stderr, "%s : " msg "\n", __func__); } while(0)
-#define debug2(msg, arg1) do { fprintf(stderr, "%s : " msg "\n", __func__, arg1); } while(0)
-#define debug3(msg, arg1, arg2) do { fprintf(stderr, "%s : " msg "\n", __func__, arg1, arg2); } while(0)
-#else
-#define debug1(msg) 
-#define debug2(msg, arg1) 
-#define debug3(msg, arg1, arg2) 
-#endif
-
 static const char* comprlevel[] = {
     "stored",   "shrunk",   "redu:1",   "redu:2",   "redu:3",   "redu:4",
     "impl:N",   "toknze",   "defl:N",   "defl:B",   "impl:B" };
