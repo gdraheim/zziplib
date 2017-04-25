@@ -169,14 +169,14 @@ class ZZipTest(unittest.TestCase):
   def test_104_make_test4_zip(self):
     """ create a test4.zip for later tests using standard 'zip'
     It will NOT fall back to a variant in the source code.
-    The archive has 1000 generic files with known content
-    and they are NOT stored compressed in the archive. """
+    The archive has 10000 generic files with known content
+    and they are stored (NOT compressed) in the archive. """
     zipfile="test4.zip"
     tmpdir="test4.tmp"
     exe=self.bins("mkzip")
-    for i in xrange(1000):
-       filename = os.path.join(tmpdir,"file.%03i" % i)
-       filetext = "file-%03i\n" % i
+    for i in xrange(10000):
+       filename = os.path.join(tmpdir,"file%04i.txt" % i)
+       filetext = "file-%04i\n" % i
        self.mkfile(filename, filetext)
     filename = os.path.join(tmpdir,"README")
     filetext = self.readme()
@@ -312,9 +312,9 @@ class ZZipTest(unittest.TestCase):
     run = shell("{exe} {getfile} | tee {logfile}".format(**locals()))
     self.assertGreater(os.path.getsize(logfile), 10)
     self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
-    getfile = "test4/file.999"
+    getfile = "test4/file9999.txt"
     run = shell("{exe} {getfile}".format(**locals()))
-    self.assertEqual("file-999\n", run.output)
+    self.assertEqual("file-9999\n", run.output)
   def test_220_zzdir_test0_zip(self):
     """ run zzdir on test0.zip using just 'test0' """
     zipfile = "test0.zip"
@@ -364,9 +364,9 @@ class ZZipTest(unittest.TestCase):
     getfile = "test4"
     exe = self.bins("zzdir")
     run = shell("{exe} {getfile} ".format(**locals()))
-    self.assertIn(' file.001\n', run.output)
-    self.assertIn(' file.222\n', run.output)
-    self.assertIn(' file.999\n', run.output)
+    self.assertIn(' file0001.txt\n', run.output)
+    self.assertIn(' file2222.txt\n', run.output)
+    self.assertIn(' file9999.txt\n', run.output)
     self.assertNotIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_320_zzxordir_test0_dat(self):
@@ -443,9 +443,9 @@ class ZZipTest(unittest.TestCase):
     self.assertIn("did not open test", run.errors)
     exe = self.bins("zzxordir")
     run = shell("{exe} {getfile} ".format(**locals()))
-    self.assertIn(' file.001\n', run.output)
-    self.assertIn(' file.222\n', run.output)
-    self.assertIn(' file.999\n', run.output)
+    self.assertIn(' file0001.txt\n', run.output)
+    self.assertIn(' file2222.txt\n', run.output)
+    self.assertIn(' file9999.txt\n', run.output)
     self.assertNotIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_340_zzxorcat_test0_zip(self):
@@ -513,9 +513,9 @@ class ZZipTest(unittest.TestCase):
     run = shell("{exe} {getfile} | tee {logfile}".format(**locals()))
     self.assertGreater(os.path.getsize(logfile), 10)
     self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
-    getfile = "test4x/file.999"
+    getfile = "test4x/file9999.txt"
     run = shell("{exe} {getfile}".format(**locals()))
-    self.assertEqual("file-999\n", run.output)
+    self.assertEqual("file-9999\n", run.output)
   #####################################################################
   # check unzzip
   #####################################################################
@@ -639,9 +639,9 @@ class ZZipTest(unittest.TestCase):
     run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
     self.assertGreater(os.path.getsize(logfile), 10)
     self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
-    getfile = "file.999"
+    getfile = "file9999.txt"
     run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
-    self.assertEqual("file-999\n", run.output)
+    self.assertEqual("file-9999\n", run.output)
   def test_430_zzcat_mix_test0_zip(self):
     """ run zzcat-mix on test.zip using just archive README """
     zipfile = "test0.zip"
@@ -696,9 +696,9 @@ class ZZipTest(unittest.TestCase):
     run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
     self.assertGreater(os.path.getsize(logfile), 10)
     self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
-    getfile = "file.999"
+    getfile = "file9999.txt"
     run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
-    self.assertEqual("file-999\n", run.output)
+    self.assertEqual("file-9999\n", run.output)
   def test_440_zzcat_zap_test0_zip(self):
     """ run zzcat-zap on test.zip using just archive README """
     zipfile = "test0.zip"
@@ -753,9 +753,9 @@ class ZZipTest(unittest.TestCase):
     run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
     self.assertGreater(os.path.getsize(logfile), 10)
     self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
-    getfile = "file.999"
+    getfile = "file9999.txt"
     run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
-    self.assertEqual("file-999\n", run.output)
+    self.assertEqual("file-9999\n", run.output)
 
   def test_500_infozipdir_test0_zip(self):
     """ run info-zip dir test0.zip  """
@@ -799,9 +799,9 @@ class ZZipTest(unittest.TestCase):
     getfile = "test4.zip"
     exe = self.bins("unzip")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' file.001\n', run.output)
-    self.assertIn(' file.222\n', run.output)
-    self.assertIn(' file.999\n', run.output)
+    self.assertIn(' file0001.txt\n', run.output)
+    self.assertIn(' file2222.txt\n', run.output)
+    self.assertIn(' file9999.txt\n', run.output)
   def test_510_zzdir_big_test0_zip(self):
     """ run zzdir-big on test0.zip  """
     zipfile = "test0.zip"
@@ -844,9 +844,9 @@ class ZZipTest(unittest.TestCase):
     getfile = "test4.zip"
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {getfile} ".format(**locals()))
-    self.assertIn(' file.001\n', run.output)
-    self.assertIn(' file.222\n', run.output)
-    self.assertIn(' file.999\n', run.output)
+    self.assertIn(' file0001.txt\n', run.output)
+    self.assertIn(' file2222.txt\n', run.output)
+    self.assertIn(' file9999.txt\n', run.output)
   def test_520_zzdir_mem_test0_zip(self):
     """ run zzdir-mem on test0.zip  """
     zipfile = "test0.zip"
@@ -896,9 +896,9 @@ class ZZipTest(unittest.TestCase):
     getfile = "test4.zip"
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -v {getfile} ".format(**locals()))
-    self.assertIn(' file.001\n', run.output)
-    self.assertIn(' file.222\n', run.output)
-    self.assertIn(' file.999\n', run.output)
+    self.assertIn(' file0001.txt\n', run.output)
+    self.assertIn(' file2222.txt\n', run.output)
+    self.assertIn(' file9999.txt\n', run.output)
     self.assertNotIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_530_zzdir_mix_test0_zip(self):
@@ -951,9 +951,9 @@ class ZZipTest(unittest.TestCase):
     getfile = "test4.zip"
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -v {getfile} ".format(**locals()))
-    self.assertIn(' file.001\n', run.output)
-    self.assertIn(' file.222\n', run.output)
-    self.assertIn(' file.999\n', run.output)
+    self.assertIn(' file0001.txt\n', run.output)
+    self.assertIn(' file2222.txt\n', run.output)
+    self.assertIn(' file9999.txt\n', run.output)
     self.assertNotIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_540_zzdir_zap_test0_zip(self):
@@ -1005,9 +1005,9 @@ class ZZipTest(unittest.TestCase):
     getfile = "test4.zip"
     exe = self.bins("unzzip")
     run = shell("{exe} -v {getfile} ".format(**locals()))
-    self.assertIn(' file.001\n', run.output)
-    self.assertIn(' file.222\n', run.output)
-    self.assertIn(' file.999\n', run.output)
+    self.assertIn(' file0001.txt\n', run.output)
+    self.assertIn(' file2222.txt\n', run.output)
+    self.assertIn(' file9999.txt\n', run.output)
     self.assertNotIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
 
