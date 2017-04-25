@@ -20,10 +20,6 @@
 #include <io.h>
 #endif
 
-#ifndef O_BINARY
-#define O_BINARY 0
-#endif
-
 static const char usage[] = 
 {
     "zzip <dir> files... \n"

@@ -15,10 +15,6 @@
 #define fnmatch(x,y,z) strcmp(x,y)
 #endif
 
-#ifndef O_BINARY
-#define O_BINARY 0
-#endif
-
 static const char usage[] = 
 {
     "unzzipshow <zip> [names].. \n"

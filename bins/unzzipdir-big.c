@@ -19,10 +19,6 @@
 #define fnmatch(x,y,z) strcmp(x,y)
 #endif
 
-#ifndef O_BINARY
-#define O_BINARY 0
-#endif
-
 static const char* comprlevel[] = {
     "stored",   "shrunk",   "redu:1",   "redu:2",   "redu:3",   "redu:4",
     "impl:N",   "toknze",   "defl:N",   "defl:B",   "impl:B" };

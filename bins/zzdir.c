@@ -7,10 +7,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifndef O_BINARY
-#define O_BINARY 0
-#endif
-
 static const char usage[] = 
 {
     "zzdir <dir>.. \n"

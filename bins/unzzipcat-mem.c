@@ -25,10 +25,6 @@
 #define fnmatch(x,y,z) strcmp(x,y)
 #endif
 
-#ifndef O_BINARY
-#define O_BINARY 0
-#endif
-
 static void unzzip_mem_entry_fprint(ZZIP_MEM_DISK* disk, 
 				  ZZIP_MEM_ENTRY* entry, FILE* out)
 {

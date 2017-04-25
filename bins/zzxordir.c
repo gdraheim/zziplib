@@ -22,10 +22,6 @@
 #error need posix io for this example
 #endif
 
-#ifndef O_BINARY
-#define O_BINARY 0
-#endif
-
 static const char usage[] = 
 {
     "zzdir <dir>.. \n"

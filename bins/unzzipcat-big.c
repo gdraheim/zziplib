@@ -18,10 +18,6 @@
 #define fnmatch(x,y,z) strcmp(x,y)
 #endif
 
-#ifndef O_BINARY
-#define O_BINARY 0
-#endif
-
 static void unzzip_big_entry_fprint(ZZIP_ENTRY* entry, FILE* out)
 {
     ZZIP_ENTRY_FILE* file = zzip_entry_fopen (entry, 0);

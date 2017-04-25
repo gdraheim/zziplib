@@ -20,10 +20,6 @@
 #include <io.h>
 #endif
 
-#ifndef O_BINARY
-#define O_BINARY 0
-#endif
-
 int rezzip_make (int argc, char ** argv)
 {
     int argn;

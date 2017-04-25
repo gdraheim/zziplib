@@ -25,10 +25,6 @@
 #define fnmatch(x,y,z) strcmp(x,y)
 #endif
 
-#ifndef O_BINARY
-#define O_BINARY 0
-#endif
-
 static void unzzip_cat_file(ZZIP_DIR* disk, char* name, FILE* out)
 {
     ZZIP_FILE* file = zzip_fopen(name, "r");
