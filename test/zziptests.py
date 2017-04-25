@@ -109,8 +109,16 @@ class ZZipTest(unittest.TestCase):
   def gentext(self, size):
     random.seed(1234567891234567890)
     result = StringIO()
+    old1 = ''
+    old2 = ''
     for i in xrange(size):
-       result.write(random.choice("       abcdefghijklmnopqrstuvwxyz\n"))
+       while True:
+          x = random.choice("       abcdefghijklmnopqrstuvwxyz\n")
+          if x == old1 or x == old2: continue
+          old1 = old2
+          old2 = x
+          break
+       result.write(x)
     return result.getvalue()
   ################################################################
   def test_100_make_test0_zip(self):
@@ -556,7 +564,7 @@ class ZZipTest(unittest.TestCase):
     """ run inzo-zip cat test.zip using just archive README """
     zipfile = "test0.zip"
     getfile = "README"
-    logfile = "test0.readme.big.txt"
+    logfile = "test0.readme.pk.txt"
     exe = self.bins("unzip")
     run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
     self.assertGreater(os.path.getsize(logfile), 10)
@@ -565,7 +573,7 @@ class ZZipTest(unittest.TestCase):
     """ run info-zip cat test.zip using just archive README """
     zipfile = "test1.zip"
     getfile = "README"
-    logfile = "test1.readme.big.txt"
+    logfile = "test1.readme.pk.txt"
     exe = self.bins("unzip")
     run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
     self.assertGreater(os.path.getsize(logfile), 10)
@@ -577,7 +585,7 @@ class ZZipTest(unittest.TestCase):
     """ run info-zip cat test.zip using just archive README """
     zipfile = "test2.zip"
     getfile = "README"
-    logfile = "test2.readme.big.txt"
+    logfile = "test2.readme.pk.txt"
     exe = self.bins("unzip")
     run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
     self.assertGreater(os.path.getsize(logfile), 10)
@@ -585,6 +593,19 @@ class ZZipTest(unittest.TestCase):
     getfile = "file.22"
     run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
     self.assertEqual("file-22\n", run.output)
+  def test_405_zzcat_big_test5_zip(self):
+    """ run info-zip cat test.zip using archive README """
+    zipfile = "test5.zip"
+    getfile = "README"
+    logfile = "test5.readme.pk.txt"
+    exe = self.bins("unzip")
+    run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+    getfile = "subdir1/subdir2/subdir3/subdir4/subdir5/subdir6/file7-1024.txt"
+    compare = self.gentext(1024)
+    run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
+    self.assertEqual(compare, run.output)
   def test_410_zzcat_big_test0_zip(self):
     """ run zzcat-big on test.zip using just archive README """
     zipfile = "test0.zip"
@@ -618,6 +639,19 @@ class ZZipTest(unittest.TestCase):
     getfile = "file.22"
     run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
     self.assertEqual("file-22\n", run.output)
+  def test_415_zzcat_big_test5_zip(self):
+    """ run zzcat-big on test.zip using archive README """
+    zipfile = "test5.zip"
+    getfile = "README"
+    logfile = "test5.readme.zap.txt"
+    exe = self.bins("unzzip-big")
+    run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+    getfile = "subdir1/subdir2/subdir3/subdir4/subdir5/subdir6/file7-1024.txt"
+    compare = self.gentext(1024)
+    run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
+    self.assertEqual(compare, run.output)
   def test_420_zzcat_mem_test0_zip(self):
     """ run zzcat-mem on test.zip using just archive README """
     zipfile = "test0.zip"
@@ -675,6 +709,19 @@ class ZZipTest(unittest.TestCase):
     getfile = "file9999.txt"
     run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
     self.assertEqual("file-9999\n", run.output)
+  def test_425_zzcat_mem_test5_zip(self):
+    """ run zzcat-mem on test.zip using archive README """
+    zipfile = "test5.zip"
+    getfile = "README"
+    logfile = "test5.readme.zap.txt"
+    exe = self.bins("unzzip-mem")
+    run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+    getfile = "subdir1/subdir2/subdir3/subdir4/subdir5/subdir6/file7-1024.txt"
+    compare = self.gentext(1024)
+    run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
+    self.assertEqual(compare, run.output)
   def test_430_zzcat_mix_test0_zip(self):
     """ run zzcat-mix on test.zip using just archive README """
     zipfile = "test0.zip"
@@ -732,6 +779,19 @@ class ZZipTest(unittest.TestCase):
     getfile = "file9999.txt"
     run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
     self.assertEqual("file-9999\n", run.output)
+  def test_435_zzcat_mix_test5_zip(self):
+    """ run zzcat-mix on test.zip using archive README """
+    zipfile = "test5.zip"
+    getfile = "README"
+    logfile = "test5.readme.zap.txt"
+    exe = self.bins("unzzip-mix")
+    run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+    getfile = "subdir1/subdir2/subdir3/subdir4/subdir5/subdir6/file7-1024.txt"
+    compare = self.gentext(1024)
+    run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
+    self.assertEqual(compare, run.output)
   def test_440_zzcat_zap_test0_zip(self):
     """ run zzcat-zap on test.zip using just archive README """
     zipfile = "test0.zip"
@@ -789,6 +849,19 @@ class ZZipTest(unittest.TestCase):
     getfile = "file9999.txt"
     run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
     self.assertEqual("file-9999\n", run.output)
+  def test_445_zzcat_zap_test5_zip(self):
+    """ run zzcat-zap on test.zip using archive README """
+    zipfile = "test5.zip"
+    getfile = "README"
+    logfile = "test5.readme.zap.txt"
+    exe = self.bins("unzzip")
+    run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
+    self.assertGreater(os.path.getsize(logfile), 10)
+    self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
+    getfile = "subdir1/subdir2/subdir3/subdir4/subdir5/subdir6/file7-1024.txt"
+    compare = self.gentext(1024)
+    run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
+    self.assertEqual(compare, run.output)
 
   def test_500_infozipdir_test0_zip(self):
     """ run info-zip dir test0.zip  """
