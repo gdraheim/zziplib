@@ -4,7 +4,9 @@ import logging
 import os
 import collections
 import shutil
+import random
 from fnmatch import fnmatchcase as matches
+from cStringIO import StringIO
 
 logg = logging.getLogger("test")
 
@@ -104,6 +106,13 @@ class ZZipTest(unittest.TestCase):
     exe = os.path.join("..", "bins", name)
     if exeext: exe += exeext
     return exe
+  def gentext(self, size):
+    random.seed(1234567891234567890)
+    result = StringIO()
+    for i in xrange(size):
+       result.write(random.choice("       abcdefghijklmnopqrstuvwxyz\n"))
+    return result.getvalue()
+  ################################################################
   def test_100_make_test0_zip(self):
     """ create a test.zip for later tests using standard 'zip'
     It will fall back to a variant in the source code if 'zip'
@@ -182,7 +191,31 @@ class ZZipTest(unittest.TestCase):
     filetext = self.readme()
     self.mkfile(filename, filetext)
     shell("{exe} -n README ../{zipfile} ??*.* README".format(**locals()), cwd=tmpdir)
-    self.assertGreater(os.path.getsize(zipfile), 10)
+    self.assertGreater(os.path.getsize(zipfile), 1000000)
+  def test_105_make_test5_zip(self):
+    """ create a test5.zip for later tests using standard 'zip'
+    It will NOT fall back to a variant in the source code.
+    The archive has files at multiple subdirectories depth
+    and of varying sizes each. """
+    zipfile="test5.zip"
+    tmpdir="test5.tmp"
+    exe=self.bins("mkzip")
+    for depth in xrange(20):
+      dirpath = ""
+      for i in xrange(depth):
+        if i:
+          dirpath += "subdir%i/" % i
+      for size in xrange(18):
+        size = 2 ** size
+        filetext = self.gentext(size)
+        filepart = "file%i-%i.txt" % (depth, size)
+        filename = os.path.join(tmpdir, dirpath + filepart )
+        self.mkfile(filename, filetext)
+    filename = os.path.join(tmpdir,"README")
+    filetext = self.readme()
+    self.mkfile(filename, filetext)
+    shell("{exe} ../{zipfile} -r file* subdir* README".format(**locals()), cwd=tmpdir)
+    self.assertGreater(os.path.getsize(zipfile), 1000000)
   def test_110_make_test0_dat(self):
     """ create test.dat from test.zip with xorcopy """
     zipfile = "test0.zip"
@@ -802,6 +835,16 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' file0001.txt\n', run.output)
     self.assertIn(' file2222.txt\n', run.output)
     self.assertIn(' file9999.txt\n', run.output)
+  def test_505_infozipdir_big_test5_zip(self):
+    """ run info-zip dir on test5.zip """
+    zipfile = "test5.zip"
+    getfile = "test5.zip"
+    exe = self.bins("unzzip-mix")
+    run = shell("{exe} -v {getfile} ".format(**locals()))
+    self.assertIn('/subdir14/file15-128.txt\n', run.output)
+    self.assertIn('/subdir5/subdir6/', run.output)
+    self.assertIn(' defl:N ', run.output)
+    self.assertIn(' stored ', run.output)
   def test_510_zzdir_big_test0_zip(self):
     """ run zzdir-big on test0.zip  """
     zipfile = "test0.zip"
@@ -847,6 +890,16 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' file0001.txt\n', run.output)
     self.assertIn(' file2222.txt\n', run.output)
     self.assertIn(' file9999.txt\n', run.output)
+  def test_515_zzdir_big_test5_zip(self):
+    """ run zzdir-big on test5.zip """
+    zipfile = "test5.zip"
+    getfile = "test5.zip"
+    exe = self.bins("unzzip-mix")
+    run = shell("{exe} -v {getfile} ".format(**locals()))
+    self.assertIn('/subdir14/file15-128.txt\n', run.output)
+    self.assertIn('/subdir5/subdir6/', run.output)
+    self.assertIn(' defl:N ', run.output)
+    self.assertIn(' stored ', run.output)
   def test_520_zzdir_mem_test0_zip(self):
     """ run zzdir-mem on test0.zip  """
     zipfile = "test0.zip"
@@ -900,6 +953,16 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' file2222.txt\n', run.output)
     self.assertIn(' file9999.txt\n', run.output)
     self.assertNotIn(' defl:N ', run.output)
+    self.assertIn(' stored ', run.output)
+  def test_525_zzdir_mem_test5_zip(self):
+    """ run zzdir-mem on test5.zip """
+    zipfile = "test5.zip"
+    getfile = "test5.zip"
+    exe = self.bins("unzzip-mix")
+    run = shell("{exe} -v {getfile} ".format(**locals()))
+    self.assertIn('/subdir14/file15-128.txt\n', run.output)
+    self.assertIn('/subdir5/subdir6/', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
   def test_530_zzdir_mix_test0_zip(self):
     """ run zzdir-mix on test0.zip  """
@@ -956,6 +1019,16 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' file9999.txt\n', run.output)
     self.assertNotIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
+  def test_535_zzdir_mix_test5_zip(self):
+    """ run zzdir-mix on test5.zip """
+    zipfile = "test5.zip"
+    getfile = "test5.zip"
+    exe = self.bins("unzzip-mix")
+    run = shell("{exe} -v {getfile} ".format(**locals()))
+    self.assertIn('/subdir14/file15-128.txt\n', run.output)
+    self.assertIn('/subdir5/subdir6/', run.output)
+    self.assertIn(' defl:N ', run.output)
+    self.assertIn(' stored ', run.output)
   def test_540_zzdir_zap_test0_zip(self):
     """ run zzdir-zap on test0.zip  """
     zipfile = "test0.zip"
@@ -1009,6 +1082,16 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' file2222.txt\n', run.output)
     self.assertIn(' file9999.txt\n', run.output)
     self.assertNotIn(' defl:N ', run.output)
+    self.assertIn(' stored ', run.output)
+  def test_545_zzdir_zap_test5_zip(self):
+    """ run zzdir-zap on test5.zip """
+    zipfile = "test5.zip"
+    getfile = "test5.zip"
+    exe = self.bins("unzzip")
+    run = shell("{exe} -v {getfile} ".format(**locals()))
+    self.assertIn('/subdir14/file15-128.txt\n', run.output)
+    self.assertIn('/subdir5/subdir6/', run.output)
+    self.assertIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
 
   def test_800_zzshowme_check_sfx(self):
