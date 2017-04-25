@@ -3,6 +3,7 @@ import subprocess
 import logging
 import os
 import collections
+import shutil
 from fnmatch import fnmatchcase as matches
 
 logg = logging.getLogger("test")
@@ -1010,6 +1011,31 @@ class ZZipTest(unittest.TestCase):
     self.assertNotIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
 
+  def test_800_zzshowme_check_sfx(self):
+    """ create an *.exe that can extract its own zip content """
+    exe=self.bins("mkzip")
+    exefile = "tmp.zzshowme" + exeext
+    libstub = ".libs/zzipself" + exeext
+    txtfile_name = readme
+    txtfile = self.src(readme)
+    # add the extract-stub so we have reserved the size
+    run = shell("{exe} -0 -j {exefile}.zip {libstub}".format(**locals()))
+    self.assertFalse(run.returncode)
+    # add the actual content which may now be compressed
+    run = shell("{exe} -9 -j {exefile}.zip {txtfile}".format(**locals()))
+    self.assertFalse(run.returncode)
+    # rename .zip to .exe and put the extract-stub at the start
+    shutil.copy(exefile+".zip", exefile)
+    setstub="./zzipsetstub" + exeext
+    run = shell("{setstub} {exefile} {libstub}".format(**locals()))
+    self.assertFalse(run.returncode)
+    os.chmod(exefile, 0755)
+    # now ask the new .exe to show some of its own content
+    run = shell("./{exefile} {txtfile_name}".format(**locals()))
+    self.assertFalse(run.returncode)
+    txt = open(txtfile).read()
+    self.assertEqual(txt.split("\n"), run.output.split("\n"))
+    
   def test_900_make_test1w_zip(self):
     """ create a test1w.zip using zzip/write functions. """
     exe=self.bins("zzip")

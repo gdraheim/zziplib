@@ -39,7 +39,7 @@ check-local: check-readme $(sfxtests) $(newtests)
 check-tests: tests
 tests:
 	@ test -f zziptests.py || cp -s -v $(srcdir)/zziptests.py .
-	python zziptests.py -v
+	python zziptests.py -v   --exeext "$(EXEEXT)" --topsrcdir "$(top_srcdir)"
 
 check-readme : $(zzcat)  test.zip
 	@ test -f test.zip || $(MAKE) tmp/../test.zip 
