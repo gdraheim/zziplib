@@ -1166,6 +1166,19 @@ class ZZipTest(unittest.TestCase):
     self.assertIn('/subdir5/subdir6/', run.output)
     self.assertIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
+  @unittest.expectedFailure
+  def test_595_zzextract_zap_test5_zip(self):
+    """ run zzextract-zap on test5.zip 
+        => coughs up a SEGFAULT in zzip_dir_close() ?!?"""
+    zipfile = "test5.zip"
+    getfile = "test5.zip"
+    tmpdir = "test5.tmp2"
+    if os.path.isdir(tmpdir):
+        shutil.rmtree(tmpdir)
+    os.mkdir(tmpdir)
+    exe = self.bins("unzzip")
+    run = shell("cd {tmpdir} && ../{exe} ../{getfile} ".format(**locals()))
+    self.assertTrue(tmpdir+'/subdir1/subdir2/file3-1024.txt')
 
   def test_800_zzshowme_check_sfx(self):
     """ create an *.exe that can extract its own zip content """
