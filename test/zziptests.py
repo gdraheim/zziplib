@@ -67,6 +67,7 @@ def shell(command, shell=True, calls=False, cwd=None, env=None, lang=None, retur
         for line in errors.split("\n"):
             if line:
                 logg.warning("ERR: %s", line)
+        raise subprocess.CalledProcessError(run.returncode, sh_command, output)
     else:
         for line in output.split("\n"):
             if line:
