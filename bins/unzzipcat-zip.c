@@ -93,8 +93,10 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	    char* name = entry.d_name;
 	    FILE* out = stdout;
 	    if (extract) out = create_fopen(name, "w", 1);
-	    unzzip_cat_file (disk, name, out);
-	    if (extract) fclose(out);
+	    if (out) {
+	        unzzip_cat_file (disk, name, out);
+	        if (extract) fclose(out);
+	    }
 	}
     }
     else
@@ -108,11 +110,13 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 		if (! fnmatch (argv[argn], name, 
 			       FNM_NOESCAPE|FNM_PATHNAME|FNM_PERIOD))
 	        {
-	             FILE* out = stdout;
-	             if (extract) out = create_fopen(name, "w", 1);
-		     unzzip_cat_file (disk, name, out);
-		     if (extract) fclose(out);
-		     break; /* match loop */
+	            FILE* out = stdout;
+	            if (extract) out = create_fopen(name, "w", 1);
+	            if (out) {
+		        unzzip_cat_file (disk, name, out);
+		        if (extract) fclose(out);
+		    }
+		    break; /* match loop */
 	        }
 	    }
 	}

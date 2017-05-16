@@ -1167,7 +1167,6 @@ class ZZipTest(unittest.TestCase):
     self.assertIn('/subdir5/subdir6/', run.output)
     self.assertIn(' defl:N ', run.output)
     self.assertIn(' stored ', run.output)
-  @unittest.expectedFailure
   def test_595_zzextract_zap_test5_zip(self):
     """ run zzextract-zap on test5.zip 
         => coughs up a SEGFAULT in zzip_dir_close() ?!?"""
