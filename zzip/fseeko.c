@@ -319,7 +319,7 @@ zzip_entry_findfirst(FILE * disk)
     }
     /* we read out chunks of 8 KiB in the hope to match disk granularity */
     ___ zzip_off_t pagesize = PAGESIZE; /* getpagesize() */
-    ___ ZZIP_ENTRY *entry = malloc(sizeof(*entry));
+    ___ ZZIP_ENTRY *entry = calloc(1, sizeof(*entry));
     if (! entry)
         goto error0; /* ENOMEM */
     ___ unsigned char *buffer = malloc(pagesize);
