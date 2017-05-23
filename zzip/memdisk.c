@@ -248,7 +248,7 @@ zzip_mem_entry_new(ZZIP_DISK * disk, ZZIP_DISK_ENTRY * entry)
     {
         /* override sizes/offsets with zip64 values for largefile support */
         zzip_extra_zip64 *block = (zzip_extra_zip64 *)
-            zzip_mem_entry_extra_block(item, ZZIP_EXTRA_zip64);
+            zzip_mem_entry_find_extra_block(item, ZZIP_EXTRA_zip64, sizeof(zzip_extra_zip64));
         if (block)
         {
             item->zz_usize = ZZIP_GET64(block->z_usize);
@@ -269,12 +269,26 @@ error:
     ____;
 }
 
-/* find an extra block for the given datatype code.
- * The returned EXTRA_BLOCK is still in disk-encoding but
- * already a pointer into an allocated heap space block.
+/** => zzip_mem_entry_find_extra_block.
+ *
+ * Note that for this function only the block_header is asserted 
+ * to be completely in memory, so the returned pointer should be checked.
  */
 ZZIP_EXTRA_BLOCK *
 zzip_mem_entry_extra_block(ZZIP_MEM_ENTRY * entry, short datatype)
+{
+   return zzip_mem_entry_find_extra_block(entry, datatype, 16);
+}
+
+/* find an extra block for the given datatype code.
+ * The returned EXTRA_BLOCK is still in disk-encoding but
+ * already a pointer into an allocated heap space block.
+ *
+ * The second argument of this function ensures that the 
+ * complete datasize is in memory.
+ */
+ZZIP_EXTRA_BLOCK *
+zzip_mem_entry_find_extra_block(ZZIP_MEM_ENTRY * entry, short datatype, zzip_size_t blocksize)
 {
     int i = 2;
     while (1)
@@ -287,7 +301,10 @@ zzip_mem_entry_extra_block(ZZIP_MEM_ENTRY * entry, short datatype)
             {
                 if (datatype == zzip_extra_block_get_datatype(ext))
                 {
-                    return ((ZZIP_EXTRA_BLOCK*) ext);
+                    if (blocksize <= zzip_extra_block_get_datasize(ext) + zzip_extra_block_headerlength)
+                    {
+                        return ((ZZIP_EXTRA_BLOCK*) ext);
+                    }
                 }
                 /* skip to start of next extra_block */
                 ___ zzip_size_t datasize = zzip_extra_block_get_datasize(ext);
