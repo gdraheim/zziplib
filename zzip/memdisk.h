@@ -9,6 +9,7 @@
 
 #include <zzip/types.h>
 #include <zzip/mmapped.h>
+#include <zzip/__hints.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,7 +44,9 @@ zzip_mem_disk_load (ZZIP_MEM_DISK* dir, ZZIP_DISK* disk);
 zzip_mem_disk_extern void
 zzip_mem_disk_unload (ZZIP_MEM_DISK* dir);
 ZZIP_EXTRA_BLOCK*
-zzip_mem_entry_extra_block (ZZIP_MEM_ENTRY* entry, short datatype);
+zzip_mem_entry_extra_block (ZZIP_MEM_ENTRY* entry, short datatype) ZZIP_GNUC_DEPRECATED;
+ZZIP_EXTRA_BLOCK*
+zzip_mem_entry_find_extra_block (ZZIP_MEM_ENTRY* entry, short datatype, zzip_size_t blocksize);
 
 #ifdef USE_INLINE
 _zzip_inline ZZIP_DISK* zzip_disk (ZZIP_MEM_DISK* dir) { return dir->disk; }
