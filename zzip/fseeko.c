@@ -62,6 +62,11 @@
 #define ftello ftell
 #endif
 
+/* Mingw cross compile fix */
+#ifndef EBADMSG
+#define EBADMSG 74
+#endif
+
 /* note that the struct zzip_entry inherits the zzip_disk_entry values
  * and usually carries a copy of its values (in disk format!). To make the
  * following code more readable, we use a shorthand notation for the

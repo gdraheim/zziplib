@@ -50,6 +50,11 @@
 #define debug4(msg, arg1, arg2, arg3) 
 #endif
 
+/* Mingw cross compile fix */
+#ifndef EBADMSG
+#define EBADMSG 74
+#endif
+
 static const char *error[] = {
     "Ok",
 #   define _zzip_mem_disk_open_fail 1
@@ -129,6 +134,46 @@ zzip_mem_disk_buffer(char *buffer, size_t buflen)
     return dir;
     ____;
 }
+
+/* find an extra block for the given datatype code.
+ * The returned EXTRA_BLOCK is still in disk-encoding but
+ * already a pointer into an allocated heap space block.
+ *
+ * The second argument of this function ensures that the 
+ * complete datasize is in memory.
+ */
+ZZIP_EXTRA_BLOCK *
+zzip_mem_entry_find_extra_block(ZZIP_MEM_ENTRY * entry, short datatype, zzip_size_t blocksize)
+{
+    int i = 2;
+    while (1)
+    {
+        char* ext = (char*)( entry->zz_ext[i] );
+        char* ext_end = ext + entry->zz_extlen[i];
+        if (ext)
+        {
+            while (ext + zzip_extra_block_headerlength <= ext_end)
+            {
+                if (datatype == zzip_extra_block_get_datatype(ext))
+                {
+                    if (blocksize <= zzip_extra_block_get_datasize(ext) + zzip_extra_block_headerlength)
+                    {
+                        return ((ZZIP_EXTRA_BLOCK*) ext);
+                    }
+                }
+                /* skip to start of next extra_block */
+                ___ zzip_size_t datasize = zzip_extra_block_get_datasize(ext);
+                ext += zzip_extra_block_headerlength;
+                ext += datasize;
+                ____;
+            }
+        }
+        if (! i)
+            return 0;
+        i--;
+    }
+}
+
 
 /** parse central dir.
  *  creates an internal copy of each entry converted to the local platform.
@@ -269,6 +314,7 @@ error:
     ____;
 }
 
+
 /** => zzip_mem_entry_find_extra_block.
  *
  * Note that for this function only the block_header is asserted 
@@ -278,45 +324,6 @@ ZZIP_EXTRA_BLOCK *
 zzip_mem_entry_extra_block(ZZIP_MEM_ENTRY * entry, short datatype)
 {
    return zzip_mem_entry_find_extra_block(entry, datatype, 16);
-}
-
-/* find an extra block for the given datatype code.
- * The returned EXTRA_BLOCK is still in disk-encoding but
- * already a pointer into an allocated heap space block.
- *
- * The second argument of this function ensures that the 
- * complete datasize is in memory.
- */
-ZZIP_EXTRA_BLOCK *
-zzip_mem_entry_find_extra_block(ZZIP_MEM_ENTRY * entry, short datatype, zzip_size_t blocksize)
-{
-    int i = 2;
-    while (1)
-    {
-        char* ext = (char*)( entry->zz_ext[i] );
-        char* ext_end = ext + entry->zz_extlen[i];
-        if (ext)
-        {
-            while (ext + zzip_extra_block_headerlength <= ext_end)
-            {
-                if (datatype == zzip_extra_block_get_datatype(ext))
-                {
-                    if (blocksize <= zzip_extra_block_get_datasize(ext) + zzip_extra_block_headerlength)
-                    {
-                        return ((ZZIP_EXTRA_BLOCK*) ext);
-                    }
-                }
-                /* skip to start of next extra_block */
-                ___ zzip_size_t datasize = zzip_extra_block_get_datasize(ext);
-                ext += zzip_extra_block_headerlength;
-                ext += datasize;
-                ____;
-            }
-        }
-        if (! i)
-            return 0;
-        i--;
-    }
 }
 
 void
