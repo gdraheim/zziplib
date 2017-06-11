@@ -58,6 +58,11 @@
 #define ____ }
 #endif
 
+/* Mingw cross compile fix */
+#ifndef EBADMSG
+#define EBADMSG 74
+#endif
+
 /** => zzip_disk_mmap
  * This function does primary initialization of a disk-buffer struct.
  * 

@@ -25,6 +25,18 @@
 #define fnmatch(x,y,z) strcmp(x,y)
 #endif
 
+#ifndef strnup
+static char* strndup (char const *s, size_t n)
+{
+    size_t len = strnlen (s, n);
+    char *new = malloc (len + 1);
+    if (new == NULL)
+        return NULL;
+    new[len] = '\0';
+    return memcpy (new, s, len);
+}
+#endif
+
 static void unzzip_cat_file(ZZIP_DIR* disk, char* name, FILE* out)
 {
     ZZIP_FILE* file = zzip_file_open (disk, name, 0);
@@ -48,7 +60,11 @@ static void makedirs(const char* name)
           makedirs(dir_name);
           free (dir_name);
       } else {
+          #ifdef __MINGW32__
+          mkdir(name);
+          #else
           mkdir(name, 775);
+          #endif
           errno = 0;
       }
 }
