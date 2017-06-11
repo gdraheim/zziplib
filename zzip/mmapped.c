@@ -33,6 +33,7 @@
 #include <zzip/__debug.h>
 #include <zzip/__mmap.h>
 #include <zzip/__fnmatch.h>
+#include <zzip/__string.h>
 
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -230,55 +231,8 @@ zzip_disk_close(ZZIP_DISK * disk)
 }
 
 /* ====================================================================== */
-
 /*                      helper functions                                  */
 
-#ifdef ZZIP_HAVE_STRNDUP
-#define _zzip_strndup strndup
-#else
-
-/* if your system does not have strndup: */
-zzip__new__ static char *
-_zzip_strndup(char *p, size_t maxlen)
-{
-    if (! p)
-        return 0;
-    ___ zzip_byte_t *r = malloc(maxlen + 1);
-    if (! r)
-        return r;
-    strncpy(r, p, maxlen);
-    r[maxlen] = '\0';
-    return r;
-    ____;
-}
-#endif
-
-#if defined ZZIP_HAVE_STRCASECMP || defined strcasecmp
-#define _zzip_strcasecmp strcasecmp
-#else
-
-/* if your system does not have strcasecmp: */
-static int
-_zzip_strcasecmp(char *__zzip_restrict a, char *_zzip_restrict b)
-{
-    if (! a)
-        return (b) ? 1 : 0;
-    if (! b)
-        return -1;
-    while (1)
-    {
-        int v = tolower(*a) - tolower(*b);
-        if (v)
-            return v;
-        if (! *a)
-            return 1;
-        if (! *b)
-            return -1;
-        a++;
-        b++;
-    }
-}
-#endif
 
 /** helper functions for (mmapped) zip access api
  *

@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <zzip/__string.h>
 #include "unzzipcat-zip.h"
 
 #ifdef ZZIP_HAVE_UNISTD_H
@@ -58,7 +59,7 @@ static void makedirs(const char* name)
 {
       char* p = strrchr(name, '/');
       if (p) {
-          char* dir_name = strndup(name, p-name);
+          char* dir_name = _zzip_strndup(name, p-name);
           makedirs(dir_name);
           free (dir_name);
       } else {
@@ -73,7 +74,7 @@ static FILE* create_fopen(char* name, char* mode, int subdirs)
    {
       char* p = strrchr(name, '/');
       if (p) {
-          char* dir_name = strndup(name, p-name);
+          char* dir_name = _zzip_strndup(name, p-name);
           makedirs(dir_name); 
           free (dir_name);
       }
