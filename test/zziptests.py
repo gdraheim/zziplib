@@ -5,6 +5,7 @@ import os
 import collections
 import shutil
 import random
+import re
 from fnmatch import fnmatchcase as matches
 from cStringIO import StringIO
 
@@ -76,6 +77,39 @@ def shell(command, shell=True, calls=False, cwd=None, env=None, lang=None, retur
             if line:
                 logg.debug("ERR: %s", line)
     return Shell(run.returncode, output, errors, sh_command)
+
+def testdir(testname):
+    newdir = "tests/tmp."+testname
+    if os.path.isdir(newdir):
+        shutil.rmtree(newdir)
+    os.makedirs(newdir)
+    return newdir
+
+def download(base_url, filename, into):
+    if not os.path.isdir(into):
+        os.makedirs(into)
+    if not os.path.exists(os.path.join(into, filename)):
+        shell("cd {into} && wget {base_url}/{filename}".format(**locals()))
+def trycopy(srcdir, filename, into):
+    if not os.path.isdir(into):
+        os.makedirs(into)
+    src_file = os.path.join(srcdir, filename)
+    dst_file = os.path.join(into, filename)
+    if os.path.isfile(src_file):
+        shutil.copy(src_file, dst_file)
+
+def output(cmd, shell=True):
+    run = subprocess.Popen(cmd, shell=shell, stdout=subprocess.PIPE)
+    out, err = run.communicate()
+    return out
+def grep(pattern, lines):
+    if isinstance(lines, basestring):
+        lines = lines.split("\n")
+    for line in lines:
+       if re.search(pattern, line.rstrip()):
+           yield line.rstrip()
+def greps(lines, pattern):
+    return list(grep(pattern, lines))
 
 
 class ZZipTest(unittest.TestCase):
@@ -1172,13 +1206,76 @@ class ZZipTest(unittest.TestCase):
         => coughs up a SEGFAULT in zzip_dir_close() ?!?"""
     zipfile = "test5.zip"
     getfile = "test5.zip"
-    tmpdir = "test5.tmp2"
-    if os.path.isdir(tmpdir):
-        shutil.rmtree(tmpdir)
-    os.mkdir(tmpdir)
+    tmpdir = "tmp.test_595"
+    testdir(tmpdir)
     exe = self.bins("unzzip")
     run = shell("cd {tmpdir} && ../{exe} ../{getfile} ".format(**locals()))
     self.assertTrue(tmpdir+'/subdir1/subdir2/file3-1024.txt')
+
+  def test_600_infozipdir_CVE_2017_5977(self):
+    """ run info-zip dir test0.zip  """
+    tmpdir = "tmp.test_600"
+    filename = "00153-zziplib-invalidread-zzip_mem_entry_extra_block"
+    trycopy("tmp.test_601", filename, tmpdir)
+    testdir(tmpdir)
+    download("https://github.com/asarubbo/poc/blob/master/", filename, tmpdir)
+    exe = self.bins("unzip")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0, 9])
+    self.assertIn(' End-of-central-directory signature not found', run.errors)
+    self.assertLess(len(run.output), 230)
+  def test_601_zzipdir_big_CVE_2017_5977(self):
+    """ run info-zip -l $(CVE_2017_5977).zip  """
+    tmpdir = "tmp.test_601"
+    filename = "00153-zziplib-invalidread-zzip_mem_entry_extra_block"
+    testdir(tmpdir)
+    trycopy("tmp.test_600", filename, tmpdir)
+    trycopy("tmp.test_602", filename, tmpdir)
+    download("https://github.com/asarubbo/poc/blob/master/", filename, tmpdir)
+    exe = self.bins("unzzip-big")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 1)
+    self.assertLess(len(run.errors), 1)
+  def test_602_zzipdir_mem_CVE_2017_5977(self):
+    """ run unzzip-mem -l $(CVE_2017_5977).zip  """
+    tmpdir = "tmp.test_602"
+    filename = "00153-zziplib-invalidread-zzip_mem_entry_extra_block"
+    testdir(tmpdir)
+    trycopy("tmp.test_601", filename, tmpdir)
+    trycopy("tmp.test_603", filename, tmpdir)
+    download("https://github.com/asarubbo/poc/blob/master/", filename, tmpdir)
+    exe = self.bins("unzzip-mem")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 1)
+    self.assertLess(len(run.errors), 1)
+  def test_603_zzipdir_mem_CVE_2017_5977(self):
+    """ run unzzip-mem -l $(CVE_2017_5977).zip  """
+    tmpdir = "tmp.test_603"
+    filename = "00153-zziplib-invalidread-zzip_mem_entry_extra_block"
+    testdir(tmpdir)
+    trycopy("tmp.test_602", filename, tmpdir)
+    trycopy("tmp.test_604", filename, tmpdir)
+    download("https://github.com/asarubbo/poc/blob/master/", filename, tmpdir)
+    exe = self.bins("unzzip-mem")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 1)
+    self.assertLess(len(run.errors), 1)
+  def test_604_zzipdir_zap_CVE_2017_5977(self):
+    """ run unzzip-mix -l $(CVE_2017_5977).zip  """
+    tmpdir = "tmp.test_604"
+    filename = "00153-zziplib-invalidread-zzip_mem_entry_extra_block"
+    testdir(tmpdir)
+    trycopy("tmp.test_603", filename, tmpdir)
+    download("https://github.com/asarubbo/poc/blob/master/", filename, tmpdir)
+    exe = self.bins("unzzip")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0, 255])
+    self.assertLess(len(run.output), 1)
+    self.assertLess(len(run.errors), 80)
+    self.assertTrue(greps(run.errors, "Success"))
 
   def test_800_zzshowme_check_sfx(self):
     """ create an *.exe that can extract its own zip content """
