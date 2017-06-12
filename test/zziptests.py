@@ -1304,6 +1304,67 @@ class ZZipTest(unittest.TestCase):
     self.assertIn('test:  mismatching "local" filename', run.errors)
     self.assertIn('test:  unknown compression method', run.errors)
     self.assertEqual(os.path.getsize(tmpdir+"/test"), 0)
+  def test_606_zzipext_big_CVE_2017_5977(self):
+    """ run unzzip-big $(CVE_2017_5977).zip  """
+    tmpdir = "tmp.test_606"
+    filename = self.zip_CVE_2017_5977
+    file_url = self.url_CVE_2017_5977
+    testdir(tmpdir)
+    trycopy("tmp.test_605", filename, tmpdir)
+    trycopy("tmp.test_607", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-big")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 1)
+    self.assertEqual(os.path.getsize(tmpdir+"/test"), 0)
+  @unittest.expectedFailure
+  def test_607_zzipext_mem_CVE_2017_5977(self):
+    """ run unzzip-mem $(CVE_2017_5977).zip  """
+    tmpdir = "tmp.test_607"
+    filename = self.zip_CVE_2017_5977
+    file_url = self.url_CVE_2017_5977
+    testdir(tmpdir)
+    trycopy("tmp.test_606", filename, tmpdir)
+    trycopy("tmp.test_608", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-mem")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 1)
+    self.assertEqual(os.path.getsize(tmpdir+"/test"), 0)
+  def test_608_zzipext_mix_CVE_2017_5977(self):
+    """ run unzzip-mix $(CVE_2017_5977).zip  """
+    tmpdir = "tmp.test_608"
+    filename = self.zip_CVE_2017_5977
+    file_url = self.url_CVE_2017_5977
+    testdir(tmpdir)
+    trycopy("tmp.test_607", filename, tmpdir)
+    trycopy("tmp.test_609", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-mix")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 1)
+    self.assertEqual(os.path.getsize(tmpdir+"/test"), 0)
+  def test_609_zzipext_zap_CVE_2017_5977(self):
+    """ run unzzip $(CVE_2017_5977).zip  """
+    tmpdir = "tmp.test_609"
+    filename = self.zip_CVE_2017_5977
+    file_url = self.url_CVE_2017_5977
+    testdir(tmpdir)
+    trycopy("tmp.test_607", filename, tmpdir)
+    trycopy("tmp.test_608", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 1)
+    self.assertEqual(os.path.getsize(tmpdir+"/test"), 3) # TODO
 
 
   url_CVE_2017_5978 = "https://raw.githubusercontent.com/asarubbo/poc/master/"
@@ -1403,6 +1464,74 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(run.errors), 900)
     self.assertIn('attempt to seek before beginning of zipfile', run.errors)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
+  @unittest.expectedFailure
+  def test_616_zzipext_big_CVE_2017_5978(self):
+    """ run unzzip-big $(CVE_2017_5978).zip  """
+    tmpdir = "tmp.test_616"
+    filename = self.zip_CVE_2017_5978
+    file_url = self.url_CVE_2017_5978
+    testdir(tmpdir)
+    trycopy("tmp.test_615", filename, tmpdir)
+    trycopy("tmp.test_617", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-big")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 1)
+    self.assertEqual(os.path.getsize(tmpdir+"/test"), 0)
+  def test_617_zzipext_mem_CVE_2017_5978(self):
+    """ run unzzip-mem $(CVE_2017_5978).zip  """
+    tmpdir = "tmp.test_617"
+    filename = self.zip_CVE_2017_5978
+    file_url = self.url_CVE_2017_5978
+    testdir(tmpdir)
+    trycopy("tmp.test_616", filename, tmpdir)
+    trycopy("tmp.test_618", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-mem")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 300)
+    self.assertIn("..(nil)", run.errors)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 0)
+  def test_618_zzipext_mix_CVE_2017_5978(self):
+    """ run unzzip-mix $(CVE_2017_5978).zip  """
+    tmpdir = "tmp.test_618"
+    filename = self.zip_CVE_2017_5978
+    file_url = self.url_CVE_2017_5978
+    testdir(tmpdir)
+    trycopy("tmp.test_617", filename, tmpdir)
+    trycopy("tmp.test_619", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-mem")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 300)
+    self.assertIn("..(nil)", run.errors)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 0)
+  @unittest.expectedFailure
+  def test_619_zzipext_zap_CVE_2017_5978(self):
+    """ run unzzip $(CVE_2017_5978).zip  """
+    tmpdir = "tmp.test_619"
+    filename = self.zip_CVE_2017_5978
+    file_url = self.url_CVE_2017_5978
+    testdir(tmpdir)
+    trycopy("tmp.test_617", filename, tmpdir)
+    trycopy("tmp.test_618", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 300)
+    self.assertIn("..(nil)", run.errors)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 0)
 
   url_CVE_2017_5979 = "https://raw.githubusercontent.com/asarubbo/poc/master/"
   zip_CVE_2017_5979 = "00157-zziplib-nullptr-prescan_entry"
@@ -1494,6 +1623,69 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(run.output), 90)
     self.assertLess(len(run.errors), 1)
     self.assertIn('extracting: a', run.output)
+    self.assertEqual(os.path.getsize(tmpdir+"/a"), 3)
+  def test_626_zzipext_big_CVE_2017_5979(self):
+    """ run unzzip-big $(CVE_2017_5979).zip  """
+    tmpdir = "tmp.test_626"
+    filename = self.zip_CVE_2017_5979
+    file_url = self.url_CVE_2017_5979
+    testdir(tmpdir)
+    trycopy("tmp.test_625", filename, tmpdir)
+    trycopy("tmp.test_627", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-big")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 1)
+    self.assertEqual(os.path.getsize(tmpdir+"/a"), 3)
+  @unittest.expectedFailure
+  def test_627_zzipext_mem_CVE_2017_5979(self):
+    """ run unzzip-mem $(CVE_2017_5979).zip  """
+    tmpdir = "tmp.test_627"
+    filename = self.zip_CVE_2017_5979
+    file_url = self.url_CVE_2017_5979
+    testdir(tmpdir)
+    trycopy("tmp.test_626", filename, tmpdir)
+    trycopy("tmp.test_628", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-mem")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 1)
+    self.assertEqual(os.path.getsize(tmpdir+"/a"), 3)
+  @unittest.expectedFailure
+  def test_628_zzipext_mix_CVE_2017_5979(self):
+    """ run unzzip-mix $(CVE_2017_5979).zip  """
+    tmpdir = "tmp.test_628"
+    filename = self.zip_CVE_2017_5979
+    file_url = self.url_CVE_2017_5979
+    testdir(tmpdir)
+    trycopy("tmp.test_627", filename, tmpdir)
+    trycopy("tmp.test_629", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-mix")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 20)
+    self.assertEqual(os.path.getsize(tmpdir+"/a"), 3)
+  # @unittest.expectedFailure
+  def test_629_zzipext_zap_CVE_2017_5979(self):
+    """ run unzzip-mix $(CVE_2017_5979).zip  """
+    tmpdir = "tmp.test_629"
+    filename = self.zip_CVE_2017_5979
+    file_url = self.url_CVE_2017_5979
+    testdir(tmpdir)
+    trycopy("tmp.test_627", filename, tmpdir)
+    trycopy("tmp.test_628", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 20)
     self.assertEqual(os.path.getsize(tmpdir+"/a"), 3)
 
 
@@ -1747,6 +1939,71 @@ class ZZipTest(unittest.TestCase):
     self.assertIn('file #1:  bad zipfile offset (local header sig):  127', run.errors)
     #self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
+  def test_646_zzipext_big_CVE_2017_5975(self):
+    """ run unzzip-big $(CVE_2017_5975).zip  """
+    tmpdir = "tmp.test_646"
+    filename = self.zip_CVE_2017_5975
+    file_url = self.url_CVE_2017_5975
+    testdir(tmpdir)
+    trycopy("tmp.test_645", filename, tmpdir)
+    trycopy("tmp.test_647", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-big")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 1)
+    self.assertEqual(os.path.getsize(tmpdir+"/test"), 0) # TODO
+  def test_647_zzipext_mem_CVE_2017_5975(self):
+    """ run unzzip-mem $(CVE_2017_5975).zip  """
+    tmpdir = "tmp.test_647"
+    filename = self.zip_CVE_2017_5975
+    file_url = self.url_CVE_2017_5975
+    testdir(tmpdir)
+    trycopy("tmp.test_646", filename, tmpdir)
+    trycopy("tmp.test_648", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-mem")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 200)
+    self.assertIn("..(nil)", run.errors)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+  @unittest.expectedFailure
+  def test_648_zzipext_mix_CVE_2017_5975(self):
+    """ run unzzip-mix $(CVE_2017_5975).zip  """
+    tmpdir = "tmp.test_648"
+    filename = self.zip_CVE_2017_5975
+    file_url = self.url_CVE_2017_5975
+    testdir(tmpdir)
+    trycopy("tmp.test_647", filename, tmpdir)
+    trycopy("tmp.test_649", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-mix")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 200)
+    self.assertIn("..(nil)", run.errors)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+  @unittest.expectedFailure
+  def test_649_zzipext_zap_CVE_2017_5975(self):
+    """ run unzzip $(CVE_2017_5975).zip  """
+    tmpdir = "tmp.test_649"
+    filename = self.zip_CVE_2017_5975
+    file_url = self.url_CVE_2017_5975
+    testdir(tmpdir)
+    trycopy("tmp.test_647", filename, tmpdir)
+    trycopy("tmp.test_648", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 200)
+    self.assertIn("..(nil)", run.errors)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
 
 
   url_CVE_2017_5976 = "https://raw.githubusercontent.com/asarubbo/poc/master/"
@@ -1844,6 +2101,67 @@ class ZZipTest(unittest.TestCase):
     self.assertIn('-27 bytes too long', run.errors)
     self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
     # self.assertFalse(os.path.exists(tmpdir+"/test"))
+  def test_656_zzipext_big_CVE_2017_5976(self):
+    """ run unzzip-big $(CVE_2017_5976).zip  """
+    tmpdir = "tmp.test_656"
+    filename = self.zip_CVE_2017_5976
+    file_url = self.url_CVE_2017_5976
+    testdir(tmpdir)
+    trycopy("tmp.test_655", filename, tmpdir)
+    trycopy("tmp.test_657", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-big")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 1)
+    self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
+  def test_657_zzipext_mem_CVE_2017_5976(self):
+    """ run unzzip-mem $(CVE_2017_5976).zip  """
+    tmpdir = "tmp.test_657"
+    filename = self.zip_CVE_2017_5976
+    file_url = self.url_CVE_2017_5976
+    testdir(tmpdir)
+    trycopy("tmp.test_656", filename, tmpdir)
+    trycopy("tmp.test_658", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-mem")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 30) # TODO
+    self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
+  @unittest.expectedFailure
+  def test_658_zzipext_mix_CVE_2017_5976(self):
+    """ run unzzip-mix $(CVE_2017_5976).zip  """
+    tmpdir = "tmp.test_658"
+    filename = self.zip_CVE_2017_5976
+    file_url = self.url_CVE_2017_5976
+    testdir(tmpdir)
+    trycopy("tmp.test_657", filename, tmpdir)
+    trycopy("tmp.test_659", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-mix")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 30) # TODO
+    self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
+  def test_659_zzipext_zap_CVE_2017_5976(self):
+    """ run unzzip $(CVE_2017_5976).zip  """
+    tmpdir = "tmp.test_659"
+    filename = self.zip_CVE_2017_5976
+    file_url = self.url_CVE_2017_5976
+    testdir(tmpdir)
+    trycopy("tmp.test_657", filename, tmpdir)
+    trycopy("tmp.test_658", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 30)
+    self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
 
   url_CVE_2017_5980 = "https://raw.githubusercontent.com/asarubbo/poc/master/"
   zip_CVE_2017_5980 = "00154-zziplib-nullptr-zzip_mem_entry_new"
@@ -1942,6 +2260,72 @@ class ZZipTest(unittest.TestCase):
     self.assertIn('file #1:  bad zipfile offset (lseek)', run.errors)
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
+  @unittest.expectedFailure
+  def test_666_zzipext_big_CVE_2017_5980(self):
+    """ run unzzip-big $(CVE_2017_5980).zip  """
+    tmpdir = "tmp.test_666"
+    filename = self.zip_CVE_2017_5980
+    file_url = self.url_CVE_2017_5980
+    testdir(tmpdir)
+    trycopy("tmp.test_665", filename, tmpdir)
+    trycopy("tmp.test_667", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-big")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 1)
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+  def test_667_zzipext_mem_CVE_2017_5980(self):
+    """ run unzzip-mem $(CVE_2017_5980).zip  """
+    tmpdir = "tmp.test_667"
+    filename = self.zip_CVE_2017_5980
+    file_url = self.url_CVE_2017_5980
+    testdir(tmpdir)
+    trycopy("tmp.test_666", filename, tmpdir)
+    trycopy("tmp.test_668", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-mem")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 200)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
+  @unittest.expectedFailure
+  def test_668_zzipext_mix_CVE_2017_5980(self):
+    """ run unzzip-mix $(CVE_2017_5980).zip  """
+    tmpdir = "tmp.test_668"
+    filename = self.zip_CVE_2017_5980
+    file_url = self.url_CVE_2017_5980
+    testdir(tmpdir)
+    trycopy("tmp.test_667", filename, tmpdir)
+    trycopy("tmp.test_669", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-mix")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 200)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
+  def test_669_zzipext_zap_CVE_2017_5980(self):
+    """ run unzzip $(CVE_2017_5980).zip  """
+    tmpdir = "tmp.test_669"
+    filename = self.zip_CVE_2017_5980
+    file_url = self.url_CVE_2017_5980
+    testdir(tmpdir)
+    trycopy("tmp.test_667", filename, tmpdir)
+    trycopy("tmp.test_668", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [255]) # TODO
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 200)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
 
   url_CVE_2017_5981 = "https://raw.githubusercontent.com/asarubbo/poc/master/"
   zip_CVE_2017_5981 = "00161-zziplib-assertionfailure-seeko_C"
@@ -2031,6 +2415,72 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(run.output), 90)
     self.assertLess(len(run.errors), 500)
     self.assertIn('zipfile corrupt.', run.errors)
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+  def test_676_zzipext_big_CVE_2017_5981(self):
+    """ run unzzip-big $(CVE_2017_5981).zip  """
+    tmpdir = "tmp.test_676"
+    filename = self.zip_CVE_2017_5981
+    file_url = self.url_CVE_2017_5981
+    testdir(tmpdir)
+    trycopy("tmp.test_675", filename, tmpdir)
+    trycopy("tmp.test_677", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-big")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 1)
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+  def test_677_zzipext_mem_CVE_2017_5981(self):
+    """ run unzzip-mem $(CVE_2017_5981).zip  """
+    tmpdir = "tmp.test_677"
+    filename = self.zip_CVE_2017_5981
+    file_url = self.url_CVE_2017_5981
+    testdir(tmpdir)
+    trycopy("tmp.test_676", filename, tmpdir)
+    trycopy("tmp.test_678", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-mem")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 10)
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+  @unittest.expectedFailure
+  def test_678_zzipext_mix_CVE_2017_5981(self):
+    """ run unzzip-mix $(CVE_2017_5981).zip  """
+    tmpdir = "tmp.test_678"
+    filename = self.zip_CVE_2017_5981
+    file_url = self.url_CVE_2017_5981
+    testdir(tmpdir)
+    trycopy("tmp.test_677", filename, tmpdir)
+    trycopy("tmp.test_679", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-mix")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 10)
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+  @unittest.expectedFailure
+  def test_679_zzipext_zap_CVE_2017_5981(self):
+    """ run unzzip $(CVE_2017_5981).zip  """
+    tmpdir = "tmp.test_679"
+    filename = self.zip_CVE_2017_5981
+    file_url = self.url_CVE_2017_5981
+    testdir(tmpdir)
+    trycopy("tmp.test_677", filename, tmpdir)
+    trycopy("tmp.test_678", filename, tmpdir)
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 10)
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
 
