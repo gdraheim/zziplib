@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <zzip/__mkdir.h>
 #include <zzip/__string.h>
 #include <zzip/__debug.h>
 #include "unzzipcat-zip.h"
@@ -59,7 +60,7 @@ static void makedirs(const char* name)
           makedirs(dir_name);
           free (dir_name);
       } else {
-          mkdir(name, 775);
+          _zzip_mkdir(name, 775);
           errno = 0;
       }
 }
