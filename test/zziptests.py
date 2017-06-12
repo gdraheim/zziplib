@@ -1258,8 +1258,8 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(run.output), 30)
     self.assertLess(len(run.errors), 1)
     self.assertIn(" 3 test", run.output)
-  def test_603_zzipdir_mem_CVE_2017_5977(self):
-    """ run unzzip-mem -l $(CVE_2017_5977).zip  """
+  def test_603_zzipdir_mix_CVE_2017_5977(self):
+    """ run unzzip-mix -l $(CVE_2017_5977).zip  """
     tmpdir = "tmp.test_603"
     filename = self.zip_CVE_2017_5977
     file_url = self.url_CVE_2017_5977
@@ -1267,14 +1267,14 @@ class ZZipTest(unittest.TestCase):
     trycopy("tmp.test_602", filename, tmpdir)
     trycopy("tmp.test_604", filename, tmpdir)
     download(file_url, filename, tmpdir)
-    exe = self.bins("unzzip-mem")
+    exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(run.errors), 1)
     self.assertIn(" 3 test", run.output)
   def test_604_zzipdir_zap_CVE_2017_5977(self):
-    """ run unzzip-mix -l $(CVE_2017_5977).zip  """
+    """ run unzzip -l $(CVE_2017_5977).zip  """
     tmpdir = "tmp.test_604"
     filename = self.zip_CVE_2017_5977
     file_url = self.url_CVE_2017_5977
@@ -1336,8 +1336,9 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(run.errors), 180)
     self.assertIn("zzip_mem_disk_load : unable to load entry", run.errors)
     self.assertIn("zzip_mem_disk_open : unable to load disk", run.errors)
-  def test_613_zzipdir_mem_CVE_2017_5978(self):
-    """ run unzzip-mem -l $(CVE_2017_5978).zip  """
+  @unittest.expectedFailure
+  def test_613_zzipdir_mix_CVE_2017_5978(self):
+    """ run unzzip-mix -l $(CVE_2017_5978).zip  """
     tmpdir = "tmp.test_613"
     filename = self.zip_CVE_2017_5978
     file_url = self.url_CVE_2017_5978
@@ -1345,7 +1346,7 @@ class ZZipTest(unittest.TestCase):
     trycopy("tmp.test_612", filename, tmpdir)
     trycopy("tmp.test_614", filename, tmpdir)
     download(file_url, filename, tmpdir)
-    exe = self.bins("unzzip-mem")
+    exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
     self.assertLess(len(run.output), 1)
@@ -1354,7 +1355,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn("zzip_mem_disk_open : unable to load disk", run.errors)
   @unittest.expectedFailure
   def test_614_zzipdir_zap_CVE_2017_5978(self):
-    """ run unzzip-mix -l $(CVE_2017_5978).zip  """
+    """ run unzzip -l $(CVE_2017_5978).zip  """
     tmpdir = "tmp.test_614"
     filename = self.zip_CVE_2017_5978
     file_url = self.url_CVE_2017_5978
@@ -1415,8 +1416,8 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(run.output), 30)
     self.assertLess(len(run.errors), 1)
     self.assertIn(" 3 a", run.output)
-  def test_623_zzipdir_mem_CVE_2017_5979(self):
-    """ run unzzip-mem -l $(CVE_2017_5979).zip  """
+  def test_623_zzipdir_mix_CVE_2017_5979(self):
+    """ run unzzip-mix -l $(CVE_2017_5979).zip  """
     tmpdir = "tmp.test_623"
     filename = self.zip_CVE_2017_5979
     file_url = self.url_CVE_2017_5979
@@ -1424,14 +1425,14 @@ class ZZipTest(unittest.TestCase):
     trycopy("tmp.test_622", filename, tmpdir)
     trycopy("tmp.test_624", filename, tmpdir)
     download(file_url, filename, tmpdir)
-    exe = self.bins("unzzip-mem")
+    exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(run.errors), 1)
     self.assertIn(" 3 a", run.output)
   def test_624_zzipdir_zap_CVE_2017_5979(self):
-    """ run unzzip-mix -l $(CVE_2017_5979).zip  """
+    """ run unzzip -l $(CVE_2017_5979).zip  """
     tmpdir = "tmp.test_624"
     filename = self.zip_CVE_2017_5979
     file_url = self.url_CVE_2017_5979
@@ -1491,8 +1492,9 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(run.output), 30)
     self.assertLess(len(run.errors), 1)
     self.assertIn(" 3 test", run.output)
-  def test_633_zzipdir_mem_CVE_2017_5974(self):
-    """ run unzzip-mem -l $(CVE_2017_5974).zip  """
+  @unittest.expectedFailure
+  def test_633_zzipdir_mix_CVE_2017_5974(self):
+    """ run unzzip-mix -l $(CVE_2017_5974).zip  """
     tmpdir = "tmp.test_633"
     filename = self.zip_CVE_2017_5974
     file_url = self.url_CVE_2017_5974
@@ -1500,14 +1502,14 @@ class ZZipTest(unittest.TestCase):
     trycopy("tmp.test_632", filename, tmpdir)
     trycopy("tmp.test_634", filename, tmpdir)
     download(file_url, filename, tmpdir)
-    exe = self.bins("unzzip-mem")
+    exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(run.errors), 1)
     self.assertIn(" 3 test", run.output)
   def test_634_zzipdir_zap_CVE_2017_5974(self):
-    """ run unzzip-mix -l $(CVE_2017_5974).zip  """
+    """ run unzzip -l $(CVE_2017_5974).zip  """
     tmpdir = "tmp.test_634"
     filename = self.zip_CVE_2017_5974
     file_url = self.url_CVE_2017_5974
@@ -1570,8 +1572,8 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(run.errors), 180)
     self.assertIn("zzip_mem_disk_load : unable to load entry", run.errors)
     self.assertIn("zzip_mem_disk_open : unable to load disk", run.errors)
-  def test_643_zzipdir_mem_CVE_2017_5975(self):
-    """ run unzzip-mem -l $(CVE_2017_5975).zip  """
+  def test_643_zzipdir_mix_CVE_2017_5975(self):
+    """ run unzzip-mix -l $(CVE_2017_5975).zip  """
     tmpdir = "tmp.test_643"
     filename = self.zip_CVE_2017_5975
     file_url = self.url_CVE_2017_5975
@@ -1579,7 +1581,7 @@ class ZZipTest(unittest.TestCase):
     trycopy("tmp.test_642", filename, tmpdir)
     trycopy("tmp.test_644", filename, tmpdir)
     download(file_url, filename, tmpdir)
-    exe = self.bins("unzzip-mem")
+    exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
     self.assertLess(len(run.output), 1)
@@ -1587,7 +1589,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn("zzip_mem_disk_load : unable to load entry", run.errors)
     self.assertIn("zzip_mem_disk_open : unable to load disk", run.errors)
   def test_644_zzipdir_zap_CVE_2017_5975(self):
-    """ run unzzip-mix -l $(CVE_2017_5975).zip  """
+    """ run unzzip -l $(CVE_2017_5975).zip  """
     tmpdir = "tmp.test_644"
     filename = self.zip_CVE_2017_5975
     file_url = self.url_CVE_2017_5975
@@ -1649,8 +1651,8 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(run.output), 30)
     self.assertLess(len(run.errors), 1)
     self.assertIn("3 test", run.output)
-  def test_653_zzipdir_mem_CVE_2017_5976(self):
-    """ run unzzip-mem -l $(CVE_2017_5976).zip  """
+  def test_653_zzipdir_mix_CVE_2017_5976(self):
+    """ run unzzip-mix -l $(CVE_2017_5976).zip  """
     tmpdir = "tmp.test_653"
     filename = self.zip_CVE_2017_5976
     file_url = self.url_CVE_2017_5976
@@ -1658,14 +1660,14 @@ class ZZipTest(unittest.TestCase):
     trycopy("tmp.test_652", filename, tmpdir)
     trycopy("tmp.test_654", filename, tmpdir)
     download(file_url, filename, tmpdir)
-    exe = self.bins("unzzip-mem")
+    exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(run.errors), 1)
     self.assertIn("3 test", run.output)
   def test_654_zzipdir_zap_CVE_2017_5976(self):
-    """ run unzzip-mix -l $(CVE_2017_5976).zip  """
+    """ run unzzip -l $(CVE_2017_5976).zip  """
     tmpdir = "tmp.test_654"
     filename = self.zip_CVE_2017_5976
     file_url = self.url_CVE_2017_5976
@@ -1728,8 +1730,9 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(run.errors), 180)
     self.assertIn("zzip_mem_disk_load : unable to load entry", run.errors)
     self.assertIn("zzip_mem_disk_open : unable to load disk", run.errors)
-  def test_663_zzipdir_mem_CVE_2017_5980(self):
-    """ run unzzip-mem -l $(CVE_2017_5980).zip  """
+  @unittest.expectedFailure
+  def test_663_zzipdir_mix_CVE_2017_5980(self):
+    """ run unzzip-mix -l $(CVE_2017_5980).zip  """
     tmpdir = "tmp.test_663"
     filename = self.zip_CVE_2017_5980
     file_url = self.url_CVE_2017_5980
@@ -1737,7 +1740,7 @@ class ZZipTest(unittest.TestCase):
     trycopy("tmp.test_662", filename, tmpdir)
     trycopy("tmp.test_664", filename, tmpdir)
     download(file_url, filename, tmpdir)
-    exe = self.bins("unzzip-mem")
+    exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
     self.assertLess(len(run.output), 1)
@@ -1745,7 +1748,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn("zzip_mem_disk_load : unable to load entry", run.errors)
     self.assertIn("zzip_mem_disk_open : unable to load disk", run.errors)
   def test_664_zzipdir_zap_CVE_2017_5980(self):
-    """ run unzzip-mix -l $(CVE_2017_5980).zip  """
+    """ run unzzip -l $(CVE_2017_5980).zip  """
     tmpdir = "tmp.test_664"
     filename = self.zip_CVE_2017_5980
     file_url = self.url_CVE_2017_5980
@@ -1804,8 +1807,8 @@ class ZZipTest(unittest.TestCase):
         returncodes = [0])
     self.assertLess(len(run.output), 1)
     self.assertLess(len(run.errors), 1)
-  def test_673_zzipdir_mem_CVE_2017_5981(self):
-    """ run unzzip-mem -l $(CVE_2017_5981).zip  """
+  def test_673_zzipdir_mix_CVE_2017_5981(self):
+    """ run unzzip-mix -l $(CVE_2017_5981).zip  """
     tmpdir = "tmp.test_673"
     filename = self.zip_CVE_2017_5981
     file_url = self.url_CVE_2017_5981
@@ -1813,13 +1816,13 @@ class ZZipTest(unittest.TestCase):
     trycopy("tmp.test_672", filename, tmpdir)
     trycopy("tmp.test_674", filename, tmpdir)
     download(file_url, filename, tmpdir)
-    exe = self.bins("unzzip-mem")
+    exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
     self.assertLess(len(run.output), 1)
     self.assertLess(len(run.errors), 1)
   def test_674_zzipdir_zap_CVE_2017_5981(self):
-    """ run unzzip-mix -l $(CVE_2017_5981).zip  """
+    """ run unzzip-zap -l $(CVE_2017_5981).zip  """
     tmpdir = "tmp.test_674"
     filename = self.zip_CVE_2017_5981
     file_url = self.url_CVE_2017_5981
