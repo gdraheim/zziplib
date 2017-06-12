@@ -573,7 +573,7 @@ zzip_disk_findmatch(ZZIP_DISK * disk, char *filespec,
     {
         compare = (zzip_fnmatch_fn_t) _zzip_fnmatch;
         if (disk->flags & ZZIP_DISK_FLAGS_MATCH_NOCASE)
-            flags |= _zzip_fnmatch_CASEFOLD;
+            flags |= _zzip_FNM_CASEFOLD;
     }
     for (; entry; entry = zzip_disk_findnext(disk, entry))
     {

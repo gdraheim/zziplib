@@ -12,13 +12,8 @@
 #include <zzip/__mkdir.h>
 #include <zzip/__string.h>
 #include <zzip/__debug.h>
+#include <zzip/__fnmatch.h>
 #include "unzzipcat-zip.h"
-
-#ifdef ZZIP_HAVE_FNMATCH_H
-#include <fnmatch.h>
-#else
-#define fnmatch(x,y,z) strcmp(x,y)
-#endif
 
 static void unzzip_big_entry_fprint(ZZIP_ENTRY* entry, FILE* out)
 {
@@ -123,8 +118,8 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	{
 	    char* name = zzip_entry_strdup_name (entry);
 	    DBG3(".. check '%s' to zip '%s'", argv[argn], name);
-	    if (! fnmatch (argv[argn], name, 
-			   FNM_NOESCAPE|FNM_PATHNAME|FNM_PERIOD))
+	    if (! _zzip_fnmatch (argv[argn], name, 
+		FNM_NOESCAPE|FNM_PATHNAME|FNM_PERIOD))
 	    {
 	        FILE* out = stdout;
 	        if (extract) out = create_fopen(name, "w", 1);

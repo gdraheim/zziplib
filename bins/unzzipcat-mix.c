@@ -12,6 +12,7 @@
 #include <sys/stat.h>
 #include <zzip/__mkdir.h>
 #include <zzip/__string.h>
+#include <zzip/__fnmatch.h>
 #include "unzzipcat-zip.h"
 
 #ifdef ZZIP_HAVE_UNISTD_H
@@ -19,12 +20,6 @@
 #endif
 #ifdef ZZIP_HAVE_IO_H
 #include <io.h>
-#endif
-
-#ifdef ZZIP_HAVE_FNMATCH_H
-#include <fnmatch.h>
-#else
-#define fnmatch(x,y,z) strcmp(x,y)
 #endif
 
 static void unzzip_cat_file(ZZIP_DIR* disk, char* name, FILE* out)
@@ -106,8 +101,8 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	    char* name = entry->d_name;
 	    for (argn=1; argn < argc; argn++)
 	    {
-		if (! fnmatch (argv[argn], name, 
-			       FNM_NOESCAPE|FNM_PATHNAME|FNM_PERIOD))
+		if (! _zzip_fnmatch (argv[argn], name, 
+		    FNM_NOESCAPE|FNM_PATHNAME|FNM_PERIOD))
 	        {
 	             FILE* out = stdout;
 	             char* zip_name = argv[1];
