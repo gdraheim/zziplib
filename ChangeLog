@@ -1,4 +1,10 @@
 
+2017-06-11  guidod  <guidod@gmx.de>
+    * fix portability issues by introducing <zzip/__mkdir.h>
+    * fix portability issues by introducing <zzip/__string.h> for strndup
+    * reuse portability header <zzip/__fnmatch.h> in bins/*.c
+    * release v0.13.67
+
 2017-04-24  guidod  <guidod@gmx.de>
     * common frontend 'unzzip.c' for example code in unzzip*-xx.c
     * expand testcases to cover all of big/mem/mix/zap variants
