@@ -33,6 +33,7 @@
 #include <zzip/mmapped.h>
 #include <zzip/memdisk.h>
 #include <zzip/__fnmatch.h>
+#include <zzip/__errno.h>
 
 #define ___ {
 #define ____ }

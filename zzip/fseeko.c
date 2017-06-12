@@ -35,6 +35,7 @@
 #include <zzip/fetch.h>
 #include <zzip/__mmap.h>
 #include <zzip/__fnmatch.h>
+#include <zzip/__errno.h>
 
 #include <stdlib.h>
 #include <sys/stat.h>

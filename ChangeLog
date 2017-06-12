@@ -1,5 +1,6 @@
 
 2017-06-11  guidod  <guidod@gmx.de>
+    * fix portability issues by introducing <zzip/__errno.h>
     * fix portability issues by introducing <zzip/__mkdir.h>
     * fix portability issues by introducing <zzip/__string.h> for strndup
     * reuse portability header <zzip/__fnmatch.h> in bins/*.c
