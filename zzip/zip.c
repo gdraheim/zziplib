@@ -626,7 +626,7 @@ zzip_dir_alloc(zzip_strings_t * fileext)
  * are helper functions used implicitly in other zzipcalls
  * e.g. => zzip_dir_close = zzip_close
  *
- * returns zero on sucess
+ * returns zero on success
  * returns the refcount when files are attached.
  */
 int

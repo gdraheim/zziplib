@@ -142,7 +142,7 @@ zzip_disk_munmap(ZZIP_DISK * disk)
  * to  => zzip_disk_mmap for bringing it to main memory. If it can not
  * be => mmap(2)'ed then we slurp the whole file into a newly => malloc(2)'ed
  * memory block. Only if that fails too then we return null. Since handling
- * of disk->buffer is ambigous it should not be snatched away please.
+ * of disk->buffer is ambiguous it should not be snatched away please.
  *
  * This function may return null on errors (errno).
  */
@@ -216,7 +216,7 @@ zzip_disk_buffer(void *buffer, size_t buflen) {
  * zip archive, including any malloc()ed blocks, sharedmem mappings
  * and it dumps the handle struct as well.
  *
- * This function returns 0 on sucess (or whatever => munmap says).
+ * This function returns 0 on success (or whatever => munmap says).
  */
 int
 zzip_disk_close(ZZIP_DISK * disk)

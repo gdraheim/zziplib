@@ -366,7 +366,7 @@ zzip_mem_disk_close(ZZIP_MEM_DISK * _zzip_restrict dir)
 static void
 foo(short zz_datatype)
 {
-    /* Header IDs of 0 thru 31 are reserved for use by PKWARE.(APPNOTE.TXT) */
+    /* Header IDs of 0 through 31 are reserved for use by PKWARE.(APPNOTE.TXT) */
     switch (zz_datatype)
     {
     /* *INDENT-OFF* */

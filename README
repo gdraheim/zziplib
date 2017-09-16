@@ -39,7 +39,7 @@ INSTALLATION
   VisualC series of compilers. There should be no problem either
   when crosscompiling the zziplib for a third host platform.
 
-MAINTAINANCE
+MAINTENANCE
   The zziplib library is intentionally a lightweight interface to
   zip files. The author take patches but please consider to put 
   complex extensions into separate modules rather than implanting them

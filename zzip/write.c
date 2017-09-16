@@ -5,7 +5,7 @@
  * where time-stamps are rather unimportant. Here we can create an 
  * archive with filenames and their data portions, possibly obfuscated.
  *
- * DONT USE THIS
+ * DON'T USE THIS
  *
  * The write support is supposed to be added directly into the main
  * zziplib but it has not been implemented so far. It does however
