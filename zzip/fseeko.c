@@ -98,7 +98,7 @@
  * This functions read the correspoding struct zzip_file_header from
  * the zip disk of the given "entry". The returned off_t points to the
  * end of the file_header where the current fseek pointer has stopped.
- * This is used to immediatly parse out any filename/extras block following
+ * This is used to immediately parse out any filename/extras block following
  * the file_header. 
  *
  * Returns zero on error. (errno = EINVAL|EBADMSG|EBADF|EIO)
@@ -809,7 +809,7 @@ zzip_entry_fread(void *ptr, zzip_size_t sized, zzip_size_t nmemb,
                                         file->entry->diskfile);
             file->zlib.next_in = file->buffer;
             file->dataoff += file->zlib.avail_in;
-            debug2("remaing compressed fread %lli", (long long) file->zlib.avail_in);
+            debug2("remaining compressed fread %lli", (long long) file->zlib.avail_in);
         }
         if (! file->zlib.avail_in)
         {
