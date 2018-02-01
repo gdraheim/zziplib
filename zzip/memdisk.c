@@ -210,6 +210,14 @@ zzip_mem_entry_new(ZZIP_DISK * disk, ZZIP_DISK_ENTRY * entry)
     item->zz_diskstart = zzip_disk_entry_get_diskstart(entry);
     item->zz_filetype = zzip_disk_entry_get_filetype(entry);
 
+    /*
+     * If the file is uncompressed, zz_csize and zz_usize should be the same
+     * If they are not, we cannot guarantee that either is correct, so ...
+     */
+    if (item->zz_compr == ZZIP_IS_STORED && item->zz_csize != item->zz_usize)
+    {
+        goto error;
+    }
     /* zz_comment and zz_name are empty strings if not present on disk */
     if (! item->zz_comment || ! item->zz_name)
     {
