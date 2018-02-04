@@ -79,10 +79,10 @@
 #define PAGESIZE 8192
 
 #ifdef DEBUG
-#define debug1(msg) do { fprintf(stderr, "%s : " msg "\n", __func__); } while(0)
-#define debug2(msg, arg1) do { fprintf(stderr, "%s : " msg "\n", __func__, arg1); } while(0)
-#define debug3(msg, arg1, arg2) do { fprintf(stderr, "%s : " msg "\n", __func__, arg1, arg2); } while(0)
-#define debug4(msg, arg1, arg2, arg3) do { fprintf(stderr, "%s : " msg "\n", __func__, arg1, arg2, arg3); } while(0)
+#define debug1(msg) do { fprintf(stderr, "DEBUG: %s : " msg "\n", __func__); } while(0)
+#define debug2(msg, arg1) do { fprintf(stderr, "DEBUG: %s : " msg "\n", __func__, arg1); } while(0)
+#define debug3(msg, arg1, arg2) do { fprintf(stderr, "DEBUG: %s : " msg "\n", __func__, arg1, arg2); } while(0)
+#define debug4(msg, arg1, arg2, arg3) do { fprintf(stderr, "DEBUG: %s : " msg "\n", __func__, arg1, arg2, arg3); } while(0)
 #else
 #define debug1(msg) 
 #define debug2(msg, arg1) 
