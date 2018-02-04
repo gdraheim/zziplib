@@ -3221,6 +3221,145 @@ class ZZipTest(unittest.TestCase):
     self.assertFalse(os.path.exists(tmpdir+"/test"))
     self.rm_testdir()
 
+  url_CVE_2018_17 = "https://github.com/ProbeFuzzer/poc/blob/master/zziplib"
+  zip_CVE_2018_17 = "zziplib_0-13-67_unzip-mem_memory-alignment-errors_zzip_disk_findfirst_64.zip"
+  def test_65420(self):
+    """ info unzip -l $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2018_17
+    file_url = self.url_CVE_2018_17
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzip")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0, 9])
+    self.assertIn("End-of-central-directory signature not found", run.errors)
+    self.assertLess(len(run.output), 200)
+    self.assertLess(len(run.errors), 800)
+    self.rm_testdir()
+  def test_65421(self):
+    """ unzzip-big -l $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2018_17
+    file_url = self.url_CVE_2018_17
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-big")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 1)
+    self.assertLess(len(run.errors), 1)
+    self.rm_testdir()
+  def test_65422(self):
+    """ unzzip-mem -l $(CVE).zip """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2018_17
+    file_url = self.url_CVE_2018_17
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-mem")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 1)
+    self.assertLess(len(run.errors), 1)
+    self.rm_testdir()
+  @unittest.expectedFailure
+  def test_65423(self):
+    """ unzzip-mix -l $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2018_17
+    file_url = self.url_CVE_2018_17
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-mix")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 1)
+    self.assertLess(len(run.errors), 1)
+    self.rm_testdir()
+  def test_65424(self):
+    """ unzzip-zap -l $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2018_17
+    file_url = self.url_CVE_2018_17
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0, 255])
+    self.assertLess(len(run.output), 1)
+    self.assertLess(len(run.errors), 200)
+    self.assertIn(": Success", run.errors)
+    self.rm_testdir()
+  def test_65425(self):
+    """ info unzip $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2018_17
+    file_url = self.url_CVE_2018_17
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzip")
+    run = shell("cd {tmpdir} && {exe} -o {filename}".format(**locals()),
+        returncodes = [9])
+    self.assertLess(len(run.output), 200)
+    self.assertLess(len(run.errors), 800)
+    self.assertIn('End-of-central-directory signature not found', run.errors)
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+    self.rm_testdir()
+  def test_65426(self):
+    """ unzzip-big $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2018_17
+    file_url = self.url_CVE_2018_17
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-big")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 1)
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+    self.rm_testdir()
+  def test_65427(self):
+    """ unzzip-mem $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2018_17
+    file_url = self.url_CVE_2018_17
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-mem")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 10)
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+    self.rm_testdir()
+  @unittest.expectedFailure
+  def test_65428(self):
+    """ unzzip-mix $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2018_17
+    file_url = self.url_CVE_2018_17
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip-mix")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 10)
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+    self.rm_testdir()
+  @unittest.expectedFailure
+  def test_65429(self):
+    """ unzzip $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2018_17
+    file_url = self.url_CVE_2018_17
+    download(file_url, filename, tmpdir)
+    exe = self.bins("unzzip")
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 30)
+    self.assertLess(len(run.errors), 10)
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+    self.rm_testdir()
+
 
   def test_91000_zzshowme_check_sfx(self):
     """ create an *.exe that can extract its own zip content """
