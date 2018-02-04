@@ -4,6 +4,7 @@ import logging
 import inspect
 import os
 import collections
+import urllib
 import shutil
 import random
 import re
@@ -94,17 +95,25 @@ def testdir(testname):
     return newdir
 
 def download(base_url, filename, into):
+    data = "tmp.download"
+    if not os.path.isdir(data):
+        os.makedirs(data)
+    subname = urllib.quote_plus(base_url)
+    subdir = os.path.join(data, subname)
+    if not os.path.isdir(subdir):
+        os.makedirs(subdir)
+    subfile = os.path.join(subdir, filename)
+    if not os.path.exists(subfile):
+       logg.info("need %s", subfile)
+       d = urllib.urlopen(base_url + "/" + filename)
+       f = open(subfile, "w")
+       f.write(d.read())
+       f.close()
+    #
     if not os.path.isdir(into):
         os.makedirs(into)
-    if not os.path.exists(os.path.join(into, filename)):
-        shell("cd {into} && wget {base_url}/{filename}".format(**locals()))
-def trycopy(srcdir, filename, into):
-    if not os.path.isdir(into):
-        os.makedirs(into)
-    src_file = os.path.join(srcdir, filename)
-    dst_file = os.path.join(into, filename)
-    if os.path.isfile(src_file):
-        shutil.copy(src_file, dst_file)
+    shutil.copy(subfile, into)
+    return filename
 
 def output(cmd, shell=True):
     run = subprocess.Popen(cmd, shell=shell, stdout=subprocess.PIPE)
@@ -1261,7 +1270,6 @@ class ZZipTest(unittest.TestCase):
     tmpdir = "tmp.test_59770"
     filename = self.zip_CVE_2017_5977
     file_url = self.url_CVE_2017_5977
-    trycopy("tmp.test_59771", filename, tmpdir)
     testdir(tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzip")
@@ -1276,8 +1284,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5977
     file_url = self.url_CVE_2017_5977
     testdir(tmpdir)
-    trycopy("tmp.test_59770", filename, tmpdir)
-    trycopy("tmp.test_59772", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -1291,8 +1297,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5977
     file_url = self.url_CVE_2017_5977
     testdir(tmpdir)
-    trycopy("tmp.test_59771", filename, tmpdir)
-    trycopy("tmp.test_59773", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -1306,8 +1310,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5977
     file_url = self.url_CVE_2017_5977
     testdir(tmpdir)
-    trycopy("tmp.test_59772", filename, tmpdir)
-    trycopy("tmp.test_59774", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -1321,7 +1323,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5977
     file_url = self.url_CVE_2017_5977
     testdir(tmpdir)
-    trycopy("tmp.test_59773", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -1335,8 +1336,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5977
     file_url = self.url_CVE_2017_5977
     testdir(tmpdir)
-    trycopy("tmp.test_59774", filename, tmpdir)
-    trycopy("tmp.test_59776", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzip")
     run = shell("cd {tmpdir} && {exe} -o {filename}".format(**locals()),
@@ -1352,8 +1351,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5977
     file_url = self.url_CVE_2017_5977
     testdir(tmpdir)
-    trycopy("tmp.test_59775", filename, tmpdir)
-    trycopy("tmp.test_59777", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-big")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -1368,8 +1365,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5977
     file_url = self.url_CVE_2017_5977
     testdir(tmpdir)
-    trycopy("tmp.test_59776", filename, tmpdir)
-    trycopy("tmp.test_59778", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mem")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -1383,8 +1378,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5977
     file_url = self.url_CVE_2017_5977
     testdir(tmpdir)
-    trycopy("tmp.test_59777", filename, tmpdir)
-    trycopy("tmp.test_59779", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mix")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -1398,8 +1391,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5977
     file_url = self.url_CVE_2017_5977
     testdir(tmpdir)
-    trycopy("tmp.test_59777", filename, tmpdir)
-    trycopy("tmp.test_59778", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -1416,7 +1407,6 @@ class ZZipTest(unittest.TestCase):
     tmpdir = "tmp.test_59780"
     filename = self.zip_CVE_2017_5978
     file_url = self.url_CVE_2017_5978
-    trycopy("tmp.test_59781", filename, tmpdir)
     testdir(tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzip")
@@ -1432,8 +1422,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5978
     file_url = self.url_CVE_2017_5978
     testdir(tmpdir)
-    trycopy("tmp.test_59780", filename, tmpdir)
-    trycopy("tmp.test_59782", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -1447,8 +1435,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5978
     file_url = self.url_CVE_2017_5978
     testdir(tmpdir)
-    trycopy("tmp.test_59781", filename, tmpdir)
-    trycopy("tmp.test_59783", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -1464,8 +1450,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5978
     file_url = self.url_CVE_2017_5978
     testdir(tmpdir)
-    trycopy("tmp.test_59782", filename, tmpdir)
-    trycopy("tmp.test_59784", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -1481,7 +1465,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5978
     file_url = self.url_CVE_2017_5978
     testdir(tmpdir)
-    trycopy("tmp.test_59783", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -1496,8 +1479,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5978
     file_url = self.url_CVE_2017_5978
     testdir(tmpdir)
-    trycopy("tmp.test_59784", filename, tmpdir)
-    trycopy("tmp.test_59786", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzip")
     run = shell("cd {tmpdir} && {exe} -o {filename}".format(**locals()),
@@ -1513,8 +1494,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5978
     file_url = self.url_CVE_2017_5978
     testdir(tmpdir)
-    trycopy("tmp.test_59785", filename, tmpdir)
-    trycopy("tmp.test_59787", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-big")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -1528,8 +1507,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5978
     file_url = self.url_CVE_2017_5978
     testdir(tmpdir)
-    trycopy("tmp.test_59786", filename, tmpdir)
-    trycopy("tmp.test_59788", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mem")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -1545,8 +1522,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5978
     file_url = self.url_CVE_2017_5978
     testdir(tmpdir)
-    trycopy("tmp.test_59787", filename, tmpdir)
-    trycopy("tmp.test_59789", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mem")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -1563,8 +1538,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5978
     file_url = self.url_CVE_2017_5978
     testdir(tmpdir)
-    trycopy("tmp.test_59787", filename, tmpdir)
-    trycopy("tmp.test_59788", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -1582,7 +1555,6 @@ class ZZipTest(unittest.TestCase):
     tmpdir = "tmp.test_59790"
     filename = self.zip_CVE_2017_5979
     file_url = self.url_CVE_2017_5979
-    trycopy("tmp.test_59791", filename, tmpdir)
     testdir(tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzip")
@@ -1597,8 +1569,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5979
     file_url = self.url_CVE_2017_5979
     testdir(tmpdir)
-    trycopy("tmp.test_59790", filename, tmpdir)
-    trycopy("tmp.test_59792", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -1612,8 +1582,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5979
     file_url = self.url_CVE_2017_5979
     testdir(tmpdir)
-    trycopy("tmp.test_59791", filename, tmpdir)
-    trycopy("tmp.test_59793", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -1627,8 +1595,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5979
     file_url = self.url_CVE_2017_5979
     testdir(tmpdir)
-    trycopy("tmp.test_59792", filename, tmpdir)
-    trycopy("tmp.test_59794", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -1642,7 +1608,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5979
     file_url = self.url_CVE_2017_5979
     testdir(tmpdir)
-    trycopy("tmp.test_59793", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -1656,8 +1621,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5979
     file_url = self.url_CVE_2017_5979
     testdir(tmpdir)
-    trycopy("tmp.test_59794", filename, tmpdir)
-    trycopy("tmp.test_59796", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzip")
     run = shell("cd {tmpdir} && {exe} -o {filename}".format(**locals()),
@@ -1672,8 +1635,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5979
     file_url = self.url_CVE_2017_5979
     testdir(tmpdir)
-    trycopy("tmp.test_59795", filename, tmpdir)
-    trycopy("tmp.test_59797", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-big")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -1688,8 +1649,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5979
     file_url = self.url_CVE_2017_5979
     testdir(tmpdir)
-    trycopy("tmp.test_59796", filename, tmpdir)
-    trycopy("tmp.test_59798", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mem")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -1704,8 +1663,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5979
     file_url = self.url_CVE_2017_5979
     testdir(tmpdir)
-    trycopy("tmp.test_59797", filename, tmpdir)
-    trycopy("tmp.test_59799", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mix")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -1720,8 +1677,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5979
     file_url = self.url_CVE_2017_5979
     testdir(tmpdir)
-    trycopy("tmp.test_59797", filename, tmpdir)
-    trycopy("tmp.test_59798", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -1738,7 +1693,6 @@ class ZZipTest(unittest.TestCase):
     tmpdir = "tmp.test_59740"
     filename = self.zip_CVE_2017_5974
     file_url = self.url_CVE_2017_5974
-    trycopy("tmp.test_59741", filename, tmpdir)
     testdir(tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzip")
@@ -1753,8 +1707,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5974
     file_url = self.url_CVE_2017_5974
     testdir(tmpdir)
-    trycopy("tmp.test_59740", filename, tmpdir)
-    trycopy("tmp.test_59742", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -1768,8 +1720,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5974
     file_url = self.url_CVE_2017_5974
     testdir(tmpdir)
-    trycopy("tmp.test_59741", filename, tmpdir)
-    trycopy("tmp.test_59743", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -1784,8 +1734,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5974
     file_url = self.url_CVE_2017_5974
     testdir(tmpdir)
-    trycopy("tmp.test_59742", filename, tmpdir)
-    trycopy("tmp.test_59744", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -1799,7 +1747,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5974
     file_url = self.url_CVE_2017_5974
     testdir(tmpdir)
-    trycopy("tmp.test_59743", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -1813,8 +1760,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5974
     file_url = self.url_CVE_2017_5974
     testdir(tmpdir)
-    trycopy("tmp.test_59744", filename, tmpdir)
-    trycopy("tmp.test_59746", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzip")
     run = shell("cd {tmpdir} && {exe} -o {filename}".format(**locals()),
@@ -1829,8 +1774,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5974
     file_url = self.url_CVE_2017_5974
     testdir(tmpdir)
-    trycopy("tmp.test_59745", filename, tmpdir)
-    trycopy("tmp.test_59747", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-big")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -1845,8 +1788,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5974
     file_url = self.url_CVE_2017_5974
     testdir(tmpdir)
-    trycopy("tmp.test_59746", filename, tmpdir)
-    trycopy("tmp.test_59748", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mem")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -1861,8 +1802,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5974
     file_url = self.url_CVE_2017_5974
     testdir(tmpdir)
-    trycopy("tmp.test_59747", filename, tmpdir)
-    trycopy("tmp.test_59749", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mix")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -1876,7 +1815,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5974
     file_url = self.url_CVE_2017_5974
     testdir(tmpdir)
-    trycopy("tmp.test_59748", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -1892,7 +1830,6 @@ class ZZipTest(unittest.TestCase):
     tmpdir = "tmp.test_59750"
     filename = self.zip_CVE_2017_5975
     file_url = self.url_CVE_2017_5975
-    trycopy("tmp.test_59751", filename, tmpdir)
     testdir(tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzip")
@@ -1909,8 +1846,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5975
     file_url = self.url_CVE_2017_5975
     testdir(tmpdir)
-    trycopy("tmp.test_59750", filename, tmpdir)
-    trycopy("tmp.test_59752", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -1924,8 +1859,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5975
     file_url = self.url_CVE_2017_5975
     testdir(tmpdir)
-    trycopy("tmp.test_59751", filename, tmpdir)
-    trycopy("tmp.test_59753", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -1940,8 +1873,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5975
     file_url = self.url_CVE_2017_5975
     testdir(tmpdir)
-    trycopy("tmp.test_59752", filename, tmpdir)
-    trycopy("tmp.test_59754", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -1956,7 +1887,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5975
     file_url = self.url_CVE_2017_5975
     testdir(tmpdir)
-    trycopy("tmp.test_59753", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -1970,8 +1900,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5975
     file_url = self.url_CVE_2017_5975
     testdir(tmpdir)
-    trycopy("tmp.test_59754", filename, tmpdir)
-    trycopy("tmp.test_59756", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzip")
     run = shell("cd {tmpdir} && {exe} -o {filename}".format(**locals()),
@@ -1987,8 +1915,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5975
     file_url = self.url_CVE_2017_5975
     testdir(tmpdir)
-    trycopy("tmp.test_59755", filename, tmpdir)
-    trycopy("tmp.test_59757", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-big")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -2002,8 +1928,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5975
     file_url = self.url_CVE_2017_5975
     testdir(tmpdir)
-    trycopy("tmp.test_59756", filename, tmpdir)
-    trycopy("tmp.test_59758", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mem")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -2019,8 +1943,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5975
     file_url = self.url_CVE_2017_5975
     testdir(tmpdir)
-    trycopy("tmp.test_59757", filename, tmpdir)
-    trycopy("tmp.test_59759", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mix")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -2036,8 +1958,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5975
     file_url = self.url_CVE_2017_5975
     testdir(tmpdir)
-    trycopy("tmp.test_59757", filename, tmpdir)
-    trycopy("tmp.test_59758", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -2055,7 +1975,6 @@ class ZZipTest(unittest.TestCase):
     tmpdir = "tmp.test_59760"
     filename = self.zip_CVE_2017_5976
     file_url = self.url_CVE_2017_5976
-    trycopy("tmp.test_59761", filename, tmpdir)
     testdir(tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzip")
@@ -2072,8 +1991,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5976
     file_url = self.url_CVE_2017_5976
     testdir(tmpdir)
-    trycopy("tmp.test_59760", filename, tmpdir)
-    trycopy("tmp.test_59762", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -2087,8 +2004,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5976
     file_url = self.url_CVE_2017_5976
     testdir(tmpdir)
-    trycopy("tmp.test_59761", filename, tmpdir)
-    trycopy("tmp.test_59763", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -2102,8 +2017,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5976
     file_url = self.url_CVE_2017_5976
     testdir(tmpdir)
-    trycopy("tmp.test_59762", filename, tmpdir)
-    trycopy("tmp.test_59764", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -2117,7 +2030,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5976
     file_url = self.url_CVE_2017_5976
     testdir(tmpdir)
-    trycopy("tmp.test_59763", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -2131,8 +2043,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5976
     file_url = self.url_CVE_2017_5976
     testdir(tmpdir)
-    trycopy("tmp.test_59764", filename, tmpdir)
-    trycopy("tmp.test_59766", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzip")
     run = shell("cd {tmpdir} && {exe} -o {filename}".format(**locals()),
@@ -2149,8 +2059,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5976
     file_url = self.url_CVE_2017_5976
     testdir(tmpdir)
-    trycopy("tmp.test_59765", filename, tmpdir)
-    trycopy("tmp.test_59767", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-big")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -2164,8 +2072,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5976
     file_url = self.url_CVE_2017_5976
     testdir(tmpdir)
-    trycopy("tmp.test_59766", filename, tmpdir)
-    trycopy("tmp.test_59768", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mem")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -2180,8 +2086,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5976
     file_url = self.url_CVE_2017_5976
     testdir(tmpdir)
-    trycopy("tmp.test_59767", filename, tmpdir)
-    trycopy("tmp.test_59769", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mix")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -2195,8 +2099,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5976
     file_url = self.url_CVE_2017_5976
     testdir(tmpdir)
-    trycopy("tmp.test_59767", filename, tmpdir)
-    trycopy("tmp.test_59768", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -2212,7 +2114,6 @@ class ZZipTest(unittest.TestCase):
     tmpdir = "tmp.test_59800"
     filename = self.zip_CVE_2017_5980
     file_url = self.url_CVE_2017_5980
-    trycopy("tmp.test_59801", filename, tmpdir)
     testdir(tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzip")
@@ -2229,8 +2130,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5980
     file_url = self.url_CVE_2017_5980
     testdir(tmpdir)
-    trycopy("tmp.test_59800", filename, tmpdir)
-    trycopy("tmp.test_59802", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -2244,8 +2143,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5980
     file_url = self.url_CVE_2017_5980
     testdir(tmpdir)
-    trycopy("tmp.test_59801", filename, tmpdir)
-    trycopy("tmp.test_59803", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -2261,8 +2158,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5980
     file_url = self.url_CVE_2017_5980
     testdir(tmpdir)
-    trycopy("tmp.test_59802", filename, tmpdir)
-    trycopy("tmp.test_59804", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -2277,7 +2172,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5980
     file_url = self.url_CVE_2017_5980
     testdir(tmpdir)
-    trycopy("tmp.test_59803", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -2291,8 +2185,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5980
     file_url = self.url_CVE_2017_5980
     testdir(tmpdir)
-    trycopy("tmp.test_59804", filename, tmpdir)
-    trycopy("tmp.test_59806", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzip")
     run = shell("cd {tmpdir} && {exe} -o {filename}".format(**locals()),
@@ -2309,8 +2201,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5980
     file_url = self.url_CVE_2017_5980
     testdir(tmpdir)
-    trycopy("tmp.test_59805", filename, tmpdir)
-    trycopy("tmp.test_59807", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-big")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -2325,8 +2215,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5980
     file_url = self.url_CVE_2017_5980
     testdir(tmpdir)
-    trycopy("tmp.test_59806", filename, tmpdir)
-    trycopy("tmp.test_59808", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mem")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -2342,8 +2230,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5980
     file_url = self.url_CVE_2017_5980
     testdir(tmpdir)
-    trycopy("tmp.test_59807", filename, tmpdir)
-    trycopy("tmp.test_59809", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mix")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -2358,8 +2244,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5980
     file_url = self.url_CVE_2017_5980
     testdir(tmpdir)
-    trycopy("tmp.test_59807", filename, tmpdir)
-    trycopy("tmp.test_59808", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -2376,7 +2260,6 @@ class ZZipTest(unittest.TestCase):
     tmpdir = "tmp.test_59810"
     filename = self.zip_CVE_2017_5981
     file_url = self.url_CVE_2017_5981
-    trycopy("tmp.test_59811", filename, tmpdir)
     testdir(tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzip")
@@ -2392,8 +2275,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5981
     file_url = self.url_CVE_2017_5981
     testdir(tmpdir)
-    trycopy("tmp.test_59810", filename, tmpdir)
-    trycopy("tmp.test_59812", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -2406,8 +2287,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5981
     file_url = self.url_CVE_2017_5981
     testdir(tmpdir)
-    trycopy("tmp.test_59811", filename, tmpdir)
-    trycopy("tmp.test_59813", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -2420,8 +2299,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5981
     file_url = self.url_CVE_2017_5981
     testdir(tmpdir)
-    trycopy("tmp.test_59812", filename, tmpdir)
-    trycopy("tmp.test_59814", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -2434,7 +2311,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5981
     file_url = self.url_CVE_2017_5981
     testdir(tmpdir)
-    trycopy("tmp.test_59813", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -2448,8 +2324,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5981
     file_url = self.url_CVE_2017_5981
     testdir(tmpdir)
-    trycopy("tmp.test_59814", filename, tmpdir)
-    trycopy("tmp.test_59816", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzip")
     run = shell("cd {tmpdir} && {exe} -o {filename}".format(**locals()),
@@ -2465,8 +2339,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5981
     file_url = self.url_CVE_2017_5981
     testdir(tmpdir)
-    trycopy("tmp.test_59815", filename, tmpdir)
-    trycopy("tmp.test_59817", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-big")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -2481,8 +2353,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5981
     file_url = self.url_CVE_2017_5981
     testdir(tmpdir)
-    trycopy("tmp.test_59816", filename, tmpdir)
-    trycopy("tmp.test_59818", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mem")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -2498,8 +2368,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5981
     file_url = self.url_CVE_2017_5981
     testdir(tmpdir)
-    trycopy("tmp.test_59817", filename, tmpdir)
-    trycopy("tmp.test_59819", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mix")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -2515,8 +2383,6 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2017_5981
     file_url = self.url_CVE_2017_5981
     testdir(tmpdir)
-    trycopy("tmp.test_59817", filename, tmpdir)
-    trycopy("tmp.test_59818", filename, tmpdir)
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
