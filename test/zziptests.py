@@ -2158,10 +2158,8 @@ class ZZipTest(unittest.TestCase):
         returncodes = [0])
     self.assertLess(len(run.output), 1)
     self.assertLess(len(errors(run.errors)), 180)
-    self.assertIn("zzip_mem_disk_load : unable to load entry", run.errors)
-    self.assertIn("zzip_mem_disk_open : unable to load disk", run.errors)
+    self.assertTrue(greps(run.errors, "unable to load disk"))
     self.rm_testdir()
-  @unittest.expectedFailure
   def test_59803_zzipdir_mix_CVE_2017_5980(self):
     """ run unzzip-mix -l $(CVE_2017_5980).zip  """
     tmpdir = self.testdir()
@@ -2170,11 +2168,10 @@ class ZZipTest(unittest.TestCase):
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
-        returncodes = [0])
+        returncodes = [2])
     self.assertLess(len(run.output), 1)
     self.assertLess(len(errors(run.errors)), 180)
-    self.assertIn("zzip_mem_disk_load : unable to load entry", run.errors)
-    self.assertIn("zzip_mem_disk_open : unable to load disk", run.errors)
+    self.assertTrue(greps(run.errors, "Invalid or"))
     self.rm_testdir()
   def test_59804_zzipdir_zap_CVE_2017_5980(self):
     """ run unzzip -l $(CVE_2017_5980).zip  """
@@ -2184,7 +2181,7 @@ class ZZipTest(unittest.TestCase):
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
-        returncodes = [0, 255])
+        returncodes = [3])
     self.assertLess(len(run.output), 1)
     self.assertLess(len(errors(run.errors)), 180)
     self.assertIn(": Success", run.errors)
@@ -2204,7 +2201,6 @@ class ZZipTest(unittest.TestCase):
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
     self.rm_testdir()
-  @unittest.expectedFailure
   def test_59806_zzipext_big_CVE_2017_5980(self):
     """ run unzzip-big $(CVE_2017_5980).zip  """
     tmpdir = self.testdir()
@@ -2233,7 +2229,6 @@ class ZZipTest(unittest.TestCase):
     self.assertFalse(os.path.exists(tmpdir+"/test"))
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
     self.rm_testdir()
-  @unittest.expectedFailure
   def test_59808_zzipext_mix_CVE_2017_5980(self):
     """ run unzzip-mix $(CVE_2017_5980).zip  """
     tmpdir = self.testdir()
@@ -2242,7 +2237,7 @@ class ZZipTest(unittest.TestCase):
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mix")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-        returncodes = [0])
+        returncodes = [2])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 200)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
@@ -2256,7 +2251,7 @@ class ZZipTest(unittest.TestCase):
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-        returncodes = [255]) # TODO
+        returncodes = [3]) # TODO
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 200)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
