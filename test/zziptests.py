@@ -3351,7 +3351,7 @@ class ZZipTest(unittest.TestCase):
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
         returncodes = [0,2])
     self.assertLess(len(run.output), 30)
-    self.assertLess(len(errors(run.errors)), 10)
+    self.assertTrue(grep(run.errors, "No medium found"))
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
     self.rm_testdir()
@@ -3365,7 +3365,7 @@ class ZZipTest(unittest.TestCase):
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
         returncodes = [0,3])
     self.assertLess(len(run.output), 30)
-    self.assertLess(len(errors(run.errors)), 10)
+    self.assertTrue(grep(run.errors, "central directory not found"))
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
     self.rm_testdir()
