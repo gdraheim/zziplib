@@ -16,7 +16,7 @@ THREAD_SAFE=@THREAD_SAFE@
 
 WCC10_CLEAN = *.obj *.lk1 *.mk1 *.mk *.sym *.tgt
 
-noinst_HEADERS = unzzipdir-zip.h unzzipcat-zip.h zzipmake-zip.h
+noinst_HEADERS = unzzipdir-zip.h unzzipcat-zip.h unzzip-states.h zzipmake-zip.h
 EXTRA_DIST = $(aclocal_DATA) $(noinst_HEADERS)
 CLEANFILES = $(WCC10_CLEAN)
 

@@ -14,6 +14,12 @@
 #include <zzip/__debug.h>
 #include <zzip/__fnmatch.h>
 #include "unzzipcat-zip.h"
+#include "unzzip-states.h"
+
+static int exitcode(int e)
+{
+    return EXIT_ERRORS;
+}
 
 static void unzzip_big_entry_fprint(ZZIP_ENTRY* entry, FILE* out)
 {
@@ -83,7 +89,7 @@ static int unzzip_cat (int argc, char ** argv, int extract)
     disk = fopen (argv[1], "r");
     if (! disk) {
 	perror(argv[1]);
-	return -1;
+	return exitcode(errno);
     }
 
     if (argc == 2)

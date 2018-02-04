@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "unzzipdir-zip.h"
+#include "unzzip-states.h"
 
 #ifdef ZZIP_HAVE_UNISTD_H
 #include <unistd.h>
@@ -28,7 +29,35 @@ static const char* comprlevel[] = {
     "stored",   "shrunk",   "redu:1",   "redu:2",   "redu:3",   "redu:4",
     "impl:N",   "toknze",   "defl:N",   "defl:B",   "impl:B" };
 
-
+static int exitcode(int e)
+{
+    switch (e)
+    {
+        case ZZIP_NO_ERROR:
+            return EXIT_OK;
+        case ZZIP_OUTOFMEM: /* out of memory */
+            return EXIT_ENOMEM;
+        case ZZIP_DIR_OPEN: /* failed to open zipfile, see errno for details */
+            return EXIT_ZIP_NOT_FOUND;
+        case ZZIP_DIR_STAT: /* failed to fstat zipfile, see errno for details */
+        case ZZIP_DIR_SEEK: /* failed to lseek zipfile, see errno for details */
+        case ZZIP_DIR_READ: /* failed to read zipfile, see errno for details */
+        case ZZIP_DIR_TOO_SHORT:
+        case ZZIP_DIR_EDH_MISSING:
+            return EXIT_FILEFORMAT;
+        case ZZIP_DIRSIZE:
+            return EXIT_EARLY_END_OF_FILE;
+        case ZZIP_ENOENT:
+            return EXIT_FILE_NOT_FOUND;
+        case ZZIP_UNSUPP_COMPR:
+            return EXIT_UNSUPPORTED_COMPRESSION;
+        case ZZIP_CORRUPTED:
+        case ZZIP_UNDEF:
+        case ZZIP_DIR_LARGEFILE:
+            return EXIT_FILEFORMAT;
+    }
+    return EXIT_ERRORS;
+}
 
 static int 
 unzzip_list (int argc, char ** argv, int verbose)
@@ -39,13 +68,13 @@ unzzip_list (int argc, char ** argv, int verbose)
     if (argc == 1)
     {
         printf (__FILE__" version "ZZIP_PACKAGE" "ZZIP_VERSION"\n");
-        return -1; /* better provide an archive argument */
+        return EXIT_OK; /* better provide an archive argument */
     }
     
     disk = zzip_opendir (argv[1]);
     if (! disk) {
 	perror(argv[1]);
-	return -1;
+	return exitcode(errno);
     }
 
     if (argc == 2)

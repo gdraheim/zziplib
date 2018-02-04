@@ -14,6 +14,7 @@
 #include <zzip/__fnmatch.h>
 #include <zzip/__string.h>
 #include "unzzipcat-zip.h"
+#include "unzzip-states.h"
 
 #ifdef ZZIP_HAVE_UNISTD_H
 #include <unistd.h>
@@ -21,6 +22,11 @@
 #ifdef ZZIP_HAVE_IO_H
 #include <io.h>
 #endif
+
+static int exitcode(int e)
+{
+    return EXIT_ERRORS;
+}
 
 static void unzzip_mem_entry_fprint(ZZIP_MEM_DISK* disk, 
 				  ZZIP_MEM_ENTRY* entry, FILE* out)
@@ -86,13 +92,13 @@ static int unzzip_cat (int argc, char ** argv, int extract)
     if (argc == 1)
     {
 	printf (__FILE__" version "ZZIP_PACKAGE" "ZZIP_VERSION"\n");
-	return -1; /* better provide an archive argument */
+	return EXIT_OK; /* better provide an archive argument */
     }
 
     disk = zzip_mem_disk_open (argv[1]);
     if (! disk) {
 	perror(argv[1]);
-	return -1;
+	return exitcode(errno);
     }
 
     if (argc == 2)

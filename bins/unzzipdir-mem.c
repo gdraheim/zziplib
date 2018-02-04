@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "unzzipdir-zip.h"
+#include "unzzip-states.h"
 
 #ifdef ZZIP_HAVE_UNISTD_H
 #include <unistd.h>
@@ -28,6 +29,11 @@ static const char* comprlevel[] = {
     "stored",   "shrunk",   "redu:1",   "redu:2",   "redu:3",   "redu:4",
     "impl:N",   "toknze",   "defl:N",   "defl:B",   "impl:B" };
 
+static int exitcode(int e)
+{
+    return EXIT_ERRORS;
+}
+
 static int 
 unzzip_list (int argc, char ** argv, int verbose)
 {
@@ -37,13 +43,13 @@ unzzip_list (int argc, char ** argv, int verbose)
     if (argc == 1)
     {
         printf (__FILE__" version "ZZIP_PACKAGE" "ZZIP_VERSION"\n");
-        return -1; /* better provide an archive argument */
+        return EXIT_OK; /* better provide an archive argument */
     }
     
     disk = zzip_mem_disk_open (argv[1]);
     if (! disk) {
 	perror(argv[1]);
-	return -1;
+	return exitcode(errno);
     }
 
     if (argc == 2)

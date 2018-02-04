@@ -10,6 +10,7 @@
 #include <string.h>
 #include "unzzipcat-zip.h"
 #include "unzzipdir-zip.h"
+#include "unzzip-states.h"
 
 static const char usage[] = 
 {
@@ -67,7 +68,7 @@ main (int argc, char ** argv)
     if (! strcmp (argv[1], "-"))
     {
         fprintf(stderr, "unknown option %s", argv[1]);
-        return -1;
+        return EXIT_INVALID_OPTION;
     }
  
     return unzzip_extract(argc, argv);
