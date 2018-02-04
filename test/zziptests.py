@@ -1,6 +1,7 @@
 import unittest
 import subprocess
 import logging
+import inspect
 import os
 import collections
 import shutil
@@ -78,6 +79,13 @@ def shell(command, shell=True, calls=False, cwd=None, env=None, lang=None, retur
                 logg.debug("ERR: %s", line)
     return Shell(run.returncode, output, errors, sh_command)
 
+def get_caller_name():
+    frame = inspect.currentframe().f_back.f_back
+    return frame.f_code.co_name
+def get_caller_caller_name():
+    frame = inspect.currentframe().f_back.f_back.f_back
+    return frame.f_code.co_name
+
 def testdir(testname):
     newdir = "tests/tmp."+testname
     if os.path.isdir(newdir):
@@ -115,23 +123,23 @@ def greps(lines, pattern):
 class ZZipTest(unittest.TestCase):
   @property
   def t(self):
-    if not os.path.isdir(testdatadir):
-       os.makedirs(testdatadir)
-    return testdatdir
+        if not os.path.isdir(testdatadir):
+            os.makedirs(testdatadir)
+        return testdatdir
   @property
   def s(self):
     return topsrcdir
   def src(self, name):
     return os.path.join(self.s, name)
   def readme(self):
-     f = open(self.src(readme))
-     text = f.read()
-     f.close()
-     return text
+    f = open(self.src(readme))
+    text = f.read()
+    f.close()
+    return text
   def mkfile(self, name, content):
     b = os.path.dirname(name)
     if not os.path.isdir(b):
-       os.makedirs(b)
+        os.makedirs(b)
     f = open(name, "w")
     f.write(content)
     f.close()
@@ -147,49 +155,49 @@ class ZZipTest(unittest.TestCase):
     old1 = ''
     old2 = ''
     for i in xrange(size):
-       while True:
-          x = random.choice("       abcdefghijklmnopqrstuvwxyz\n")
-          if x == old1 or x == old2: continue
-          old1 = old2
-          old2 = x
-          break
-       result.write(x)
+        while True:
+            x = random.choice("       abcdefghijklmnopqrstuvwxyz\n")
+            if x == old1 or x == old2: continue
+            old1 = old2
+            old2 = x
+            break
+        result.write(x)
     return result.getvalue()
-    def caller_testname(self):
-        name = get_caller_caller_name()
-        x1 = name.find("_")
-        if x1 < 0: return name
-        x2 = name.find("_", x1+1)
-        if x2 < 0: return name
-        return name[:x2]
-    def testname(self, suffix = None):
-        name = self.caller_testname()
-        if suffix:
-            return name + "_" + suffix
-        return name
-    def testzip(self, testname = None):
-        testname = testname or self.caller_testname()
-        zipname = testname + ".zip"
-        return zipname
-    def testdir(self, testname = None):
-        testname = testname or self.caller_testname()
-        newdir = "tmp/tmp."+testname
-        if os.path.isdir(newdir):
-            shutil.rmtree(newdir)
-        os.makedirs(newdir)
-        return newdir
-    def rm_testdir(self, testname = None):
-        testname = testname or self.caller_testname()
-        newdir = "tmp/tmp."+testname
-        if os.path.isdir(newdir):
-            shutil.rmtree(newdir)
-        return newdir
-    def rm_testzip(self, testname = None):
-        testname = testname or self.caller_testname()
-        zipname = testname + ".zip"
-        if os.path.exists(zipname):
-            os.remove(zipname)
-        return True
+  def caller_testname(self):
+    name = get_caller_caller_name()
+    x1 = name.find("_")
+    if x1 < 0: return name
+    x2 = name.find("_", x1+1)
+    if x2 < 0: return name
+    return name[:x2]
+  def testname(self, suffix = None):
+    name = self.caller_testname()
+    if suffix:
+        return name + "_" + suffix
+    return name
+  def testzip(self, testname = None):
+    testname = testname or self.caller_testname()
+    zipname = testname + ".zip"
+    return zipname
+  def testdir(self, testname = None):
+    testname = testname or self.caller_testname()
+    newdir = "tmp."+testname
+    if os.path.isdir(newdir):
+        shutil.rmtree(newdir)
+    os.makedirs(newdir)
+    return newdir
+  def rm_testdir(self, testname = None):
+    testname = testname or self.caller_testname()
+    newdir = "tmp."+testname
+    if os.path.isdir(newdir):
+        shutil.rmtree(newdir)
+    return newdir
+  def rm_testzip(self, testname = None):
+    testname = testname or self.caller_testname()
+    zipname = testname + ".zip"
+    if os.path.exists(zipname):
+        os.remove(zipname)
+    return True
   ################################################################
   def test_1000_make_test0_zip(self):
     """ create a test.zip for later tests using standard 'zip'
@@ -1241,8 +1249,7 @@ class ZZipTest(unittest.TestCase):
         => coughs up a SEGFAULT in zzip_dir_close() ?!?"""
     zipfile = "test5.zip"
     getfile = "test5.zip"
-    tmpdir = "tmp.test_20595"
-    testdir(tmpdir)
+    tmpdir = self.testdir()
     exe = self.bins("unzzip")
     run = shell("cd {tmpdir} && ../{exe} ../{getfile} ".format(**locals()))
     self.assertTrue(tmpdir+'/subdir1/subdir2/file3-1024.txt')
