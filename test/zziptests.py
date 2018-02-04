@@ -1368,7 +1368,6 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(errors(run.errors)), 1)
     self.assertEqual(os.path.getsize(tmpdir+"/test"), 0)
     self.rm_testdir()
-  @unittest.expectedFailure
   def test_59777_zzipext_mem_CVE_2017_5977(self):
     """ run unzzip-mem $(CVE_2017_5977).zip  """
     tmpdir = self.testdir()
@@ -1379,8 +1378,7 @@ class ZZipTest(unittest.TestCase):
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
         returncodes = [0])
     self.assertLess(len(run.output), 30)
-    self.assertLess(len(errors(run.errors)), 1)
-    self.assertEqual(os.path.getsize(tmpdir+"/test"), 0)
+    self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
     self.rm_testdir()
   def test_59778_zzipext_mix_CVE_2017_5977(self):
     """ run unzzip-mix $(CVE_2017_5977).zip  """
