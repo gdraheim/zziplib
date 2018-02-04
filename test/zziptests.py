@@ -3295,6 +3295,8 @@ class ZZipTest(unittest.TestCase):
     file_url = self.url_CVE_2018_17
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-mem")
+    run = shell("cd {tmpdir} && ../{exe} -p {filename} ".format(**locals()),
+        returncodes = [0])
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
         returncodes = [0])
     self.assertLess(len(run.output), 30)
