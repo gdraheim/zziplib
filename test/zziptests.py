@@ -155,6 +155,41 @@ class ZZipTest(unittest.TestCase):
           break
        result.write(x)
     return result.getvalue()
+    def caller_testname(self):
+        name = get_caller_caller_name()
+        x1 = name.find("_")
+        if x1 < 0: return name
+        x2 = name.find("_", x1+1)
+        if x2 < 0: return name
+        return name[:x2]
+    def testname(self, suffix = None):
+        name = self.caller_testname()
+        if suffix:
+            return name + "_" + suffix
+        return name
+    def testzip(self, testname = None):
+        testname = testname or self.caller_testname()
+        zipname = testname + ".zip"
+        return zipname
+    def testdir(self, testname = None):
+        testname = testname or self.caller_testname()
+        newdir = "tmp/tmp."+testname
+        if os.path.isdir(newdir):
+            shutil.rmtree(newdir)
+        os.makedirs(newdir)
+        return newdir
+    def rm_testdir(self, testname = None):
+        testname = testname or self.caller_testname()
+        newdir = "tmp/tmp."+testname
+        if os.path.isdir(newdir):
+            shutil.rmtree(newdir)
+        return newdir
+    def rm_testzip(self, testname = None):
+        testname = testname or self.caller_testname()
+        zipname = testname + ".zip"
+        if os.path.exists(zipname):
+            os.remove(zipname)
+        return True
   ################################################################
   def test_1000_make_test0_zip(self):
     """ create a test.zip for later tests using standard 'zip'
@@ -2484,7 +2519,7 @@ class ZZipTest(unittest.TestCase):
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
 
-  def test_9000_zzshowme_check_sfx(self):
+  def test_91000_zzshowme_check_sfx(self):
     """ create an *.exe that can extract its own zip content """
     exe=self.bins("mkzip")
     exefile = "tmp.zzshowme" + exeext
@@ -2509,15 +2544,15 @@ class ZZipTest(unittest.TestCase):
     txt = open(txtfile).read()
     self.assertEqual(txt.split("\n"), run.output.split("\n"))
     
-  def test_9900_make_test1w_zip(self):
+  def test_99000_make_test1w_zip(self):
     """ create a test1w.zip using zzip/write functions. """
     exe=self.bins("zzip")
     run = shell("{exe} --version".format(**locals()))
     if "- NO -" in run.output:
         self.skipTest("- NO -D_ZZIP_ENABLE_WRITE")
         return
-    zipfile="test1w.zip"
-    tmpdir="test1w.tmp"
+    zipfile=self.testzip()
+    tmpdir=self.testdir()
     exe=self.bins("zzip")
     for i in [1,2,3,4,5,6,7,8,9]:
        filename = os.path.join(tmpdir,"file.%i" % i)
@@ -2526,8 +2561,7 @@ class ZZipTest(unittest.TestCase):
     filename = os.path.join(tmpdir,"README")
     filetext = self.readme()
     self.mkfile(filename, filetext)
-    try: os.remove(zipfile)
-    except: pass
+    self.rm_zipfile()
     shell("../{exe} ../{zipfile} ??*.* README".format(**locals()), cwd=tmpdir)
     self.assertGreater(os.path.getsize(zipfile), 10)
 
