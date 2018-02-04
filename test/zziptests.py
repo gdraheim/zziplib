@@ -2185,6 +2185,7 @@ class ZZipTest(unittest.TestCase):
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
     self.rm_testdir()
+  @unittest.expectedFailure
   def test_59806_zzipext_big_CVE_2017_5980(self):
     """ run unzzip-big $(CVE_2017_5980).zip  """
     tmpdir = self.testdir()
