@@ -31,13 +31,17 @@ def shell(command, shell=True, calls=False, cwd=None, env=None, lang=None, retur
        command = [ command ]
     else:
        sh_command = shell_string(command)
+    if not env: 
+        env = os.environ.copy()
     if lang:
-        if not env: env = os.environ.copy()
         for name, value in env.items():
             if name.startswith("LC_"):
                 env[name] = lang
         env["LANG"] = lang # defines message format
         env["LC_ALL"] = lang # other locale formats
+    build_libs = os.path.dirname(os.path.dirname(os.path.realpath(command[0])))+"/zzip/.libs"
+    if os.path.isdir(build_libs):
+        env["LD_LIBRARY_PATH"] = build_libs
     try:
         output, errors = "", ""
         if calls:
