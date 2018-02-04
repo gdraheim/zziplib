@@ -78,7 +78,7 @@ static int unzzip_cat (int argc, char ** argv, int extract)
     
     disk = zzip_dir_open (argv[1], &error);
     if (! disk) {
-	perror(argv[1]);
+	fprintf(stderr, "%s: %s\n", argv[1], zzip_strerror(error));
 	return -1;
     }
 
