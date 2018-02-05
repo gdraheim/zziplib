@@ -2748,14 +2748,17 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(errors(run.errors)), 200)
     self.assertIn(": Success", run.errors)
     #
-    run = shell("cd {tmpdir} && ../{exe} -p {filename} ".format(**locals()),
-        returncodes = [0,3])
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
         returncodes = [0,3])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 10)
+    self.assertTrue(greps(run.errors, "Zipfile corrupted"))
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
+    #
+    run = shell("cd {tmpdir} && ../{exe} -p {filename} ".format(**locals()),
+        returncodes = [0,3])
+    self.assertTrue(greps(run.errors, "Zipfile corrupted"))
     self.rm_testdir()
   def test_65419(self):
     """ check $(CVE).zip  """
