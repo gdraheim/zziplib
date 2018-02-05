@@ -1472,10 +1472,9 @@ class ZZipTest(unittest.TestCase):
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
-        returncodes = [0,3])
+        returncodes = [3])
     self.assertLess(len(run.output), 1)
     self.assertLess(len(errors(run.errors)), 180)
-    self.assertTrue(greps(run.errors, "Zipfile corrupted"))
     self.rm_testdir()
   def test_59785_zipext_info_CVE_2017_5978(self):
     """ run info' unzip $(CVE_2017_5978).zip  """
@@ -2430,7 +2429,7 @@ class ZZipTest(unittest.TestCase):
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0,2])
     self.assertLess(len(run.output), 1)
-    self.assertTrue(greps(run.errors, "central directory not found"))
+    self.assertTrue(greps(run.errors, ".zip: No medium found"))
     self.rm_testdir()
   def test_63014(self):
     """ unzzip-zap -l $(CVE).zip  """
@@ -2566,7 +2565,7 @@ class ZZipTest(unittest.TestCase):
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0,2])
     self.assertLess(len(run.output), 1)
-    self.assertTrue(greps(run.errors, "central directory not found"))
+    self.assertTrue(greps(run.errors, ".zip: No medium found"))
     self.rm_testdir()
   def test_63114(self):
     """ unzzip-zap -l $(CVE).zip  """
@@ -2839,7 +2838,7 @@ class ZZipTest(unittest.TestCase):
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 2])
     self.assertLess(len(run.output), 1)
-    self.assertTrue(greps(run.errors, "central directory not found"))
+    self.assertTrue(greps(run.errors, ".zip: No medium found"))
     self.rm_testdir()
   def test_64844(self):
     """ unzzip-zap -l $(CVE).zip  """
