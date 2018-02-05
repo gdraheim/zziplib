@@ -98,6 +98,7 @@ static FILE* create_fopen(char* name, char* mode, int subdirs)
 
 static int unzzip_cat (int argc, char ** argv, int extract)
 {
+    int done = 0;
     int argn;
     ZZIP_DIR* disk;
     
@@ -122,6 +123,10 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	    char* name = entry->d_name;
 	    FILE* out = stdout;
 	    if (extract) out = create_fopen(name, "w", 1);
+	    if (! out) {
+	        done = EXIT_ERRORS;
+	        continue;
+	    }
 	    unzzip_cat_file (disk, name, out);
 	    if (extract) fclose(out);
 	}
@@ -149,6 +154,10 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	             mix_name[zip_name_len] = '/';
 	             strcpy(mix_name + zip_name_len + 1, name);
 	             if (extract) out = create_fopen(name, "w", 1);
+	             if (! out) {
+	                 done = EXIT_ERRORS;
+	                 continue;
+	             }
 		     fprintf(stderr, "%s %s -> %s\n", zip_name, name, mix_name);
 		     /* 'test1.zip' 'README' -> 'test1/README' */
 		     unzzip_cat_file (disk, mix_name, out);
@@ -159,7 +168,7 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	}
     }
     zzip_closedir(disk);
-    return 0;
+    return done;
 } 
 
 int unzzip_print (int argc, char ** argv)

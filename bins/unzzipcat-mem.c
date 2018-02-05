@@ -48,7 +48,7 @@ static void unzzip_mem_disk_cat_file(ZZIP_MEM_DISK* disk, char* name, FILE* out)
     ZZIP_DISK_FILE* file = zzip_mem_disk_fopen (disk, name);
     if (file) 
     {
-	char buffer[1024]; int len;
+	char buffer[1025]; int len;
 	while ((len = zzip_mem_disk_fread (buffer, 1, 1024, file))) 
 	{
 	    fwrite (buffer, 1, len, out);
@@ -87,6 +87,7 @@ static FILE* create_fopen(char* name, char* mode, int subdirs)
 
 static int unzzip_cat (int argc, char ** argv, int extract)
 {
+    int done;
     int argn;
     ZZIP_MEM_DISK* disk;
 
@@ -112,10 +113,14 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	    char* name = zzip_mem_entry_to_name (entry);
 	    FILE* out = stdout;
 	    if (extract) out = create_fopen(name, "w", 1);
+	    if (! out) {
+	        done = EXIT_ERRORS;
+	        continue;
+	    }
 	    unzzip_mem_disk_cat_file (disk, name, out);
 	    if (extract) fclose(out);
 	}
-	return 0;
+	return done;
     }
 
     if (argc == 3 && !extract)
@@ -140,13 +145,17 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	    {
 	        FILE* out = stdout;
 	        if (extract) out = create_fopen(name, "w", 1);
+	        if (! out) {
+	            done = EXIT_ERRORS;
+	            continue;
+	        }
 		unzzip_mem_disk_cat_file (disk, name, out);
 		if (extract) fclose(out);
 		break; /* match loop */
 	    }
 	}
     }
-    return 0;
+    return done;
 } 
 
 int unzzip_print (int argc, char ** argv)

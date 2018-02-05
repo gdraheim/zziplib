@@ -97,6 +97,7 @@ static FILE* create_fopen(char* name, char* mode, int subdirs)
 
 static int unzzip_cat (int argc, char ** argv, int extract)
 {
+    int done = 0;
     int argn;
     ZZIP_DIR* disk;
     zzip_error_t error;
@@ -121,10 +122,12 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	    char* name = entry.d_name;
 	    FILE* out = stdout;
 	    if (extract) out = create_fopen(name, "w", 1);
-	    if (out) {
-	        unzzip_cat_file (disk, name, out);
-	        if (extract) fclose(out);
+	    if (! out) {
+	        done = EXIT_ERRORS;
+	        continue;
 	    }
+	    unzzip_cat_file (disk, name, out);
+	    if (extract) fclose(out);
 	}
     }
     else
@@ -140,17 +143,19 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	        {
 	            FILE* out = stdout;
 	            if (extract) out = create_fopen(name, "w", 1);
-	            if (out) {
-		        unzzip_cat_file (disk, name, out);
-		        if (extract) fclose(out);
+		    if (! out) {
+		        done = EXIT_ERRORS;
+		        continue;
 		    }
+	            unzzip_cat_file (disk, name, out);
+	            if (extract) fclose(out);
 		    break; /* match loop */
 	        }
 	    }
 	}
     }
     zzip_dir_close(disk);
-    return 0;
+    return done;
 } 
 
 int unzzip_print (int argc, char ** argv)
