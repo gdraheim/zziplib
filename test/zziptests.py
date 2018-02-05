@@ -1444,7 +1444,8 @@ class ZZipTest(unittest.TestCase):
         returncodes = [0])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 300)
-    self.assertIn("..(nil)", run.errors)
+    if grep("DEBUG:", run.errors):
+        self.assertIn("findfirst (nil)", run.errors)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 0)
     self.rm_testdir()
@@ -1466,7 +1467,6 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 300)
     self.assertTrue(greps(run.errors, "Invalid or"))
-    # self.assertIn("..(nil)", run.errors)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 0)
     self.rm_testdir()
@@ -1779,7 +1779,8 @@ class ZZipTest(unittest.TestCase):
         returncodes = [0])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 200)
-    self.assertIn("..(nil)", run.errors)
+    if grep("DEBUG:", run.errors):
+        self.assertIn("findfirst (nil)", run.errors)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
     self.rm_testdir()
   def test_59753_zzipdir_mix_CVE_2017_5975(self):
