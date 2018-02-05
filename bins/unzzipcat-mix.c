@@ -126,7 +126,7 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	    FILE* out = stdout;
 	    if (extract) out = create_fopen(name, "w", 1);
 	    if (! out) {
-	        done = EXIT_ERRORS;
+	        if (errno != EISDIR) done = EXIT_ERRORS;
 	        continue;
 	    }
 	    unzzip_cat_file (disk, name, out);
@@ -157,7 +157,7 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	             strcpy(mix_name + zip_name_len + 1, name);
 	             if (extract) out = create_fopen(name, "w", 1);
 	             if (! out) {
-	                 done = EXIT_ERRORS;
+	                 if (errno != EISDIR) done = EXIT_ERRORS;
 	                 continue;
 	             }
 		     fprintf(stderr, "%s %s -> %s\n", zip_name, name, mix_name);

@@ -108,7 +108,7 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	    }
 	    if (extract) out = create_fopen(name, "w", 1);
 	    if (! out) {
-	        done = EXIT_ERRORS;
+	        if (errno != EISDIR) done = EXIT_ERRORS;
 	        continue;
 	    }
 	    unzzip_cat_file (disk, name, out);
@@ -141,7 +141,7 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	        FILE* out = stdout;
 	        if (extract) out = create_fopen(name, "w", 1);
 		if (! out) {
-		    done = EXIT_ERRORS;
+		    if (errno != EISDIR) done = EXIT_ERRORS;
 		    continue;
 		}
 		unzzip_cat_file (disk, name, out);
