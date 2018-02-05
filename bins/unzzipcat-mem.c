@@ -13,6 +13,7 @@
 #include <zzip/__mkdir.h>
 #include <zzip/__fnmatch.h>
 #include <zzip/__string.h>
+#include <zzip/__debug.h>
 #include "unzzipcat-zip.h"
 #include "unzzip-states.h"
 
@@ -104,7 +105,7 @@ static int unzzip_cat (int argc, char ** argv, int extract)
     if (argc == 2)
     {  /* print directory list */
 	ZZIP_MEM_ENTRY* entry = zzip_mem_disk_findfirst(disk);
-	fprintf(stderr, "..%p\n", entry);
+	DBG2("findfirst %p\n", entry);
 	for (; entry ; entry = zzip_mem_disk_findnext(disk, entry))
 	{
 	    char* name = zzip_mem_entry_to_name (entry);
