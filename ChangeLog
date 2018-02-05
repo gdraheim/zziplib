@@ -1,3 +1,7 @@
+2018-02-02  guidod  <guidod@gmx.de>
+    * fix a number of CVEs reported with special *.zip files
+    * the testsuite has been expanded to cover all the CVEs
+    * some minor doc updates referencing GitHub instead of sf.net
 
 2017-06-11  guidod  <guidod@gmx.de>
     * fix portability issues by introducing <zzip/__errno.h>
