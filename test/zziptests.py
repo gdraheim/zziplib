@@ -1267,13 +1267,14 @@ class ZZipTest(unittest.TestCase):
   def test_20595_zzextract_zap_test5_zip(self):
     """ run zzextract-zap on test5.zip 
         => coughs up a SEGFAULT in zzip_dir_close() ?!?"""
+    self.rm_testdir()
     zipfile = "test5.zip"
     getfile = "test5.zip"
     tmpdir = self.testdir()
     exe = self.bins("unzzip")
-    run = shell("cd {tmpdir} && ../{exe} ../{getfile} ".format(**locals()))
+    run = shell("cd {tmpdir} && ../{exe} ../{getfile} ".format(**locals()));
     self.assertTrue(tmpdir+'/subdir1/subdir2/file3-1024.txt')
-    self.rm_testdir()
+    # self.rm_testdir()
 
   url_CVE_2017_5977 = "https://github.com/asarubbo/poc/blob/master"
   zip_CVE_2017_5977 = "00153-zziplib-invalidread-zzip_mem_entry_extra_block"

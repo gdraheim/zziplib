@@ -76,10 +76,12 @@ static void makedirs(const char* name)
           char* dir_name = _zzip_strndup(name, p-name);
           makedirs(dir_name);
           free (dir_name);
-      } else {
-          _zzip_mkdir(name, 775);
-          errno = 0;
       }
+      if (_zzip_mkdir(name, 0775) == -1 && errno != EEXIST)
+      {
+          DBG3("while mkdir %s : %s", name, strerror(errno));
+      }
+      errno = 0;
 }
 
 static FILE* create_fopen(char* name, char* mode, int subdirs)

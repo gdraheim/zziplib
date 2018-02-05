@@ -13,6 +13,7 @@
 #include <zzip/__mkdir.h>
 #include <zzip/__string.h>
 #include <zzip/__fnmatch.h>
+#include <zzip/__debug.h>
 #include "unzzipcat-zip.h"
 #include "unzzip-states.h"
 
@@ -75,10 +76,12 @@ static void makedirs(const char* name)
           char* dir_name = _zzip_strndup(name, p-name);
           makedirs(dir_name);
           free (dir_name);
-      } else {
-          _zzip_mkdir(name, 775);
-          errno = 0;
+      } 
+      if (_zzip_mkdir(name, 0775) == -1 && errno != EEXIST)
+      {
+          DBG3("while mkdir %s : %s", name, strerror(errno));
       }
+      errno = 0;
 }
 
 static FILE* create_fopen(char* name, char* mode, int subdirs)
@@ -92,7 +95,7 @@ static FILE* create_fopen(char* name, char* mode, int subdirs)
           free (dir_name);
       }
    }
-   return fopen(name, mode);      
+   return fopen(name, mode);
 }
 
 static int unzzip_cat (int argc, char ** argv, int extract)
@@ -123,7 +126,8 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	    FILE* out = stdout;
 	    if (extract) out = create_fopen(name, "w", 1);
 	    if (! out) {
-	        done = EXIT_ERRORS;
+		DBG3("fopen' %s : %s", name, strerror(errno));
+	        if (errno != EISDIR) done = EXIT_ERRORS;
 	        continue;
 	    }
 	    unzzip_cat_file (disk, name, out);
@@ -144,7 +148,8 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	            FILE* out = stdout;
 	            if (extract) out = create_fopen(name, "w", 1);
 		    if (! out) {
-		        done = EXIT_ERRORS;
+			DBG3("fopen. %s : %s", name, strerror(errno));
+		        if (errno != EISDIR) done = EXIT_ERRORS;
 		        continue;
 		    }
 	            unzzip_cat_file (disk, name, out);
