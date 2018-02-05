@@ -98,6 +98,7 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 
     disk = zzip_mem_disk_open (argv[1]);
     if (! disk) {
+        DBG3("disk_open failed [%i] %s", errno, strerror(errno));
 	perror(argv[1]);
 	return exitcode(errno);
     }

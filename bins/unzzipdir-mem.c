@@ -6,6 +6,7 @@
  */
 
 #include <zzip/memdisk.h>
+#include <zzip/__debug.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -48,6 +49,7 @@ unzzip_list (int argc, char ** argv, int verbose)
     
     disk = zzip_mem_disk_open (argv[1]);
     if (! disk) {
+        DBG3("disk_open failed [%i] %s", errno, strerror(errno));
 	perror(argv[1]);
 	return exitcode(errno);
     }
@@ -55,6 +57,7 @@ unzzip_list (int argc, char ** argv, int verbose)
     if (argc == 2)
     {  /* list all */
 	ZZIP_MEM_ENTRY* entry = zzip_mem_disk_findfirst(disk);
+	DBG2("findfirst %p", entry);
 	for (; entry ; entry = zzip_mem_disk_findnext(disk, entry))
 	{
 	    char* name = zzip_mem_entry_to_name (entry);

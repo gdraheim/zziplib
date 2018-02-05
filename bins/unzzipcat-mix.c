@@ -13,6 +13,7 @@
 #include <zzip/__mkdir.h>
 #include <zzip/__string.h>
 #include <zzip/__fnmatch.h>
+#include <zzip/__debug.h>
 #include "unzzipcat-zip.h"
 #include "unzzip-states.h"
 
@@ -108,6 +109,7 @@ static int unzzip_cat (int argc, char ** argv, int extract)
     
     disk = zzip_opendir (argv[1]);
     if (! disk) {
+        DBG3("opendir failed [%i] %s", errno, strerror(errno));
 	perror(argv[1]);
 	return exitcode(errno);
     }
@@ -123,6 +125,7 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	    unzzip_cat_file (disk, name, out);
 	    if (extract) fclose(out);
 	}
+	DBG2("readdir done %s", strerror(errno));
     }
     else
     {   /* list only the matching entries - in order of zip directory */

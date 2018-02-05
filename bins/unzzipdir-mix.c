@@ -6,6 +6,7 @@
  */
 
 #include <zzip/lib.h>
+#include <zzip/__debug.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -64,7 +65,7 @@ unzzip_list (int argc, char ** argv, int verbose)
 {
     int argn;
     ZZIP_DIR* disk;
-    
+
     if (argc == 1)
     {
         printf (__FILE__" version "ZZIP_PACKAGE" "ZZIP_VERSION"\n");
@@ -73,6 +74,7 @@ unzzip_list (int argc, char ** argv, int verbose)
     
     disk = zzip_opendir (argv[1]);
     if (! disk) {
+        DBG3("opendir failed [%i] %s", errno, strerror(errno));    
 	perror(argv[1]);
 	return exitcode(errno);
     }
@@ -95,6 +97,7 @@ unzzip_list (int argc, char ** argv, int verbose)
         	printf ("%lli/%lli %s %s\n", usize, csize, defl, name);
 	    }
 	}
+	DBG2("readdir done %s", strerror(errno));
     }
     else
     {   /* list only the matching entries - in order of zip directory */
@@ -122,6 +125,7 @@ unzzip_list (int argc, char ** argv, int verbose)
 		}
 	    }
 	}
+	DBG2("readdir done %s", strerror(errno));
     }
     zzip_closedir(disk);
     return 0;
