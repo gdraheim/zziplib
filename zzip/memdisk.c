@@ -228,28 +228,33 @@ zzip_mem_entry_new(ZZIP_DISK * disk, ZZIP_DISK_ENTRY * entry)
         zzip_size_t /*    */ ext2_len = zzip_file_header_get_extras(header);
         char *_zzip_restrict ext2_ptr = zzip_file_header_to_extras(header);
 
-        if (ext1_ptr + ext1_len >= disk->endbuf ||
-            ext2_ptr + ext2_len >= disk->endbuf)
+        if (ext1_len > 0 && ext1_len <= 65535)
         {
-            errno = EBADMSG; /* format error CVE-2017-5978 */
-            goto error; /* zzip_mem_entry_free(item); return 0; */
+            if (ext1_ptr + ext1_len >= disk->endbuf)
+            {
+                errno = EBADMSG;
+                goto error; /* zzip_mem_entry_free(item); return 0; */
+            } else {
+                void *mem = malloc(ext1_len);
+                if (! mem) goto error; /* errno = ENOMEM */
+                item->zz_ext[1] = mem;
+                item->zz_extlen[1] = ext1_len;
+                memcpy(mem, ext1_ptr, ext1_len);
+            }
         }
-
-        if (ext1_len)
+        if (ext2_len > 0 && ext2_len <= 65535)
         {
-            void *mem = malloc(ext1_len);
-            if (! mem) goto error; /* errno = ENOMEM */
-            item->zz_ext[1] = mem;
-            item->zz_extlen[1] = ext1_len;
-            memcpy(mem, ext1_ptr, ext1_len);
-        }
-        if (ext2_len)
-        {
-            void *mem = malloc(ext2_len);
-            if (! mem) goto error; /* errno = ENOMEM */
-            item->zz_ext[2] = mem;
-            item->zz_extlen[2] = ext2_len;
-            memcpy(mem, ext2_ptr, ext2_len);
+            if (ext2_ptr + ext2_len >= disk->endbuf)
+            {
+                errno = EBADMSG;
+                goto error; /* zzip_mem_entry_free(item); return 0; */
+            } else {
+                void *mem = malloc(ext2_len);
+                if (! mem) goto error; /* errno = ENOMEM */
+                item->zz_ext[2] = mem;
+                item->zz_extlen[2] = ext2_len;
+                memcpy(mem, ext2_ptr, ext2_len);
+            }
         }
     }
     {
