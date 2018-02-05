@@ -76,9 +76,9 @@ struct _zzip_mem_entry {
     zzip_size_t       zz_extlen[3]; /* the extra blocks are NOT converted */
 };                                
 
-#define _zzip_mem_disk_findfirst(_d_) ((_d_)->list)
-#define _zzip_mem_disk_findnext(_d_,_e_) (!(_e_)?(_d_)->list:(_e_)->zz_next)
-#define _zzip_mem_entry_findnext(_e_) ((_e_)->zz_next)
+#define _zzip_mem_disk_findfirst(_d_)   (!(_d_) ? 0 : ((_d_)->list))
+#define _zzip_mem_disk_findnext(_d_,_e_) (!(_e_) ? (!(_d_) ? 0 : ((_d_)->list)) : ((_e_)->zz_next))
+#define _zzip_mem_entry_findnext(_e_) (!(_e_) ? 0 : ((_e_)->zz_next))
 
 #ifndef USE_INLINE
 #define zzip_mem_disk_findfirst _zzip_mem_disk_findfirst
@@ -100,10 +100,10 @@ zzip_mem_entry_findnext(ZZIP_MEM_ENTRY* entry) {
     return _zzip_mem_entry_findnext(entry); }
 #endif
 
-#define _zzip_mem_entry_to_name(_e_) ((_e_)->zz_name)
-#define _zzip_mem_entry_to_comment(_e_) ((_e_)->zz_comment)
-#define _zzip_mem_entry_strdup_name(_e_) (strdup((_e_)->zz_name))
-#define _zzip_mem_entry_to_data(_e_) ((_e_)->zz_data)
+#define _zzip_mem_entry_to_name(_e_) (!(_e_) ? 0 : ((_e_)->zz_name))
+#define _zzip_mem_entry_to_comment(_e_) (!(_e_) ? 0 : ((_e_)->zz_comment))
+#define _zzip_mem_entry_strdup_name(_e_) (!(_e_) ? 0 : (strdup((_e_)->zz_name)))
+#define _zzip_mem_entry_to_data(_e_) (!(_e_) ? 0 : ((_e_)->zz_data))
 
 #ifndef USE_INLINE
 #define zzip_mem_entry_to_name _zzip_mem_entry_to_name

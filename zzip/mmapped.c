@@ -460,7 +460,7 @@ zzip_disk_findfirst(ZZIP_DISK * disk)
         }
         if (zzip_disk_entry_check_magic(root))
         {
-            DBG1("found the disk root");
+            DBG2("found the disk root %p", root);
             return (struct zzip_disk_entry *) root;
         }
     } ____;
