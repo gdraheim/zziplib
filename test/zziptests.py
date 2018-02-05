@@ -2280,11 +2280,11 @@ class ZZipTest(unittest.TestCase):
     file_url = self.url_CVE_2018_10
     download_raw(file_url, filename, tmpdir)
     exe = self.bins("zzdir")
-    run = shell("{exe} {tmpdir}/{filename} ".format(**locals()),
-        returncodes = [0,3])
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [1])
     self.assertLess(len(run.output), 1)
     self.assertLess(len(errors(run.errors)), 80)
-    self.assertIn(": Success", run.errors)
+    self.assertTrue(greps(run.errors, "Invalid or"))
   def test_63019(self):
     """ check $(CVE).zip  """
     tmpdir = self.testdir()
