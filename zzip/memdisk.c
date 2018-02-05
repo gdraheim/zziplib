@@ -107,7 +107,10 @@ zzip_mem_disk_fdopen(int fd)
        return 0;
     }
     ___ ZZIP_MEM_DISK *dir = zzip_mem_disk_new();
-    zzip_mem_disk_load(dir, disk);
+    if (zzip_mem_disk_load(dir, disk) == -1)
+    {
+       debug2("unable to load disk fd %s", fd);
+    }
     return dir;
     ____;
 }
@@ -124,7 +127,10 @@ zzip_mem_disk_buffer(char *buffer, size_t buflen)
        return 0;
     }
     ___ ZZIP_MEM_DISK *dir = zzip_mem_disk_new();
-    zzip_mem_disk_load(dir, disk);
+    if (zzip_mem_disk_load(dir, disk) == -1)
+    {
+       debug2("unable to load disk buf %p", buffer);
+    }
     return dir;
     ____;
 }

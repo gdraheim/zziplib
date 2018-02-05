@@ -626,7 +626,13 @@ zzip_disk_entry_fopen(ZZIP_DISK * disk, ZZIP_DISK_ENTRY * entry)
     file->avail = zzip_file_header_usize(header);
 
     if (! file->avail || zzip_file_header_data_stored(header))
-        { file->stored = zzip_file_header_to_data (header); return file; }
+    { 
+         file->stored = zzip_file_header_to_data (header);
+         DBG2("stored size %i", (int) file->avail);
+         if (file->stored + file->avail >= disk->endbuf)
+             goto error;
+         return file; 
+    }
 
     file->stored = 0;
     file->zlib.opaque = 0;
@@ -635,15 +641,20 @@ zzip_disk_entry_fopen(ZZIP_DISK * disk, ZZIP_DISK_ENTRY * entry)
     file->zlib.avail_in = zzip_file_header_csize(header);
     file->zlib.next_in = zzip_file_header_to_data(header);
 
-    if (! zzip_file_header_data_deflated(header) ||
-        inflateInit2(&file->zlib, -MAX_WBITS) != Z_OK)
-    {
-        free (file);
-        errno = EBADMSG;
-        return 0; 
-    }
+    DBG2("compressed size %i", (int) file->zlib.avail_in);
+    if (file->zlib.next_in + file->zlib.avail_in >= disk->endbuf)
+         goto error;
+
+    if (! zzip_file_header_data_deflated(header))
+        goto error;
+    if (inflateInit2(&file->zlib, -MAX_WBITS) != Z_OK)
+        goto error;
 
     return file;
+error:
+    free (file);
+    errno = EBADMSG;
+    return 0; 
     ____;
 }
 
@@ -682,6 +693,12 @@ zzip_disk_fread(void *ptr, zzip_size_t sized, zzip_size_t nmemb,
         size = file->avail;
     if (file->stored)
     {
+        if (file->stored + size >= file->endbuf)
+        {
+            DBG1("try to read beyond end of file");
+            return 0; /* ESPIPE */
+        }
+        DBG3("copy stored %p %i", file->stored, (int)size);
         memcpy(ptr, file->stored, size);
         file->stored += size;
         file->avail -= size;
