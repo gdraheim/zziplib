@@ -2201,6 +2201,18 @@ class ZZipTest(unittest.TestCase):
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
     self.rm_testdir()
+  def test_63018(self):
+    """ zzdir on $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2018_10
+    file_url = self.url_CVE_2018_10
+    download_raw(file_url, filename, tmpdir)
+    exe = self.bins("zzdir")
+    run = shell("{exe} {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0,3])
+    self.assertLess(len(run.output), 1)
+    self.assertLess(len(errors(run.errors)), 80)
+    self.assertIn(": Success", run.errors)
   def test_63019(self):
     """ check $(CVE).zip  """
     tmpdir = self.testdir()
