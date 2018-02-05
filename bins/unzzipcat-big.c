@@ -94,15 +94,23 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 
     if (argc == 2)
     {  /* print directory list */
+	int warnings = 0;
 	ZZIP_ENTRY* entry = zzip_entry_findfirst(disk);
 	for (; entry ; entry = zzip_entry_findnext(entry))
 	{
 	    char* name = zzip_entry_strdup_name (entry);
 	    FILE* out = stdout;
+	    if (! name) {
+	        warnings += 1;
+	        continue;
+	    }
 	    if (extract) out = create_fopen(name, "w", 1);
 	    unzzip_cat_file (disk, name, out);
 	    if (extract) fclose(out);
 	    free (name);
+	}
+	if (warnings) {
+	   return EXIT_WARNINGS;
 	}
 	return 0;
     }

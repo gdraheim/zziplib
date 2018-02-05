@@ -1490,7 +1490,6 @@ class ZZipTest(unittest.TestCase):
     self.assertIn('attempt to seek before beginning of zipfile', run.errors)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
     self.rm_testdir()
-  @unittest.expectedFailure
   def test_59786_zzipext_big_CVE_2017_5978(self):
     """ run unzzip-big $(CVE_2017_5978).zip  """
     tmpdir = self.testdir()
@@ -1499,10 +1498,11 @@ class ZZipTest(unittest.TestCase):
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-big")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-        returncodes = [0])
+        returncodes = [0,1])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 1)
-    self.assertEqual(os.path.getsize(tmpdir+"/test"), 0)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 0)
     self.rm_testdir()
   def test_59787_zzipext_mem_CVE_2017_5978(self):
     """ run unzzip-mem $(CVE_2017_5978).zip  """
@@ -2184,7 +2184,7 @@ class ZZipTest(unittest.TestCase):
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
     self.rm_testdir()
-  @unittest.expectedFailure
+  # @unittest.expectedFailure
   def test_59806_zzipext_big_CVE_2017_5980(self):
     """ run unzzip-big $(CVE_2017_5980).zip  """
     tmpdir = self.testdir()
@@ -2193,7 +2193,7 @@ class ZZipTest(unittest.TestCase):
     download(file_url, filename, tmpdir)
     exe = self.bins("unzzip-big")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-        returncodes = [0])
+        returncodes = [0,1])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 1)
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
