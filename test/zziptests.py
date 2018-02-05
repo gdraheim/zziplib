@@ -2366,7 +2366,7 @@ class ZZipTest(unittest.TestCase):
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0,2])
     self.assertLess(len(run.output), 1)
-    self.assertTrue(greps(run.errors, ".zip: No medium found"))
+    self.assertTrue(greps(run.errors, "Invalid or"))
     #
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
         returncodes = [0,2])
