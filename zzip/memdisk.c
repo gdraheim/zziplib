@@ -51,17 +51,6 @@
 #define debug4(msg, arg1, arg2, arg3) 
 #endif
 
-static const char *error[] = {
-    "Ok",
-#   define _zzip_mem_disk_open_fail 1
-    "zzip_mem_disk_open: zzip_disk_open did fail",
-#   define _zzip_mem_disk_fdopen_fail 2
-    "zzip_mem_disk_fdopen: zzip_disk_mmap did fail"
-#   define _zzip_mem_disk_buffer_fail 3
-    "zzip_mem_disk_buffer: zzip_disk_buffer did fail",
-    0
-};
-
 #define ZZIP_EXTRA_zip64 0x0001
 typedef struct _zzip_extra_zip64
 {                               /* ZIP64 extended information extra field */
@@ -93,7 +82,10 @@ zzip_mem_disk_open(char *filename)
 {
     ZZIP_DISK *disk = zzip_disk_open(filename);
     if (! disk)
-        { perror(error[_zzip_mem_disk_open_fail]); return 0; }
+    { 
+       debug2("can not open disk file %s", filename);
+       return 0;
+    }
     ___ ZZIP_MEM_DISK *dir = zzip_mem_disk_new();
     if (zzip_mem_disk_load(dir, disk) == -1)
     {
@@ -110,7 +102,10 @@ zzip_mem_disk_fdopen(int fd)
 {
     ZZIP_DISK *disk = zzip_disk_mmap(fd);
     if (! disk)
-        { perror(error[_zzip_mem_disk_fdopen_fail]); return 0; }
+    { 
+       debug2("can not open disk fd %i", fd);
+       return 0;
+    }
     ___ ZZIP_MEM_DISK *dir = zzip_mem_disk_new();
     zzip_mem_disk_load(dir, disk);
     return dir;
@@ -124,7 +119,10 @@ zzip_mem_disk_buffer(char *buffer, size_t buflen)
 {
     ZZIP_DISK *disk = zzip_disk_buffer(buffer, buflen);
     if (! disk)
-        { perror(error[_zzip_mem_disk_buffer_fail]); return 0; }
+    { 
+       debug2("can not open disk buf %p", buffer);
+       return 0;
+    }
     ___ ZZIP_MEM_DISK *dir = zzip_mem_disk_new();
     zzip_mem_disk_load(dir, disk);
     return dir;
