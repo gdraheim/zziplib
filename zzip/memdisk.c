@@ -306,7 +306,14 @@ zzip_mem_entry_find_extra_block(ZZIP_MEM_ENTRY * entry, short datatype, zzip_siz
         char* ext_end = ext + entry->zz_extlen[i];
         if (ext)
         {
-            while (ext + zzip_extra_block_headerlength <= ext_end)
+	    /*
+	     * Make sure that
+	     * 1) the extra block header
+	     * AND
+	     * 2) the block we're looking for
+	     * fit into the extra block!
+	     */
+            while (ext + zzip_extra_block_headerlength + blocksize <= ext_end)
             {
                 if (datatype == zzip_extra_block_get_datatype(ext))
                 {

@@ -458,6 +458,12 @@ zzip_disk_findfirst(ZZIP_DISK * disk)
             errno = EBADMSG;
             return 0;
         }
+	if (root >= disk->endbuf)
+	{
+	    DBG1("root behind endbuf should be impossible");
+	    errno = EBADMSG;
+	    return 0;
+	}
         if (zzip_disk_entry_check_magic(root))
         {
             DBG1("found the disk root");
