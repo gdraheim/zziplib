@@ -414,7 +414,7 @@ zzip_disk_findfirst(ZZIP_DISK * disk)
     for (; p >= disk->buffer; p--)
     {
         zzip_byte_t *root;      /* (struct zzip_disk_entry*) */
-        if (zzip_disk_trailer_check_magic(p))
+        if (zzip_disk_trailer_check_magic(p) && (p + sizeof(struct zzip_disk_trailer)) <= disk->endbuf)
         {
             struct zzip_disk_trailer *trailer = (struct zzip_disk_trailer *) p;
             zzip_size_t rootseek = zzip_disk_trailer_get_rootseek(trailer);
@@ -431,17 +431,17 @@ zzip_disk_findfirst(ZZIP_DISK * disk)
                  * central directory was written directly before the trailer:*/
                 root = p - rootsize;
             }
-        } else if (zzip_disk64_trailer_check_magic(p))
+        } else if (zzip_disk64_trailer_check_magic(p) && (p + sizeof(struct zzip_disk64_trailer)) <= disk->endbuf)
         {
             struct zzip_disk64_trailer *trailer =
                 (struct zzip_disk64_trailer *) p;
+            zzip_size_t rootseek = zzip_disk64_trailer_get_rootseek(trailer);
             if (sizeof(void *) < 8)
             {
                 DBG1("disk64 trailer in non-largefile part");
                 errno = EFBIG;
                 return 0;
             }
-            zzip_size_t rootseek = zzip_disk64_trailer_get_rootseek(trailer);
             DBG2("disk64 rootseek at %lli", (long long)rootseek);
             root = disk->buffer + rootseek;
             if (root > p)

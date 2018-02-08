@@ -59,7 +59,7 @@ static void makedirs(const char* name)
           makedirs(dir_name);
           free (dir_name);
       } else {
-          _zzip_mkdir(name, 775);
+          _zzip_mkdir(name, 0775);
           errno = 0;
       }
 }
@@ -104,8 +104,11 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	    char* name = zzip_mem_entry_to_name (entry);
 	    FILE* out = stdout;
 	    if (extract) out = create_fopen(name, "w", 1);
-	    unzzip_mem_disk_cat_file (disk, name, out);
-	    if (extract) fclose(out);
+	    if (out != NULL)
+	    {
+		unzzip_mem_disk_cat_file (disk, name, out);
+		if (extract) fclose(out);
+	    }
 	}
 	return 0;
     }
@@ -132,8 +135,11 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	    {
 	        FILE* out = stdout;
 	        if (extract) out = create_fopen(name, "w", 1);
-		unzzip_mem_disk_cat_file (disk, name, out);
-		if (extract) fclose(out);
+		if (out != NULL)
+		{
+		    unzzip_mem_disk_cat_file (disk, name, out);
+		    if (extract) fclose(out);
+		}
 		break; /* match loop */
 	    }
 	}
