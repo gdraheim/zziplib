@@ -414,16 +414,19 @@ zzip_disk_findfirst(ZZIP_DISK * disk)
     for (; p >= disk->buffer; p--)
     {
         zzip_byte_t *root;      /* (struct zzip_disk_entry*) */
+	zzip_size_t rootsize;	/* Size of root central directory */
+
         if (zzip_disk_trailer_check_magic(p))
         {
             struct zzip_disk_trailer *trailer = (struct zzip_disk_trailer *) p;
             zzip_size_t rootseek = zzip_disk_trailer_get_rootseek(trailer);
+	    rootsize = zzip_disk_trailer_get_rootsize(trailer);
+
             root = disk->buffer + rootseek;
             DBG2("disk rootseek at %lli", (long long)rootseek);
             if (root > p)
             {
                 /* the first disk_entry is after the disk_trailer? can't be! */
-                zzip_size_t rootsize = zzip_disk_trailer_get_rootsize(trailer);
                 DBG2("have rootsize at %lli", (long long)rootsize);
                 if (disk->buffer + rootsize > p)
                     continue;
@@ -442,6 +445,7 @@ zzip_disk_findfirst(ZZIP_DISK * disk)
                 return 0;
             }
             zzip_size_t rootseek = zzip_disk64_trailer_get_rootseek(trailer);
+	    rootsize = zzip_disk64_trailer_get_rootsize(trailer);
             DBG2("disk64 rootseek at %lli", (long long)rootseek);
             root = disk->buffer + rootseek;
             if (root > p)
@@ -458,7 +462,7 @@ zzip_disk_findfirst(ZZIP_DISK * disk)
             errno = EBADMSG;
             return 0;
         }
-	if (root >= disk->endbuf)
+	if (root >= disk->endbuf || (root + rootsize) >= disk->endbuf)
 	{
 	    DBG1("root behind endbuf should be impossible");
 	    errno = EBADMSG;
