@@ -114,7 +114,7 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	{
 	    char* name = zzip_mem_entry_to_name (entry);
 	    FILE* out = stdout;
-	    if (extract) out = create_fopen(name, "w", 1);
+	    if (extract) out = create_fopen(name, "wb", 1);
 	    if (! out) {
 	        if (errno != EISDIR) done = EXIT_ERRORS;
 	        continue;
@@ -146,7 +146,7 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 		FNM_NOESCAPE|FNM_PATHNAME|FNM_PERIOD))
 	    {
 	        FILE* out = stdout;
-	        if (extract) out = create_fopen(name, "w", 1);
+	        if (extract) out = create_fopen(name, "wb", 1);
 	        if (! out) {
 	            if (errno != EISDIR) done = EXIT_ERRORS;
 	            continue;

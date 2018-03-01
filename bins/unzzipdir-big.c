@@ -35,7 +35,7 @@ unzzip_list (int argc, char ** argv, int verbose)
     int argn;
     FILE* disk;
 
-    disk = fopen (argv[1], "r");
+    disk = fopen (argv[1], "rb");
     if (! disk) {
 	perror(argv[1]);
 	return exitcode(errno);

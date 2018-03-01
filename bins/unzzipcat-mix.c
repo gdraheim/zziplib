@@ -56,7 +56,7 @@ static int exitcode(int e)
 
 static void unzzip_cat_file(ZZIP_DIR* disk, char* name, FILE* out)
 {
-    ZZIP_FILE* file = zzip_fopen(name, "r");
+    ZZIP_FILE* file = zzip_fopen(name, "rb");
     if (file) 
     {
 	char buffer[1024]; int len;
@@ -124,7 +124,7 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	{
 	    char* name = entry->d_name;
 	    FILE* out = stdout;
-	    if (extract) out = create_fopen(name, "w", 1);
+	    if (extract) out = create_fopen(name, "wb", 1);
 	    if (! out) {
 	        if (errno != EISDIR) done = EXIT_ERRORS;
 	        continue;
@@ -155,7 +155,7 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	             memcpy(mix_name, zip_name, zip_name_len);
 	             mix_name[zip_name_len] = '/';
 	             strcpy(mix_name + zip_name_len + 1, name);
-	             if (extract) out = create_fopen(name, "w", 1);
+	             if (extract) out = create_fopen(name, "wb", 1);
 	             if (! out) {
 	                 if (errno != EISDIR) done = EXIT_ERRORS;
 	                 continue;

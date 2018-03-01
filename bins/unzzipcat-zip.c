@@ -124,7 +124,7 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	{
 	    char* name = entry.d_name;
 	    FILE* out = stdout;
-	    if (extract) out = create_fopen(name, "w", 1);
+	    if (extract) out = create_fopen(name, "wb", 1);
 	    if (! out) {
 		DBG3("fopen' %s : %s", name, strerror(errno));
 	        if (errno != EISDIR) done = EXIT_ERRORS;
@@ -146,7 +146,7 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 		    FNM_NOESCAPE|FNM_PATHNAME|FNM_PERIOD))
 	        {
 	            FILE* out = stdout;
-	            if (extract) out = create_fopen(name, "w", 1);
+	            if (extract) out = create_fopen(name, "wb", 1);
 		    if (! out) {
 			DBG3("fopen. %s : %s", name, strerror(errno));
 		        if (errno != EISDIR) done = EXIT_ERRORS;
