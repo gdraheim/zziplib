@@ -12975,7 +12975,8 @@ _ACEOF
 
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking size of short" >&5
+if test "xno" = "x$ac_cv_header_stdint_h" ; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking size of short" >&5
 $as_echo_n "checking size of short... " >&6; }
 if ${ac_cv_sizeof_short+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -13015,7 +13016,7 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking size of int" >&5
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking size of int" >&5
 $as_echo_n "checking size of int... " >&6; }
 if ${ac_cv_sizeof_int+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -13055,7 +13056,7 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking size of long" >&5
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking size of long" >&5
 $as_echo_n "checking size of long... " >&6; }
 if ${ac_cv_sizeof_long+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -13095,7 +13096,7 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking size of int *" >&5
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking size of int *" >&5
 $as_echo_n "checking size of int *... " >&6; }
 if ${ac_cv_sizeof_int_p+:} false; then :
   $as_echo_n "(cached) " >&6
@@ -13135,6 +13136,7 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
+fi
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether byte ordering is bigendian" >&5
 $as_echo_n "checking whether byte ordering is bigendian... " >&6; }
 if ${ac_cv_c_bigendian+:} false; then :

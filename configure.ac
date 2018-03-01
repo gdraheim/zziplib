@@ -108,10 +108,12 @@ dnl AC_TYPE_SSIZE_T
 AC_CHECK_TYPE(ssize_t,int)
 AC_CHECK_TYPE(off64_t,_zzip_off_t)
 AC_CHECK_TYPE(__int64,long long)
-AC_COMPILE_CHECK_SIZEOF([short])
-AC_COMPILE_CHECK_SIZEOF([int])
-AC_COMPILE_CHECK_SIZEOF([long])
-AC_COMPILE_CHECK_SIZEOF([int *])
+if test "xno" = "x$ac_cv_header_stdint_h" ; then
+  AC_COMPILE_CHECK_SIZEOF([short])
+  AC_COMPILE_CHECK_SIZEOF([int])
+  AC_COMPILE_CHECK_SIZEOF([long])
+  AC_COMPILE_CHECK_SIZEOF([int *])
+fi
 AC_C_BIGENDIAN
 AX_CHECK_ALIGNED_ACCESS_REQUIRED
 dnl -------------------------------------------------------------
