@@ -28,9 +28,9 @@ test0.zip: $(README)
 	- test -d tmp || mkdir tmp
 	- cp $(README) tmp/README
 	- rm $@
-	- cd tmp && zip ../test0.zip README
+	- cd tmp && $(MKZIP) ../test0.zip README
 	- rm -r tmp
-	- test -s test0.zip && cp -v test0.zip $(srcdir)/test.zip
+	test -s test0.zip && cp -v test0.zip $(srcdir)/test.zip
 	
 test.zip: $(README)
 	- $(MAKE) test0.zip
