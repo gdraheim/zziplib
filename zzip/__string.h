@@ -1,8 +1,6 @@
 #ifndef __ZZIP_INTERNAL_STRING_H
 #define __ZZIP_INTERNAL_STRING_H
 
-#include <stdlib.h>
-
 #ifdef __linux__
 #define _GNU_SOURCE _glibc_developers_are_idiots_to_call_strndup_gnu_specific_
 #endif
@@ -18,9 +16,10 @@
 #if defined ZZIP_HAVE_STRNLEN || defined strnlen
 #define _zzip_strnlen strnlen
 #else
+#include <stdlib.h>
 
 /* if your system does not have strnlen: */
-zzip__new__ size_t
+zzip__new__ static size_t
 _zzip_strnlen(const char *p, size_t maxlen)
 {
     const char * stop = (char *)memchr(p, '\0', maxlen);
