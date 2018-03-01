@@ -125,6 +125,9 @@
 /* The number of bytes in type int */
 #undef SIZEOF_INT
 
+/* The number of bytes in type int * */
+#undef SIZEOF_INT_P
+
 /* The number of bytes in type long */
 #undef SIZEOF_LONG
 
