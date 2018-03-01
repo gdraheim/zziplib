@@ -7,6 +7,7 @@
 
 #include <zzip/lib.h>
 #include <zzip/__debug.h>
+#include <zzip/__fnmatch.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,12 +19,6 @@
 #endif
 #ifdef ZZIP_HAVE_IO_H
 #include <io.h>
-#endif
-
-#ifdef ZZIP_HAVE_FNMATCH_H
-#include <fnmatch.h>
-#else
-#define fnmatch(x,y,z) strcmp(x,y)
 #endif
 
 static const char* comprlevel[] = {
@@ -108,7 +103,7 @@ unzzip_list (int argc, char ** argv, int verbose)
 	    for (argn=1; argn < argc; argn++)
 	    {
 		if (! fnmatch (argv[argn], name, 
-			       FNM_NOESCAPE|FNM_PATHNAME|FNM_PERIOD))
+			       _zzip_FNM_NOESCAPE|_zzip_FNM_PATHNAME|_zzip_FNM_PERIOD))
 		{
 		    long long usize = entry->st_size;
 		    if (!verbose)

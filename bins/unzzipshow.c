@@ -6,14 +6,9 @@
  */
 
 #include <zzip/fseeko.h>
+#include <zzip/__fnmatch.h>
 #include <stdlib.h>
 #include <string.h>
-
-#ifdef ZZIP_HAVE_FNMATCH_H
-#include <fnmatch.h>
-#else
-#define fnmatch(x,y,z) strcmp(x,y)
-#endif
 
 static const char usage[] = 
 {
@@ -99,7 +94,7 @@ main (int argc, char ** argv)
 	{
 	    char* name = zzip_entry_strdup_name (entry);
 	    if (! fnmatch (argv[argn], name, 
-			   FNM_NOESCAPE|FNM_PATHNAME|FNM_PERIOD))
+			   _zzip_FNM_NOESCAPE|_zzip_FNM_PATHNAME|_zzip_FNM_PERIOD))
 		zzip_cat_file (disk, name, stdout);
 	    free (name);
 	}
