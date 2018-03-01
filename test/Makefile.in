@@ -667,7 +667,7 @@ testzip testzips : test.zip test1.zip test2.zip test3.zip
 test0.zip: $(README)
 	- test -d tmp || mkdir tmp
 	- cp $(README) tmp/README
-	- rm $@
+	- rm -f $@
 	- cd tmp && $(MKZIP) ../test0.zip README
 	- rm -r tmp
 	test -s test0.zip && cp -v test0.zip $(srcdir)/test.zip
