@@ -152,6 +152,25 @@ manpages.tar : zziplib.xml zzipmmapped.xml zzipfseeko.xml
 	; echo '$(DELETE); rm man3/*.3 ; rmdir man3' \
 	;       $(DELETE); rm man3/*.3 ; rmdir man3  \
 	; fi ; true
+	@ if test "$(XMLTO)" = ":" \
+	; then echo going to regenerate "$@" in subdir "'"man"'" \
+	; echo 'test ! -d man3 || rm man3/* ; test -d man3 || mkdir man3' \
+	;       test ! -d man3 || rm man3/* ; test -d man3 || mkdir man3  \
+	; echo  '$(srcdir)/dbk2man.py -d man3 zziplib.xml' \
+	; python $(srcdir)/dbk2man.py -d man3 zziplib.xml  \
+	; echo  '$(srcdir)/dbk2man.py -d man3 zzipmmapped.xml' \
+	; python $(srcdir)/dbk2man.py -d man3 zzipmmapped.xml  \
+	; echo  '$(srcdir)/dbk2man.py -d man3 zzipfseeko.xml' \
+	; python $(srcdir)/dbk2man.py -d man3 zzipfseeko.xml  \
+	; if test -d man3/man3; then mv man3 man3_ \
+	;   mv man3_/man3 man3; rm -r man3_; fi \
+	; echo 'chmod 664 man3/*.3' \
+	;       chmod 664 man3/*.3  \
+	; echo '$(PAX_TAR_CREATE) "$@" man3/' \
+	;       $(PAX_TAR_CREATE) "$@" man3/  \
+	; echo '$(DELETE); rm man3/*.3 ; rmdir man3' \
+	;       $(DELETE); rm man3/*.3 ; rmdir man3  \
+	; fi ; true
 	@ if test -s $@ \
 	; then echo cp $@ zziplib-$@ "(saved)"; cp $@ zziplib-$@ \
 	; else echo cp $(srcdir)/zziplib-$@ $@; cp $(srcdir)/zziplib-$@ $@ \
