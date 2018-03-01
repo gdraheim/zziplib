@@ -94,7 +94,7 @@ main (int argc, char ** argv)
 	{
 	    char* name = zzip_entry_strdup_name (entry);
 	    if (! _zzip_fnmatch (argv[argn], name, 
-			   _zzip_FNM_NOESCAPE|_zzip_FNM_PATHNAME|_zzip_FNM_PERIOD))
+		  _zzip_FNM_NOESCAPE|_zzip_FNM_PATHNAME|_zzip_FNM_PERIOD))
 		zzip_cat_file (disk, name, stdout);
 	    free (name);
 	}

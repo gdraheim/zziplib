@@ -99,8 +99,8 @@ unzzip_list (int argc, char ** argv, int verbose)
 	    char* name = zzip_mem_entry_to_name (entry);
 	    for (argn=1; argn < argc; argn++)
 	    {
-		if (! fnmatch (argv[argn], name, 
-			       _zzip_FNM_NOESCAPE|_zzip_FNM_PATHNAME|_zzip_FNM_PERIOD))
+		if (! _zzip_fnmatch (argv[argn], name, 
+		      _zzip_FNM_NOESCAPE|_zzip_FNM_PATHNAME|_zzip_FNM_PERIOD))
 		{
 		    char* name = zzip_mem_entry_to_name (entry);
 		    long long usize = entry->zz_usize;

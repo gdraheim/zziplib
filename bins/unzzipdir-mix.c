@@ -102,8 +102,8 @@ unzzip_list (int argc, char ** argv, int verbose)
 	    char* name = entry->d_name;
 	    for (argn=1; argn < argc; argn++)
 	    {
-		if (! fnmatch (argv[argn], name, 
-			       _zzip_FNM_NOESCAPE|_zzip_FNM_PATHNAME|_zzip_FNM_PERIOD))
+		if (! _zzip_fnmatch (argv[argn], name, 
+		      _zzip_FNM_NOESCAPE|_zzip_FNM_PATHNAME|_zzip_FNM_PERIOD))
 		{
 		    long long usize = entry->st_size;
 		    if (!verbose)
