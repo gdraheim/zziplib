@@ -100,7 +100,7 @@ AC_CHECK_HEADERS(stdint.h unistd.h windows.h winnt.h winbase.h sys/int_types.h)
 AC_CHECK_HEADERS(sys/types.h sys/mman.h sys/stat.h sys/param.h) dnl posix'ish
 AC_CHECK_HEADERS(io.h direct.h zlib.h byteswap.h)
 AC_CHECK_HEADERS(fnmatch.h)
-AC_CHECK_FUNCS( strcasecmp strndup )
+AC_CHECK_FUNCS( strcasecmp strnlen strndup )
 
 AC_TYPE_OFF_T
 AC_TYPE_SIZE_T
