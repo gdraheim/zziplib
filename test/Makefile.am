@@ -56,7 +56,7 @@ check-readme : $(zzcat)  test.zip
 	test -s test.zip || cp $(srcdir)/test.zip test.zip
 	@ echo :$@: checking $(zzcat) test/README 
 	@ $(zzcat) $(srcdir)/README >test.out
-	@ if diff test.out $(README) >$(NULL) \
+	@ if diff --strip-trailing-cr test.out $(README) >$(NULL) \
 	; then rm test.out ; echo check OK ; true \
 	; else rm test.out ; echo check FAIL ; false ; fi
 
@@ -82,8 +82,8 @@ check-sfx : zzshowme$(EXEEXT)
 	echo :$@: "./zzshowme readme >readme.out 2>readme.err" 
 	export LD_LIBRARY_PATH="../zzip/.libs:$$LD_LIBRARY_PATH" \
 	; ./zzshowme readme >readme.out 2>readme.err ; true
-	@ echo 'diff readme.out $(README) || grep "libzzip-" readme.err' \
-	; if test -s readme.out ; then diff readme.out $(README) \
+	@ echo 'diff --strip-trailing-cr readme.out $(README) || grep "libzzip-" readme.err' \
+	; if test -s readme.out ; then diff --strip-trailing-cr readme.out $(README) \
         ; else grep "libzzip-" readme.err || echo "readme.out is empty!" ; fi
 	rm readme.out readme.err
 
