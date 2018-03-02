@@ -2461,7 +2461,8 @@ class ZZipTest(unittest.TestCase):
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
-    self.assertLess(len(run.output), 1)
+    self.assertIn("2 aUT", run.output) # filename contains a control-character
+    self.assertGreater(len(run.output), 20)
     self.assertLess(len(errors(run.errors)), 1)
     #
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
