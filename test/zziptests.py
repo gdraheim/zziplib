@@ -1438,7 +1438,7 @@ class ZZipTest(unittest.TestCase):
         returncodes = [0])
     self.assertLess(len(run.output), 1)
     self.assertLess(len(errors(run.errors)), 180)
-    self.assertIn("zzip_mem_disk_load : unable to load entry", run.errors)
+    # self.assertIn("zzip_mem_disk_load : unable to load entry", run.errors)
     self.assertIn("zzip_mem_disk_open : unable to load disk", run.errors)
     #
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
@@ -1446,7 +1446,7 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 300)
     if grep("DEBUG:", run.errors):
-        self.assertIn("findfirst (nil)", run.errors)
+        self.assertIn("zzip_mem_disk_open : unable to load disk", run.errors)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 0)
     self.rm_testdir()
