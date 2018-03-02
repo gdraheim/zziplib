@@ -191,8 +191,7 @@ am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(top_srcdir)/uses/ltmain.sh $(top_srcdir)/uses/missing \
 	$(top_srcdir)/uses/mkinstalldirs COPYING.LIB ChangeLog README \
 	TODO uses/compile uses/config.guess uses/config.sub \
-	uses/depcomp uses/install-sh uses/ltmain.sh uses/missing \
-	uses/mkinstalldirs
+	uses/install-sh uses/ltmain.sh uses/missing uses/mkinstalldirs
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -279,6 +278,7 @@ LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
+LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
