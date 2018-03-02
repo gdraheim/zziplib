@@ -55,7 +55,7 @@ check-readme : $(zzcat)  test.zip
 	@ test -f test.zip || $(MAKE) test0.zip 
 	test -s test.zip || cp $(srcdir)/test.zip test.zip
 	@ echo :$@: checking $(zzcat) test/README 
-	@ $(zzcat) test/README >test.out
+	@ $(zzcat) $(srcdir)/README >test.out
 	@ if diff test.out $(README) >$(NULL) \
 	; then rm test.out ; echo check OK ; true \
 	; else rm test.out ; echo check FAIL ; false ; fi
