@@ -2518,7 +2518,7 @@ class ZZipTest(unittest.TestCase):
     download_raw(file_url, filename, tmpdir)
     shell("ls -l {tmpdir}/{filename}".format(**locals()))
     size = os.path.getsize(os.path.join(tmpdir, filename))
-    self.assertEqual(size, 152)
+    self.assertEqual(size, 141)
 
   url_CVE_2018_14 = "https://github.com/ProbeFuzzer/poc/blob/master/zziplib"
   zip_CVE_2018_14 = "zziplib_0-13-67_zzdir_memory-alignment-errors___zzip_fetch_disk_trailer.zip"
