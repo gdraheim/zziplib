@@ -1781,7 +1781,7 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 200)
     if grep("DEBUG:", run.errors):
-        self.assertIn("findfirst (nil)", run.errors)
+        self.assertIn("no header in entry", run.errors)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
     self.rm_testdir()
   def test_59753_zzipdir_mix_CVE_2017_5975(self):
