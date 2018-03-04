@@ -19,6 +19,7 @@ readme = "README"
 mkzip = "zip"
 unzip = "unzip"
 exeext = ""
+bindir = os.path.join("..", "bins")
 
 def shell_string(command):
    return " ".join(["'%s'" % arg.replace("'","\\'") for arg in command])
@@ -166,7 +167,7 @@ class ZZipTest(unittest.TestCase):
   def bins(self, name):
     if name == "unzip": return unzip
     if name == "mkzip": return mkzip
-    exe = os.path.join("..", "bins", name)
+    exe = os.path.join(bindir, name)
     if exeext: exe += exeext
     return exe
   def gentext(self, size):
@@ -3034,7 +3035,9 @@ class ZZipTest(unittest.TestCase):
 if __name__ == "__main__":
   import optparse
   _o = optparse.OptionParser("%prog [options] test_xxx")
-  _o.add_option("-b", "--topsrcdir", metavar="DIR", default=topsrcdir,
+  _o.add_option("-b", "--bindir", metavar="DIR", default=bindir,
+    help="path to the bindir to use [%default]")
+  _o.add_option("-s", "--topsrcdir", metavar="DIR", default=topsrcdir,
     help="path to the top srcdir / unpack directory [%default]")
   _o.add_option("-t", "--testdatadir", metavar="DIR", default=testdatadir,
     help="path where temporary testdata is created [%default]")
