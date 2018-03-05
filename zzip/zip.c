@@ -91,7 +91,7 @@ _zzip_inline static char *__zzip_aligned4(char *p);
 
 #ifdef ZZIP_HARDEN
 
-/*
+/* internal.
  * check for inconsistent values in trailer and prefer lower seek value
  * - we fix values assuming the root directory was written at the end
  * and it is just before the zip trailer. Therefore, ...
@@ -168,7 +168,7 @@ __debug_dir_hdr(struct zzip_dir_hdr *hdr)
 /* #define ZZIP_BUFSIZ 64  / * for testing */
 #endif
 
-/**
+/** internal.
  * This function is used by => zzip_file_open. It tries to find
  * the zip's central directory info that is usually a few
  * bytes off the end of the file.
@@ -393,7 +393,7 @@ __zzip_aligned4(char *p)
     return p;
 }
 
-/**
+/** internal.
  * This function is used by => zzip_file_open, it is usually called after
  * => __zzip_find_disk_trailer. It will parse the zip's central directory
  * information and create a zziplib private directory table in
@@ -598,8 +598,8 @@ zzip_get_default_ext(void)
     return ext;
 }
 
-/**
- * allocate a new ZZIP_DIR handle and do basic
+/** start usage. also: zzip_dir_free
+ * This function allocates a new ZZIP_DIR handle and do basic
  * initializations before usage by => zzip_dir_fdopen
  * => zzip_dir_open => zzip_file_open or through
  * => zzip_open
@@ -620,7 +620,7 @@ zzip_dir_alloc_ext_io(zzip_strings_t * ext, const zzip_plugin_io_t io)
 }
 
 /** => zzip_dir_alloc_ext_io
- * this function is obsolete - it was generally used for implementation
+ * This function is obsolete - it was generally used for implementation
  * and exported to let other code build on it. It is now advised to
  * use => zzip_dir_alloc_ext_io now on explicitly, just set that second
  * argument to zero to achieve the same functionality as the old style.
@@ -631,8 +631,8 @@ zzip_dir_alloc(zzip_strings_t * fileext)
     return zzip_dir_alloc_ext_io(fileext, 0);
 }
 
-/**
- * will free the zzip_dir handle unless there are still
+/** => zzip_dir_alloc_ext_io
+ * This function will free the zzip_dir handle unless there are still
  * zzip_files attached (that may use its cache buffer).
  * This is the inverse of => zzip_dir_alloc , and both
  * are helper functions used implicitly in other zzipcalls
@@ -673,9 +673,9 @@ zzip_dir_close(ZZIP_DIR * dir)
     return zzip_dir_free(dir);
 }
 
-/**
- * used by the => zzip_dir_open and zzip_opendir(2) call. Opens the
- * zip-archive as specified with the fd which points to an
+/** fd reopen.
+ * This function is used by the => zzip_dir_open and zzip_opendir(2) call. 
+ * Opens the zip-archive as specified with the fd which points to an
  * already openend file. This function then search and parse
  * the zip's central directory.
  *
@@ -754,7 +754,7 @@ __zzip_dir_parse(ZZIP_DIR * dir)
     return rv;
 }
 
-/**
+/** internal.
  * This function will attach any of the .zip extensions then
  * trying to open it the with => open(2). This is a helper
  * function for => zzip_dir_open, => zzip_opendir and => zzip_open.
@@ -790,9 +790,9 @@ __zzip_try_open(zzip_char_t * filename, int filemode,
     return -1;
 }
 
-/**
- * Opens the zip-archive (if available).
- * the two ext_io arguments will default to use posix io and
+/** open zip-archive.
+ * This function opens the given zip-archive (if available).
+ * The two ext_io arguments will default to use posix io and
  * a set of default fileext that can atleast add .zip ext itself.
  */
 ZZIP_DIR *
