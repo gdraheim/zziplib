@@ -40,6 +40,13 @@ def esc(text):
     text = text.replace(".", "\\&.")
     text = text.replace("-", "\\-")
     return text
+def unescape(text):
+    text = text.replace('&lt;', '<')
+    text = text.replace('&gt;', '>')
+    text = text.replace('&quot;', '"')
+    text = text.replace('&amp;', '&')
+    return text
+
 
 def refentryinfo2(refentry, title):
     date, productname, manvolnum, refentrytitle = "", "", "", ""
@@ -170,7 +177,7 @@ def refsections2(refentry, title = ""):
     return text
 
 def cleanpara(para):
-   item = ET.tostring(para)
+   item = unescape(ET.tostring(para))
    item = item.replace("\n", " ")
    item = item.replace("  ", " ")
    item = item.replace("  ", " ")
@@ -184,7 +191,7 @@ def cleanpara(para):
    item = item.replace("</function>", "\\fP")
    item = item.replace("<literal>", "\\fI")
    item = item.replace("</literal>", "\\fP")
-   return item 
+   return item
 
 def styleinfo():
    styles = []
