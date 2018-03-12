@@ -64,6 +64,7 @@ AC_SUBST(ZLIB_LDIR)
 # -----------------------------------------------------------------------
 AX_SPEC_DEFAULTS
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION)
+AX_CHECK_ENABLE_DEBUG()
 dnl test ".$CFLAGS" = "." && CFLAGS=""
 AC_PROG_CC
 dnl test ".$CFLAGS" = "." && test "$GCC" = "yes" && CFLAGS="-O3"
