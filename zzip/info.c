@@ -58,6 +58,7 @@ zzip_dirfd(ZZIP_DIR * dir)
     return dir->fd;
 }
 
+#define LENGTH(x) (sizeof(x) / sizeof(*x))
 static const char* comprlevel[] = {
     "stored",   "shrunk",   "redu:1",   "redu:2",   "redu:3",   "redu:4",
     "impl:N",   "toknze",   "defl:N",   "defl:B",   "impl:B" };
@@ -69,7 +70,7 @@ static const char* comprlevel[] = {
 zzip_char_t *
 zzip_compr_str(int compr)
 {
-    if (0 <= compr && compr < sizeof(comprlevel))
+    if (0 <= compr && compr < LENGTH(comprlevel))
     {
         return comprlevel[compr];
     } else if (0 < compr && compr < 256) 
