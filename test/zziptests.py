@@ -40,9 +40,17 @@ def shell(command, shell=True, calls=False, cwd=None, env=None, lang=None, retur
                 env[name] = lang
         env["LANG"] = lang # defines message format
         env["LC_ALL"] = lang # other locale formats
-    build_libs = os.path.dirname(os.path.dirname(os.path.realpath(command[0])))+"/zzip/.libs"
-    if os.path.isdir(build_libs):
-        env["LD_LIBRARY_PATH"] = build_libs
+    zzip_libs = "/zzip/.libs"
+    zzip_cmds = command[0].split(" ")[0]
+    build_lib1 = os.path.dirname(os.path.realpath(zzip_cmds))
+    build_lib2 = os.path.dirname(build_lib1)
+    build_lib3 = os.path.dirname(build_lib2)
+    if os.path.isdir(build_lib1 + zzip_libs):
+        env["LD_LIBRARY_PATH"] = build_lib1 + zzip_libs
+    elif os.path.isdir(build_lib2 + zzip_libs):
+        env["LD_LIBRARY_PATH"] = build_lib2 + zzip_libs
+    elif os.path.isdir(build_lib3 + zzip_libs):
+        env["LD_LIBRARY_PATH"] = build_lib3 + zzip_libs
     try:
         output, errors = "", ""
         if calls:
@@ -168,6 +176,12 @@ class ZZipTest(unittest.TestCase):
     if name == "unzip": return unzip
     if name == "mkzip": return mkzip
     exe = os.path.join(bindir, name)
+    if exeext: exe += exeext
+    return exe
+  def gdb_bins(self, name):
+    if name == "unzip": return unzip
+    if name == "mkzip": return mkzip
+    exe = os.path.join(bindir, ".libs", name)
     if exeext: exe += exeext
     return exe
   def gentext(self, size):
@@ -2982,6 +2996,82 @@ class ZZipTest(unittest.TestCase):
     size = os.path.getsize(os.path.join(tmpdir, filename))
     self.assertEqual(size, 360)
 
+
+  url_CVE_2018_42 = "https://github.com/fantasy7082/image_test/blob/master"
+  zip_CVE_2018_42 = "c006-unknown-add-main"
+  def test_65430(self):
+    """ info unzip -l $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2018_42
+    file_url = self.url_CVE_2018_42
+    download_raw(file_url, filename, tmpdir)
+    exe = self.bins("unzip")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0, 80])
+    self.assertIn("missing 18 bytes in zipfile", run.errors)
+    self.assertLess(len(run.output), 200)
+    self.assertLess(len(errors(run.errors)), 800)
+    #
+    run = shell("cd {tmpdir} && {exe} -o {filename}".format(**locals()),
+        returncodes = [3])
+    self.assertLess(len(run.output), 200)
+    self.assertLess(len(errors(run.errors)), 800)
+    self.assertIn("missing 18 bytes in zipfile", run.errors)
+    self.assertIn('expected central file header signature not found', run.errors)
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+    self.rm_testdir()
+  def test_65431(self):
+    """ zzdir $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2018_42
+    file_url = self.url_CVE_2018_42
+    download_raw(file_url, filename, tmpdir)
+    exe = self.bins("zzdir")
+    run = shell("{exe} {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0])
+    logg.info("OUT %s", run.output)
+    logg.info("ERR %s", run.errors)
+    self.assertIn(" zipped ", run.output)
+    self.rm_testdir()
+
+  url_CVE_2018_43 = "https://github.com/fantasy7082/image_test/blob/master"
+  zip_CVE_2018_43 = "c008-main-unknown-de"
+  def test_65440(self):
+    """ info unzip -l $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2018_43
+    file_url = self.url_CVE_2018_43
+    download_raw(file_url, filename, tmpdir)
+    exe = self.bins("unzip")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0, 80])
+    self.assertIn("missing 18 bytes in zipfile", run.errors)
+    self.assertLess(len(run.output), 200)
+    self.assertLess(len(errors(run.errors)), 800)
+    #
+    run = shell("cd {tmpdir} && {exe} -o {filename}".format(**locals()),
+        returncodes = [3])
+    self.assertLess(len(run.output), 200)
+    self.assertLess(len(errors(run.errors)), 800)
+    self.assertIn("missing 18 bytes in zipfile", run.errors)
+    self.assertIn('expected central file header signature not found', run.errors)
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+    self.rm_testdir()
+  def test_65441(self):
+    """ zzdir $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2018_43
+    file_url = self.url_CVE_2018_43
+    download_raw(file_url, filename, tmpdir)
+    exe = self.bins("zzdir")
+    run = shell("{exe} {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0])
+    logg.info("OUT %s", run.output)
+    logg.info("ERR %s", run.errors)
+    self.assertIn(" zipped ", run.output)
+    self.rm_testdir()
 
   def test_91000_zzshowme_check_sfx(self):
     """ create an *.exe that can extract its own zip content """
