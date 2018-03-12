@@ -1347,7 +1347,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(" 3 test", run.output)
     #
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-        returncodes = [2])
+        returncodes = [0])
     self.assertLess(len(run.output), 30)
     self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
     self.rm_testdir()
@@ -1457,7 +1457,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn("zzip_mem_disk_open : unable to load disk", run.errors)
     #
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-        returncodes = [2])
+        returncodes = [0])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 300)
     if grep("DEBUG:", run.errors):
@@ -1571,7 +1571,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(" 3 a", run.output)
     #
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-        returncodes = [2])
+        returncodes = [0])
     self.assertLess(len(run.output), 30)
     self.assertEqual(os.path.getsize(tmpdir+"/a"), 3)
     self.rm_testdir()
@@ -1680,7 +1680,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(" 3 test", run.output)
     #
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-        returncodes = [2])
+        returncodes = [0])
     self.assertLess(len(run.output), 30)
     self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
     self.rm_testdir()
@@ -1792,7 +1792,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn("zzip_mem_disk_open : unable to load disk", run.errors)
     #
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-        returncodes = [2])
+        returncodes = [0])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 200)
     if grep("DEBUG:", run.errors):
@@ -1909,7 +1909,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn("3 test", run.output)
     #
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-        returncodes = [2])
+        returncodes = [0])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 30) # TODO
     self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
@@ -2022,7 +2022,7 @@ class ZZipTest(unittest.TestCase):
     self.assertTrue(greps(run.errors, "unable to load disk"))
     #
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-        returncodes = [2])
+        returncodes = [0])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 200)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
@@ -2135,7 +2135,7 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(errors(run.errors)), 1)
     #
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-        returncodes = [2])
+        returncodes = [0])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 10)
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
@@ -2245,7 +2245,7 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(errors(run.errors)), 1)
     #
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-        returncodes = [2])
+        returncodes = [0])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 10)
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
@@ -2367,7 +2367,7 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(errors(run.errors)), 1)
     #
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-        returncodes = [2])
+        returncodes = [0])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 10)
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
@@ -2481,7 +2481,7 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(errors(run.errors)), 1)
     #
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-        returncodes = [2])
+        returncodes = [0])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 10)
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
@@ -2591,7 +2591,7 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(run.output), 1)
     #
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-        returncodes = [2])
+        returncodes = [0])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 10)
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
@@ -2714,7 +2714,7 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(errors(run.errors)), 1)
     #
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-        returncodes = [2])
+        returncodes = [0])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 10)
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
@@ -2824,7 +2824,7 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(errors(run.errors)), 1)
     #
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-        returncodes = [2])
+        returncodes = [0])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 10)
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
@@ -2938,14 +2938,14 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(errors(run.errors)), 1)
     #
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-        returncodes = [2])
+        returncodes = [0])
     self.assertLess(len(run.output), 30)
     self.assertLess(len(errors(run.errors)), 10)
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
     #
     run = shell("cd {tmpdir} && ../{exe} -p {filename} ".format(**locals()),
-        returncodes = [2])
+        returncodes = [0])
     # self.rm_testdir()
   def test_65423(self):
     """ unzzip-mix -l $(CVE).zip  """
