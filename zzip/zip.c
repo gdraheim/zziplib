@@ -318,6 +318,8 @@ __zzip_fetch_disk_trailer(int fd, zzip_off_t filesize,
                     trailer->zz_rootseek = zzip_disk_trailer_rootseek(orig);
                     trailer->zz_rootsize = zzip_disk_trailer_rootsize(orig);
 #                  endif
+                    if (trailer->zz_rootseek < 0 || trailer->zz_rootsize < 0)
+                       return(ZZIP_CORRUPTED); // forged value
 
                     __fixup_rootseek(offset + tail - mapped, trailer);
 		    /*
@@ -344,6 +346,8 @@ __zzip_fetch_disk_trailer(int fd, zzip_off_t filesize,
                         zzip_disk64_trailer_finalentries(orig);
                     trailer->zz_rootseek = zzip_disk64_trailer_rootseek(orig);
                     trailer->zz_rootsize = zzip_disk64_trailer_rootsize(orig);
+                    if (trailer->zz_rootseek < 0 || trailer->zz_rootsize < 0)
+                       return(ZZIP_CORRUPTED); // forged value
 		    /*
 		     * "extract data from files archived in a single zip file."
 		     * So the file offsets must be within the current ZIP archive!
