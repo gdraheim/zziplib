@@ -643,6 +643,8 @@ PKG_CONFIG
 RESOLVES
 ZZIPLIB_LDFLAGS
 ZIPTESTS
+ASAN_CFLAGS
+ASAN_LIBS
 SDL_GENERATE
 SDL
 ZLIB_VERSION
@@ -811,6 +813,7 @@ with_debug
 with_lowstk
 enable_mmap
 enable_sdl
+with_asan
 with_defines
 enable_frame_pointer
 enable_enable_default_pkgconfigdir
@@ -1492,6 +1495,8 @@ Optional Packages:
   --with-debug            debug messages in library
 
   --with-lowstk           limited thread stack
+
+  --with-asan             compile with adress sanitizer
 
   --with-defines          easy,harden,allow_modulo_entries
 
@@ -15368,6 +15373,33 @@ $as_echo "no, $enable_sdl" >&6; } ;;
 $as_echo "enabled SDL generation of... $SDL_GENERATE" >&6; }
    fi
 fi
+
+
+
+# ----------------------------------------------------------------
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether using address sanitizer" >&5
+$as_echo_n "checking whether using address sanitizer... " >&6; }
+
+# Check whether --with-asan was given.
+if test "${with_asan+set}" = set; then :
+  withval=$with_asan; case "${withval}" in
+		yes|no) with_asan="$withval" ;;
+		*) { $as_echo "$as_me:${as_lineno-$LINENO}: result: oops" >&5
+$as_echo "oops" >&6; }
+                   as_fn_error $? "bad value ${withval} for --with-asan" "$LINENO" 5 ;;
+       esac
+else
+  with_asan="no"
+fi
+
+ASAN_LIBS=""
+ASAN_CFLAGS=""
+if test ".$with_asan" = ".yes" ; then
+    ASAN_LIBS="-lasan"
+    ASAN_CFLAGS="-fsanitize=address"
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $with_asan, $ASAN_CFLAGS" >&5
+$as_echo "$with_asan, $ASAN_CFLAGS" >&6; }
 
 
 # ---------------------------------------------------------------

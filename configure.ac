@@ -283,6 +283,25 @@ else
 fi
 AC_SUBST([SDL])
 AC_SUBST([SDL_GENERATE])
+
+# ----------------------------------------------------------------
+AC_MSG_CHECKING(whether using address sanitizer)
+AC_ARG_WITH(asan, AC_HELP_STRING(
+    [--with-asan],[compile with adress sanitizer])
+    , [case "${withval}" in
+		yes|no) with_asan="$withval" ;;
+		*) AC_MSG_RESULT(oops)
+                   AC_MSG_ERROR(bad value ${withval} for --with-asan) ;;
+       esac], [with_asan="no"])
+ASAN_LIBS=""
+ASAN_CFLAGS=""
+if test ".$with_asan" = ".yes" ; then
+    ASAN_LIBS="-lasan"
+    ASAN_CFLAGS="-fsanitize=address"
+fi
+AC_MSG_RESULT([$with_asan, $ASAN_CFLAGS])
+AC_SUBST([ASAN_LIBS])
+AC_SUBST([ASAN_CFLAGS])
 # ---------------------------------------------------------------
 AC_MSG_CHECKING(running extra tests on make check)
 if test "MKZIP" != ":" ; then
