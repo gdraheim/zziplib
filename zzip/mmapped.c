@@ -654,6 +654,8 @@ zzip_disk_entry_fopen(ZZIP_DISK * disk, ZZIP_DISK_ENTRY * entry)
     DBG2("compressed size %i", (int) file->zlib.avail_in);
     if (file->zlib.next_in + file->zlib.avail_in >= disk->endbuf)
          goto error;
+    if (file->zlib.next_in < disk->buffer)
+         goto error;
 
     if (! zzip_file_header_data_deflated(header))
         goto error;

@@ -521,11 +521,20 @@ zzip_mem_entry_fopen(ZZIP_MEM_DISK * dir, ZZIP_MEM_ENTRY * entry)
     file->zlib.avail_in = zzip_mem_entry_csize(entry);
     file->zlib.next_in = zzip_mem_entry_to_data(entry);
 
+    debug2("compressed size %i", (int) file->zlib.avail_in);
+    if (file->zlib.next_in + file->zlib.avail_in >= file->endbuf)
+         goto error;
+    if (file->zlib.next_in < file->buffer)
+         goto error;
+
     if (! zzip_mem_entry_data_deflated(entry) ||
         inflateInit2(&file->zlib, -MAX_WBITS) != Z_OK)
         { free (file); return 0; }
 
     return file;
+error:
+    errno = EBADMSG;
+    return NULL;
 }
 
 /** => zzip_mem_entry_open
