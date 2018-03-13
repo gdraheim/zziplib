@@ -1,4 +1,3 @@
-
 /*
  * Author:
  *      Guido Draheim <guidod@gmx.de>
@@ -422,6 +421,9 @@ __zzip_parse_root_directory(int fd,
     zzip_off64_t zz_rootseek = _disk_trailer_rootseek(trailer);
     __correct_rootseek(zz_rootseek, zz_rootsize, trailer);
 
+    if (zz_entries < 0 || zz_rootseek < 0 || zz_rootseek < 0)
+        return ZZIP_CORRUPTED;
+
     hdr0 = (struct zzip_dir_hdr *) malloc(zz_rootsize);
     if (! hdr0)
         return ZZIP_DIRSIZE;
@@ -465,8 +467,9 @@ __zzip_parse_root_directory(int fd,
 #     endif
 
         if (fd_map)
-            { d = (void*)(fd_map+zz_fd_gap+zz_offset); } /* fd_map+fd_gap==u_rootseek */
-        else
+        {
+            d = (void*)(fd_map+zz_fd_gap+zz_offset); /* fd_map+fd_gap==u_rootseek */
+        } else
         {
             if (io->fd.seeks(fd, zz_rootseek + zz_offset, SEEK_SET) < 0)
                 return ZZIP_DIR_SEEK;
