@@ -3198,6 +3198,43 @@ class ZZipTest(unittest.TestCase):
     size = os.path.getsize(os.path.join(tmpdir, filename))
     self.assertEqual(size, 56)
 
+  url_CVE_2018_41 = "https://github.com/fantasy7082/image_test/blob/master"
+  zip_CVE_2018_41 = "c005-bus-zzip_parse_root_directory" # CVE-2018-7726.
+  def test_65460(self):
+    """ info unzip -l $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2018_41
+    file_url = self.url_CVE_2018_41
+    download_raw(file_url, filename, tmpdir)
+    exe = self.bins("unzip")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0, 3])
+    self.assertIn("missing 20 bytes in zipfile", run.errors)
+    self.assertLess(len(run.output), 200)
+    self.assertLess(len(errors(run.errors)), 800)
+    #
+    run = shell("cd {tmpdir} && {exe} -o {filename}".format(**locals()),
+        returncodes = [3])
+    self.assertLess(len(run.output), 200)
+    self.assertLess(len(errors(run.errors)), 800)
+    self.assertIn("missing 20 bytes in zipfile", run.errors)
+    self.assertIn('attempt to seek before beginning of zipfile', run.errors)
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+    self.rm_testdir()
+  def test_65461(self):
+    """ zzdir $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2018_41
+    file_url = self.url_CVE_2018_41
+    download_raw(file_url, filename, tmpdir)
+    exe = self.bins("zzdir")
+    run = shell("{exe} {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0])
+    logg.info("OUT %s", run.output)
+    logg.info("ERR %s", run.errors)
+    self.assertIn(" zipped ", run.output)
+    self.rm_testdir()
 
 
   def test_91000_zzshowme_check_sfx(self):
