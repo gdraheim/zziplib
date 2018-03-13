@@ -3356,6 +3356,53 @@ class ZZipTest(unittest.TestCase):
     size = os.path.getsize(os.path.join(tmpdir, filename))
     self.assertEqual(size, 82347)
 
+  url_CVE_2018_40 = "https://github.com/fantasy7082/image_test/blob/master"
+  zip_CVE_2018_40 = "002-mem-leaks-zip"
+  def test_65480(self):
+    """ info unzip -l $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2018_40
+    file_url = self.url_CVE_2018_40
+    download_raw(file_url, filename, tmpdir)
+    exe = self.bins("unzip")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0, 80])
+    self.assertIn("missing 21 bytes in zipfile", run.errors)
+    self.assertLess(len(run.output), 500)
+    self.assertLess(len(errors(run.errors)), 800)
+    #
+    run = shell("cd {tmpdir} && {exe} -o {filename}".format(**locals()),
+        returncodes = [3])
+    self.assertLess(len(run.output), 500)
+    self.assertLess(len(errors(run.errors)), 800)
+    self.assertIn("missing 21 bytes in zipfile", run.errors)
+    self.assertIn('expected central file header signature not found', run.errors)
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+    self.rm_testdir()
+  def test_65482(self):
+    """ unzzip-mem -l $(CVE).zip """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2018_40
+    file_url = self.url_CVE_2018_40
+    download_raw(file_url, filename, tmpdir)
+    if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
+    exe = self.bins("unzzip-mem")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 1500)
+    self.assertLess(len(errors(run.errors)), 1)
+    #
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [120])
+    self.assertLess(len(run.output), 1500)
+    self.assertLess(len(errors(run.errors)), 10)
+    # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
+    self.assertFalse(os.path.exists(tmpdir+"/test"))
+    #
+    run = shell("cd {tmpdir} && ../{exe} -p {filename} ".format(**locals()),
+        returncodes = [120])
+    self.rm_testdir()
 
   def test_91000_zzshowme_check_sfx(self):
     """ create an *.exe that can extract its own zip content """
