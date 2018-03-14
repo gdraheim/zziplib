@@ -68,10 +68,8 @@ unzzip_list (int argc, char ** argv, int verbose)
 		printf ("%lli/%lli %s %s\n", csize, usize, defl, name);
 	    }
 	}
-	return 0;
     }
-
-    if (argc == 3)
+    else if (argc == 3)
     {  /* list from one spec */
 	ZZIP_MEM_ENTRY* entry = 0;
 	while ((entry = zzip_mem_disk_findmatch(disk, argv[2], entry, 0, 0)))
@@ -89,9 +87,8 @@ unzzip_list (int argc, char ** argv, int verbose)
 		printf ("%lli/%lli %s %s\n", csize, usize, defl, name);
 	    }
 	}
-	return 0;
     }
-
+    else
     {   /* list only the matching entries - in order of zip directory */
 	ZZIP_MEM_ENTRY* entry = zzip_mem_disk_findfirst(disk);
 	for (; entry ; entry = zzip_mem_disk_findnext(disk, entry))
@@ -118,8 +115,9 @@ unzzip_list (int argc, char ** argv, int verbose)
 		}
 	    }
 	}
-	return 0;
     }
+    zzip_mem_disk_close(disk);
+    return EXIT_OK;
 } 
 
 int 
