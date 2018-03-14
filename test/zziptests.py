@@ -3394,14 +3394,14 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(errors(run.errors)), 1)
     #
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-        returncodes = [120])
+        returncodes = [0])
     self.assertLess(len(run.output), 1500)
     self.assertLess(len(errors(run.errors)), 10)
     # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
     self.assertFalse(os.path.exists(tmpdir+"/test"))
     #
     run = shell("cd {tmpdir} && ../{exe} -p {filename} ".format(**locals()),
-        returncodes = [120])
+        returncodes = [0])
     self.rm_testdir()
 
   def test_91000_zzshowme_check_sfx(self):
