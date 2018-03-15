@@ -421,7 +421,7 @@ __zzip_parse_root_directory(int fd,
     zzip_off64_t zz_rootseek = _disk_trailer_rootseek(trailer);
     __correct_rootseek(zz_rootseek, zz_rootsize, trailer);
 
-    if (zz_entries < 0 || zz_rootseek < 0 || zz_rootseek < 0)
+    if (zz_entries < 0 || zz_rootseek < 0 || zz_rootsize < 0)
         return ZZIP_CORRUPTED;
 
     hdr0 = (struct zzip_dir_hdr *) malloc(zz_rootsize);
