@@ -19,12 +19,12 @@ COPYING
 
 LICENSING
   If you can not use a dynalinked library according to LGPL rules,
-  then look at docs/copying.htm for a few hints. Generally the LGPL 
+  then look at docs/copying.htm for a few hints. Generally the LGPL
   has a way for staticlinking as well as the MPL has a way. Anyway,
   special (paid) licenses can be negotiated with the copyright holder.
 
 HOMEPAGE
-  The zziplib project has moved to GitHub where you can find the 
+  The zziplib project has moved to GitHub where you can find the
   last release tags now => https://github.com/gdraheim/zziplib
   The zziplib project was originally hosted at SourceForge with
   the documentation at http://zziplib.sf.net - this is a bit
@@ -42,7 +42,7 @@ INSTALLATION
 
 MAINTENANCE
   The zziplib library is intentionally a lightweight interface to
-  zip files. The author take patches but please consider to put 
+  zip files. The author take patches but please consider to put
   complex extensions into separate modules rather than implanting them
   right into the core of the library engine. All Patches and Bug Reports
   should be sent to Guido Draheim <guidod@gmx.de>.
