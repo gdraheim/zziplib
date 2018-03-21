@@ -82,7 +82,8 @@ int __zzip_fetch_disk_trailer(int fd, zzip_off_t filesize,
 int __zzip_parse_root_directory(int fd,
                                 struct _disk_trailer *trailer,
                                 struct zzip_dir_hdr **hdr_return,
-                                zzip_plugin_io_t io);
+                                zzip_plugin_io_t io,
+				zzip_off_t filesize);
 
 _zzip_inline static char *__zzip_aligned4(char *p);
 
@@ -406,7 +407,8 @@ int
 __zzip_parse_root_directory(int fd,
                             struct _disk_trailer *trailer,
                             struct zzip_dir_hdr **hdr_return,
-                            zzip_plugin_io_t io)
+                            zzip_plugin_io_t io,
+			    zzip_off_t filesize);
 {
     auto struct zzip_disk_entry dirent;
     struct zzip_dir_hdr *hdr;
@@ -420,6 +422,9 @@ __zzip_parse_root_directory(int fd,
     zzip_off64_t zz_rootsize = _disk_trailer_rootsize(trailer);
     zzip_off64_t zz_rootseek = _disk_trailer_rootseek(trailer);
     __correct_rootseek(zz_rootseek, zz_rootsize, trailer);
+
+    if (zz_rootsize <= 0 || zz_rootseek < 0 || zz_rootseek >= filesize)
+    	return ZZIP_CORRUPTED;
 
     if (zz_entries < 0 || zz_rootseek < 0 || zz_rootsize < 0)
         return ZZIP_CORRUPTED;
@@ -755,7 +760,7 @@ __zzip_dir_parse(ZZIP_DIR * dir)
           (long) _disk_trailer_rootseek(&trailer));
 
     if ((rv = __zzip_parse_root_directory(dir->fd, &trailer, &dir->hdr0,
-                                          dir->io)) != 0)
+                                          dir->io, filesize)) != 0)
         { goto error; }
   error:
     return rv;
