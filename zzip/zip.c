@@ -408,7 +408,7 @@ __zzip_parse_root_directory(int fd,
                             struct _disk_trailer *trailer,
                             struct zzip_dir_hdr **hdr_return,
                             zzip_plugin_io_t io,
-			    zzip_off_t filesize);
+                            zzip_off_t filesize)
 {
     auto struct zzip_disk_entry dirent;
     struct zzip_dir_hdr *hdr;
