@@ -1,4 +1,6 @@
 #! /usr/bin/python
+from __future__ import print_function
+
 """ Converts an xml-file with docbook elements into troff manual pages.
     The conversion uses etree expecting <refentry> elements in the input.
     The output goes to a multiple files in manX/* subdirectories.
@@ -223,10 +225,15 @@ def refentry2man(refentry, subdirectory = ".", title = ""):
         if found is not None: manvolnum = found.text
     written = 0
     section = refentry.find("refnamediv")
-    for refname in section.findall("refname"):
+    if not section:
+        logg.warning("no <refnamediv> found in <refentry> for '%s', bad docbook?", refentrytitle)
+        if not refentrytitle: raise Exception("not even a refentrytitle")
+        manpages = [ refentrytitle ]
+    else:
+        manpages = [ refname.text for refname in section.findall("refname") ]
+    for manpage in manpages:
         if not refentrytitle:
-            refentrytitle = refname.text
-        manpage = refname.text
+            refentrytitle = manpage
         filename = "%s/man%s/%s.%s" % (subdirectory, manvolnum, manpage, manvolnum)
         if manpage != refentrytitle:
             manpagetext = ".so %s.%s\n" % (refentrytitle, manvolnum)
