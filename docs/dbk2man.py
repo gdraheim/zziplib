@@ -19,16 +19,16 @@ def parse_docbook(filename):
     tree = ET.parse(filename)
     return tree.getroot()
 
-def dbk2man(filenames, subdirectory = ".", make = "man"):
+def dbk2(man, filenames, subdirectory = "."):
     indexed = []
     for filename in filenames:
         root = parse_docbook(filename)
-        overview = docbook2man(root, subdirectory, make = make)
-        overview2man(overview, subdirectory, filename, make = make)
+        overview = docbook2(man, root, subdirectory)
+        overview2(man, overview, subdirectory, filename)
         indexed.append((filename, overview))
-    indexed2man(indexed, subdirectory, "index", make = make)
+    indexed2(man, indexed, subdirectory, "index")
 
-def docbook2man(root, subdirectory = ".", make = "man"):
+def docbook2(man, root, subdirectory = "."):
     if root.tag != "reference":
         logg.warning("no <reference> found, not a docbook file?")
         logg.warning("found <%s> instead", root.tag)
@@ -42,8 +42,8 @@ def docbook2man(root, subdirectory = ".", make = "man"):
             logg.warning("no <refentry> list found, not a docbook file?")
             logg.warning("found <%s> instead", refentry.tag)
             continue
-        indexlist = refentry2man(refentry, subdirectory, title)
-        for refname, refpurpose in indexlist.items():
+        overviewref = refentry2(man, refentry, subdirectory, title)
+        for refname, refpurpose in overviewref.items():
             overview[refname] = refpurpose
     return overview
 
@@ -59,7 +59,7 @@ def unescape(text):
     return text
 
 
-def refentryinfo2(refentry, title):
+def refentryinfo2(man, refentry, title):
     date, productname, manvolnum, refentrytitle = "", "", "", ""
     section = refentry.find("refentryinfo")
     if section is not None:
@@ -91,7 +91,7 @@ def refentryinfo2(refentry, title):
         logg.warning("no <refmeta> found")
         return ""
 
-def refentrytitle2(refentry, title = ""):
+def refentrytitle2(man, refentry, title = ""):
     refentrytitle = ""
     section = refentry.find("refmeta")
     if section is not None:
@@ -118,7 +118,7 @@ def refentrytitle2(refentry, title = ""):
         return ""
 
 
-def refsynopsisdiv2(refentry, title = ""):
+def refsynopsisdiv2(man, refentry, title = ""):
     section = refentry.find("refsynopsisdiv")
     if section is not None:
         text = '.SH "SYNOPSIS"' + "\n"
@@ -167,7 +167,7 @@ def refsynopsisdiv2(refentry, title = ""):
         logg.warning("no <resynopsidiv> found")
         return ""
 
-def refsections2(refentry, title = ""):
+def refsections2(man, refentry, title = ""):
     text = ""
     for refsect in refentry.findall("refsect1"):
         head = refsect.find("title")
@@ -207,7 +207,7 @@ def cleanpara(para):
    item = item.replace("</literal>", "\\fP")
    return item
 
-def styleinfo():
+def styleinfo2(man):
    styles = []
    styles += [ ".ie \\n(.g .ds Aq \\(aq" ]
    styles += [ ".el        .ds Aq " ] # http://bugs.debian.org/507673
@@ -215,16 +215,16 @@ def styleinfo():
    styles += [ ".ad l" ] # align left, no justification
    return "".join([ "%s\n" % part for part in styles ])
 
-def refentry2man(refentry, subdirectory = ".", title = ""):
+def refentry2(man, refentry, subdirectory = ".", title = ""):
     if refentry.tag != "refentry":
         logg.warning("no <refentry> found, not a docbook file?")
         logg.warning("found <%s> instead", refentry.tag)
     text = ""
-    text += refentryinfo2(refentry, title)
-    text += styleinfo()
-    text += refentrytitle2(refentry, title)
-    text += refsynopsisdiv2(refentry)
-    text += refsections2(refentry)
+    text += refentryinfo2(man, refentry, title)
+    text += styleinfo2(man)
+    text += refentrytitle2(man, refentry, title)
+    text += refsynopsisdiv2(man, refentry)
+    text += refsections2(man, refentry)
 
     ### write the files
     refentrytitle = ""
@@ -269,10 +269,10 @@ def refentry2man(refentry, subdirectory = ".", title = ""):
         overview["%s(%s)" % (manpage, manvolnum)] = refpurpose
     return overview
 
-def overview2man(overview, subdirectory, filename, make = "man"):
+def overview2(man, overview, subdirectory, filename):
     pass
 
-def indexed2man(indexed, subdirectory, filebase, make = "man"):
+def indexed2(man, indexed, subdirectory, filebase):
     pass
 
 def writefile(filename, manpagetext):
@@ -300,4 +300,4 @@ if __name__ == "__main__":
     if args and args[0] in ("man", "html"):
        make = args[0]
        args = args[1:]
-    dbk2man(args, opt.into, make)
+    dbk2(make, args, opt.into)
