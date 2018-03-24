@@ -215,6 +215,9 @@ def styleinfo2(man):
    styles += [ ".ad l" ] # align left, no justification
    return "".join([ "%s\n" % part for part in styles ])
 
+def refends2(man):
+    return ""
+
 def refentry2(man, refentry, subdirectory = ".", title = ""):
     if refentry.tag != "refentry":
         logg.warning("no <refentry> found, not a docbook file?")
@@ -225,6 +228,7 @@ def refentry2(man, refentry, subdirectory = ".", title = ""):
     text += refentrytitle2(man, refentry, title)
     text += refsynopsisdiv2(man, refentry)
     text += refsections2(man, refentry)
+    text += refends2(man, refentry, title)
 
     ### write the files
     refentrytitle = ""
