@@ -19,14 +19,20 @@ def parse_docbook(filename):
     tree = ET.parse(filename)
     return tree.getroot()
 
-def dbk2man(filename, subdirectory = ".", make = "man"):
-    root = parse_docbook(filename)
-    return docbook2man(root, subdirectory, make = make)
+def dbk2man(filenames, subdirectory = ".", make = "man"):
+    indexed = []
+    for filename in filenames:
+        root = parse_docbook(filename)
+        overview = docbook2man(root, subdirectory, make = make)
+        overview2man(overview, subdirectory, filename, make = make)
+        indexed.append((filename, overview))
+    indexed2man(indexed, subdirectory, "index", make = make)
 
 def docbook2man(root, subdirectory = ".", make = "man"):
     if root.tag != "reference":
         logg.warning("no <reference> found, not a docbook file?")
         logg.warning("found <%s> instead", root.tag)
+    overview = {}
     title = ""
     for refentry in root:
         if refentry.tag == 'title':
@@ -36,7 +42,10 @@ def docbook2man(root, subdirectory = ".", make = "man"):
             logg.warning("no <refentry> list found, not a docbook file?")
             logg.warning("found <%s> instead", refentry.tag)
             continue
-        refentry2man(refentry, subdirectory, title)
+        indexlist = refentry2man(refentry, subdirectory, title)
+        for refname, refpurpose in indexlist.items():
+            overview[refname] = refpurpose
+    return overview
 
 def esc(text):
     text = text.replace(".", "\\&.")
@@ -78,8 +87,9 @@ def refentryinfo2(refentry, title):
     if header:
         text = '.TH ' + " ".join([ '"%s"' % esc(part) for part in header])
         return text + "\n"
-    logg.warning("no <refmeta> found")
-    return ""
+    else:
+        logg.warning("no <refmeta> found")
+        return ""
 
 def refentrytitle2(refentry, title = ""):
     refentrytitle = ""
@@ -103,8 +113,9 @@ def refentrytitle2(refentry, title = ""):
         text += " " + esc("-")
         text += " " + esc(refpurpose)
         return text + "\n"
-    logg.warning("no <refentrytitle> found")
-    return ""
+    else:
+        logg.warning("no <refentrytitle> found")
+        return ""
 
 
 def refsynopsisdiv2(refentry, title = ""):
@@ -152,8 +163,9 @@ def refsynopsisdiv2(refentry, title = ""):
             text += ".fi" + "\n"
             text += ".sp" + "\n"
         return text
-    logg.warning("no <resynopsidiv> found")
-    return ""
+    else:
+        logg.warning("no <resynopsidiv> found")
+        return ""
 
 def refsections2(refentry, title = ""):
     text = ""
@@ -223,7 +235,8 @@ def refentry2man(refentry, subdirectory = ".", title = ""):
         if found is not None: refentrytitle = found.text
         found = section.find("manvolnum")
         if found is not None: manvolnum = found.text
-    written = 0
+    #
+    refpurpose = ""
     section = refentry.find("refnamediv")
     if not section:
         logg.warning("no <refnamediv> found in <refentry> for '%s', bad docbook?", refentrytitle)
@@ -231,6 +244,10 @@ def refentry2man(refentry, subdirectory = ".", title = ""):
         manpages = [ refentrytitle ]
     else:
         manpages = [ refname.text for refname in section.findall("refname") ]
+        found = section.find("refpurpose")
+        if found is not None: refpurpose = found.text
+    #
+    written = 0
     for manpage in manpages:
         if not refentrytitle:
             refentrytitle = manpage
@@ -246,6 +263,17 @@ def refentry2man(refentry, subdirectory = ".", title = ""):
         manpage = refentrytitle
         filename = "%s/man%s/%s.%s" % (subdirectory, manvolnum, manpage, manvolnum)
         writefile(filename, manpagetext)
+    #
+    overview = {}
+    for manpage in manpages:
+        overview["%s(%s)" % (manpage, manvolnum)] = refpurpose
+    return overview
+
+def overview2man(overview, subdirectory, filename, make = "man"):
+    pass
+
+def indexed2man(indexed, subdirectory, filebase, make = "man"):
+    pass
 
 def writefile(filename, manpagetext):
     dirname = os.path.dirname(filename)
@@ -272,5 +300,4 @@ if __name__ == "__main__":
     if args and args[0] in ("man", "html"):
        make = args[0]
        args = args[1:]
-    for arg in args:
-        dbk2man(arg, opt.into, make)
+    dbk2man(args, opt.into, make)
