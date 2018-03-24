@@ -35,7 +35,7 @@ Provides:     zziplib-lib010 = %version
 Summary:      ZZipLib - Documentation Files
 Group:        Development/Languages/C and C++
 BuildRequires: python
-BuildRequires: xmlto
+# BuildRequires: xmlto
 PreReq: scrollkeeper
 
 %package devel
