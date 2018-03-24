@@ -19,11 +19,11 @@ def parse_docbook(filename):
     tree = ET.parse(filename)
     return tree.getroot()
 
-def dbk2man(filename, subdirectory = "."):
+def dbk2man(filename, subdirectory = ".", make = "man"):
     root = parse_docbook(filename)
-    return docbook2man(root, subdirectory)
+    return docbook2man(root, subdirectory, make = make)
 
-def docbook2man(root, subdirectory = "."):
+def docbook2man(root, subdirectory = ".", make = "man"):
     if root.tag != "reference":
         logg.warning("no <reference> found, not a docbook file?")
         logg.warning("found <%s> instead", root.tag)
@@ -259,11 +259,18 @@ def writefile(filename, manpagetext):
 if __name__ == "__main__":
     from optparse import OptionParser
     _o = OptionParser("%prog [options] docbookfiles...")
-    _o.add_option("-d","--into", metavar="DIR", default=".",
+    _o.add_option("-o","--into", metavar="DIR", default=".",
         help="specify base directory for output [%default]")
+    _o.add_option("-t","--make", metavar="DIR", default="man",
+        help="make 'man'/'html' output pages [%default]")
     _o.add_option("-v","--verbose", action="count", default=0,
         help="increase logging level [%default]")
     opt, args = _o.parse_args()
     logging.basicConfig(level = max(0, logging.WARNING - 10 * opt.verbose))
+    # ensure commandline is compatible with "xmlto -o DIR TYPE INPUTFILE"
+    make = opt.make
+    if args and args[0] in ("man", "html"):
+       make = args[0]
+       args = args[1:]
     for arg in args:
-        dbk2man(arg, opt.into)
+        dbk2man(arg, opt.into, make)
