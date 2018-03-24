@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python>
 from __future__ import print_function
 
 """ Converts an xml-file with docbook elements into troff manual pages.
@@ -14,6 +14,23 @@ import re
 import xml.etree.ElementTree as ET
 
 logg = logging.getLogger("dbk2man")
+
+def esc(text):
+    text = text.replace(".", "\\&.")
+    text = text.replace("-", "\\-")
+    return text
+def unescape(text):
+    text = text.replace('&lt;', '<')
+    text = text.replace('&gt;', '>')
+    text = text.replace('&quot;', '"')
+    text = text.replace('&amp;', '&')
+    return text
+def htm(text):
+    text = text.replace('&', '&amp;')
+    text = text.replace('<', '&lt;')
+    text = text.replace('>', '&gt;')
+    text = text.replace('"', '&quot;')
+    return text
 
 def parse_docbook(filename):
     tree = ET.parse(filename)
@@ -47,16 +64,6 @@ def docbook2(man, root, subdirectory = "."):
             overview[refname] = refpurpose
     return overview
 
-def esc(text):
-    text = text.replace(".", "\\&.")
-    text = text.replace("-", "\\-")
-    return text
-def unescape(text):
-    text = text.replace('&lt;', '<')
-    text = text.replace('&gt;', '>')
-    text = text.replace('&quot;', '"')
-    text = text.replace('&amp;', '&')
-    return text
 
 
 def refentryinfo2(man, refentry, title):
@@ -73,23 +80,36 @@ def refentryinfo2(man, refentry, title):
         if found is not None: refentrytitle = found.text
         found = section.find("manvolnum")
         if found is not None: manvolnum = found.text
-    header = []
-    if refentrytitle:
-        header += [ refentrytitle ]
-        if manvolnum:
-            header += [ manvolnum ]
-            if date:
-                header += [ date ]
-                if productname:
-                    header += [ productname ]
-                if title:
-                    header += [ title ]
-    if header:
+    if man:
+        header = []
+        if refentrytitle:
+            header += [ refentrytitle ]
+            if manvolnum:
+                header += [ manvolnum ]
+                if date:
+                    header += [ date ]
+                    if productname:
+                        header += [ productname ]
+                    if title:
+                        header += [ title ]
+        if not header:
+            logg.warning("no <refmeta> found")
+            return ""
         text = '.TH ' + " ".join([ '"%s"' % esc(part) for part in header])
         return text + "\n"
     else:
-        logg.warning("no <refmeta> found")
-        return ""
+        text = "<html><head><title>"
+        if productname or title: 
+            text += "%s: " % htm(productname or title)
+        text += htm(refentrytitle)
+        if manvolnum: 
+            text += "(%s)" % htm(manvolnum)
+        text += "</title>"
+        text += "\n" + '<meta name="product" content="%s" />' % htm(productname or title)
+        text += "\n" + '<meta name="refentry" content="%s" />' % htm(refentrytitle)
+        text += "\n" + '<meta name="manvolnum" content="%s" />' % htm(manvolnum)
+        text += "\n" + '<meta name="date" content="%s" />' % htm(date)
+        return text + "\n</head><body>\n"
 
 def refentrytitle2(man, refentry, title = ""):
     refentrytitle = ""
@@ -107,90 +127,166 @@ def refentrytitle2(man, refentry, title = ""):
              refname = found.text
              if refname not in refentries:
                  refentries.append(refname)
-    if refentrytitle:
+    if not refentrytitle:
+        logg.warning("no <refentrytitle> found")
+        return ""
+    elif man:
         text = '.SH "NAME"' + "\n"
         text += "" + esc(", ".join(refentries))
         text += " " + esc("-")
         text += " " + esc(refpurpose)
         return text + "\n"
     else:
-        logg.warning("no <refentrytitle> found")
-        return ""
-
+        text = '<h3>Name</h3>' + "\n"
+        text += "<p>" + htm(", ".join(refentries))
+        text += " " + htm("-")
+        text += " " + htm(refpurpose)
+        text += "</p>"
+        return text + "\n"
 
 def refsynopsisdiv2(man, refentry, title = ""):
-    section = refentry.find("refsynopsisdiv")
-    if section is not None:
-        text = '.SH "SYNOPSIS"' + "\n"
-        text += ".sp\n"
-        text += ".nf\n"
-        for funcsynopsis in section.findall("funcsynopsis"):
-            funcsynopsisinfo = ""
-            found = funcsynopsis.find("funcsynopsisinfo")
-            if found is not None: funcsynopsisinfo = found.text
-            if funcsynopsisinfo:
-                for info in funcsynopsisinfo.split("\n"):
-                    text += '.B "%s"' % esc(info)
-                    text += "\n"
-                text += ".sp" + "\n"
-            else:
-                logg.debug("no <funcsynopsisinfo> found")
-                logg.debug("\n%s", ET.tostring(funcsynopsis))
-            funcs = 0
-            for funcprototype in funcsynopsis.findall("funcprototype"):
-                item = ET.tostring(funcprototype)
-                item = item.replace("<funcprototype>","")
-                item = item.replace("</funcprototype>","")
-                if False:
-                    item = item.replace("\n", " ")
-                    item = item.replace("<funcdef>","")
-                    item = item.replace("</funcdef>","")
-                    item = item.replace("<paramdef>",'<def>')
-                    item = item.replace("</paramdef>",'<def>')
-                    items = item.split("<def>")
-                    text += '.BI %s' % " ".join(['"%s"' % part for part in items if part])
-                else:
-                    item = item.replace("<funcdef>","")
-                    item = re.sub(r"([_\w]+)</funcdef>", lambda x: "\\fI%s\\fR" % x.group(1), item)
-                    item = item.replace("<paramdef>",'')
-                    item = item.replace("</paramdef>",'')
-                    text += item 
-                text += "\n"
-                funcs += 1
-            if not funcs:
-                logg.warning("no <funcprototype> found")
-                logg.warning("\n%s", ET.tostring(funcsynopsis))
-            text += ".fi" + "\n"
-            text += ".sp" + "\n"
-        return text
-    else:
-        logg.warning("no <resynopsidiv> found")
+    refsynopsisdiv = refentry.find("refsynopsisdiv")
+    if refsynopsisdiv is None:
+        logg.warning("no <resynopsisdiv> found")
         return ""
+    if man:
+        return refsynopsisdiv2man(refsynopsisdiv, title)
+    else:
+        return refsynopsisdiv2htm(refsynopsisdiv, title)
+
+def refsynopsisdiv2man(refsynopsisdiv, title = ""):
+    text = '.SH "SYNOPSIS"' + "\n"
+    text += ".sp\n"
+    text += ".nf\n"
+    for funcsynopsis in refsynopsisdiv.findall("funcsynopsis"):
+        funcsynopsisinfo = ""
+        found = funcsynopsis.find("funcsynopsisinfo")
+        if found is not None: funcsynopsisinfo = found.text
+        if funcsynopsisinfo:
+            for info in funcsynopsisinfo.split("\n"):
+                text += '.B "%s"' % esc(info)
+                text += "\n"
+            text += ".sp" + "\n"
+        else:
+            logg.debug("no <funcsynopsisinfo> found")
+            logg.debug("\n%s", ET.tostring(funcsynopsis))
+        funcs = 0
+        for funcprototype in funcsynopsis.findall("funcprototype"):
+            item = ET.tostring(funcprototype)
+            item = item.replace("<funcprototype>","")
+            item = item.replace("</funcprototype>","")
+            if False:
+                item = item.replace("\n", " ")
+                item = item.replace("<funcdef>","")
+                item = item.replace("</funcdef>","")
+                item = item.replace("<paramdef>",'<def>')
+                item = item.replace("</paramdef>",'<def>')
+                items = item.split("<def>")
+                text += '.BI %s' % " ".join(['"%s"' % part for part in items if part])
+            else:
+                item = item.replace("<funcdef>","")
+                item = re.sub(r"([_\w]+)</funcdef>", lambda x: "\\fI%s\\fR" % x.group(1), item)
+                item = item.replace("<paramdef>",'')
+                item = item.replace("</paramdef>",'')
+                text += item 
+            text += "\n"
+            funcs += 1
+        if not funcs:
+            logg.warning("no <funcprototype> found")
+            logg.warning("\n%s", ET.tostring(funcsynopsis))
+        text += ".fi" + "\n"
+        text += ".sp" + "\n"
+    return text
+
+def refsynopsisdiv2htm(refsynopsisdiv, title = ""):
+    text = '<h3>Synopsis</h3>' + "\n"
+    text += '<pre>' + "\n"
+    for funcsynopsis in refsynopsisdiv.findall("funcsynopsis"):
+        funcsynopsisinfo = ""
+        found = funcsynopsis.find("funcsynopsisinfo")
+        if found is not None: funcsynopsisinfo = found.text
+        if funcsynopsisinfo:
+            for info in funcsynopsisinfo.split("\n"):
+                text += '<b>%s</b>' % htm(info)
+                text += "\n"
+            text += "\n"
+        else:
+            logg.debug("no <funcsynopsisinfo> found")
+            logg.debug("\n%s", ET.tostring(funcsynopsis))
+        funcs = 0
+        for funcprototype in funcsynopsis.findall("funcprototype"):
+            item = ET.tostring(funcprototype)
+            item = item.replace("<funcprototype>","")
+            item = item.replace("</funcprototype>","")
+            item = item.replace("<funcdef>","")
+            item = re.sub(r"([_\w]+)</funcdef>", lambda x: "<b>%s</b>" % x.group(1), item)
+            item = item.replace("<paramdef>",'')
+            item = item.replace("</paramdef>",'')
+            text += item 
+            text += "\n"
+            funcs += 1
+        if not funcs:
+            logg.warning("no <funcprototype> found")
+            logg.warning("\n%s", ET.tostring(funcsynopsis))
+        text += "</pre>" + "\n"
+    return text
 
 def refsections2(man, refentry, title = ""):
     text = ""
     for refsect in refentry.findall("refsect1"):
-        head = refsect.find("title")
-        if head is not None:
-           text += '.SH "%s"' % (esc(head.text.upper()))
-           text += "\n"
-        for para in list(refsect):
-            if para.tag == 'title':
-                continue
-            if para.tag == 'para':
-                text += cleanpara(para) + "\n"
-                text += ".sp\n"
-                continue
-            if para.tag == 'itemizedlist':
-                for item in list(para):
-                    text += cleanpara(item) + "\n"
-                    text += ".sp\n"
-                continue
-            logg.warning("unknown para <%s>", para.tag)
-        text += ".sp\n"
+        if man:
+            text += refsect2man(refsect, title)
+            text += ".sp\n"
+        else:
+            text += refsect2htm(refsect, title)
     return text
 
-def cleanpara(para):
+
+def refsect2man(refsect, title = ""):
+    text = ""
+    head = refsect.find("title")
+    if head is not None:
+       text += '.SH "%s"' % (esc(head.text.upper()))
+       text += "\n"
+    for para in list(refsect):
+        if para.tag == 'title':
+            continue
+        if para.tag == 'para':
+            text += para2man(para) + "\n"
+            text += ".sp\n"
+            continue
+        if para.tag == 'itemizedlist':
+            for item in list(para):
+                text += para2man(item) + "\n"
+                text += ".sp\n"
+            continue
+        logg.warning("unknown para <%s>", para.tag)
+    return text
+
+def refsect2htm(refsect, title = ""):
+    text = ""
+    head = refsect.find("title")
+    if head is not None:
+       text += '<h3>%s</h3>' % htm(head.text)
+       text += "\n"
+    for para in list(refsect):
+        if para.tag == 'title':
+            continue
+        if para.tag == 'para':
+            text += "<p>" + para2htm(para)
+            text += "</p>" + "\n"
+            continue
+        if para.tag == 'itemizedlist':
+            text += "<ul>" + "\n"
+            for item in list(para):
+                text + "<li><p>" + para2htm(item)
+                text += "</p></li>" + "\n"
+            text += "</ul>" + "\n"
+            continue
+        logg.warning("unknown para <%s>", para.tag)
+    return text
+
+def para2man(para):
    item = unescape(ET.tostring(para))
    item = item.replace("\n", " ")
    item = item.replace("  ", " ")
@@ -207,16 +303,39 @@ def cleanpara(para):
    item = item.replace("</literal>", "\\fP")
    return item
 
+def para2htm(para):
+   item = unescape(ET.tostring(para))
+   item = item.replace("\n", " ")
+   item = item.replace("  ", " ")
+   item = item.replace("  ", " ")
+   item = item.replace("  ", " ")
+   item = item.replace("  ", " ")
+   item = item.replace("<listitem>", "")
+   item = item.replace("</listitem>", "")
+   item = item.replace("<para>", "")
+   item = item.replace("</para>", "")
+   item = item.replace("<function>", "<em><code>")
+   item = item.replace("</function>", "</code></em>")
+   item = item.replace("<literal>", "<code>")
+   item = item.replace("</literal>", "</code>")
+   return item
+
 def styleinfo2(man):
-   styles = []
-   styles += [ ".ie \\n(.g .ds Aq \\(aq" ]
-   styles += [ ".el        .ds Aq " ] # http://bugs.debian.org/507673
-   styles += [ ".nh" ] # disable hyphenation
-   styles += [ ".ad l" ] # align left, no justification
-   return "".join([ "%s\n" % part for part in styles ])
+    if man:
+        styles = []
+        styles += [ ".ie \\n(.g .ds Aq \\(aq" ]
+        styles += [ ".el        .ds Aq " ] # http://bugs.debian.org/507673
+        styles += [ ".nh" ] # disable hyphenation
+        styles += [ ".ad l" ] # align left, no justification
+        return "".join([ "%s\n" % part for part in styles ])
+    else:
+        return ""
 
 def refends2(man):
-    return ""
+    if man:
+        return ""
+    else:
+        return "</body></html>" + "\n"
 
 def refentry2(man, refentry, subdirectory = ".", title = ""):
     if refentry.tag != "refentry":
@@ -228,7 +347,7 @@ def refentry2(man, refentry, subdirectory = ".", title = ""):
     text += refentrytitle2(man, refentry, title)
     text += refsynopsisdiv2(man, refentry)
     text += refsections2(man, refentry)
-    text += refends2(man, refentry, title)
+    text += refends2(man)
 
     ### write the files
     refentrytitle = ""
@@ -251,22 +370,27 @@ def refentry2(man, refentry, subdirectory = ".", title = ""):
         found = section.find("refpurpose")
         if found is not None: refpurpose = found.text
     #
-    written = 0
-    for manpage in manpages:
-        if not refentrytitle:
-            refentrytitle = manpage
-        filename = "%s/man%s/%s.%s" % (subdirectory, manvolnum, manpage, manvolnum)
-        if manpage != refentrytitle:
-            manpagetext = ".so %s.%s\n" % (refentrytitle, manvolnum)
+    if man:
+        written = 0
+        for manpage in manpages:
+            if not refentrytitle:
+                refentrytitle = manpage
+            filename = "%s/man%s/%s.%s" % (subdirectory, manvolnum, manpage, manvolnum)
+            if manpage != refentrytitle:
+                manpagetext = ".so %s.%s\n" % (refentrytitle, manvolnum)
+                writefile(filename, manpagetext)
+            else:
+                manpagetext = text
+                writefile(filename, manpagetext)
+                written += 1
+        if not written:
+            manpage = refentrytitle
+            filename = "%s/man%s/%s.%s" % (subdirectory, manvolnum, manpage, manvolnum)
             writefile(filename, manpagetext)
-        else:
-            manpagetext = text
-            writefile(filename, manpagetext)
-            written += 1
-    if not written:
+    else:
         manpage = refentrytitle
-        filename = "%s/man%s/%s.%s" % (subdirectory, manvolnum, manpage, manvolnum)
-        writefile(filename, manpagetext)
+        filename = "%s/%s.%s.%s" % (subdirectory, manpage, manvolnum, "html")
+        writefile(filename, text)
     #
     overview = {}
     for manpage in manpages:
@@ -304,4 +428,4 @@ if __name__ == "__main__":
     if args and args[0] in ("man", "html"):
        make = args[0]
        args = args[1:]
-    dbk2(make, args, opt.into)
+    dbk2(make == 'man', args, opt.into)
