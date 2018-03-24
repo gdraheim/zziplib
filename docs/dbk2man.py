@@ -1,4 +1,4 @@
-#! /usr/bin/python>
+#! /usr/bin/python
 from __future__ import print_function
 
 """ Converts an xml-file with docbook elements into troff manual pages.

@@ -1,4 +1,4 @@
-#! /usr/bin/python>
+#! /usr/bin/python
 from __future__ import print_function
 
 """ Searches through a directory and creates an index page for it
