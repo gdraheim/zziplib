@@ -150,8 +150,6 @@ manpages.tar : zziplib.xml zzipmmapped.xml zzipfseeko.xml
 	;       chmod 664 man3/*.3  \
 	; echo '$(PAX_TAR_CREATE) "$@" man3/' \
 	;       $(PAX_TAR_CREATE) "$@" man3/  \
-	; echo '$(DELETE); rm man3/*.3 ; rmdir man3' \
-	;       $(DELETE); rm man3/*.3 ; rmdir man3  \
 	; fi ; true
 	@ if test "$(XMLTO)" = ":" \
 	; then echo going to regenerate "$@" in subdir "'"man"'" \
@@ -169,8 +167,6 @@ manpages.tar : zziplib.xml zzipmmapped.xml zzipfseeko.xml
 	;       chmod 664 man3/*.3  \
 	; echo '$(PAX_TAR_CREATE) "$@" man3/' \
 	;       $(PAX_TAR_CREATE) "$@" man3/  \
-	; echo '$(DELETE); rm man3/*.3 ; rmdir man3' \
-	;       $(DELETE); rm man3/*.3 ; rmdir man3  \
 	; fi ; true
 	@ if test -s $@ \
 	; then echo cp $@ zziplib-$@ "(saved)"; cp $@ zziplib-$@ \
@@ -183,7 +179,7 @@ htmpages.tar : zziplib.xml zzipmmapped.xml zzipfseeko.xml zziplib-manpages.dbk
 	: "html format of the manpages - put into zziplib/htdocs/man/*"
 	@ if test "$(XMLTO)" != ":" \
 	; then echo going to regenerate "$@" in subdir "'"html"'" \
-	; echo 'test ! -d html || rm /* ; test -d html || mkdir html' \
+	; echo 'test ! -d html || rm html/* ; test -d html || mkdir html' \
 	;       test ! -d html || rm html/* ; test -d html || mkdir html  \
 	; echo 'cp $(srcdir)/zziplib-manpages.dbk zziplib-manpages.xml' \
 	;       cp $(srcdir)/zziplib-manpages.dbk zziplib-manpages.xml \
@@ -191,12 +187,10 @@ htmpages.tar : zziplib.xml zzipmmapped.xml zzipfseeko.xml zziplib-manpages.dbk
 	;       $(XMLTO) -o html html zziplib-manpages.xml | tee written.lst \
 	; echo '$(PAX_TAR_CREATE) $@ html/*.*' \
 	;       $(PAX_TAR_CREATE) $@ html/*.*  \
-	; echo '$(DELETE); rm html/*.* ; rmdir html' \
-	;       $(DELETE); rm html/*.* ; rmdir html  \
 	; fi ; true
 	@ if test "$(XMLTO)" = ":" \
 	; then echo going to regenerate "$@" in subdir "'"html"'" \
-	; echo 'test ! -d html || rm /* ; test -d html || mkdir html' \
+	; echo 'test ! -d html || rm html/* ; test -d html || mkdir html' \
 	;       test ! -d html || rm html/* ; test -d html || mkdir html  \
 	; echo 'cp $(srcdir)/zziplib-manpages.dbk zziplib-manpages.xml' \
 	;       cp $(srcdir)/zziplib-manpages.dbk zziplib-manpages.xml \
@@ -210,8 +204,6 @@ htmpages.tar : zziplib.xml zzipmmapped.xml zzipfseeko.xml zziplib-manpages.dbk
 	; $(PYTHON) $(srcdir)/dir2index.py -o html html   \
 	; echo '$(PAX_TAR_CREATE) $@ html/*.*' \
 	;       $(PAX_TAR_CREATE) $@ html/*.*  \
-	; echo '$(DELETE); rm html/*.* ; rmdir html' \
-	;       $(DELETE); rm html/*.* ; rmdir html  \
 	; fi ; true
 	@ if test -s $@ \
 	; then echo cp $@ zziplib-$@ "(saved)"; cp $@ zziplib-$@ \
