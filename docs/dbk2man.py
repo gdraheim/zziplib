@@ -11,6 +11,7 @@ __author__ = "Guido U. Draheim"
 import logging
 import os.path
 import re
+import collections
 import xml.etree.ElementTree as ET
 
 logg = logging.getLogger("dbk2man")
@@ -35,18 +36,17 @@ def htm(text):
     text = text.replace('"', '&quot;')
     return text
 
+OverviewEntry = collections.namedtuple("OverviewEntry", ["manpage", "manvolnum", "refpurpose"])
+
 def parse_docbook(filename):
     tree = ET.parse(filename)
     return tree.getroot()
 
 def dbk2(man, filenames, subdirectory = "."):
-    indexed = []
     for filename in filenames:
         root = parse_docbook(filename)
         overview = docbook2(man, root, subdirectory)
         overview2(man, overview, subdirectory, filename)
-        indexed.append((filename, overview))
-    indexed2(man, indexed, subdirectory, "index")
 
 def docbook2(man, root, subdirectory = "."):
     if root.tag != "reference":
@@ -63,11 +63,9 @@ def docbook2(man, root, subdirectory = "."):
             logg.warning("found <%s> instead", refentry.tag)
             continue
         overviewref = refentry2(man, refentry, subdirectory, title)
-        for refname, refpurpose in overviewref.items():
-            overview[refname] = refpurpose
+        for filename, overviewentry in overviewref.items():
+            overview[filename] = overviewentry
     return overview
-
-
 
 def refentryinfo2(man, refentry, title):
     date, productname, manvolnum, refentrytitle = "", "", "", ""
@@ -401,14 +399,34 @@ def refentry2(man, refentry, subdirectory = ".", title = ""):
     #
     overview = {}
     for manpage in manpages:
-        overview["%s(%s)" % (manpage, manvolnum)] = refpurpose
+        entry = OverviewEntry(manpage, manvolnum, refpurpose)
+        overview[filename] = entry
     return overview
 
-def overview2(man, overview, subdirectory, filename):
-    pass
+def splitname(filename):
+    base = os.path.basename(filename)
+    name, ext = os.path.splitext(base)
+    return name
 
-def indexed2(man, indexed, subdirectory, filebase):
-    pass
+def overview2(man, overview, subdirectory, docbook_filename):
+    if not man:
+        overview2htm(overview, subdirectory, docbook_filename)
+
+def overview2htm(overview, subdirectory, docbook_filename):
+    basename = splitname(docbook_filename)
+    text = "<html><head><title>%s %s</title>\n" % (htm(basename), htm("overview"))
+    text += "</head><body>\n"
+    text += "<h3>%s %s</h3>\n" % (htm(basename), htm("overview"))
+    text += "<ul>\n"
+    for filename in sorted(overview):
+        entry = overview[filename]
+        subdir_filename = os.path.basename(filename)
+        text += '<li><a href="%s">%s</a> - %s</li>' % (subdir_filename, entry.manpage, htm(entry.refpurpose))
+        text += "\n"
+    text += "</ul>\n"
+    text += "</body></html>\n"
+    filename = "%s/%s.%s" % (subdirectory, basename, "html")
+    writefile(filename, text)
 
 def writefile(filename, manpagetext):
     dirname = os.path.dirname(filename)
