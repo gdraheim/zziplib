@@ -29,23 +29,69 @@ def htm(text):
     text = text.replace('>', '&gt;')
     text = text.replace('"', '&quot;')
     return text
+def splitname(filename):
+    base = os.path.basename(filename)
+    name, ext = os.path.splitext(base)
+    if name.endswith(".3"): name = name[:-2]
+    return name
 
 def parse_html(filename):
     tree = ET.parse(filename)
     return tree.getroot()
 
+def zzip_sorted(filenames):
+    for name in filenames:
+        if "zziplib" in name:
+            yield name
+    for name in filenames:
+        if "zziplib" not in name:
+            yield name
+
 def dir2(man, dirs, into):
     text = "<html><body>" + "\n"
+    file2name = {}
+    file2text = {}
     for dirname in dirs:
-        text += "<ul>"
         for filename in os.listdir(dirname):
-            name = filename
-            if name.endswith(".html"): name = name[:-5]
-            if name.endswith(".htm"): name = name[:-4]
-            if name.endswith(".3"): name = name[:-2]
-            text += '<li><a href="%s">%s</a></li>' % (filename, name)
-            text += "\n"
-        text += "</ul>"
+            filepath = os.path.join(dirname, filename)
+            file2name[filename] = splitname(filename)
+            file2text[filename] = open(filepath).read()
+    # find the overview filenames and generate the pages order
+    overviews = []
+    for filename in file2text:
+        if " overview</title>" in file2text[filename]:
+            overviews.append(filename)
+    logg.warning("overviews = %s", overviews)
+    logg.warning("overviews = %s", [file2name[f] for f in overviews])
+    file2item = {}
+    pages = []
+    for overview in zzip_sorted(overviews):
+        if overview not in pages:
+            pages.append(overview)
+        for line in file2text[overview].split("\n"):
+            m = re.match('<li><a href="([^"]*)".*</li>', line)
+            if m:
+                filename = m.group(1)
+                if filename not in file2item:
+                    file2item[filename] = line
+                if filename not in pages:
+                    pages.append(filename)
+    for filename in sorted(file2name):
+        if filename not in pages:
+            pages.append(filename)
+    text += "<ul>"
+    for page in pages:
+        if page in file2item:
+            text += file2item[page]
+        elif page in overviews:
+            name = file2name[page]
+            logg.warning("page %s = %s", page, name)
+            text += '<li><a href="%s"><h4>%s</h4></a></li>' % (page, name)
+        else:
+            name = file2name[page]
+            text += '<li><a href="%s">%s</a></li>' % (page, name)
+        text += "\n"
+    text += "</ul>"
     text += "</body></html>" + "\n"
     writefile("%s/index.html" % into, text)
 

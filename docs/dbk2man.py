@@ -375,6 +375,7 @@ def refentry2(man, refentry, subdirectory = ".", title = ""):
         found = section.find("refpurpose")
         if found is not None: refpurpose = found.text
     #
+    overview = {}
     if man:
         written = 0
         for manpage in manpages:
@@ -388,19 +389,18 @@ def refentry2(man, refentry, subdirectory = ".", title = ""):
                 manpagetext = text
                 writefile(filename, manpagetext)
                 written += 1
+            overview[filename] = OverviewEntry(manpage, manvolnum, refpurpose)
         if not written:
             manpage = refentrytitle
             filename = "%s/man%s/%s.%s" % (subdirectory, manvolnum, manpage, manvolnum)
             writefile(filename, manpagetext)
+            overview[filename] = OverviewEntry(manpage, manvolnum, refpurpose)
     else:
         manpage = refentrytitle
         filename = "%s/%s.%s.%s" % (subdirectory, manpage, manvolnum, "html")
         writefile(filename, text)
+        overview[filename] = OverviewEntry(manpage, manvolnum, refpurpose)
     #
-    overview = {}
-    for manpage in manpages:
-        entry = OverviewEntry(manpage, manvolnum, refpurpose)
-        overview[filename] = entry
     return overview
 
 def splitname(filename):
