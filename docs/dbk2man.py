@@ -35,6 +35,10 @@ def htm(text):
     text = text.replace('>', '&gt;')
     text = text.replace('"', '&quot;')
     return text
+def mailhref(text):
+    return re.sub("<([^<>]*@[^<>]*)>", 
+        lambda x: '<a href="mailto:%s">%s</a>' % (x.group(1), x.group(1)), 
+        text)
 
 OverviewEntry = collections.namedtuple("OverviewEntry", ["manpage", "manvolnum", "refpurpose"])
 
@@ -282,7 +286,7 @@ def refsect2htm(refsect, title = ""):
         if para.tag == 'itemizedlist':
             text += "<ul>" + "\n"
             for item in list(para):
-                text + "<li><p>" + para2htm(item)
+                text += "<li><p>" + para2htm(item)
                 text += "</p></li>" + "\n"
             text += "</ul>" + "\n"
             continue
@@ -323,7 +327,7 @@ def para2htm(para):
    item = item.replace("</function>", "</code></em>")
    item = item.replace("<literal>", "<code>")
    item = item.replace("</literal>", "</code>")
-   return item
+   return mailhref(item)
 
 def styleinfo2(man):
     if man:
