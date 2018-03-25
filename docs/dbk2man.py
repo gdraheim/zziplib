@@ -37,7 +37,7 @@ def htm(text):
     return text
 def mailhref(text):
     return re.sub("<([^<>]*@[^<>]*)>", 
-        lambda x: '<a href="mailto:%s">%s</a>' % (x.group(1), x.group(1)), 
+        lambda x: '&lt;<a href="mailto:%s">%s</a>&gt;' % (x.group(1), x.group(1)), 
         text)
 
 OverviewEntry = collections.namedtuple("OverviewEntry", ["manpage", "manvolnum", "refpurpose"])
@@ -327,7 +327,8 @@ def para2htm(para):
    item = item.replace("</function>", "</code></em>")
    item = item.replace("<literal>", "<code>")
    item = item.replace("</literal>", "</code>")
-   return mailhref(item)
+   item = mailhref(item)
+   return item
 
 def styleinfo2(man):
     if man:
