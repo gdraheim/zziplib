@@ -475,9 +475,15 @@ __zzip_parse_root_directory(int fd,
         } else
         {
             if (io->fd.seeks(fd, zz_rootseek + zz_offset, SEEK_SET) < 0)
+	    {
+	    	free(hdr0);
                 return ZZIP_DIR_SEEK;
+	    }
             if (io->fd.read(fd, &dirent, sizeof(dirent)) < __sizeof(dirent))
+	    {
+	    	free(hdr0);
                 return ZZIP_DIR_READ;
+	    }
             d = &dirent;
         }
 
@@ -577,11 +583,16 @@ __zzip_parse_root_directory(int fd,
 
         if (hdr_return)
             *hdr_return = hdr0;
+	else
+	{
+	    /* If it is not assigned to *hdr_return, it will never be free()'d */
+	    free(hdr0);
+	}
     }                           /* else zero (sane) entries */
 #  ifndef ZZIP_ALLOW_MODULO_ENTRIES
-    return (entries != zz_entries ? ZZIP_CORRUPTED : 0);
+    return (entries != zz_entries) ? ZZIP_CORRUPTED : 0;
 #  else
-    return ((entries & (unsigned)0xFFFF) != zz_entries ? ZZIP_CORRUPTED : 0);
+    return ((entries & (unsigned)0xFFFF) != zz_entries) ? ZZIP_CORRUPTED : 0;
 #  endif
 }
 
