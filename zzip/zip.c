@@ -589,6 +589,8 @@ __zzip_parse_root_directory(int fd,
 	    free(hdr0);
 	}
     }                           /* else zero (sane) entries */
+    else
+        free(hdr0);
 #  ifndef ZZIP_ALLOW_MODULO_ENTRIES
     return (entries != zz_entries) ? ZZIP_CORRUPTED : 0;
 #  else
