@@ -587,34 +587,13 @@ __zzip_parse_root_directory(int fd,
 	{
 	    /* If it is not assigned to *hdr_return, it will never be free()'d */
 	    free(hdr0);
-	    /* Make sure we don't free it again in case of error */
-	    hdr0 = NULL;
 	}
     }                           /* else zero (sane) entries */
 #  ifndef ZZIP_ALLOW_MODULO_ENTRIES
-    if (entries != zz_entries)
-    {
-	/* If it was assigned to *hdr_return, undo assignment */
-	if (p_reclen && hdr_return)
-	    *hdr_return = NULL;
-	/* Free it, if it was not already free()'d */
-	if (hdr0 != NULL)
-	    free(hdr0);
-	return ZZIP_CORRUPTED;
-    }
+    return (entries != zz_entries) ? ZZIP_CORRUPTED : 0;
 #  else
-    if (((entries & (unsigned)0xFFFF) != zz_entries)
-    {
-	/* If it was assigned to *hdr_return, undo assignment */
-	if (p_reclen && hdr_return)
-	    *hdr_return = NULL;
-	/* Free it, if it was not already free()'d */
-	if (hdr0 != NULL)
-	    free(hdr0);
-	return ZZIP_CORRUPTED;
-    }
+    return ((entries & (unsigned)0xFFFF) != zz_entries) ? ZZIP_CORRUPTED : 0;
 #  endif
-    return 0;
 }
 
 /* ------------------------- high-level interface ------------------------- */
