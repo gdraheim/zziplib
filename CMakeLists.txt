@@ -1,5 +1,14 @@
 cmake_minimum_required (VERSION 3.1)
 project(zziplib C)
+set(VERSION "0.13.69")
+
+string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\1" APIVERSION ${VERSION})
+string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\2" RELVERSION ${VERSION})
+string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "0.\\3" FIXVERSION ${VERSION})
+MESSAGE(STATUS "VERSION ${VERSION} -> APIVERSION ${APIVERSION}")
+MESSAGE(STATUS "VERSION ${VERSION} -> RELVERSION ${RELVERSION}")
+MESSAGE(STATUS "VERSION ${VERSION} -> FIXVERSION ${FIXVERSION}")
+# the "0." on FIXVERSION is just for compatibility with automake's libtool.
 
 # generate _config.h
 include ( CheckIncludeFiles )
@@ -96,15 +105,22 @@ add_library(zzip ${ZZIPLIB_SRCS} )
 target_link_libraries(zzip ZLIB::ZLIB )
 target_include_directories (zzip PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
-if(NOT MSVC) # FIXME: syntax error
-    add_library(zzipmmapped zzip/mmapped.c zzip/memdisk.c zzip/fetch.c )
-    target_link_libraries(zzipmmapped ZLIB::ZLIB )
-    target_include_directories (zzipmmapped PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-endif()
-
 add_library(zzipfseeko zzip/fseeko.c zzip/fetch.c )
 target_link_libraries(zzipfseeko ZLIB::ZLIB )
 target_include_directories (zzipfseeko PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+
+add_library(zzipmmapped zzip/mmapped.c zzip/memdisk.c zzip/fetch.c )
+target_link_libraries(zzipmmapped ZLIB::ZLIB )
+target_include_directories (zzipmmapped PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+
+set_target_properties(zzip PROPERTIES OUTPUT_NAME "zzip-${APIVERSION}")
+SET_TARGET_PROPERTIES(zzip PROPERTIES VERSION ${RELVERSION}.${FIXVERSION} SOVERSION ${RELVERSION})
+
+set_target_properties(zzipfseeko PROPERTIES OUTPUT_NAME "zzipfseeko-${APIVERSION}")
+SET_TARGET_PROPERTIES(zzipfseeko PROPERTIES VERSION ${RELVERSION}.${FIXVERSION} SOVERSION ${RELVERSION})
+
+set_target_properties(zzipmmapped PROPERTIES OUTPUT_NAME "zzipmmapped-${APIVERSION}")
+SET_TARGET_PROPERTIES(zzipmmapped PROPERTIES VERSION ${RELVERSION}.${FIXVERSION} SOVERSION ${RELVERSION})
 
 # install ########################################################
 install(FILES ${ZZIPLIB_HDRS} DESTINATION include/zzip )
@@ -118,4 +134,19 @@ if(NOT MSVC) # FIXME: syntax error
 install(TARGETS zzipmmapped
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+endif()
+
+if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
+  get_target_property(libname zzip OUTPUT_NAME)
+  get_target_property(libversion zzip VERSION)
+  set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
+  set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
+  install(CODE "execute_process(
+      COMMAND bash -c \"set -e
+      cd $DESTDIR/${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}
+      echo -n .. Installing: `pwd`
+      ln -sv ${lib}${libname}${dll}.${libversion} ${lib}${libname}${dll}.11
+      echo -n .. Installing: `pwd`
+      ln -sv ${lib}${libname}${dll}.${libversion} ${lib}${libname}${dll}.12
+      \")")
 endif()
