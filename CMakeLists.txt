@@ -66,7 +66,6 @@ endif()
 # libzlib library
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_definitions ( -DHAVE_CONFIG_H )
-include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 set(ZZIPLIB_SRCS 
     zzip/dir.c
     zzip/err.c 
@@ -86,16 +85,20 @@ set(ZZIPLIB_HDRS
     zzip/plugin.h 
     zzip/fetch.h
     ${CMAKE_CURRENT_BINARY_DIR}/zzip/_config.h)
+
 add_library(zzip ${ZZIPLIB_SRCS} )
 target_link_libraries(zzip ZLIB::ZLIB )
+target_include_directories (zzip PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 if(NOT MSVC) # FIXME: syntax error
     add_library(zzipmmapped zzip/mmapped.c zzip/memdisk.c zzip/fetch.c )
     target_link_libraries(zzipmmapped ZLIB::ZLIB )
+    target_include_directories (zzipmmapped PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 endif()
 
 add_library(zzipfseeko zzip/fseeko.c zzip/fetch.c )
 target_link_libraries(zzipfseeko ZLIB::ZLIB )
+target_include_directories (zzipfseeko PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 # install
 install(FILES ${ZZIPLIB_HDRS} DESTINATION include/zzip )
