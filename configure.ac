@@ -261,7 +261,7 @@ AC_ARG_ENABLE(sdl, AC_HELP_STRING(
 if test "$enable_sdl" = "no" ; then
    AC_MSG_RESULT([no, disabled])
 else
-   enable_sdl=`pkg-config --modversion sdl 2>/dev/null`
+   enable_sdl=`$PKG_CONFIG --modversion sdl 2>/dev/null`
    if test -z "$enable_sdl"; then
       enable_sdl=`sdl-config --version 2>/dev/null`
       SDL_GENERATE="sdl-uninstalled.pc"
