@@ -56,7 +56,7 @@ if(UNIX)
         -Wpointer-arith
         -Wsign-compare
         -Wmissing-declarations
-        -Wdeclaration-after-statement
+        # -Wdeclaration-after-statement
         -Werror-implicit-function-declaration
         -Wstrict-aliasing
         -Warray-bounds
