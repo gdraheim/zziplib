@@ -7,6 +7,7 @@ include ( CheckFunctionExists )
 include ( CheckSymbolExists )
 include ( CheckTypeSize )
 include ( TestBigEndian )
+include ( GNUInstallDirs )
 
 option(BUILD_SHARED_LIBS "Build a shared library" ON)
 option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
@@ -50,6 +51,8 @@ check_include_files ( "stdlib.h;stdarg.h;string.h;float.h" ZZIP_STDC_HEADERS )
 test_big_endian ( ZZIP_WORDS_BIGENDIAN )
 
 configure_file ( ${CMAKE_CURRENT_SOURCE_DIR}/_config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/zzip/_config.h )
+
+###################################################################################
 
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
@@ -103,8 +106,8 @@ add_library(zzipfseeko zzip/fseeko.c zzip/fetch.c )
 target_link_libraries(zzipfseeko ZLIB::ZLIB )
 target_include_directories (zzipfseeko PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
-# install
+# install ########################################################
 install(FILES ${ZZIPLIB_HDRS} DESTINATION include/zzip )
 install(TARGETS zzip 
-    LIBRARY DESTINATION lib 
-    ARCHIVE DESTINATION lib)
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
