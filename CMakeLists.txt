@@ -8,6 +8,9 @@ include ( CheckSymbolExists )
 include ( CheckTypeSize )
 include ( TestBigEndian )
 
+option(BUILD_SHARED_LIBS "Build a shared library" ON)
+option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
+
 check_include_files ( byteswap.h ZZIP_HAVE_BYTESWAP_H )
 check_include_files ( direct.h ZZIP_HAVE_DIRECT_H )
 
