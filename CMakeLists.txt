@@ -29,6 +29,7 @@ option(ZZIPWRAP "Build libzzipwrap (non-installed example)" ON)
 option(ZZIPSDL "Build zzcatsdl (includable example code)" ON)
 option(ZZIPBINS "Build bins/unzzip (unzip-like executables)" ON)
 option(ZZIPTEST "Build test/zzipself (self-extract example)" ON)
+option(ZZIPDOCS "Build docs/manpages (and website content)" ON)
 
 check_include_files ( byteswap.h ZZIP_HAVE_BYTESWAP_H )
 check_include_files ( direct.h ZZIP_HAVE_DIRECT_H )
@@ -156,6 +157,10 @@ if(ZZIPTEST)
 add_subdirectory(test)
 endif()
 
+if(ZZIPDOCS)
+add_subdirectory(docs)
+endif()
+
 # install ########################################################
 install(FILES ${ZZIPLIB_HDRS} DESTINATION include/zzip )
 install(TARGETS libzzip 
@@ -177,9 +182,10 @@ if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
   get_target_property(libversion libzzip VERSION)
   set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
   set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
+  set(libdir ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
   if(${libversion} MATCHES "^[0-9].*")
     install(CODE "execute_process(COMMAND bash -c \"set -e
-      cd $DESTDIR/${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}
+      cd $DESTDIR/${libdir}
       [ -f ${lib}${libname}${dll}.${libversion} ] || exit 0
       echo -n .. Installing: `pwd`
       ln -sv ${lib}${libname}${dll}.${libversion} ${lib}${libname}${dll}.10

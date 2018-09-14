@@ -15,7 +15,7 @@ libzzip libzzipmmapped libzzipfseeko libzzipwrap zzipwrap:
 	cd build && $(MAKE) $@
 zzip unzzip unzzip-mix unzzip-mem unzzip-big zzdir zzcat zzcatsdl zzxorcat zzxordir zzobfuscated:
 	cd build && $(MAKE) $@
-sfx zzipself zzipsetstub:
+sfx zzipself zzipsetstub doc:
 	cd build && $(MAKE) $@
 
 builds: config build local
