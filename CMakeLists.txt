@@ -147,6 +147,7 @@ if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
     install(CODE "execute_process(
       COMMAND bash -c \"set -e
       cd $DESTDIR/${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}
+      [ -f ${lib}${libname}${dll}.${libversion} ] || exit 0
       echo -n .. Installing: `pwd`
       ln -sv ${lib}${libname}${dll}.${libversion} ${lib}${libname}${dll}.10
       echo -n .. Installing: `pwd`
