@@ -22,6 +22,8 @@ option(BUILD_SHARED_LIBS "Build a shared library" ON)
 option(BUILD_STATIC_LIBS "Build the static library" OFF)
 option(BUILD_TESTS "Build test programs" OFF)
 option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
+option(ZZIPMMAPPED "Build libzzipmmapped (not fully portable)" ON)
+option(ZZIPFSEEKO "Build libzippfseeko (based on posix.1 api)" ON)
 
 check_include_files ( byteswap.h ZZIP_HAVE_BYTESWAP_H )
 check_include_files ( direct.h ZZIP_HAVE_DIRECT_H )
@@ -107,32 +109,42 @@ add_library(zzip ${ZZIPLIB_SRCS} )
 target_link_libraries(zzip ZLIB::ZLIB )
 target_include_directories (zzip PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
+if(ZZIPFSEEKO)
 add_library(zzipfseeko zzip/fseeko.c zzip/fetch.c )
 target_link_libraries(zzipfseeko ZLIB::ZLIB )
 target_include_directories (zzipfseeko PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+endif()
 
+if(ZZIPMMAPPED)
 add_library(zzipmmapped zzip/mmapped.c zzip/memdisk.c zzip/fetch.c )
 target_link_libraries(zzipmmapped ZLIB::ZLIB )
 target_include_directories (zzipmmapped PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+endif()
 
 set_target_properties(zzip PROPERTIES OUTPUT_NAME "zzip-${RELNUM}")
 SET_TARGET_PROPERTIES(zzip PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
 
+if(ZZIPFSEEKO)
 set_target_properties(zzipfseeko PROPERTIES OUTPUT_NAME "zzipfseeko-${RELNUM}")
 SET_TARGET_PROPERTIES(zzipfseeko PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
+endif()
 
+if(ZZIPMMAPPED)
 set_target_properties(zzipmmapped PROPERTIES OUTPUT_NAME "zzipmmapped-${RELNUM}")
 SET_TARGET_PROPERTIES(zzipmmapped PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
+endif()
 
 # install ########################################################
 install(FILES ${ZZIPLIB_HDRS} DESTINATION include/zzip )
 install(TARGETS zzip 
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+if(ZZIPFSEEKO)
 install(TARGETS zzipfseeko 
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-if(NOT MSVC) # FIXME: syntax error
+endif()
+if(ZZIPMMAPPED)
 install(TARGETS zzipmmapped
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
@@ -144,8 +156,7 @@ if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
   set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
   set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
   if(${libversion} MATCHES "^[0-9].*")
-    install(CODE "execute_process(
-      COMMAND bash -c \"set -e
+    install(CODE "execute_process(COMMAND bash -c \"set -e
       cd $DESTDIR/${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}
       [ -f ${lib}${libname}${dll}.${libversion} ] || exit 0
       echo -n .. Installing: `pwd`
