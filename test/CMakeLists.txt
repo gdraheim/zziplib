@@ -21,8 +21,10 @@ option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
 # pkg_search_module ( ZZIP zzip )
+# find_package ( PythonInterp 2.6 REQUIRED )
+# find_package ( UnixCommands REQUIRED ) # bash cp mv rm gzip tar
+find_program ( MKZIP zip)
 
-set(MKZIP zip)
 set(EXEEXT ${CMAKE_EXECUTABLE_SUFFIX})
 set(README ${CMAKE_SOURCE_DIR}/README)
 # targets ########################################################
@@ -35,6 +37,7 @@ target_link_libraries(zzipsetstub  libzzip        ZLIB::ZLIB)
 target_include_directories(zzipself     PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 target_include_directories(zzipsetstub  PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 
+if(CMAKE_GENERATOR MATCHES "Makefiles")
 add_custom_command(OUTPUT zzipshowme${EXEEXT}
    COMMAND rm -f test
    COMMAND ln -s . test
@@ -44,9 +47,9 @@ add_custom_command(OUTPUT zzipshowme${EXEEXT}
    COMMAND test ! -f $@.zip || mv $@.zip $@
    COMMAND ./zzipsetstub${EXEEXT} $@ zzipself${EXEEXT}
    COMMAND chmod +x $@
-   DEPENDS zzipself zzipsetstub
-   )
+   DEPENDS zzipself zzipsetstub)
 add_custom_target(sfx ALL DEPENDS zzipshowme${EXEEXT})
+endif()
 
 # install ########################################################
 # - nothing -

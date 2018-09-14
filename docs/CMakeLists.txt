@@ -21,8 +21,9 @@ option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
 # pkg_search_module ( ZZIP zzip )
+find_package(PythonInterp 2.6 REQUIRED)
+find_package(UnixCommands REQUIRED) # bash cp mv rm gzip tar
 
-set(MKZIP zip)
 set(EXEEXT ${CMAKE_EXECUTABLE_SUFFIX})
 set(README ${CMAKE_SOURCE_DIR}/README)
 
@@ -48,40 +49,39 @@ set(zzipdoc_FILES makedocs.py          zzipdoc/__init__.py
 set(topdir ${CMAKE_SOURCE_DIR})
 set(srcdir ${CMAKE_CURRENT_SOURCE_DIR})
 set(docinfo --package="zziplib" --version=${VERSION})
+set(PY2 ${PYTHON_EXECUTABLE})
 add_custom_command(OUTPUT zziplib.xml
-    COMMAND python ${srcdir}/makedocs.py ${topdir}/zzip/*.c ${docinfo} --onlymainheader=zzip/lib.h --output=zziplib
-    COMMAND mv zziplib.docbook zziplib.xml
+    COMMAND ${PY2} ${srcdir}/makedocs.py ${topdir}/zzip/*.c ${docinfo} --onlymainheader=zzip/lib.h --output=zziplib
+    COMMAND ${MV} zziplib.docbook zziplib.xml
     DEPENDS libzzip
     BYPRODUCTS zziplib.html)
 add_custom_command(OUTPUT zzipmmapped.xml
-    COMMAND python ${srcdir}/makedocs.py ${topdir}/zzip/*.c ${docinfo} --onlymainheader=zzip/mmapped.h --output=zzipmmapped
-    COMMAND mv zzipmmapped.docbook zzipmmapped.xml
+    COMMAND ${PY2} ${srcdir}/makedocs.py ${topdir}/zzip/*.c ${docinfo} --onlymainheader=zzip/mmapped.h --output=zzipmmapped
+    COMMAND ${MV} zzipmmapped.docbook zzipmmapped.xml
     DEPENDS libzzipmmapped
     BYPRODUCTS zzipmmapped.html)
 add_custom_command(OUTPUT zzipfseeko.xml
-    COMMAND python ${srcdir}/makedocs.py ${topdir}/zzip/*.c ${docinfo} --onlymainheader=zzip/fseeko.h --output=zzipfseeko
-    COMMAND mv zzipfseeko.docbook zzipfseeko.xml
+    COMMAND ${PY2} ${srcdir}/makedocs.py ${topdir}/zzip/*.c ${docinfo} --onlymainheader=zzip/fseeko.h --output=zzipfseeko
+    COMMAND ${MV} zzipfseeko.docbook zzipfseeko.xml
     DEPENDS libzzipfseeko
     BYPRODUCTS zzipfsseko.html)
 add_custom_command(OUTPUT manpages.tar
-    COMMAND rm -rf man3
-    COMMAND mkdir man3
-    COMMAND python ${srcdir}/dbk2man.py -o man3 man zziplib.xml
-    COMMAND python ${srcdir}/dbk2man.py -o man3 man zzipmmapped.xml
-    COMMAND python ${srcdir}/dbk2man.py -o man3 man zzipfseeko.xml
-    COMMAND bash -c "test -d man3/man3 && mv man3 man3_; test -d man3_/man3 && mv man3_/man3 .; rm -rf man3_"
-    COMMAND bash -c "chmod 664 man3/*.3"
-    COMMAND bash -c "tar cf manpages.tar man3"
+    COMMAND ${BASH} -c "test -d man3 && rm -rf man3; mkdir man3"
+    COMMAND ${PY2} ${srcdir}/dbk2man.py -o man3 man zziplib.xml
+    COMMAND ${PY2} ${srcdir}/dbk2man.py -o man3 man zzipmmapped.xml
+    COMMAND ${PY2} ${srcdir}/dbk2man.py -o man3 man zzipfseeko.xml
+    COMMAND ${BASH} -c "test -d man3/man3 && mv man3 man3_; test -d man3_/man3 && mv man3_/man3 .; rm -rf man3_"
+    COMMAND ${BASH} -c "chmod 664 man3/*.3"
+    COMMAND ${BASH} -c "tar cf manpages.tar man3"
     DEPENDS zziplib.xml zzipmmapped.xml zzipfseeko.xml
     VERBATIM)
 add_custom_command(OUTPUT htmpages.tar
-    COMMAND rm -rf html
-    COMMAND mkdir html
-    COMMAND python ${srcdir}/dbk2man.py -o html html zziplib.xml
-    COMMAND python ${srcdir}/dbk2man.py -o html html zzipmmapped.xml
-    COMMAND python ${srcdir}/dbk2man.py -o html html zzipfseeko.xml
-    COMMAND python ${srcdir}/dir2index.py -o html html
-    COMMAND bash -c "tar cf htmpages.tar html/*.*"
+    COMMAND ${BASH} -c "test -d html && rm -rf html; mkdir html"
+    COMMAND ${PY2} ${srcdir}/dbk2man.py -o html html zziplib.xml
+    COMMAND ${PY2} ${srcdir}/dbk2man.py -o html html zzipmmapped.xml
+    COMMAND ${PY2} ${srcdir}/dbk2man.py -o html html zzipfseeko.xml
+    COMMAND ${PY2} ${srcdir}/dir2index.py -o html html
+    COMMAND ${BASH} -c "tar cf htmpages.tar html/*.*"
     DEPENDS zziplib.xml zzipmmapped.xml zzipfseeko.xml
     VERBATIM)
 
@@ -93,7 +93,7 @@ add_custom_target(doc ALL DEPENDS manpages)
 
 # install ########################################################
 set(mandir ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_MANDIR})
-install(CODE "execute_process(COMMAND bash -c \"set -e
+install(CODE "execute_process(COMMAND ${BASH} -c \"set -e
    mkdir -vp $DESTDIR/${mandir} || ls -ld $DESTDIR/${mandir}
    cd $DESTDIR/${mandir} && tar xf ${CMAKE_CURRENT_BINARY_DIR}/manpages.tar
    \")")
