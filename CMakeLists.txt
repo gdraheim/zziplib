@@ -28,6 +28,7 @@ option(ZZIPFSEEKO "Build libzzipfseeko (based on posix.1 api)" ON)
 option(ZZIPWRAP "Build libzzipwrap (non-installed example)" ON)
 option(ZZIPSDL "Build zzcatsdl (includable example code)" ON)
 option(ZZIPBINS "Build bins/unzzip (unzip-like executables)" ON)
+option(ZZIPTEST "Build test/zzipself (self-extract example)" ON)
 
 check_include_files ( byteswap.h ZZIP_HAVE_BYTESWAP_H )
 check_include_files ( direct.h ZZIP_HAVE_DIRECT_H )
@@ -146,8 +147,13 @@ endif()
 if(ZZIPSDL)
 add_subdirectory(SDL)
 endif()
+
 if(ZZIPBINS)
 add_subdirectory(bins)
+endif()
+
+if(ZZIPTEST)
+add_subdirectory(test)
 endif()
 
 # install ########################################################

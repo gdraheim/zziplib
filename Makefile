@@ -15,6 +15,8 @@ libzzip libzzipmmapped libzzipfseeko libzzipwrap zzipwrap:
 	cd build && $(MAKE) $@
 zzip unzzip unzzip-mix unzzip-mem unzzip-big zzdir zzcat zzcatsdl zzxorcat zzxordir zzobfuscated:
 	cd build && $(MAKE) $@
+sfx zzipself zzipsetstub:
+	cd build && $(MAKE) $@
 
 builds: config build local
 static: conf build local
@@ -24,7 +26,7 @@ it: ; $(MAKE) distclean && $(MAKE) builds
 
 .PHONY: build
 build:
-	cd build && $(MAKE) all
+	cd build && $(MAKE) all VERBOSE=1
 
 config:
 	test -d build || mkdir build
@@ -34,8 +36,6 @@ conf:
 	test -d build || mkdir build
 	cd build && cmake $(STATIC) -DCMAKE_INSTALL_PREFIX:PATH=$(PREFIX) ..
 
-build:
-	cd build && $(MAKE) VERBOSE=1
 local:
 	cd build && $(MAKE) install DESTDIR=$(LOCAL)
 distclean:
