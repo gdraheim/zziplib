@@ -143,7 +143,7 @@ if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
   get_target_property(libversion zzip VERSION)
   set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
   set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
-  if(${libversion} MATCHES "^[.][0-9].*")
+  if(${libversion} MATCHES "^[0-9].*")
     install(CODE "execute_process(
       COMMAND bash -c \"set -e
       cd $DESTDIR/${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}
