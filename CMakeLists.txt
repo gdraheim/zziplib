@@ -19,6 +19,8 @@ include ( TestBigEndian )
 include ( GNUInstallDirs )
 
 option(BUILD_SHARED_LIBS "Build a shared library" ON)
+option(BUILD_STATIC_LIBS "Build the static library" OFF)
+option(BUILD_TESTS "Build test programs" OFF)
 option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 
 check_include_files ( byteswap.h ZZIP_HAVE_BYTESWAP_H )
@@ -141,12 +143,16 @@ if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
   get_target_property(libversion zzip VERSION)
   set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
   set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
-  install(CODE "execute_process(
+  if(${libversion} MATCHES "^[.][0-9].*")
+    install(CODE "execute_process(
       COMMAND bash -c \"set -e
       cd $DESTDIR/${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}
+      echo -n .. Installing: `pwd`
+      ln -sv ${lib}${libname}${dll}.${libversion} ${lib}${libname}${dll}.10
       echo -n .. Installing: `pwd`
       ln -sv ${lib}${libname}${dll}.${libversion} ${lib}${libname}${dll}.11
       echo -n .. Installing: `pwd`
       ln -sv ${lib}${libname}${dll}.${libversion} ${lib}${libname}${dll}.12
       \")")
+  endif()
 endif()
