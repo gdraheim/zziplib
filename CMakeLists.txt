@@ -2,13 +2,13 @@ cmake_minimum_required (VERSION 3.1)
 project(zziplib C)
 set(VERSION "0.13.69")
 
-string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\1" APIVERSION ${VERSION})
-string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\2" RELVERSION ${VERSION})
-string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "0.\\3" FIXVERSION ${VERSION})
-MESSAGE(STATUS "VERSION ${VERSION} -> APIVERSION ${APIVERSION}")
-MESSAGE(STATUS "VERSION ${VERSION} -> RELVERSION ${RELVERSION}")
-MESSAGE(STATUS "VERSION ${VERSION} -> FIXVERSION ${FIXVERSION}")
-# the "0." on FIXVERSION is just for compatibility with automake's libtool.
+string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\1" RELNUM ${VERSION})
+string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\2" VERNUM ${VERSION})
+string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "0.\\3" FIXNUM ${VERSION})
+MESSAGE(STATUS "VERSION ${VERSION} -> RELNUM ${RELNUM}")
+MESSAGE(STATUS "VERSION ${VERSION} -> VERNUM ${VERNUM}")
+MESSAGE(STATUS "VERSION ${VERSION} -> FIXNUM ${FIXNUM}")
+# the "0." on FIXNUM is just for compatibility with automake's libtool.
 
 # generate _config.h
 include ( CheckIncludeFiles )
@@ -115,14 +115,14 @@ add_library(zzipmmapped zzip/mmapped.c zzip/memdisk.c zzip/fetch.c )
 target_link_libraries(zzipmmapped ZLIB::ZLIB )
 target_include_directories (zzipmmapped PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
-set_target_properties(zzip PROPERTIES OUTPUT_NAME "zzip-${APIVERSION}")
-SET_TARGET_PROPERTIES(zzip PROPERTIES VERSION ${RELVERSION}.${FIXVERSION} SOVERSION ${RELVERSION})
+set_target_properties(zzip PROPERTIES OUTPUT_NAME "zzip-${RELNUM}")
+SET_TARGET_PROPERTIES(zzip PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
 
-set_target_properties(zzipfseeko PROPERTIES OUTPUT_NAME "zzipfseeko-${APIVERSION}")
-SET_TARGET_PROPERTIES(zzipfseeko PROPERTIES VERSION ${RELVERSION}.${FIXVERSION} SOVERSION ${RELVERSION})
+set_target_properties(zzipfseeko PROPERTIES OUTPUT_NAME "zzipfseeko-${RELNUM}")
+SET_TARGET_PROPERTIES(zzipfseeko PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
 
-set_target_properties(zzipmmapped PROPERTIES OUTPUT_NAME "zzipmmapped-${APIVERSION}")
-SET_TARGET_PROPERTIES(zzipmmapped PROPERTIES VERSION ${RELVERSION}.${FIXVERSION} SOVERSION ${RELVERSION})
+set_target_properties(zzipmmapped PROPERTIES OUTPUT_NAME "zzipmmapped-${RELNUM}")
+SET_TARGET_PROPERTIES(zzipmmapped PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
 
 # install ########################################################
 install(FILES ${ZZIPLIB_HDRS} DESTINATION include/zzip )
