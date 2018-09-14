@@ -18,6 +18,7 @@ include ( CheckTypeSize )
 include ( TestBigEndian )
 include ( GNUInstallDirs )
 
+# options ###########################################################
 option(BUILD_SHARED_LIBS "Build a shared library" ON)
 option(BUILD_STATIC_LIBS "Build the static library" OFF)
 option(BUILD_TESTS "Build test programs" OFF)
@@ -67,8 +68,6 @@ check_include_files ( "stdlib.h;stdarg.h;string.h;float.h" ZZIP_STDC_HEADERS )
 test_big_endian ( ZZIP_WORDS_BIGENDIAN )
 
 configure_file ( ${CMAKE_CURRENT_SOURCE_DIR}/_config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/zzip/_config.h )
-
-# options ###########################################################
 
 # Zlib library needed
 find_package ( ZLIB REQUIRED )

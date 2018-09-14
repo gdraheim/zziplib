@@ -13,6 +13,7 @@ include ( CheckIncludeFiles )
 include ( GNUInstallDirs )
 include ( FindPkgConfig )
 
+# options ########################################################
 option(BUILD_SHARED_LIBS "Build a shared library" ON)
 option(BUILD_STATIC_LIBS "Build the static library" OFF)
 option(BUILD_TESTS "Build test programs" OFF)
@@ -25,13 +26,6 @@ check_include_files ( unistd.h ZZIP_HAVE_UNISTD_H )
 find_package ( ZLIB REQUIRED )
 pkg_search_module ( ZZIP zzip )
 
-# use the uninstalled zzip here (don't know to to tell pkg_search_module)
-set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
-set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
-get_target_property(libname libzzip OUTPUT_NAME)
-set(ZZIP_INCLUDE_DIR ${CMAKE_SOURCE_DIR})
-set(ZZIP_LIBRARY ${CMAKE_BINARY_DIR}/${lib}${libname}${dll})
-
 # targets ########################################################
 set(ZZIPWRAP_SRCS
     zzipwrap.c)
@@ -43,7 +37,7 @@ set(LIBZZIPWRAP_HDRS
     wrap.h)
 
 add_library(libzzipwrap ${LIBZZIPWRAP_SRCS} )
-target_link_libraries(libzzipwrap "${ZZIP_LIBRARY}" ZLIB::ZLIB )
+target_link_libraries(libzzipwrap libzzip ZLIB::ZLIB )
 target_include_directories (libzzipwrap PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${ZZIP_INCLUDE_DIR})
 
 set_target_properties(libzzipwrap PROPERTIES OUTPUT_NAME "zzipwrap-${RELNUM}")

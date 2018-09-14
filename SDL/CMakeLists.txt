@@ -12,6 +12,7 @@ MESSAGE(STATUS "VERSION ${VERSION} -> FIXNUM ${FIXNUM}")
 include ( GNUInstallDirs )
 include ( FindPkgConfig )
 
+# options ########################################################
 option(BUILD_SHARED_LIBS "Build a shared library" ON)
 option(BUILD_STATIC_LIBS "Build the static library" OFF)
 option(BUILD_TESTS "Build test programs" OFF)
@@ -19,15 +20,8 @@ option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
-pkg_search_module ( ZZIP zzip )
+# pkg_search_module ( ZZIP zzip )
 pkg_search_module ( SDL sdl2)
-
-# use the uninstalled zzip here (don't know to to tell pkg_search_module)
-set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
-set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
-get_target_property(libname libzzip OUTPUT_NAME)
-set(ZZIP_INCLUDE_DIR ${CMAKE_SOURCE_DIR})
-set(ZZIP_LIBRARY ${CMAKE_BINARY_DIR}/${lib}${libname}${dll})
 
 # targets ########################################################
 set(ZZIPSDL_SRCS 
@@ -42,7 +36,7 @@ set(ZZCATSDL_SRCS
 
 if(SDL_FOUND)
 add_executable(zzcatsdl ${ZZCATSDL_SRCS} )
-target_link_libraries(zzcatsdl "${ZZIP_LIBRARY}" "${SDL_LIBRARIES}" ZLIB::ZLIB)
+target_link_libraries(zzcatsdl libzzip "${SDL_LIBRARIES}" ZLIB::ZLIB)
 target_include_directories(zzcatsdl PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}" "${SDL_INCLUDE_DIRS}")
 endif()
 
