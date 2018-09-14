@@ -10,13 +10,13 @@ all depend:
 clean edit_cache rebuild_cache help:
 	test ! -d build || cd build && $(MAKE) $@
 install install/strip install/local list_install_components:
-	cd build && $(MAKE) $@
+	cd build && $(MAKE) $@ VERBOSE=1
 libzzip libzzipmmapped libzzipfseeko libzzipwrap zzipwrap:
-	cd build && $(MAKE) $@
+	cd build && $(MAKE) $@ VERBOSE=1
 zzip unzzip unzzip-mix unzzip-mem unzzip-big zzdir zzcat zzcatsdl zzxorcat zzxordir zzobfuscated:
-	cd build && $(MAKE) $@
-sfx zzipself zzipsetstub doc:
-	cd build && $(MAKE) $@
+	cd build && $(MAKE) $@ VERBOSE=1
+sfx zzipself zzipsetstub doc htm man htmpages htmpages:
+	cd build && $(MAKE) $@ VERBOSE=1
 
 builds: config build local
 static: conf build local

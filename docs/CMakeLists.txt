@@ -71,11 +71,25 @@ add_custom_command(OUTPUT manpages.tar
     COMMAND python ${srcdir}/dbk2man.py -o man3 man zzipfseeko.xml
     COMMAND bash -c "test -d man3/man3 && mv man3 man3_; test -d man3_/man3 && mv man3_/man3 .; rm -rf man3_"
     COMMAND bash -c "chmod 664 man3/*.3"
-    COMMAND tar cf manpages.tar man3
+    COMMAND bash -c "tar cf manpages.tar man3"
+    DEPENDS zziplib.xml zzipmmapped.xml zzipfseeko.xml
+    VERBATIM)
+add_custom_command(OUTPUT htmpages.tar
+    COMMAND rm -rf html
+    COMMAND mkdir html
+    COMMAND python ${srcdir}/dbk2man.py -o html html zziplib.xml
+    COMMAND python ${srcdir}/dbk2man.py -o html html zzipmmapped.xml
+    COMMAND python ${srcdir}/dbk2man.py -o html html zzipfseeko.xml
+    COMMAND python ${srcdir}/dir2index.py -o html html
+    COMMAND bash -c "tar cf htmpages.tar html/*.*"
     DEPENDS zziplib.xml zzipmmapped.xml zzipfseeko.xml
     VERBATIM)
 
-add_custom_target(doc ALL DEPENDS manpages.tar)
+add_custom_target(man DEPENDS manpages)
+add_custom_target(htm DEPENDS htmpages)
+add_custom_target(manpages DEPENDS manpages.tar)
+add_custom_target(htmpages DEPENDS htmpages.tar)
+add_custom_target(doc ALL DEPENDS manpages)
 
 # install ########################################################
 set(mandir ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_MANDIR})
