@@ -23,7 +23,9 @@ option(BUILD_STATIC_LIBS "Build the static library" OFF)
 option(BUILD_TESTS "Build test programs" OFF)
 option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 option(ZZIPMMAPPED "Build libzzipmmapped (not fully portable)" ON)
-option(ZZIPFSEEKO "Build libzippfseeko (based on posix.1 api)" ON)
+option(ZZIPFSEEKO "Build libzzipfseeko (based on posix.1 api)" ON)
+option(ZZIPWRAP "Build libzzipwrap (non-installed example)" ON)
+option(ZZIPSDL "Build zzcatsdl (includable example code)" ON)
 
 check_include_files ( byteswap.h ZZIP_HAVE_BYTESWAP_H )
 check_include_files ( direct.h ZZIP_HAVE_DIRECT_H )
@@ -65,7 +67,7 @@ test_big_endian ( ZZIP_WORDS_BIGENDIAN )
 
 configure_file ( ${CMAKE_CURRENT_SOURCE_DIR}/_config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/zzip/_config.h )
 
-###################################################################################
+# options ###########################################################
 
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
@@ -82,9 +84,12 @@ if(UNIX)
     )
 endif()
 
-# libzlib library
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_definitions ( -DHAVE_CONFIG_H )
+
+# targets ############################################################
+
+# libzlib library
 set(ZZIPLIB_SRCS 
     zzip/dir.c
     zzip/err.c 
@@ -132,6 +137,14 @@ endif()
 if(ZZIPMMAPPED)
 set_target_properties(zzipmmapped PROPERTIES OUTPUT_NAME "zzipmmapped-${RELNUM}")
 SET_TARGET_PROPERTIES(zzipmmapped PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
+endif()
+
+if(ZZIPWRAP)
+add_subdirectory(zzipwrap)
+endif()
+
+if(ZZIPSDL)
+add_subdirectory(SDL)
 endif()
 
 # install ########################################################
