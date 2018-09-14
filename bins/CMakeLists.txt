@@ -73,4 +73,4 @@ target_include_directories(unzzip-big PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CUR
 # install ########################################################
 install(TARGETS zzcat zzdir zzxorcat zzxordir 
                 unzzip unzzip-mix unzzip-mem unzzip-big
-        DESTINATION bin)
+        DESTINATION "${CMAKE_INSTALL_BINDIR}")

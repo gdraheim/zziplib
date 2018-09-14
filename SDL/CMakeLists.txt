@@ -48,4 +48,4 @@ endif()
 
 # install ########################################################
 install(FILES ${ZZIPSDL_SRCS} ${ZZIPSDL_HDRS}
-        DESTINATION include/SDL_rwops_zzip)
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/SDL_rwops_zzip)
