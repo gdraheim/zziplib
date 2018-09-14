@@ -1,0 +1,76 @@
+cmake_minimum_required (VERSION 3.1)
+project(zzipbins C)
+set(VERSION "0.13.69")
+
+string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\1" RELNUM ${VERSION})
+string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\2" VERNUM ${VERSION})
+string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\3" FIXNUM ${VERSION})
+MESSAGE(STATUS "VERSION ${VERSION} -> RELNUM ${RELNUM}")
+MESSAGE(STATUS "VERSION ${VERSION} -> VERNUM ${VERNUM}")
+MESSAGE(STATUS "VERSION ${VERSION} -> FIXNUM ${FIXNUM}")
+
+include ( GNUInstallDirs )
+include ( FindPkgConfig )
+
+option(BUILD_SHARED_LIBS "Build a shared library" ON)
+option(BUILD_STATIC_LIBS "Build the static library" OFF)
+option(BUILD_TESTS "Build test programs" OFF)
+option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
+
+# Zlib library needed
+find_package ( ZLIB REQUIRED )
+pkg_search_module ( ZZIP zzip )
+pkg_search_module ( ZZIPMAPPED zzipmmapped )
+pkg_search_module ( ZZIPFSEEKO zzipfseeko )
+
+# use the uninstalled zzip here (don't know to to tell pkg_search_module)
+set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
+set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
+get_target_property(libzzip libzzip OUTPUT_NAME)
+get_target_property(libzzipmapped libzzipmmapped OUTPUT_NAME)
+get_target_property(libzzipfseeko libzzipfseeko OUTPUT_NAME)
+set(ZZIP_INCLUDE_DIR ${CMAKE_SOURCE_DIR})
+set(ZZIP_LIBRARY ${CMAKE_BINARY_DIR}/${lib}${libzzip}${dll})
+set(ZZIPMAPPED_LIBRARY ${CMAKE_BINARY_DIR}/${lib}${libzzipmapped}${dll})
+set(ZZIPFSEEKO_LIBRARY ${CMAKE_BINARY_DIR}/${lib}${libzzipfseeko}${dll})
+
+# targets ########################################################
+add_executable(zzcat zzcat.c)
+add_executable(zzdir zzdir.c)
+add_executable(zzxorcat zzxorcat.c)
+add_executable(zzxordir zzxordir.c)
+add_executable(zzobfuscated zzobfuscated.c)
+add_executable(zziptest zziptest.c)
+add_executable(zzip zzip.c zzipmake-zip.c)
+add_executable(unzzip unzzip.c unzzipcat-zip.c unzzipdir-zip.c)
+add_executable(unzzip-mix unzzip.c unzzipcat-mix.c unzzipdir-mix.c)
+add_executable(unzzip-mem unzzip.c unzzipcat-mem.c unzzipdir-mem.c)
+add_executable(unzzip-big unzzip.c unzzipcat-big.c unzzipdir-big.c)
+
+target_link_libraries(zzcat     "${ZZIP_LIBRARY}" ZLIB::ZLIB)
+target_link_libraries(zzdir      "${ZZIP_LIBRARY}" ZLIB::ZLIB)
+target_link_libraries(zzxorcat   "${ZZIP_LIBRARY}" ZLIB::ZLIB)
+target_link_libraries(zzxordir   "${ZZIP_LIBRARY}" ZLIB::ZLIB)
+target_link_libraries(zzobfuscated "${ZZIP_LIBRARY}" ZLIB::ZLIB)
+target_link_libraries(zziptest       "${ZZIP_LIBRARY}" ZLIB::ZLIB)
+target_link_libraries(zzip       "${ZZIP_LIBRARY}" ZLIB::ZLIB)
+target_link_libraries(unzzip     "${ZZIP_LIBRARY}" ZLIB::ZLIB)
+target_link_libraries(unzzip-mix "${ZZIP_LIBRARY}" ZLIB::ZLIB)
+target_link_libraries(unzzip-mem "${ZZIPMAPPED_LIBRARY}" ZLIB::ZLIB)
+target_link_libraries(unzzip-big "${ZZIPFSEEKO_LIBRARY}" ZLIB::ZLIB)
+
+target_include_directories(zzcat     PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(zzdir      PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(zzxorcat   PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(zzxordir   PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(zzobfuscated PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(zzip       PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(unzzip     PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(unzzip-mix PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(unzzip-mem PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(unzzip-big PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
+
+# install ########################################################
+install(TARGETS zzcat zzdir zzxorcat zzxordir 
+                unzzip unzzip-mix unzzip-mem unzzip-big
+        DESTINATION bin)

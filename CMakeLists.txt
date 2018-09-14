@@ -26,6 +26,7 @@ option(ZZIPMMAPPED "Build libzzipmmapped (not fully portable)" ON)
 option(ZZIPFSEEKO "Build libzzipfseeko (based on posix.1 api)" ON)
 option(ZZIPWRAP "Build libzzipwrap (non-installed example)" ON)
 option(ZZIPSDL "Build zzcatsdl (includable example code)" ON)
+option(ZZIPBINS "Build bins/unzzip (unzip-like executables)" ON)
 
 check_include_files ( byteswap.h ZZIP_HAVE_BYTESWAP_H )
 check_include_files ( direct.h ZZIP_HAVE_DIRECT_H )
@@ -110,33 +111,33 @@ set(ZZIPLIB_HDRS
     zzip/fetch.h
     ${CMAKE_CURRENT_BINARY_DIR}/zzip/_config.h)
 
-add_library(zzip ${ZZIPLIB_SRCS} )
-target_link_libraries(zzip ZLIB::ZLIB )
-target_include_directories (zzip PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+add_library(libzzip ${ZZIPLIB_SRCS} )
+target_link_libraries(libzzip ZLIB::ZLIB )
+target_include_directories (libzzip PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 if(ZZIPFSEEKO)
-add_library(zzipfseeko zzip/fseeko.c zzip/fetch.c )
-target_link_libraries(zzipfseeko ZLIB::ZLIB )
-target_include_directories (zzipfseeko PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+add_library(libzzipfseeko zzip/fseeko.c zzip/fetch.c )
+target_link_libraries(libzzipfseeko ZLIB::ZLIB )
+target_include_directories (libzzipfseeko PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 endif()
 
 if(ZZIPMMAPPED)
-add_library(zzipmmapped zzip/mmapped.c zzip/memdisk.c zzip/fetch.c )
-target_link_libraries(zzipmmapped ZLIB::ZLIB )
-target_include_directories (zzipmmapped PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+add_library(libzzipmmapped zzip/mmapped.c zzip/memdisk.c zzip/fetch.c )
+target_link_libraries(libzzipmmapped ZLIB::ZLIB )
+target_include_directories (libzzipmmapped PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 endif()
 
-set_target_properties(zzip PROPERTIES OUTPUT_NAME "zzip-${RELNUM}")
-SET_TARGET_PROPERTIES(zzip PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
+set_target_properties(libzzip PROPERTIES OUTPUT_NAME "zzip-${RELNUM}")
+SET_TARGET_PROPERTIES(libzzip PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
 
 if(ZZIPFSEEKO)
-set_target_properties(zzipfseeko PROPERTIES OUTPUT_NAME "zzipfseeko-${RELNUM}")
-SET_TARGET_PROPERTIES(zzipfseeko PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
+set_target_properties(libzzipfseeko PROPERTIES OUTPUT_NAME "zzipfseeko-${RELNUM}")
+SET_TARGET_PROPERTIES(libzzipfseeko PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
 endif()
 
 if(ZZIPMMAPPED)
-set_target_properties(zzipmmapped PROPERTIES OUTPUT_NAME "zzipmmapped-${RELNUM}")
-SET_TARGET_PROPERTIES(zzipmmapped PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
+set_target_properties(libzzipmmapped PROPERTIES OUTPUT_NAME "zzipmmapped-${RELNUM}")
+SET_TARGET_PROPERTIES(libzzipmmapped PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
 endif()
 
 if(ZZIPWRAP)
@@ -146,26 +147,29 @@ endif()
 if(ZZIPSDL)
 add_subdirectory(SDL)
 endif()
+if(ZZIPBINS)
+add_subdirectory(bins)
+endif()
 
 # install ########################################################
 install(FILES ${ZZIPLIB_HDRS} DESTINATION include/zzip )
-install(TARGETS zzip 
+install(TARGETS libzzip 
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 if(ZZIPFSEEKO)
-install(TARGETS zzipfseeko 
+install(TARGETS libzzipfseeko 
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
 if(ZZIPMMAPPED)
-install(TARGETS zzipmmapped
+install(TARGETS libzzipmmapped
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
 
 if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
-  get_target_property(libname zzip OUTPUT_NAME)
-  get_target_property(libversion zzip VERSION)
+  get_target_property(libname libzzip OUTPUT_NAME)
+  get_target_property(libversion libzzip VERSION)
   set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
   set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
   if(${libversion} MATCHES "^[0-9].*")

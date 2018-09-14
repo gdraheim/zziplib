@@ -25,7 +25,7 @@ pkg_search_module ( SDL sdl2)
 # use the uninstalled zzip here (don't know to to tell pkg_search_module)
 set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
 set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
-get_target_property(libname zzip OUTPUT_NAME)
+get_target_property(libname libzzip OUTPUT_NAME)
 set(ZZIP_INCLUDE_DIR ${CMAKE_SOURCE_DIR})
 set(ZZIP_LIBRARY ${CMAKE_BINARY_DIR}/${lib}${libname}${dll})
 
