@@ -21,12 +21,16 @@ option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
 # pkg_search_module ( ZZIP zzip )
-# find_package ( PythonInterp 2.6 REQUIRED )
-# find_package ( UnixCommands REQUIRED ) # bash cp mv rm gzip tar
+find_package ( PythonInterp 2.6 REQUIRED )
+find_package ( UnixCommands REQUIRED ) # bash cp mv rm gzip tar
 find_program ( MKZIP zip)
 
 set(EXEEXT ${CMAKE_EXECUTABLE_SUFFIX})
 set(README ${CMAKE_SOURCE_DIR}/README)
+set(PY2 ${PYTHON_EXECUTABLE})
+set(srcdir ${CMAKE_CURRENT_SOURCE_DIR})
+set(topdir ${CMAKE_SOURCE_DIR})
+
 # targets ########################################################
 add_executable(zzipself    zzipself.c)
 add_executable(zzipsetstub zzipsetstub.c)
@@ -50,6 +54,31 @@ add_custom_command(OUTPUT zzipshowme${EXEEXT}
    DEPENDS zzipself zzipsetstub)
 add_custom_target(sfx ALL DEPENDS zzipshowme${EXEEXT})
 endif()
+
+add_custom_target(tests
+   COMMAND ${PY2} ${srcdir}/zziptests.py --exeext=${EXEEXT} --topsrcdir=${topdir} -v
+   DEPENDS ../bins/zzcat ../bins/zzdir ../bins/zziptest ../bins/zzxorcat)
+add_custom_command(OUTPUT ../bins/zzcat COMMMAND cd ../bins && $(MAKE) zzcat)
+add_custom_command(OUTPUT ../bins/zzdir COMMMAND cd ../bins && $(MAKE) zzdir)
+add_custom_command(OUTPUT ../bins/zziptest COMMMAND cd ../bins && $(MAKE) zziptest)
+add_custom_command(OUTPUT ../bins/zzxorcat COMMMAND cd ../bins && $(MAKE) zzxorcat)
+
+add_custom_command(OUTPUT test0.zip
+    COMMAND ${BASH} -c "test -d tmp || mkdir tmp"
+    COMMAND ${CP} ${README} tmp/README
+    COMMAND ${BASH} -c "cd tmp && ${MKZIP} ../test0.zip README"
+    COMMAND ${CP} test0.zip ${srcdir}/test.zip
+    COMMAND ${MV} test0.zip test.zip
+    BYPRODUCTS test.zip
+    VERBATIM)
+add_custom_target(checks
+    COMMAND ${BASH} -c "../bins/zzcat test/README > test.out"
+    COMMAND ${BASH} -c "if diff test.out ${README} >/dev/null \
+       ; then rm test.out ; echo check OK; true \
+       ; else rm test.out ; echo check FAIL ; false; fi"
+    DEPENDS ../bins/zzcat test0.zip
+    VERBATIM)
+add_custom_target(check DEPENDS checks tests)
 
 # install ########################################################
 # - nothing -
