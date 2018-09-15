@@ -19,7 +19,6 @@ include ( CheckSymbolExists )
 include ( CheckTypeSize )
 include ( TestBigEndian )
 include ( GNUInstallDirs )
-
 # options ###########################################################
 option(BUILD_SHARED_LIBS "Build a shared library" ON)
 option(BUILD_STATIC_LIBS "Build the static library" OFF)
@@ -27,6 +26,7 @@ option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 option(ZZIPMMAPPED "Build libzzipmmapped (not fully portable)" ON)
 option(ZZIPFSEEKO "Build libzzipfseeko (based on posix.1 api)" ON)
 option(ZZIPCOMPAT "Build compatibility with old libzzip releases" ON)
+
 
 if(ZZIPCOMPAT)
 find_package ( UnixCommands REQUIRED ) # bash cp mv rm gzip tar
@@ -70,6 +70,25 @@ check_type_size ( short ZZIP_SIZEOF_SHORT )
 check_include_files ( "stdlib.h;stdarg.h;string.h;float.h" ZZIP_STDC_HEADERS )
 test_big_endian ( ZZIP_WORDS_BIGENDIAN )
 
+# simplified largefile support detection for unix
+set(CMAKE_REQUIRED_DEFINITIONS -D_LARGEFILE_SOURCE -Doff_t_32=off_t)
+check_type_size( off_t_32 ZZIP_SIZEOF_OFF_T_32 )
+set(CMAKE_REQUIRED_DEFINITIONS -D_LARGEFILE_SOURCE -Doff_t_64=off_t -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES)
+check_type_size( off_t_64 ZZIP_SIZEOF_OFF_T_64 )
+set(CMAKE_REQUIRED_DEFINITIONS -D_LARGEFILE64_SOURCE)
+check_type_size( off64_t ZZIP_SIZEOF_OFF64_T )
+
+if(ZZIP_SIZEOF_OFF_T_32)
+  message(STATUS "found sizeof(off_t/32)=${ZZIP_SIZEOF_OFF_T_32} and sizeof(off_t/64)=${ZZIP_SIZEOF_OFF_T_64}")
+  if(NOT ZZIP_SIZEOF_OFF_T_32 EQUAL ZZIP_SIZEOF_OFF_T_64)
+    set(ZZIP_LARGEFILE_SENSITIVE 1)
+    # this will turn into ZZIP_LARGEFILE_RENAME so that zzip_opendir becomes zzip_opendir64 in the lib
+    # which is needed on Linux/Solaris where the default zzip_opendir is expected to use a 32bit off_t
+    message(STATUS "system is large file sensitive - do rename symbols to xx64")
+    set(largefiles -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGE_FILES)
+  endif()
+endif()
+
 configure_file ( ${CMAKE_CURRENT_SOURCE_DIR}/_config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/_config.h )
 
 # Zlib library needed
@@ -89,6 +108,7 @@ endif()
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_definitions ( -DHAVE_CONFIG_H )
+
 
 set(srcdir ${CMAKE_CURRENT_SOURCE_DIR})
 set(outdir ${CMAKE_CURRENT_BINARY_DIR})

@@ -10,6 +10,11 @@ MESSAGE(STATUS "VERSION ${VERSION} -> VERNUM ${VERNUM}")
 MESSAGE(STATUS "VERSION ${VERSION} -> FIXNUM ${FIXNUM}")
 # the "0." on FIXNUM is just for compatibility with automake's libtool.
 
+### Path to additional CMake modules
+# set(CMAKE_MODULE_PATH
+#     ${CMAKE_SOURCE_DIR}/cmake
+#     ${CMAKE_MODULE_PATH})
+
 include ( GNUInstallDirs )
 
 option(BUILD_SHARED_LIBS "Build a shared library" ON)
