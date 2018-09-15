@@ -2,3 +2,7 @@
 *.cache
 build
 *-linux-*
+*.pyc
+*.tmp
+docs/man3
+docs/html
