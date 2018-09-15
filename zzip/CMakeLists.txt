@@ -177,16 +177,16 @@ target_link_libraries(libzzipmmapped ZLIB::ZLIB )
 target_include_directories (libzzipmmapped PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 endif()
 
-set_target_properties(libzzip PROPERTIES OUTPUT_NAME "zzip-${RELNUM}")
+set_target_properties(libzzip PROPERTIES OUTPUT_NAME "zzip" RELEASE_POSTFIX "-${RELNUM}")
 SET_TARGET_PROPERTIES(libzzip PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
 
 if(ZZIPFSEEKO)
-set_target_properties(libzzipfseeko PROPERTIES OUTPUT_NAME "zzipfseeko-${RELNUM}")
+set_target_properties(libzzipfseeko PROPERTIES OUTPUT_NAME "zzipfseeko" RELEASE_POSTFIX "-${RELNUM}")
 SET_TARGET_PROPERTIES(libzzipfseeko PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
 endif()
 
 if(ZZIPMMAPPED)
-set_target_properties(libzzipmmapped PROPERTIES OUTPUT_NAME "zzipmmapped-${RELNUM}")
+set_target_properties(libzzipmmapped PROPERTIES OUTPUT_NAME "zzipmmapped" RELEASE_POSTIFX "-${RELNUM}")
 SET_TARGET_PROPERTIES(libzzipmmapped PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
 endif()
 
@@ -236,21 +236,27 @@ if(ZZIPCOMPAT)
           DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
   if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
     get_target_property(libname libzzip OUTPUT_NAME)
+    get_target_property(librelease libzzip RELEASE_POSTFIX)
     get_target_property(libversion libzzip VERSION)
     set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
     set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
     set(libdir ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
     if(${libversion} MATCHES "^[0-9].*")
+      message(STATUS "going to relink ${libversion} for ${libname} ${librelease}")
       install(CODE "execute_process(COMMAND bash -c \"set -e
         cd $DESTDIR/${libdir}
-        [ -f ${lib}${libname}${dll}.${libversion} ] || exit 0
+        [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
         echo -n .. Installing: `pwd`
-        ln -sv ${lib}${libname}${dll}.${libversion} ${lib}${libname}${dll}.10
+        ln -sv ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.10
         echo -n .. Installing: `pwd`
-        ln -sv ${lib}${libname}${dll}.${libversion} ${lib}${libname}${dll}.11
+        ln -sv ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.11
         echo -n .. Installing: `pwd`
-        ln -sv ${lib}${libname}${dll}.${libversion} ${lib}${libname}${dll}.12
+        ln -sv ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
         \")")
+    else()
+      message(STATUS "IGNORE to relink ${libversion}") 
     endif()
+  else()
+      message(STATUS "SONAME_CFLAG was ${CMAKE_SHARED_LIBRARY_SONAME_C_FLAG}") 
   endif()
 endif()

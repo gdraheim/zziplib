@@ -27,6 +27,7 @@ static: conf build local
 
 st: ; $(MAKE) distclean && $(MAKE) static
 it: ; $(MAKE) distclean && $(MAKE) builds
+cc: ; $(MAKE) distclean && $(MAKE) config
 
 .PHONY: build
 build:

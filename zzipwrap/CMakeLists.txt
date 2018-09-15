@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.1)
 project(zzipwrap C)
 set(VERSION "0.13.69")
 
-if(NOT RELNUM)
+if(NOT ${RELNUM})
 string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\1" RELNUM ${VERSION})
 string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\2" VERNUM ${VERSION})
 string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\3" FIXNUM ${VERSION})
@@ -42,7 +42,7 @@ add_library(libzzipwrap ${libzzipwrap_SRCS} )
 target_link_libraries(libzzipwrap libzzip ZLIB::ZLIB )
 target_include_directories (libzzipwrap PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${ZZIP_INCLUDE_DIR})
 
-set_target_properties(libzzipwrap PROPERTIES OUTPUT_NAME "zzipwrap-${RELNUM}")
+set_target_properties(libzzipwrap PROPERTIES OUTPUT_NAME "zzipwrap" RELEASE_POSTFIX "-${RELNUM}")
 SET_TARGET_PROPERTIES(libzzipwrap PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
 
 add_executable(zzipwrap ${zzipwrap_SRCS} )
