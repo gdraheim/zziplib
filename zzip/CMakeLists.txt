@@ -94,7 +94,7 @@ add_definitions ( -DHAVE_CONFIG_H )
 # targets ############################################################
 
 # libzlib library
-set(ZZIPLIB_SRCS 
+set(libzzip_SRCS 
     dir.c
     err.c 
     file.c 
@@ -105,27 +105,52 @@ set(ZZIPLIB_SRCS
     zip.c 
     fetch.c)
 
-set(ZZIPLIB_HDRS
+set(libzzip_HDRS
+    lib.h
     zzip.h
+    format.h
     types.h
     conf.h 
     _msvc.h 
-    plugin.h 
+    file.h
+    info.h
+    plugin.h
+    write.h
     fetch.h
+    stdint.h
+    zzip32.h
+    autoconf.h
     ${CMAKE_CURRENT_BINARY_DIR}/_config.h)
 
-add_library(libzzip ${ZZIPLIB_SRCS} )
+set(libzzip_INCS
+    __debug.h
+    __dirent.h
+    __errno.h
+    __fnmatch.h
+    __hints.h
+    __mkdir.h
+    __mmap.h
+    __string.h)
+
+set(libzzipfseeko_SRCS fseeko.c fetch.c)
+set(libzzipfseeko_HDRS fseeko.h)
+
+set(libzzipmmapped_SRCS mmapped.c memdisk.c fetch.c)
+set(libzzipmmapped_HDRS mmapped.h memdisk.h)
+
+
+add_library(libzzip ${libzzip_SRCS} )
 target_link_libraries(libzzip ZLIB::ZLIB )
 target_include_directories (libzzip PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 
 if(ZZIPFSEEKO)
-add_library(libzzipfseeko fseeko.c fetch.c )
+add_library(libzzipfseeko ${libzzipfseeko_SRCS} )
 target_link_libraries(libzzipfseeko ZLIB::ZLIB )
 target_include_directories (libzzipfseeko PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 endif()
 
 if(ZZIPMMAPPED)
-add_library(libzzipmmapped mmapped.c memdisk.c fetch.c )
+add_library(libzzipmmapped ${libzzipmmapped_SRCS} )
 target_link_libraries(libzzipmmapped ZLIB::ZLIB )
 target_include_directories (libzzipmmapped PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 endif()
@@ -144,16 +169,20 @@ SET_TARGET_PROPERTIES(libzzipmmapped PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVE
 endif()
 
 # install ########################################################
-install(FILES ${ZZIPLIB_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDE_DIR}/zzip )
+install(FILES ${libzzip_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/zzip )
 install(TARGETS libzzip 
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
 if(ZZIPFSEEKO)
+install(FILES ${libzzipfseeko_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/zzip )
 install(TARGETS libzzipfseeko 
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
+
 if(ZZIPMMAPPED)
+install(FILES ${libzzipmmapped_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/zzip )
 install(TARGETS libzzipmmapped
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
