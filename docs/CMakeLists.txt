@@ -30,6 +30,11 @@ find_program(XMLTO xmlto)
 set(EXEEXT ${CMAKE_EXECUTABLE_SUFFIX})
 set(README ${CMAKE_SOURCE_DIR}/README)
 
+set(topdir ${CMAKE_SOURCE_DIR})
+set(srcdir ${CMAKE_CURRENT_SOURCE_DIR})
+set(outdir ${CMAKE_CURRENT_BINARY_DIR})
+set(PY2 ${PYTHON_EXECUTABLE})
+
 # targets ########################################################
 set(doc_FILES README.MSVC6 README.SDL COPYING.MPL COPYING.LIB COPYING.ZLIB
             zziplib.html zzipmmapped.html zzipfseeko.html)
@@ -48,11 +53,6 @@ set(zzipdoc_FILES makedocs.py          zzipdoc/__init__.py
     zzipdoc/functionlistreference.py  zzipdoc/textfile.py
     zzipdoc/functionprototype.py      zzipdoc/htmldocument.py
                                       zzipdoc/docbookdocument.py)
-
-set(topdir ${CMAKE_SOURCE_DIR})
-set(srcdir ${CMAKE_CURRENT_SOURCE_DIR})
-set(outdir ${CMAKE_CURRENT_BINARY_DIR})
-set(PY2 ${PYTHON_EXECUTABLE})
 
 add_custom_command(OUTPUT changes.htm
     COMMAND ${BASH} -c "E=changes.htm \
