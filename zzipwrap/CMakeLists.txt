@@ -27,24 +27,27 @@ find_package ( ZLIB REQUIRED )
 pkg_search_module ( ZZIP zzip )
 
 # targets ########################################################
-set(ZZIPWRAP_SRCS
+set(zzipwrap_SRCS
     zzipwrap.c)
 
-set(LIBZZIPWRAP_SRCS 
+set(libzzipwrap_SRCS 
     wrap.c)
 
-set(LIBZZIPWRAP_HDRS
+set(libzzipwrap_HDRS
     wrap.h)
 
-add_library(libzzipwrap ${LIBZZIPWRAP_SRCS} )
+add_library(libzzipwrap ${libzzipwrap_SRCS} )
 target_link_libraries(libzzipwrap libzzip ZLIB::ZLIB )
 target_include_directories (libzzipwrap PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${ZZIP_INCLUDE_DIR})
 
 set_target_properties(libzzipwrap PROPERTIES OUTPUT_NAME "zzipwrap-${RELNUM}")
 SET_TARGET_PROPERTIES(libzzipwrap PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
 
-add_executable(zzipwrap ${ZZIPWRAP_SRCS} )
+add_executable(zzipwrap ${zzipwrap_SRCS} )
 target_link_libraries(zzipwrap libzzipwrap )
 
 # install ########################################################
-# - nothing
+install(FILES ${libzzipwrap_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/zzip )
+install(TARGETS libzzipwrap
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})

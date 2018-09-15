@@ -12,6 +12,18 @@ MESSAGE(STATUS "VERSION ${VERSION} -> FIXNUM ${FIXNUM}")
 
 include ( GNUInstallDirs )
 
+option(BUILD_SHARED_LIBS "Build a shared library" ON)
+option(BUILD_STATIC_LIBS "Build the static library" OFF)
+option(BUILD_TESTS "Build test programs" OFF)
+option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
+option(ZZIPMMAPPED "Build libzzipmmapped (not fully portable)" ON)
+option(ZZIPFSEEKO "Build libzzipfseeko (based on posix.1 api)" ON)
+option(ZZIPWRAP "Build libzzipwrap (non-installed example)" ON)
+option(ZZIPSDL "Build zzcatsdl (includable example code)" ON)
+option(ZZIPBINS "Build bins/unzzip (unzip-like executables)" ON)
+option(ZZIPTEST "Build test/zzipself (self-extract example)" ON)
+option(ZZIPDOCS "Build docs/manpages (and website content)" ON)
+
 add_subdirectory(zzip)
 
 if(ZZIPWRAP)
