@@ -26,6 +26,11 @@ option(BUILD_STATIC_LIBS "Build the static library" OFF)
 option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 option(ZZIPMMAPPED "Build libzzipmmapped (not fully portable)" ON)
 option(ZZIPFSEEKO "Build libzzipfseeko (based on posix.1 api)" ON)
+option(ZZIPCOMPAT "Build compatibility with old libzzip releases" ON)
+
+if(ZZIPCOMPAT)
+find_package ( UnixCommands REQUIRED ) # bash cp mv rm gzip tar
+endif()
 
 check_include_files ( byteswap.h ZZIP_HAVE_BYTESWAP_H )
 check_include_files ( direct.h ZZIP_HAVE_DIRECT_H )
@@ -85,6 +90,9 @@ endif()
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_definitions ( -DHAVE_CONFIG_H )
 
+set(srcdir ${CMAKE_CURRENT_SOURCE_DIR})
+set(outdir ${CMAKE_CURRENT_BINARY_DIR})
+
 # targets ############################################################
 
 # libzlib library
@@ -114,7 +122,7 @@ set(libzzip_HDRS
     stdint.h
     zzip32.h
     autoconf.h
-    ${CMAKE_CURRENT_BINARY_DIR}/_config.h)
+    ${outdir}/_config.h)
 
 set(libzzip_INCS
     __debug.h
@@ -162,6 +170,27 @@ set_target_properties(libzzipmmapped PROPERTIES OUTPUT_NAME "zzipmmapped-${RELNU
 SET_TARGET_PROPERTIES(libzzipmmapped PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
 endif()
 
+if(ZZIPCOMPAT)
+add_custom_command(OUTPUT compat/zzip.h
+   COMMAND ${BASH} -c "rm -rf compat; mkdir compat"
+   COMMAND ${BASH} -c "echo '#ifndef ZZIP_WARNING'     > compat/zzip.h"
+   COMMAND ${BASH} -c "echo '#define ZZIP_WARNING 1'   >>compat/zzip.h"
+   COMMAND ${BASH} -c "echo '#ifdef __GNUC__'          >>compat/zzip.h"
+   COMMAND ${BASH} -c "echo '#warning do no not use <zzip.h>, update to include <zzip/lib.h>' >>compat/zzip.h"
+   COMMAND ${BASH} -c "echo '#else'                    >>compat/zzip.h"
+   COMMAND ${BASH} -c "echo '#error   do no not use <zzip.h>, update to include <zzip/lib.h>' >>compat/zzip.h"
+   COMMAND ${BASH} -c "echo '#endif'                   >>compat/zzip.h"
+   COMMAND ${BASH} -c "echo '#endif'                   >>compat/zzip.h"
+   COMMAND ${BASH} -c "echo '#include \"zzip/lib.h\"'  >>compat/zzip.h"
+   COMMAND ${BASH} -c "sed -e 's|zzip.h|zziplib.h|' -e 's|zzip/lib.h|zzip/zzip.h|' \
+   compat/zzip.h >compat/zziplib.h"
+   COMMAND ${BASH} -c "sed -e 's|zzip.h|zzip-io.h|' -e 's|zzip/lib.h|zzip/plugin.h|' \
+   compat/zzip.h >compat/zzip-io.h"
+   BYPRODUCTS compat/zziplib.h compat/zzip-io.h
+   VERBATIM)
+add_custom_target(compat ALL DEPENDS compat/zzip.h)
+endif()
+
 # install ########################################################
 install(FILES ${libzzip_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/zzip )
 install(TARGETS libzzip 
@@ -182,22 +211,26 @@ install(TARGETS libzzipmmapped
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
 
-if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
-  get_target_property(libname libzzip OUTPUT_NAME)
-  get_target_property(libversion libzzip VERSION)
-  set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
-  set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
-  set(libdir ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
-  if(${libversion} MATCHES "^[0-9].*")
-    install(CODE "execute_process(COMMAND bash -c \"set -e
-      cd $DESTDIR/${libdir}
-      [ -f ${lib}${libname}${dll}.${libversion} ] || exit 0
-      echo -n .. Installing: `pwd`
-      ln -sv ${lib}${libname}${dll}.${libversion} ${lib}${libname}${dll}.10
-      echo -n .. Installing: `pwd`
-      ln -sv ${lib}${libname}${dll}.${libversion} ${lib}${libname}${dll}.11
-      echo -n .. Installing: `pwd`
-      ln -sv ${lib}${libname}${dll}.${libversion} ${lib}${libname}${dll}.12
-      \")")
+if(ZZIPCOMPAT)
+  install(FILES ${outdir}/compat/zzip.h ${outdir}/compat/zziplib.h ${outdir}/compat/zzip-io.h 
+          DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+  if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
+    get_target_property(libname libzzip OUTPUT_NAME)
+    get_target_property(libversion libzzip VERSION)
+    set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
+    set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
+    set(libdir ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+    if(${libversion} MATCHES "^[0-9].*")
+      install(CODE "execute_process(COMMAND bash -c \"set -e
+        cd $DESTDIR/${libdir}
+        [ -f ${lib}${libname}${dll}.${libversion} ] || exit 0
+        echo -n .. Installing: `pwd`
+        ln -sv ${lib}${libname}${dll}.${libversion} ${lib}${libname}${dll}.10
+        echo -n .. Installing: `pwd`
+        ln -sv ${lib}${libname}${dll}.${libversion} ${lib}${libname}${dll}.11
+        echo -n .. Installing: `pwd`
+        ln -sv ${lib}${libname}${dll}.${libversion} ${lib}${libname}${dll}.12
+        \")")
+    endif()
   endif()
 endif()
