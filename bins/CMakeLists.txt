@@ -29,6 +29,7 @@ add_executable(zzcat      zzcat.c)
 add_executable(zzdir      zzdir.c)
 add_executable(zzxorcat   zzxorcat.c)
 add_executable(zzxordir   zzxordir.c)
+add_executable(zzxorcopy   zzxorcopy.c)
 add_executable(zzobfuscated zzobfuscated.c)
 add_executable(zziptest   zziptest.c)
 add_executable(zzip       zzip.c zzipmake-zip.c)
@@ -41,6 +42,7 @@ target_link_libraries(zzcat        libzzip        ZLIB::ZLIB)
 target_link_libraries(zzdir        libzzip        ZLIB::ZLIB)
 target_link_libraries(zzxorcat     libzzip        ZLIB::ZLIB)
 target_link_libraries(zzxordir     libzzip        ZLIB::ZLIB)
+target_link_libraries(zzxorcopy    libzzip        ZLIB::ZLIB)
 target_link_libraries(zzobfuscated libzzip        ZLIB::ZLIB)
 target_link_libraries(zziptest     libzzip        ZLIB::ZLIB)
 target_link_libraries(zzip         libzzip        ZLIB::ZLIB)
@@ -53,6 +55,7 @@ target_include_directories(zzcat        PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_C
 target_include_directories(zzdir        PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 target_include_directories(zzxorcat     PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 target_include_directories(zzxordir     PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(zzxorcopy    PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 target_include_directories(zzobfuscated PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 target_include_directories(zzip         PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 target_include_directories(unzzip       PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
@@ -61,6 +64,6 @@ target_include_directories(unzzip-mem   PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_C
 target_include_directories(unzzip-big   PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 
 # install ########################################################
-install(TARGETS zzcat zzdir zzxorcat zzxordir 
+install(TARGETS zzcat zzdir zzxorcat zzxordir zzxorcopy
                 unzzip unzzip-mix unzzip-mem unzzip-big
         DESTINATION "${CMAKE_INSTALL_BINDIR}")

@@ -57,11 +57,12 @@ endif()
 
 add_custom_target(tests
    COMMAND ${PY2} ${srcdir}/zziptests.py --exeext=${EXEEXT} --topsrcdir=${topdir} -v
-   DEPENDS ../bins/zzcat ../bins/zzdir ../bins/zziptest ../bins/zzxorcat)
+   DEPENDS ../bins/zzcat ../bins/zzdir ../bins/zziptest ../bins/zzxorcat ../bins/zzxorcopy)
 add_custom_command(OUTPUT ../bins/zzcat COMMMAND cd ../bins && $(MAKE) zzcat)
 add_custom_command(OUTPUT ../bins/zzdir COMMMAND cd ../bins && $(MAKE) zzdir)
 add_custom_command(OUTPUT ../bins/zziptest COMMMAND cd ../bins && $(MAKE) zziptest)
 add_custom_command(OUTPUT ../bins/zzxorcat COMMMAND cd ../bins && $(MAKE) zzxorcat)
+add_custom_command(OUTPUT ../bins/zzxorcopy COMMMAND cd ../bins && $(MAKE) zzxorcopy)
 
 add_custom_command(OUTPUT test0.zip
     COMMAND ${BASH} -c "test -d tmp || mkdir tmp"

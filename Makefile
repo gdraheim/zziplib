@@ -13,12 +13,14 @@ install install/strip install/local list_install_components:
 	cd build && $(MAKE) $@ VERBOSE=1
 libzzip libzzipmmapped libzzipfseeko libzzipwrap zzipwrap:
 	cd build && $(MAKE) $@ VERBOSE=1
-zzip unzzip unzzip-mix unzzip-mem unzzip-big zzdir zzcat zzcatsdl zzxorcat zzxordir zzobfuscated:
+zzip unzzip unzzip-mix unzzip-mem unzzip-big zzdir zzcat zzcatsdl zzxorcat zzxordir zzxorcopy zzobfuscated:
 	cd build && $(MAKE) $@ VERBOSE=1
 sfx zzipself zzipsetstub doc htm man htmpages manpages site dbk pdf:
 	cd build && $(MAKE) $@ VERBOSE=1
 tests checks check:
 	cd build && $(MAKE) $@ VERBOSE=1
+test_%: 
+	cd build/test && python ../../test/zziptests.py $@ --topsrcdir=`pwd` -v
 
 builds: config build local
 static: conf build local
