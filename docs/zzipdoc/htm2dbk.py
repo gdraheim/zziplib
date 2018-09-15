@@ -155,4 +155,15 @@ def html2docbook(text):
     return htm2dbk_conversion().convert2(text)
 
 if __name__ == "__main__":
-    print htm2dbk_files(sys.argv[1:])
+    from optparse import OptionParser
+    cmdline = OptionParser("%prog [options] files...")
+    cmdline.add_option("-o", "--into", metavar="FILE", default="")
+    opt, args = cmdline.parse_args()
+    result = htm2dbk_files(args)
+    if not opt.into:
+        print result
+    else:
+        f = open(opt.into, "w")
+        f.write(result)
+        f.close()
+

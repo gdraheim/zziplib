@@ -23,14 +23,15 @@ find_package ( ZLIB REQUIRED )
 # pkg_search_module ( ZZIP zzip )
 find_package(PythonInterp 2.6 REQUIRED)
 find_package(UnixCommands REQUIRED) # bash cp mv rm gzip tar
+find_program(XMLTO xmlto)
 
 set(EXEEXT ${CMAKE_EXECUTABLE_SUFFIX})
 set(README ${CMAKE_SOURCE_DIR}/README)
 
 # targets ########################################################
-set(doc_FILES = README.MSVC6 README.SDL COPYING.MPL COPYING.LIB COPYING.ZLIB
+set(doc_FILES README.MSVC6 README.SDL COPYING.MPL COPYING.LIB COPYING.ZLIB
             zziplib.html zzipmmapped.html zzipfseeko.html)
-set(htm_FILES = zzip-index.htm zzip-zip.htm zzip-file.htm zzip-sdl-rwops.htm
+set(htm_FILES zzip-index.htm zzip-zip.htm zzip-file.htm zzip-sdl-rwops.htm
             zzip-extio.htm zzip-xor.htm zzip-crypt.htm zzip-cryptoid.htm
             zzip-api.htm  zzip-basics.htm zzip-extras.htm zzip-parse.htm
             64on32.htm future.htm fseeko.htm mmapped.htm memdisk.htm
@@ -48,8 +49,47 @@ set(zzipdoc_FILES makedocs.py          zzipdoc/__init__.py
 
 set(topdir ${CMAKE_SOURCE_DIR})
 set(srcdir ${CMAKE_CURRENT_SOURCE_DIR})
-set(docinfo --package="zziplib" --version=${VERSION})
+set(outdir ${CMAKE_CURRENT_BINARY_DIR})
 set(PY2 ${PYTHON_EXECUTABLE})
+
+add_custom_command(OUTPUT changes.htm
+    COMMAND ${BASH} -c "E=changes.htm \
+    ; echo '<pre>' > $E ; cat ${topdir}/ChangeLog \
+    | sed -e 's,\\&,\\&amp\\;,g' \
+    -e 's,<,\\&lt\\;,g' -e 's,>,\\&gt\\;,g' \
+    -e '/^[A-Z].*[12][09][09][09]/s,\\(.*\\),<b>&</b>,' \
+    -e '/^[0-9]/s,\\(.*\\),<b>&</b>,' >> $E ; echo '</pre>' >>$E"
+    DEPENDS ${topdir}/ChangeLog
+    VERBATIM)
+
+set(mksite_sh_args --VERSION=${VERSION} --xml --src-dir=${srcdir} --print)
+add_custom_command(OUTPUT site.html
+    COMMAND ${CP} ${srcdir}/body.htm site.htm
+    COMMAND ${BASH} ${srcdir}/mksite.sh ${mksite_sh_args} site.htm
+    DEPENDS ${htm_FILES} changes.htm
+    VERBATIM)
+add_custom_target(site DEPENDS site.html)
+
+add_custom_command(OUTPUT zzip.xml
+    COMMAND ${PY2} ${srcdir}/zzipdoc/htm2dbk.py ${htm_FILES} zziplib.xml -o ${outdir}/zzip.xml
+    DEPENDS zziplib.xml ${htm_FILES}
+    WORKING_DIRECTORY ${srcdir}
+    VERBATIM)
+add_custom_target(dbk DEPENDS zzip.xml)
+
+if(XMLTO)
+add_custom_command(OUTPUT zzip.html
+    COMMAND ${XMLTO} html-nochunks zzip.xml
+    DEPENDS zzip.xml
+    VERBATIM)
+add_custom_command(OUTPUT zzip.pdf
+    COMMAND ${XMLTO} pdf zzip.xml
+    DEPENDS zzip.xml
+    VERBATIM)
+add_custom_target(pdf DEPENDS zzip.pdf)
+endif()
+
+set(docinfo --package="zziplib" --version=${VERSION})
 add_custom_command(OUTPUT zziplib.xml
     COMMAND ${PY2} ${srcdir}/makedocs.py ${topdir}/zzip/*.c ${docinfo} --onlymainheader=zzip/lib.h --output=zziplib
     COMMAND ${MV} zziplib.docbook zziplib.xml
