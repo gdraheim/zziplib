@@ -186,7 +186,7 @@ SET_TARGET_PROPERTIES(libzzipfseeko PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVER
 endif()
 
 if(ZZIPMMAPPED)
-set_target_properties(libzzipmmapped PROPERTIES OUTPUT_NAME "zzipmmapped" RELEASE_POSTIFX "-${RELNUM}")
+set_target_properties(libzzipmmapped PROPERTIES OUTPUT_NAME "zzipmmapped" RELEASE_POSTFIX "-${RELNUM}")
 SET_TARGET_PROPERTIES(libzzipmmapped PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
 endif()
 
@@ -235,28 +235,41 @@ if(ZZIPCOMPAT)
   install(FILES ${outdir}/compat/zzip.h ${outdir}/compat/zziplib.h ${outdir}/compat/zzip-io.h 
           DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
   if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
-    get_target_property(libname libzzip OUTPUT_NAME)
-    get_target_property(librelease libzzip RELEASE_POSTFIX)
-    get_target_property(libversion libzzip VERSION)
     set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
     set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
     set(libdir ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
-    if(${libversion} MATCHES "^[0-9].*")
-      message(STATUS "going to relink ${libversion} for ${libname} ${librelease}")
-      install(CODE "execute_process(COMMAND bash -c \"set -e
+    get_target_property(libname libzzip OUTPUT_NAME)
+    get_target_property(librelease libzzip RELEASE_POSTFIX)
+    get_target_property(libversion libzzip VERSION)
+    install(CODE "execute_process(COMMAND bash -c \"set -e
         cd $DESTDIR/${libdir}
         [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
         echo -n .. Installing: `pwd`
-        ln -sv ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.10
+        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
         echo -n .. Installing: `pwd`
-        ln -sv ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.11
+        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.10
         echo -n .. Installing: `pwd`
-        ln -sv ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
+        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.11
+        echo -n .. Installing: `pwd`
+        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
         \")")
-    else()
-      message(STATUS "IGNORE to relink ${libversion}") 
-    endif()
-  else()
-      message(STATUS "SONAME_CFLAG was ${CMAKE_SHARED_LIBRARY_SONAME_C_FLAG}") 
+    get_target_property(libname libzzipfseeko OUTPUT_NAME)
+    get_target_property(librelease libzzipfseeko RELEASE_POSTFIX)
+    get_target_property(libversion libzzipfseeko VERSION)
+    install(CODE "execute_process(COMMAND bash -c \"set -e
+        cd $DESTDIR/${libdir}
+        [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
+        echo -n .. Installing: `pwd`
+        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
+        \")")
+    get_target_property(libname libzzipmmapped OUTPUT_NAME)
+    get_target_property(librelease libzzipmmapped RELEASE_POSTFIX)
+    get_target_property(libversion libzzipmmapped VERSION)
+    install(CODE "execute_process(COMMAND bash -c \"set -e
+        cd $DESTDIR/${libdir}
+        [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
+        echo -n .. Installing: `pwd`
+        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
+        \")")
   endif()
 endif()
