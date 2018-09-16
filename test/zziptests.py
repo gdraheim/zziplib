@@ -3429,7 +3429,9 @@ class ZZipTest(unittest.TestCase):
     """ create an *.exe that can extract its own zip content """
     exe=self.bins("mkzip")
     exefile = "tmp.zzshowme" + exeext
-    libstub = ".libs/zzipself" + exeext
+    libstub1 = ".libs/zzipself" + exeext
+    libstub2 = "zzipself" + exeext
+    libstub = os.path.exists(libstub1) and libstub1 or libstub2
     txtfile_name = readme
     txtfile = self.src(readme)
     # add the extract-stub so we have reserved the size
