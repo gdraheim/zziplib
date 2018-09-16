@@ -17,10 +17,10 @@ zzip unzzip unzzip-mix unzzip-mem unzzip-big zzdir zzcat zzcatsdl zzxorcat zzxor
 	cd build && $(MAKE) $@ VERBOSE=1
 sfx zzipself zzipsetstub doc htm man htmpages manpages site dbk pdf pkgconfig:
 	cd build && $(MAKE) $@ VERBOSE=1
-tests checks check:
+tests checks check testzips:
 	cd build && $(MAKE) $@ VERBOSE=1
 test_%: 
-	cd build/test && python ../../test/zziptests.py $@ --topsrcdir=`pwd` -v
+	p=`pwd`; cd build/test && python ../../test/zziptests.py $@ --topsrcdir="$$p" -vv
 
 builds: config build local
 static: conf build local

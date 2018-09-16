@@ -64,10 +64,12 @@ add_custom_command(OUTPUT test0.zip
     COMMAND ${BASH} -c "test -d tmp || mkdir tmp"
     COMMAND ${CP} ${README} tmp/README
     COMMAND ${BASH} -c "cd tmp && ${MKZIP} ../test0.zip README"
+    COMMAND ${CP} test0.zip test.zip
     COMMAND ${CP} test0.zip ${srcdir}/test.zip
-    COMMAND ${MV} test0.zip test.zip
     BYPRODUCTS test.zip
     VERBATIM)
+add_custom_target(testzips ALL DEPENDS test0.zip)
+
 add_custom_target(checks
     COMMAND ${BASH} -c "../bins/zzcat test/README > test.out"
     COMMAND ${BASH} -c "if diff test.out ${README} >/dev/null \
