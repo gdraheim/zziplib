@@ -3082,13 +3082,16 @@ class ZZipTest(unittest.TestCase):
 
   url_CVE_2018_27 = "https://github.com/ret2libc/---provided-by-email---"
   zip_CVE_2018_27 = "poc_bypass_fix2.zip"
+  zip_CVE_2018_27_size = 56
   def test_65450(self):
     """ info unzip -l $(CVE).zip  """
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_27
     file_url = self.url_CVE_2018_27
+    filesize = self.zip_CVE_2018_27_size
     download_raw(file_url, filename, tmpdir)
     if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
+    if ((os.path.getsize(os.path.join(tmpdir, filename)) != filesize)): self.skipTest("missing " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 9])
@@ -3109,8 +3112,10 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_27
     file_url = self.url_CVE_2018_27
+    filesize = self.zip_CVE_2018_27_size
     download_raw(file_url, filename, tmpdir)
     if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
+    if ((os.path.getsize(os.path.join(tmpdir, filename)) != filesize)): self.skipTest("missing " + filename)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -3128,8 +3133,10 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_27
     file_url = self.url_CVE_2018_27
+    filesize = self.zip_CVE_2018_27_size
     download_raw(file_url, filename, tmpdir)
     if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
+    if ((os.path.getsize(os.path.join(tmpdir, filename)) != filesize)): self.skipTest("missing " + filename)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -3151,8 +3158,10 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_27
     file_url = self.url_CVE_2018_27
+    filesize = self.zip_CVE_2018_27_size
     download_raw(file_url, filename, tmpdir)
     if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
+    if ((os.path.getsize(os.path.join(tmpdir, filename)) != filesize)): self.skipTest("missing " + filename)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0,2])
@@ -3171,8 +3180,10 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_27
     file_url = self.url_CVE_2018_27
+    filesize = self.zip_CVE_2018_27_size
     download_raw(file_url, filename, tmpdir)
     if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
+    if ((os.path.getsize(os.path.join(tmpdir, filename)) != filesize)): self.skipTest("missing " + filename)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 3])
@@ -3192,11 +3203,13 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_27
     file_url = self.url_CVE_2018_27
+    filesize = self.zip_CVE_2018_27_size
     download_raw(file_url, filename, tmpdir)
     if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
+    if ((os.path.getsize(os.path.join(tmpdir, filename)) != filesize)): self.skipTest("missing " + filename)
     shell("ls -l {tmpdir}/{filename}".format(**locals()))
     size = os.path.getsize(os.path.join(tmpdir, filename))
-    self.assertEqual(size, 56)
+    self.assertEqual(size, filesize) # 56
 
   url_CVE_2018_41 = "https://github.com/fantasy7082/image_test/blob/master"
   zip_CVE_2018_41 = "c005-bus-zzip_parse_root_directory" # CVE-2018-7726.
