@@ -16,6 +16,7 @@ option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 option(ZZIPMMAPPED "Build libzzipmmapped (not fully portable)" ON)
 option(ZZIPFSEEKO "Build libzzipfseeko (based on posix.1 api)" ON)
 option(ZZIPCOMPAT "Build compatibility with old libzzip releases" ON)
+option(ZZIPLIBTOOL "Ensure binary compatibility with libtool" ON)
 
 
 if(ZZIPCOMPAT)
@@ -265,13 +266,28 @@ if(ZZIPCOMPAT)
         cd $DESTDIR/${libdir}
         [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
         echo -n .. Installing: `pwd`
-        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
-        echo -n .. Installing: `pwd`
         ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.10
         echo -n .. Installing: `pwd`
         ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.11
         echo -n .. Installing: `pwd`
         ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
+        \")")
+  endif()
+endif()
+
+if(ZZIPLIBTOOL)
+  if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
+    set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
+    set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
+    set(libdir ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+    get_target_property(libname libzzip OUTPUT_NAME)
+    get_target_property(librelease libzzip RELEASE_POSTFIX)
+    get_target_property(libversion libzzip VERSION)
+    install(CODE "execute_process(COMMAND bash -c \"set -e
+        cd $DESTDIR/${libdir}
+        [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
+        echo -n .. Installing: `pwd`
+        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
         \")")
     get_target_property(libname libzzipfseeko OUTPUT_NAME)
     get_target_property(librelease libzzipfseeko RELEASE_POSTFIX)

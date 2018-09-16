@@ -10,6 +10,7 @@ option(BUILD_SHARED_LIBS "Build a shared library" ON)
 option(BUILD_STATIC_LIBS "Build the static library" OFF)
 option(BUILD_TESTS "Build test programs" OFF)
 option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
+option(ZZIPLIBTOOL "Ensure binary compatibility with libtool" ON)
 
 check_include_files ( unistd.h ZZIP_HAVE_UNISTD_H )
 # set ( ZZIP_HAVE_ZLIB_H 1 )
@@ -71,3 +72,20 @@ install(FILES ${libzzipwrap_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/zzip )
 install(TARGETS libzzipwrap
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+if(ZZIPLIBTOOL)
+  if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
+    set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
+    set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
+    set(libdir ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+    get_target_property(libname libzzipwrap OUTPUT_NAME)
+    get_target_property(librelease libzzipwrap RELEASE_POSTFIX)
+    get_target_property(libversion libzzipwrap VERSION)
+    install(CODE "execute_process(COMMAND bash -c \"set -e
+        cd $DESTDIR/${libdir}
+        [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
+        echo -n .. Installing: `pwd`
+        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
+        \")")
+  endif()
+endif()
