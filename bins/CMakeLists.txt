@@ -66,3 +66,5 @@ target_include_directories(unzip-mem    PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_C
 install(TARGETS zzcat zzdir zzxorcat zzxordir zzxorcopy
                 unzzip unzzip-mix unzzip-big unzzip-mem unzip-mem
         DESTINATION "${CMAKE_INSTALL_BINDIR}")
+install(FILES zziplib.m4
+        DESTINATION "${CMAKE_INSTALL_DATADIR}/aclocal")
