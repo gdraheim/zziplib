@@ -1,15 +1,6 @@
 cmake_minimum_required (VERSION 3.1)
 project(zzipbins VERSION "0.13.69")
 
-if(NOT RELNUM)
-string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\1" RELNUM ${PROJECT_VERSION})
-string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\2" VERNUM ${PROJECT_VERSION})
-string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\3" FIXNUM ${PROJECT_VERSION})
-MESSAGE(STATUS "PROJECT_VERSION ${PROJECT_VERSION} -> RELNUM ${RELNUM}")
-MESSAGE(STATUS "PROJECT_VERSION ${PROJECT_VERSION} -> VERNUM ${VERNUM}")
-MESSAGE(STATUS "PROJECT_VERSION ${PROJECT_VERSION} -> FIXNUM ${FIXNUM}")
-endif()
-
 include ( GNUInstallDirs )
 include ( FindPkgConfig )
 

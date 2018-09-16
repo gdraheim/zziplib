@@ -1,16 +1,6 @@
 cmake_minimum_required (VERSION 3.1)
 project(zziplib VERSION "0.13.69" LANGUAGES C)
 
-if(NOT RELNUM)
-string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\1" RELNUM ${PROJECT_VERSION})
-string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\2" VERNUM ${PROJECT_VERSION})
-string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "0.\\3" FIXNUM ${PROJECT_VERSION})
-MESSAGE(STATUS "PROJECT_VERSION ${PROJECT_VERSION} -> RELNUM ${RELNUM}")
-MESSAGE(STATUS "PROJECT_VERSION ${PROJECT_VERSION} -> VERNUM ${VERNUM}")
-MESSAGE(STATUS "PROJECT_VERSION ${PROJECT_VERSION} -> FIXNUM ${FIXNUM}")
-# the "0." on FIXNUM is just for compatibility with automake's libtool.
-endif()
-
 # generate _config.h
 include ( CheckIncludeFiles )
 include ( CheckFunctionExists )
@@ -18,6 +8,7 @@ include ( CheckSymbolExists )
 include ( CheckTypeSize )
 include ( TestBigEndian )
 include ( GNUInstallDirs )
+
 # options ###########################################################
 option(BUILD_SHARED_LIBS "Build a shared library" ON)
 option(BUILD_STATIC_LIBS "Build the static library" OFF)
@@ -108,6 +99,10 @@ endif()
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_definitions ( -DHAVE_CONFIG_H )
 
+set(RELNUM "${PROJECT_VERSION_MAJOR}")
+set(VERNUM "${PROJECT_VERSION_MINOR}")
+set(FIXNUM "0.${PROJECT_VERSION_PATCH}")
+# the "0." on FIXNUM is just for compatibility with automake's libtool.
 
 set(srcdir ${CMAKE_CURRENT_SOURCE_DIR})
 set(outdir ${CMAKE_CURRENT_BINARY_DIR})

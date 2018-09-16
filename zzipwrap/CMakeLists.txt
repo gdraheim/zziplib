@@ -1,16 +1,6 @@
 cmake_minimum_required (VERSION 3.1)
 project(zzipwrap VERSION "0.13.69" LANGUAGES C)
 
-if(NOT RELNUM)
-string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\1" RELNUM ${PROJECT_VERSION})
-string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\2" VERNUM ${PROJECT_VERSION})
-string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "0.\\3" FIXNUM ${PROJECT_VERSION})
-MESSAGE(STATUS "VERSION ${PROJECT_VERSION} -> RELNUM ${RELNUM}")
-MESSAGE(STATUS "VERSION ${PROJECT_VERSION} -> VERNUM ${VERNUM}")
-MESSAGE(STATUS "VERSION ${PROJECT_VERSION} -> FIXNUM ${FIXNUM}")
-# the "0." on FIXNUM is just for compatibility with automake's libtool.
-endif()
-
 include ( CheckIncludeFiles )
 include ( GNUInstallDirs )
 include ( FindPkgConfig )
@@ -27,6 +17,11 @@ check_include_files ( unistd.h ZZIP_HAVE_UNISTD_H )
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
 pkg_search_module ( ZZIP zzip )
+
+set(RELNUM "${PROJECT_VERSION_MAJOR}")
+set(VERNUM "${PROJECT_VERSION_MINOR}")
+set(FIXNUM "0.${PROJECT_VERSION_PATCH}")
+# the "0." on FIXNUM is just for compatibility with automake's libtool.
 
 # targets ########################################################
 set(zzipwrap_SRCS
