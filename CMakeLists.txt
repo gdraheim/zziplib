@@ -1,18 +1,9 @@
 cmake_minimum_required (VERSION 3.1)
-project(zziplib C)
-set(VERSION "0.13.69")
+project(zzip VERSION "0.13.69")
 
 if(NOT CMAKE_BUILD_TYPE) 
     set(CMAKE_BUILD_TYPE Release)
 endif(NOT CMAKE_BUILD_TYPE)
-
-# the "0." on FIXNUM is just for compatibility with automake's libtool.
-string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\1" RELNUM ${VERSION})
-string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\2" VERNUM ${VERSION})
-string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "0.\\3" FIXNUM ${VERSION})
-MESSAGE(STATUS "VERSION ${VERSION} -> RELNUM ${RELNUM}")
-MESSAGE(STATUS "VERSION ${VERSION} -> VERNUM ${VERNUM}")
-MESSAGE(STATUS "VERSION ${VERSION} -> FIXNUM ${FIXNUM}")
 
 ### Path to additional CMake modules
 # set(CMAKE_MODULE_PATH

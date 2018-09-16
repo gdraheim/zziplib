@@ -1,14 +1,13 @@
 cmake_minimum_required (VERSION 3.1)
-project(zzipbins C)
-set(VERSION "0.13.69")
+project(zzipbins VERSION "0.13.69")
 
 if(NOT RELNUM)
-string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\1" RELNUM ${VERSION})
-string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\2" VERNUM ${VERSION})
-string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\3" FIXNUM ${VERSION})
-MESSAGE(STATUS "VERSION ${VERSION} -> RELNUM ${RELNUM}")
-MESSAGE(STATUS "VERSION ${VERSION} -> VERNUM ${VERNUM}")
-MESSAGE(STATUS "VERSION ${VERSION} -> FIXNUM ${FIXNUM}")
+string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\1" RELNUM ${PROJECT_VERSION})
+string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\2" VERNUM ${PROJECT_VERSION})
+string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\3" FIXNUM ${PROJECT_VERSION})
+MESSAGE(STATUS "PROJECT_VERSION ${PROJECT_VERSION} -> RELNUM ${RELNUM}")
+MESSAGE(STATUS "PROJECT_VERSION ${PROJECT_VERSION} -> VERNUM ${VERNUM}")
+MESSAGE(STATUS "PROJECT_VERSION ${PROJECT_VERSION} -> FIXNUM ${FIXNUM}")
 endif()
 
 include ( GNUInstallDirs )
@@ -91,7 +90,7 @@ add_custom_command(OUTPUT zzip.pdf
 add_custom_target(pdf DEPENDS zzip.pdf)
 endif()
 
-set(docinfo --package="zziplib" --version=${VERSION})
+set(docinfo --package="zziplib" --version=${PROJECT_VERSION})
 add_custom_command(OUTPUT zziplib.xml
     COMMAND ${PY2} ${srcdir}/makedocs.py ${topdir}/zzip/*.c ${docinfo} --onlymainheader=zzip/lib.h --output=zziplib
     COMMAND ${MV} zziplib.docbook zziplib.xml
@@ -139,4 +138,3 @@ install(CODE "execute_process(COMMAND ${BASH} -c \"set -e
    mkdir -vp $DESTDIR/${mandir} || ls -ld $DESTDIR/${mandir}
    cd $DESTDIR/${mandir} && tar xf ${CMAKE_CURRENT_BINARY_DIR}/manpages.tar
    \")")
-

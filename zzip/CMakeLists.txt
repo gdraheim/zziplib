@@ -1,14 +1,13 @@
 cmake_minimum_required (VERSION 3.1)
-project(zziplib C)
-set(VERSION "0.13.69")
+project(zziplib VERSION "0.13.69" LANGUAGES C)
 
 if(NOT RELNUM)
-string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\1" RELNUM ${VERSION})
-string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\2" VERNUM ${VERSION})
-string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "0.\\3" FIXNUM ${VERSION})
-MESSAGE(STATUS "VERSION ${VERSION} -> RELNUM ${RELNUM}")
-MESSAGE(STATUS "VERSION ${VERSION} -> VERNUM ${VERNUM}")
-MESSAGE(STATUS "VERSION ${VERSION} -> FIXNUM ${FIXNUM}")
+string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\1" RELNUM ${PROJECT_VERSION})
+string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "\\2" VERNUM ${PROJECT_VERSION})
+string(REGEX REPLACE "([^.]+)[.]([^.]+)[.]([^.]+)" "0.\\3" FIXNUM ${PROJECT_VERSION})
+MESSAGE(STATUS "PROJECT_VERSION ${PROJECT_VERSION} -> RELNUM ${RELNUM}")
+MESSAGE(STATUS "PROJECT_VERSION ${PROJECT_VERSION} -> VERNUM ${VERNUM}")
+MESSAGE(STATUS "PROJECT_VERSION ${PROJECT_VERSION} -> FIXNUM ${FIXNUM}")
 # the "0." on FIXNUM is just for compatibility with automake's libtool.
 endif()
 
@@ -217,9 +216,9 @@ add_custom_command(OUTPUT zziplib.pc
    COMMAND ${BASH} -c "echo 'libdir=\${prefix}/${CMAKE_INSTALL_LIBDIR}' >> zziplib.pc"
    COMMAND ${BASH} -c "echo 'includedir=\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}' >> zziplib.pc"
    COMMAND ${BASH} -c "echo '' >> zziplib.pc"
-   COMMAND ${BASH} -c "echo 'Name: ${CMAKE_PROJECT_NAME}' >> zziplib.pc"
+   COMMAND ${BASH} -c "echo 'Name: ${PROJECT_NAME}' >> zziplib.pc"
    COMMAND ${BASH} -c "echo 'Description: ZZipLib - libZ-based ZIP-access Library with an Easy-to-Use API' >> zziplib.c"
-   COMMAND ${BASH} -c "echo 'Version: ${VERSION}' >> zziplib.pc"
+   COMMAND ${BASH} -c "echo 'Version: ${PROJECT_VERSION}' >> zziplib.pc"
    COMMAND ${BASH} -c "echo 'Requires: zlib' >> zziplib.pc"
    COMMAND ${BASH} -c "echo 'Libs: -L\${libdir} -lzzip' >> zziplib.pc"
    COMMAND ${BASH} -c "echo 'Cflags: -I\${includedir}' >> zziplib.pc"
