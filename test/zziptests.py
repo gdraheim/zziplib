@@ -3014,7 +3014,7 @@ class ZZipTest(unittest.TestCase):
     download_raw(file_url, filename, tmpdir)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
-        returncodes = [0, 80])
+        returncodes = [3])
     self.assertIn("missing 18 bytes in zipfile", run.errors)
     self.assertLess(len(run.output), 200)
     self.assertLess(len(errors(run.errors)), 800)
@@ -3052,14 +3052,18 @@ class ZZipTest(unittest.TestCase):
     download_raw(file_url, filename, tmpdir)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
-        returncodes = [0, 80])
+        returncodes = [3])
     self.assertIn("missing 18 bytes in zipfile", run.errors)
-    self.assertLess(len(run.output), 200)
+    self.assertGreater(len(run.output), 30)
+    self.assertGreater(len(errors(run.errors)), 1)
+    self.assertLess(len(run.output), 500)
     self.assertLess(len(errors(run.errors)), 800)
     #
     run = shell("cd {tmpdir} && {exe} -o {filename}".format(**locals()),
         returncodes = [3])
-    self.assertLess(len(run.output), 200)
+    self.assertGreater(len(run.output), 30)
+    self.assertGreater(len(errors(run.errors)), 1)
+    self.assertLess(len(run.output), 400)
     self.assertLess(len(errors(run.errors)), 800)
     self.assertIn("missing 18 bytes in zipfile", run.errors)
     self.assertIn('expected central file header signature not found', run.errors)
@@ -3379,14 +3383,18 @@ class ZZipTest(unittest.TestCase):
     download_raw(file_url, filename, tmpdir)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
-        returncodes = [0, 80])
+        returncodes = [3])
     self.assertIn("missing 21 bytes in zipfile", run.errors)
-    self.assertLess(len(run.output), 500)
+    self.assertGreater(len(run.output), 20)
+    self.assertGreater(len(errors(run.errors)), 1)
+    self.assertLess(len(run.output), 2500)
     self.assertLess(len(errors(run.errors)), 800)
     #
     run = shell("cd {tmpdir} && {exe} -o {filename}".format(**locals()),
         returncodes = [3])
-    self.assertLess(len(run.output), 500)
+    self.assertGreater(len(run.output), 20)
+    self.assertGreater(len(errors(run.errors)), 1)
+    self.assertLess(len(run.output), 2500)
     self.assertLess(len(errors(run.errors)), 800)
     self.assertIn("missing 21 bytes in zipfile", run.errors)
     self.assertIn('expected central file header signature not found', run.errors)
