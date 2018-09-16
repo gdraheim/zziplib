@@ -48,7 +48,30 @@ SET_TARGET_PROPERTIES(libzzipwrap PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSI
 add_executable(zzipwrap ${zzipwrap_SRCS} )
 target_link_libraries(zzipwrap libzzipwrap )
 
+if(UNIX)
+add_custom_command(OUTPUT zzipwrap.pc
+   COMMAND ${BASH} -c "echo 'prefix=${CMAKE_INSTALL_PREFIX}' > zzipwrap.pc"
+   COMMAND ${BASH} -c "echo 'libdir=\${prefix}/${CMAKE_INSTALL_LIBDIR}' >> zzipwrap.pc"
+   COMMAND ${BASH} -c "echo 'includedir=\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}' >> zzipwrap.pc"
+   COMMAND ${BASH} -c "echo '' >> zzipwrap.pc"
+   COMMAND ${BASH} -c "echo 'Name: ${PROJECT_NAME}' >> zzipwrap.pc"
+   COMMAND ${BASH} -c "echo 'Description: Callback Wrappers for ZZipLib' >> zzipwrap.c"
+   COMMAND ${BASH} -c "echo 'Version: ${VERSION}' >> zzipwrap.pc"
+   COMMAND ${BASH} -c "echo 'Requires: zziplib' >> zzipwrap.pc"
+   COMMAND ${BASH} -c "echo 'Libs: -L\${libdir} -lzzipwrap' >> zzipwrap.pc"
+   COMMAND ${BASH} -c "echo 'Cflags: -I\${includedir}' >> zzipwrap.pc"
+   VERBATIM)
+add_custom_target(pkgconfigs ALL DEPENDS zzipwrap.pc)
+endif()
+
 # install ########################################################
+set(outdir ${CMAKE_CURRENT_BINARY_DIR})
+
+if(UNIX)
+install(FILES ${outdir}/zzipwrap.pc 
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig" )
+endif()
+
 install(FILES ${libzzipwrap_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/zzip )
 install(TARGETS libzzipwrap
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}

@@ -15,7 +15,7 @@ libzzip libzzipmmapped libzzipfseeko libzzipwrap zzipwrap:
 	cd build && $(MAKE) $@ VERBOSE=1
 zzip unzzip unzzip-mix unzzip-mem unzzip-big zzdir zzcat zzcatsdl zzxorcat zzxordir zzxorcopy zzobfuscated:
 	cd build && $(MAKE) $@ VERBOSE=1
-sfx zzipself zzipsetstub doc htm man htmpages manpages site dbk pdf:
+sfx zzipself zzipsetstub doc htm man htmpages manpages site dbk pdf pkgconfig:
 	cd build && $(MAKE) $@ VERBOSE=1
 tests checks check:
 	cd build && $(MAKE) $@ VERBOSE=1

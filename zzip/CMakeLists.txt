@@ -211,7 +211,33 @@ add_custom_command(OUTPUT compat/zzip.h
 add_custom_target(compat ALL DEPENDS compat/zzip.h)
 endif()
 
+if(UNIX)
+add_custom_command(OUTPUT zziplib.pc
+   COMMAND ${BASH} -c "echo 'prefix=${CMAKE_INSTALL_PREFIX}' > zziplib.pc"
+   COMMAND ${BASH} -c "echo 'libdir=\${prefix}/${CMAKE_INSTALL_LIBDIR}' >> zziplib.pc"
+   COMMAND ${BASH} -c "echo 'includedir=\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}' >> zziplib.pc"
+   COMMAND ${BASH} -c "echo '' >> zziplib.pc"
+   COMMAND ${BASH} -c "echo 'Name: ${CMAKE_PROJECT_NAME}' >> zziplib.pc"
+   COMMAND ${BASH} -c "echo 'Description: ZZipLib - libZ-based ZIP-access Library with an Easy-to-Use API' >> zziplib.c"
+   COMMAND ${BASH} -c "echo 'Version: ${VERSION}' >> zziplib.pc"
+   COMMAND ${BASH} -c "echo 'Requires: zlib' >> zziplib.pc"
+   COMMAND ${BASH} -c "echo 'Libs: -L\${libdir} -lzzip' >> zziplib.pc"
+   COMMAND ${BASH} -c "echo 'Cflags: -I\${includedir}' >> zziplib.pc"
+   COMMAND ${BASH} -c "sed -e 's/-lzzip/-lzzipmmapped/' -e 's/zziplib/zzipmmapped/' zziplib.pc > zzipmmapped.pc"
+   COMMAND ${BASH} -c "sed -e 's/-lzzip/-lzzipfseeko/' -e 's/zziplib/zzipfseeko/' zziplib.pc > zzipfseeko.pc"
+   BYPRODUCTS zzipmmapped.pc zzipfseeko.pc
+   VERBATIM)
+add_custom_target(pkgconfig ALL DEPENDS zziplib.pc)
+endif()
+
 # install ########################################################
+set(outdir ${CMAKE_CURRENT_BINARY_DIR})
+
+if(UNIX)
+install(FILES ${outdir}/zziplib.pc ${outdir}/zzipmmapped.pc ${outdir}/zzipfseeko.pc
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig" )
+endif()
+
 install(FILES ${libzzip_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/zzip )
 install(TARGETS libzzip 
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
