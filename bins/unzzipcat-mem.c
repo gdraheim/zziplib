@@ -58,6 +58,48 @@ static void unzzip_mem_disk_cat_file(ZZIP_MEM_DISK* disk, char* name, FILE* out)
     }
 }
 
+/*
+ * NAME: remove_dotdotslash
+ * PURPOSE: To remove any "../" components from the given pathname
+ * ARGUMENTS: path: path name with maybe "../" components
+ * RETURNS: Nothing, "path" is modified in-place
+ * NOTE: removing "../" from the path ALWAYS shortens the path, never adds to it!
+ *	Also, "path" is not used after creating it.
+ *	So modifying "path" in-place is safe to do.
+ */
+static inline void
+remove_dotdotslash(char *path)
+{
+    /* Note: removing "../" from the path ALWAYS shortens the path, never adds to it! */
+    char *dotdotslash;
+    int warned = 0;
+
+    dotdotslash = path;
+    while ((dotdotslash = strstr(dotdotslash, "../")) != NULL)
+    {
+        /*
+         * Remove only if at the beginning of the pathname ("../path/name")
+         * or when preceded by a slash ("path/../name"),
+         * otherwise not ("path../name..")!
+         */
+        if (dotdotslash == path || dotdotslash[-1] == '/')
+        {
+            char *src, *dst;
+            if (!warned)
+            {
+                /* Note: the first time through the pathname is still intact */
+                fprintf(stderr, "Removing \"../\" path component(s) in %s\n", path);
+                warned = 1;
+            }
+            /* We cannot use strcpy(), as there "The strings may not overlap" */
+            for (src = dotdotslash+3, dst=dotdotslash; (*dst = *src) != '\0'; src++, dst++)
+                ;
+        }
+        else
+            dotdotslash +=3;	/* skip this instance to prevent infinite loop */
+    }
+}
+
 static void makedirs(const char* name)
 {
       char* p = strrchr(name, '/');
@@ -75,6 +117,16 @@ static void makedirs(const char* name)
 
 static FILE* create_fopen(char* name, char* mode, int subdirs)
 {
+   char *name_stripped;
+   FILE *fp;
+   int mustfree = 0;
+
+   if ((name_stripped = strdup(name)) != NULL)
+   {
+       remove_dotdotslash(name_stripped);
+       name = name_stripped;
+       mustfree = 1;
+   }
    if (subdirs)
    {
       char* p = strrchr(name, '/');
@@ -84,7 +136,10 @@ static FILE* create_fopen(char* name, char* mode, int subdirs)
           free (dir_name);
       }
    }
-   return fopen(name, mode);      
+   fp = fopen(name, mode);
+   if (mustfree)
+       free(name_stripped);
+    return fp;
 }
 
 static int unzzip_cat (int argc, char ** argv, int extract)
