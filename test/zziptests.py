@@ -3404,6 +3404,31 @@ class ZZipTest(unittest.TestCase):
         returncodes = [0])
     self.rm_testdir()
 
+  url_CVE_2018_17828 = "https://github.com/gdraheim/zziplib/files/2415382"
+  zip_CVE_2018_17828 = "evil.zip"
+  def test_65484(self):
+    """ extract file with "../" in the pathname [CVE-2018-17828] """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2018_17828
+    file_url = self.url_CVE_2018_17828
+    download_raw(file_url, filename, tmpdir)
+    if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
+    exe = self.bins("unzzip-mem")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+	returncodes = [0, 80])
+    self.assertLess(len(run.output), 500)
+    self.assertLess(len(errors(run.errors)), 1)
+    #
+    workdir = tmpdir + "/d1/d2"
+    os.makedirs(workdir)
+    run = shell("cd {workdir} && ../../../{exe} ../../{filename} ".format(**locals()),
+	returncodes = [0])
+    self.assertLess(len(run.output), 500)
+    self.assertEqual(len(errors(run.errors)), 1)
+    self.assertFalse(os.path.exists(tmpdir+"/test/evil.conf"))
+    self.assertTrue(os.path.exists(workdir+"/test/evil.conf"))
+    self.rm_testdir()
+
   def test_91000_zzshowme_check_sfx(self):
     """ create an *.exe that can extract its own zip content """
     exe=self.bins("mkzip")
