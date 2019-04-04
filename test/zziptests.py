@@ -3429,6 +3429,26 @@ class ZZipTest(unittest.TestCase):
     self.assertTrue(os.path.exists(workdir+"/test/evil.conf"))
     self.rm_testdir()
 
+  def test_65485_list_verbose_compressed_with_directory(self):
+    """ verbously list a zipfile containing directories """
+    tmpdir = self.testdir()
+    workdir = tmpdir + "/d"
+    zipname = "ZIPfile"
+    os.makedirs(workdir)
+    f= open(tmpdir + "/d/file","w+")
+    for i in range(10):
+      f.write("This is line %d\r\n" % (i+1))
+    f.close()
+    # create the ZIPfile
+    exe=self.bins("zzip")
+    run = shell("chdir {tmpdir} && ../{exe} -9 {zipname}.zip d".format(**locals()))
+    self.assertFalse(run.returncode)
+    # list the ZIPfile
+    exe=self.bins("unzip-mem");
+    run = shell("chdir {tmpdir} && ../{exe} -v {zipname}.zip".format(**locals()))
+    self.assertFalse(run.returncode)
+    self.rm_testdir()
+
   def test_91000_zzshowme_check_sfx(self):
     """ create an *.exe that can extract its own zip content """
     exe=self.bins("mkzip")
