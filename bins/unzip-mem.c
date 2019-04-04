@@ -233,7 +233,7 @@ static void zzip_mem_entry_direntry(ZZIP_MEM_ENTRY* entry)
     if (option_verbose) {
 	long percentage;
 
-	percentage = usize ? (L (100 - (csize*100/usize))) : 100;	/* 100% if file size is 0 */
+	percentage = usize ? (L (100 - (csize*100/usize))) : 0;	/* 0% if file size is 0 */
 	printf("%8li%c %s %8li%c%3li%%  %s  %8lx  %s %s\n", 
 	       L usize, exp, comprlevel[compr], L csize, exp, 
 	       percentage,
