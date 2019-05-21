@@ -76,7 +76,9 @@
 
 /* we try to round all seeks to the pagesize - since we do not use
  * the sys/mmap interface we have to guess a good value here: */
-#define PAGESIZE 8192
+#ifndef PAGESIZE
+# define PAGESIZE 8192
+#endif
 
 #ifdef DEBUG
 #define debug1(msg) do { fprintf(stderr, "DEBUG: %s : " msg "\n", __func__); } while(0)
