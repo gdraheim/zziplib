@@ -387,7 +387,7 @@ zzip_entry_findfirst(FILE * disk)
                     errno = EFBIG;
                     goto error2;
                 }
-                if ((void*)(trailer + 1) > (buffer + mapsize))
+                if ((p + 1) > (buffer + mapsize))
                 {
                     debug1("disk64 trailer is not complete");
                     errno = EBADMSG;
