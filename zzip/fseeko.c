@@ -712,7 +712,7 @@ zzip_entry_fopen(ZZIP_ENTRY * entry, int takeover)
     file->zlib.zalloc = Z_NULL;
     file->zlib.zfree = Z_NULL;
 
-    ___ zzip_off_t size = file->avail;
+    ___ zzip_size_t size = file->avail;
     if (size > sizeof(file->buffer))
         size = sizeof(file->buffer);
     if (fseeko(file->entry->diskfile, file->data + file->dataoff, SEEK_SET) == -1)
