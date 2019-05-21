@@ -1,0 +1,28 @@
+language: c
+
+branches:
+    only:
+        - master
+
+matrix:
+    include:
+        - name: 'Ubuntu Trusty (GCC)'
+          dist: trusty
+          compiler: gcc
+        - name: 'Ubuntu Trusty (Clang)'
+          dist: trusty
+          compiler: clang
+        - name: 'Ubuntu Xenial (GCC)'
+          dist: trusty
+          compiler: gcc
+        - name: 'Ubuntu Xenial (Clang)'
+          dist: trusty
+          compiler: clang
+        - name: 'macOS 10.13 (Xcode 9.4)'
+          os: osx
+          osx_image: xcode9.4
+        - name: 'macOS 10.14 (Xcode 10.2)'
+          os: osx
+          osx_image: xcode10.2
+
+script: mkdir build && cd build && cmake .. && make -j5 && make tests
