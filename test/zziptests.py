@@ -79,7 +79,9 @@ def shell(command, shell=True, calls=False, cwd=None, env=None, lang=None, retur
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=None, env=env)
             if run.returncode:
                 logg.warning("EXIT %s: %s", run.returncode, command)
-            output, errors = run.communicate() # run.wait()
+            output, errors = run.communicate()
+            output = output.decode('utf-8')
+            errors = errors.decode('utf-8')
     except:
         logg.error("*E*: %s", sh_command)
         for line in output.split("\n"):
@@ -150,7 +152,7 @@ def download(base_url, filename, into, style = ""):
 def output(cmd, shell=True):
     run = subprocess.Popen(cmd, shell=shell, stdout=subprocess.PIPE)
     out, err = run.communicate()
-    return out
+    return out.decode('utf-8')
 def grep(pattern, lines):
     if isinstance(lines, basestring):
         lines = lines.split("\n")
