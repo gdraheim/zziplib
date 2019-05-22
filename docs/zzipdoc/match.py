@@ -5,6 +5,11 @@
 
 import re
 
+try:
+    basestring
+except NameError:
+    basestring = str
+
 # ---------------------------------------------------------- Regex Match()
 # beware, stupid python interprets backslashes in replace-parts only partially!
 class MatchReplace:

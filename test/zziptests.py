@@ -20,6 +20,11 @@ except ImportError:
     from urllib.parse import quote_plus
     from urllib.request import urlretrieve
 
+try:
+    basestring
+except NameError:
+    basestring = str
+
 logg = logging.getLogger("test")
 
 topsrcdir = "../.."
