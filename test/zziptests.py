@@ -1318,10 +1318,9 @@ class ZZipTest(unittest.TestCase):
     #
     run = shell("cd {tmpdir} && {exe} -o {filename}".format(**locals()),
         returncodes = [2])
-    self.assertLess(len(run.output), 90)
+    self.assertLess(len(run.output), 101)
     self.assertLess(len(errors(run.errors)), 900)
     self.assertIn('test:  mismatching "local" filename', run.errors)
-    self.assertIn('test:  unknown compression method', run.errors)
     self.assertEqual(os.path.getsize(tmpdir+"/test"), 0)
     self.rm_testdir()
   def test_59771_zzipdir_big_CVE_2017_5977(self):
