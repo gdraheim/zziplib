@@ -4,12 +4,17 @@ import logging
 import inspect
 import os
 import collections
-import urllib
 import shutil
 import random
 import re
 from fnmatch import fnmatchcase as matches
 from cStringIO import StringIO
+
+try:
+    from urllib import quote_plus, urlretrieve
+except ImportError:
+    from urllib.parse import quote_plus
+    from urllib.request import urlretrieve
 
 logg = logging.getLogger("test")
 
@@ -106,7 +111,7 @@ def download(base_url, filename, into, style = ""):
     data = "tmp.download"
     if not os.path.isdir(data):
         os.makedirs(data)
-    subname = urllib.quote_plus(base_url)
+    subname = quote_plus(base_url)
     subdir = os.path.join(data, subname)
     if not os.path.isdir(subdir):
         os.makedirs(subdir)
@@ -118,10 +123,13 @@ def download(base_url, filename, into, style = ""):
           shutil.copy(srcfile, subfile)
     if not os.path.exists(subfile):
        logg.info("need %s", subfile)
-       d = urllib.urlopen(base_url + "/" + filename + style)
-       f = open(subfile, "w")
-       f.write(d.read())
-       f.close()
+       try:
+           urlretrieve(base_url + "/" + filename + style, subfile)
+       except:
+           # Ensure zero-length file exists in case we couldn't
+           # download the file so that we won't try to
+           # re-download it.
+           open(subfile, 'a').close()
     #
     if not os.path.isdir(into):
         os.makedirs(into)
