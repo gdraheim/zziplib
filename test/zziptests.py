@@ -3482,7 +3482,7 @@ class ZZipTest(unittest.TestCase):
     setstub="./zzipsetstub" + exeext
     run = shell("{setstub} {exefile} {libstub}".format(**locals()))
     self.assertFalse(run.returncode)
-    os.chmod(exefile, 0755)
+    os.chmod(exefile, 0o755)
     # now ask the new .exe to show some of its own content
     run = shell("./{exefile} {txtfile_name}".format(**locals()))
     self.assertFalse(run.returncode)
