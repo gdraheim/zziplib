@@ -8,7 +8,11 @@ import shutil
 import random
 import re
 from fnmatch import fnmatchcase as matches
-from cStringIO import StringIO
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 try:
     from urllib import quote_plus, urlretrieve
