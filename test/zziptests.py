@@ -208,7 +208,7 @@ class ZZipTest(unittest.TestCase):
     result = StringIO()
     old1 = ''
     old2 = ''
-    for i in xrange(size):
+    for i in range(size):
         while True:
             x = random.choice("       abcdefghijklmnopqrstuvwxyz\n")
             if x == old1 or x == old2: continue
@@ -290,7 +290,7 @@ class ZZipTest(unittest.TestCase):
     zipfile="test2.zip"
     tmpdir="test2.tmp"
     exe=self.bins("mkzip")
-    for i in xrange(100):
+    for i in range(100):
        filename = os.path.join(tmpdir,"file.%02i" % i)
        filetext = "file-%02i\n" % i
        self.mkfile(filename, filetext)
@@ -306,7 +306,7 @@ class ZZipTest(unittest.TestCase):
     zipfile="test3.zip"
     tmpdir="test3.tmp"
     exe=self.bins("mkzip")
-    for i in xrange(1000):
+    for i in range(1000):
        filename = os.path.join(tmpdir,"file.%03i" % i)
        filetext = "file-%03i\n" % i
        self.mkfile(filename, filetext)
@@ -323,7 +323,7 @@ class ZZipTest(unittest.TestCase):
     zipfile="test4.zip"
     tmpdir="test4.tmp"
     exe=self.bins("mkzip")
-    for i in xrange(10000):
+    for i in range(10000):
        filename = os.path.join(tmpdir,"file%04i.txt" % i)
        filetext = "file-%04i\n" % i
        self.mkfile(filename, filetext)
@@ -340,12 +340,12 @@ class ZZipTest(unittest.TestCase):
     zipfile="test5.zip"
     tmpdir="test5.tmp"
     exe=self.bins("mkzip")
-    for depth in xrange(20):
+    for depth in range(20):
       dirpath = ""
-      for i in xrange(depth):
+      for i in range(depth):
         if i:
           dirpath += "subdir%i/" % i
-      for size in xrange(18):
+      for size in range(18):
         size = 2 ** size
         filetext = self.gentext(size)
         filepart = "file%i-%i.txt" % (depth, size)
