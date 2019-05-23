@@ -3,6 +3,8 @@
 # @creator (C) 2003 Guido U. Draheim
 # @license http://creativecommons.org/licenses/by-nc-sa/2.0/de/
 
+from __future__ import print_function
+
 import re
 
 try:
@@ -95,14 +97,14 @@ class Match(str):
 if __name__ == "__main__":
     # matching:
     if "foo" & Match("oo"):
-        print "oo"
+        print("oo")
     x = Match()
     if "foo" & x("(o+)"):
-        print x[1]
+        print(x[1])
     # replacing:
     y = "fooboo" & Match("oo") >> "ee"
-    print y
+    print(y)
     r = Match("oo") >> "ee"
-    print "fooboo" & r
+    print("fooboo" & r)
     s = MatchReplace("oo", "ee")
-    print "fooboo" & s
+    print("fooboo" & s)

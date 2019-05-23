@@ -6,6 +6,8 @@ The mapping of markups and links is far from perfect. But all we
 want is the docbook-to-pdf converter and similar technology being
 present in the world of docbook-to-anything converters. """
 
+from __future__ import print_function
+
 from datetime import date
 from zzipdoc.match import Match
 import sys
@@ -147,7 +149,7 @@ def htm2dbk_files(args):
             doc.add(f.read())
             f.close()
         except IOError:
-            print >> sys.stderr, "can not open "+filename
+            print("can not open "+filename, file=sys.stderr)
     return doc.value()
 
 def html2docbook(text):
@@ -161,7 +163,7 @@ if __name__ == "__main__":
     opt, args = cmdline.parse_args()
     result = htm2dbk_files(args)
     if not opt.into:
-        print result
+        print(result)
     else:
         f = open(opt.into, "w")
         f.write(result)

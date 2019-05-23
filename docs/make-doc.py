@@ -1,5 +1,8 @@
 #! /usr/bin/python
 # -*- coding: UTF-8 -*-
+
+from __future__ import print_function
+
 import sys
 import re
 import string
@@ -376,7 +379,7 @@ def examine_head_anchors(func_list):
         function.head = s(function.head, r"(.*)also:(.*)", lambda x
                           : set_seealso(function, x.group(2)) and x.group(1))
         if function.seealso and None:
-            print "function[",function.name,"].seealso=",function.seealso
+            print("function[" + function.name + "].seealso=" + function.seealso)
 examine_head_anchors(function_list)
 
 # =============================================================== HTML =====
@@ -528,7 +531,7 @@ except IOError as error:
     warn(# ............. open(o.libhtmlfile, "w") ..............
         "can not open html output file: "+o.libhtmlfile, error)
 else:
-    print >> F, html.page_text()
+    print(html.page_text(), file=F)
     F.close()
 #fi
 
@@ -990,19 +993,18 @@ try:
 except IOError as error:
     warn("can not open docbook output file: "+o.docbookfile, error)
 else:
-    print >> F, doctype, '<reference><title>Manual Pages</title>'
+    print(doctype + '<reference><title>Manual Pages</title>', file=F)
 
     for page in combined_pages:
-        print >> F, page.refentry_text()
+        print(page.refentry_text(), file=F)
     #od
 
     for page in header_refpages.values():
         if not page.refentry: continue
-        print >> F, "\n<!-- _______ "+page.id+" _______ -->",
-        print >> F, page.refentry_text()
+        print("\n<!-- _______ "+page.id+" _______ -->" + page.refentry_text(), file=F)
     #od
 
-    print >> F, "\n",'</reference>',"\n"
+    print("\n</reference>\n", file=F)
     F.close()
 #fi
 
@@ -1014,13 +1016,11 @@ except IOError as error:
 else:
     for func in function_list:
         name = func.name
-        print >> F, "<fn id=\""+name+"\">"+"<!-- FOR \""+name+"\" -->\n"
+        print("<fn id=\""+name+"\">"+"<!-- FOR \""+name+"\" -->\n", file=F)
         for H in sorted_keys(func.dict()):
-            print >> F, "<"+H+" name=\""+name+"\">",
-            print >> F, str(func.dict()[H]),
-            print >> F, "</"+H+">"
+            print("<"+H+" name=\""+name+"\">" + str(func.dict()[H]) + "</"+H+">", file=F)
         #od
-        print >> F, "</fn><!-- END \""+name+"\" -->\n\n";
+        print("</fn><!-- END \""+name+"\" -->\n\n", file=F)
     #od
     F.close();
 #fi

@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from zzipdoc.match import Match
 
 class TextFileHeader:
@@ -17,7 +19,7 @@ class TextFileHeader:
         x = Match()
         text = self.textfile.get_src_text()
         if not text:
-            print "nonexistent file:", self.textfile.get_filename()
+            print("nonexistent file: " + self.textfile.get_filename())
             return False
         if text & x(r"(?s)[/][*]+(\s(?:.(?!\*\/))*.)\*\/"
                     r"(?:\s*\#(?:define|ifdef|endif)[ ]*\S*[ ]*\S*)*"
