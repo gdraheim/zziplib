@@ -129,7 +129,7 @@ def this_function_link(text, name):
 class Options:
     var = {}
     def __getattr__(self, name):
-        if not self.var.has_key(name): return None
+        if not name in self.var: return None
         return self.var[name]
     def __setattr__(self, name, value):
         self.var[name] = value
@@ -161,7 +161,7 @@ class File:
         self.copyright = ""
     def __getattr__(self, name):
         """ defend against program to break on uninited members """
-        if self.__dict__.has_key(name): return self.__dict__[name]
+        if name in self.__dict__: return self.__dict__[name]
         warn("no such member: "+name); return None
     def set_author(self, text):
         if self.authors:
@@ -297,7 +297,7 @@ class Function:
 #        return ""
     def __getattr__(self, name):
         """ defend against program exit on members being not inited """
-        if self.__dict__.has_key(name): return self.__dict__[name]
+        if name in self.__dict__: return self.__dict__[name]
         warn("no such member: "+name); return None
     def dict(self):
         return self.__dict__

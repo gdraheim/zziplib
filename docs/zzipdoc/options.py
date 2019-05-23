@@ -9,7 +9,7 @@ from zzipdoc.match import Match
 class Options:
     var = {}
     def __getattr__(self, name):
-        if not self.var.has_key(name): return None
+        if not name in self.var: return None
         return self.var[name]
     def __setattr__(self, name, value):
         self.var[name] = value
