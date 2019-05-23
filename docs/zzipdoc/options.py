@@ -3,7 +3,7 @@
 # @creator (C) 2003 Guido U. Draheim
 # @license http://creativecommons.org/licenses/by-nc-sa/2.0/de/
 
-from match import Match
+from zzipdoc.match import Match
 
 # use as o.optionname to check for commandline options.
 class Options:

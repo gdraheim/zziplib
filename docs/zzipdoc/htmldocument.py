@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: UTF-8 -*-
-from match import Match
+from zzipdoc.match import Match
 
 class HtmlDocument:
     """ binds some html content page with additional markup - in this

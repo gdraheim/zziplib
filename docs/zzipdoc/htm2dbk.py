@@ -7,10 +7,10 @@ want is the docbook-to-pdf converter and similar technology being
 present in the world of docbook-to-anything converters. """
 
 from datetime import date
-import match
+from zzipdoc.match import Match
 import sys
 
-m = match.Match
+m = Match
 
 class htm2dbk_conversion_base:
     regexlist = [

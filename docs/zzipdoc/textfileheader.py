@@ -1,4 +1,4 @@
-from match import Match
+from zzipdoc.match import Match
 
 class TextFileHeader:
     """ scan for a comment block at the source file start and fill the

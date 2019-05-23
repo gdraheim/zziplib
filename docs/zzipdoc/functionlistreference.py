@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: UTF-8 -*-
-from match import Match
-from htm2dbk import *
+from zzipdoc.match import Match
+from zzipdoc.htm2dbk import *
 
 class FunctionListReference:
     """ Creating a docbook-style <reference> list of <refentry> parts

@@ -1,5 +1,5 @@
-from options import *
-from match import Match
+from zzipdoc.options import *
+from zzipdoc.match import Match
 
 class FunctionListHtmlPage:
     """ The main part here is to create a TOC (table of contents) at the

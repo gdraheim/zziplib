@@ -1,4 +1,4 @@
-from match import Match
+from zzipdoc.match import Match
 import string
 
 class dbk2htm_conversion:
