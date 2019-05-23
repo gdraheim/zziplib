@@ -5,7 +5,6 @@ from __future__ import print_function
 
 import sys
 import re
-import string
 import commands
 import warnings
 
@@ -61,19 +60,20 @@ def section2html(text):
     mapping = { "<screen>" : "<pre>", "</screen>" : "</pre>",
                 "<para>" : "<p>", "</para>" : "</p>" ,
                 "<function>" : "<link>", "</function>" : "</link>" }
-    for str in mapping:
-        text = string.replace(text, str, mapping[str])
+    for m in mapping:
+        text = text.replace(m, mapping[m])
     return text
 def html(text):
     return section2html(paramdef2html(text))
 def cdata1(text):
-    return string.replace(text, "&",  "&amp;")
+    return text.replace("&",  "&amp;")
 def cdata31(text):
-    return string.replace(string.replace(text, "<","&lt;"), ">","&gt;")
+    text = text.replace("<","&lt;")
+    return text.replace(">","&gt;")
 def cdata3(text):
     return cdata31(cdata1(text))
 def cdata43(text):
-    return string.replace(text,"\"", "&quot;")
+    return text.replace("\"", "&quot;")
 def cdata41(text):
     return cdata43(cdata31(text))
 def cdata4(text):
