@@ -146,7 +146,7 @@ def htm2dbk_files(args):
             doc.filename = filename
             doc.add(f.read())
             f.close()
-        except IOError, e:
+        except IOError:
             print >> sys.stderr, "can not open "+filename
     return doc.value()
 
