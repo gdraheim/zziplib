@@ -3516,8 +3516,8 @@ if __name__ == "__main__":
     help="name or path to unzip.exe to unpack *.zip [%default]")
   _o.add_option("-E", "--exeext", metavar="EXT", default=exeext,
     help="the executable extension (automake $(EXEEXT)) [%default]")
-  _o.add_option("--xmlresults", action="store_true", default=False,
-    help="print output in junit xml testresult format [%default]")
+  _o.add_option("--xmlresults", metavar="FILE", default=None,
+    help="capture results as a junit xml file [%default]")
   _o.add_option("-v", "--verbose", action="count", default=0,
     help="increase logging output [%default]")
   opt, args = _o.parse_args()
@@ -3539,8 +3539,15 @@ if __name__ == "__main__":
         if arg.startswith("_"): arg = arg[1:]
         if matches(method, arg):
           suite.addTest(testclass(method))
-  # TextTestRunner(verbosity=opt.verbose).run(suite)
+  xmlresults = None
   if opt.xmlresults:
+    if os.path.exists(opt.xmlresults):
+      os.remove(opt.xmlresults)
+    xmlresults = open(opt.xmlresults, "w")
+    logg.info("xml results into %s", opt.xmlresults)
+  #
+  # TextTestRunner(verbosity=opt.verbose).run(suite)
+  if xmlresults:
     import xmlrunner
     Runner = xmlrunner.XMLTestRunner
     Runner(xmlresults).run(suite)
