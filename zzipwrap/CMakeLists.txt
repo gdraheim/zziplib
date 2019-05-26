@@ -36,14 +36,14 @@ set(libzzipwrap_HDRS
 
 add_library(libzzipwrap ${libzzipwrap_SRCS} )
 target_link_libraries(libzzipwrap libzzip ZLIB::ZLIB )
-target_include_directories(libzzipwrap PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_BUILD_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(libzzipwrap PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 
 set_target_properties(libzzipwrap PROPERTIES OUTPUT_NAME "zzipwrap" RELEASE_POSTFIX "-${RELNUM}")
 SET_TARGET_PROPERTIES(libzzipwrap PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
 
 add_executable(zzipwrap ${zzipwrap_SRCS} )
 target_link_libraries(zzipwrap libzzipwrap )
-target_include_directories(zzipwrap PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_BUILD_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(zzipwrap PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 
 if(UNIX)
 add_custom_command(OUTPUT zzipwrap.pc
