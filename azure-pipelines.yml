@@ -18,7 +18,7 @@ steps:
     cd build && cmake ..
   displayName: 'configure'
 - script: |
-    cd build && make all
+    cd build && make all VERBOSE=1
   displayName: 'make all'
 - script: |
     cd build && make check
