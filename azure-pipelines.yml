@@ -11,5 +11,11 @@ pool:
 
 steps:
 - script: |
-    sh configure && make && make check
+    set -ex
+    rm -rf build
+    mkdir build
+    cd build
+    cmake ..
+    make
+    make check
   displayName: 'make'
