@@ -11,11 +11,15 @@ pool:
 
 steps:
 - script: |
-    cmake 
+    rm -rf build
+    mkdir build
+  displayName: 'build dir'
+- script: |
+    cd build && cmake ..
   displayName: 'configure'
 - script: |
-    make all
+    cd build && make all
   displayName: 'make all'
 - script: |
-    make check
+    cd build && make check
   displayName: 'make check'
