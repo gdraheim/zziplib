@@ -11,8 +11,8 @@ pool:
 
 steps:
 - script: |
-    sudo apt-mark hold libudev-dev # FIXME
-    sudo apt-get install --fix-missing libsdl2-dev
+    # sudo apt-mark hold libudev-dev # FIXME
+    sudo apt-get install -f libsdl2-dev
   displayName: 'libsdl2-dev'
 - script: |
     rm -rf build
