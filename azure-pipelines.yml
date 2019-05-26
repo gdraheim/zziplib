@@ -11,7 +11,7 @@ pool:
 
 steps:
 - script: |
-    sudo apt-get install libsdl2-dev
+    sudo apt-get install --fix-missing libsdl2-dev
   displayName: 'libsdl2-dev'
 - script: |
     rm -rf build
