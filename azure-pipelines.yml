@@ -24,14 +24,15 @@ steps:
     mkdir build
   displayName: 'build dir'
 - script: |
-    cd build && cmake -DTESTFLAGS=--xmlresults ..
+    cd build && cmake -DTESTFLAGS=--xmlresults=TEST-zziplibs.xml ..
   displayName: 'configure'
 - script: |
     cd build && make all VERBOSE=1
   displayName: 'make all'
 - script: |
     cd build && make check
-  displayName: 'make check'
+  displayName: 'make check VERBOSE=1'
 - script: |
     find . -name '*.xml'
   displayName: 'find xml'
+- task: PublishTestResults@2
