@@ -33,7 +33,7 @@ set(ZZCATSDL_SRCS
 if(SDL_FOUND)
 add_executable(zzcatsdl ${ZZCATSDL_SRCS} )
 target_link_libraries(zzcatsdl libzzip "${SDL_LIBRARIES}" ZLIB::ZLIB)
-target_include_directories(zzcatsdl PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}" "${SDL_INCLUDE_DIRS}")
+target_include_directories(zzcatsdl PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}" "${SDL_INCLUDE_DIRS}")
 endif()
 
 # install ########################################################
