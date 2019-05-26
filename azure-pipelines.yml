@@ -24,11 +24,14 @@ steps:
     mkdir build
   displayName: 'build dir'
 - script: |
-    cd build && cmake ..
+    cd build && cmake -DTESTFLAGS=--xmlresults ..
   displayName: 'configure'
 - script: |
     cd build && make all VERBOSE=1
   displayName: 'make all'
 - script: |
     cd build && make check
-  displayName: 'make check TESTFLAGS=--xmlresults'
+  displayName: 'make check'
+- script: |
+    find . -name '*.xml'
+  displayName: 'find xml'

@@ -34,8 +34,8 @@ add_executable(zzipsetstub zzipsetstub.c)
 target_link_libraries(zzipself     libzzip        ZLIB::ZLIB)
 target_link_libraries(zzipsetstub  libzzip        ZLIB::ZLIB)
 
-target_include_directories(zzipself     PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
-target_include_directories(zzipsetstub  PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(zzipself     PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(zzipsetstub  PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 
 if(CMAKE_GENERATOR MATCHES "Makefiles")
 add_custom_command(OUTPUT zzipshowme${EXEEXT}
