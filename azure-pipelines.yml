@@ -11,6 +11,9 @@ pool:
 
 steps:
 - script: |
+    sudo apt-get install libsdl2-dev
+  displayName: 'libsdl2-dev'
+- script: |
     rm -rf build
     mkdir build
   displayName: 'build dir'
