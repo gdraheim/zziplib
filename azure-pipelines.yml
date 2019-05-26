@@ -11,5 +11,15 @@ pool:
 
 steps:
 - script: |
-    sh configure && make && make check
-  displayName: 'make'
+    rm -rf build
+    mkdir build
+  displayName: 'build dir'
+- script: |
+    cd build && sh ../configure
+  displayName: 'configure'
+- script: |
+    cd build && make all
+  displayName: 'make all'
+- script: |
+    cd build && make check
+  displayName: 'make check'
