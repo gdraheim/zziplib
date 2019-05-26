@@ -11,5 +11,5 @@ pool:
 
 steps:
 - script: |
-    sh configure && cd build && make
+    sh configure && make && make check
   displayName: 'make'
