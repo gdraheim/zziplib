@@ -3558,18 +3558,14 @@ if __name__ == "__main__":
         if arg.startswith("_"): arg = arg[1:]
         if matches(method, arg):
           suite.addTest(testclass(method))
-  xmlresults = None
+
   if opt.xmlresults:
+    import xmlrunner
     if os.path.exists(opt.xmlresults):
       os.remove(opt.xmlresults)
-    xmlresults = open(opt.xmlresults, "w")
     logg.info("xml results into %s", opt.xmlresults)
-  #
-  # TextTestRunner(verbosity=opt.verbose).run(suite)
-  if xmlresults:
-    import xmlrunner
     Runner = xmlrunner.XMLTestRunner
-    Runner(xmlresults).run(suite)
+    Runner(output=opt.xmlresults).run(suite)
   else:
     Runner = unittest.TextTestRunner
     Runner(verbosity=opt.verbose).run(suite)
