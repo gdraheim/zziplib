@@ -18,8 +18,11 @@ steps:
     sudo apt-get install --fix-broken --ignore-missing libsdl2-dev
   displayName: 'install libsdl2-dev'
 - script: |
-    sudo apt-get install --fix-broken --ignore-missing python-xmlrunner
-  displayName: 'install python-xmlrunner'
+    sudo apt-get install --fix-broken --ignore-missing python3-pip
+  displayName: 'install python3-pip'
+- script: |
+    pip3 install unittest-xml-reporting
+  displayName: 'install unittest-xml-reporting'
 - script: |
     rm -rf build
     mkdir build
