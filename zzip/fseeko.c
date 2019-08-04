@@ -418,6 +418,7 @@ zzip_entry_findfirst(FILE * disk)
             if (zzip_disk_entry_check_magic(entry))
             {
                 free(buffer);
+                buffer = NULL;
                 entry->headseek = root;
                 entry->diskfile = disk;
                 entry->disksize = disksize;
@@ -448,7 +449,8 @@ zzip_entry_findfirst(FILE * disk)
     }
     errno = ENOENT; /* not found */
   error2:
-    free(buffer);
+    if (buffer != NULL)
+       free(buffer);
   error1:
     free(entry);
     ____;
