@@ -4,12 +4,26 @@ import logging
 import inspect
 import os
 import collections
-import urllib
 import shutil
 import random
 import re
 from fnmatch import fnmatchcase as matches
-from cStringIO import StringIO
+
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
+
+try:
+    from urllib import quote_plus, urlretrieve
+except ImportError:
+    from urllib.parse import quote_plus
+    from urllib.request import urlretrieve
+
+try:
+    basestring
+except NameError:
+    basestring = str
 
 logg = logging.getLogger("test")
 
@@ -65,7 +79,9 @@ def shell(command, shell=True, calls=False, cwd=None, env=None, lang=None, retur
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=None, env=env)
             if run.returncode:
                 logg.warning("EXIT %s: %s", run.returncode, command)
-            output, errors = run.communicate() # run.wait()
+            output, errors = run.communicate()
+            output = output.decode('utf-8')
+            errors = errors.decode('utf-8')
     except:
         logg.error("*E*: %s", sh_command)
         for line in output.split("\n"):
@@ -106,7 +122,7 @@ def download(base_url, filename, into, style = ""):
     data = "tmp.download"
     if not os.path.isdir(data):
         os.makedirs(data)
-    subname = urllib.quote_plus(base_url)
+    subname = quote_plus(base_url)
     subdir = os.path.join(data, subname)
     if not os.path.isdir(subdir):
         os.makedirs(subdir)
@@ -118,10 +134,13 @@ def download(base_url, filename, into, style = ""):
           shutil.copy(srcfile, subfile)
     if not os.path.exists(subfile):
        logg.info("need %s", subfile)
-       d = urllib.urlopen(base_url + "/" + filename + style)
-       f = open(subfile, "w")
-       f.write(d.read())
-       f.close()
+       try:
+           urlretrieve(base_url + "/" + filename + style, subfile)
+       except:
+           # Ensure zero-length file exists in case we couldn't
+           # download the file so that we won't try to
+           # re-download it.
+           open(subfile, 'a').close()
     #
     if not os.path.isdir(into):
         os.makedirs(into)
@@ -133,7 +152,7 @@ def download(base_url, filename, into, style = ""):
 def output(cmd, shell=True):
     run = subprocess.Popen(cmd, shell=shell, stdout=subprocess.PIPE)
     out, err = run.communicate()
-    return out
+    return out.decode('utf-8')
 def grep(pattern, lines):
     if isinstance(lines, basestring):
         lines = lines.split("\n")
@@ -196,7 +215,7 @@ class ZZipTest(unittest.TestCase):
     result = StringIO()
     old1 = ''
     old2 = ''
-    for i in xrange(size):
+    for i in range(size):
         while True:
             x = random.choice("       abcdefghijklmnopqrstuvwxyz\n")
             if x == old1 or x == old2: continue
@@ -278,7 +297,7 @@ class ZZipTest(unittest.TestCase):
     zipfile="test2.zip"
     tmpdir="test2.tmp"
     exe=self.bins("mkzip")
-    for i in xrange(100):
+    for i in range(100):
        filename = os.path.join(tmpdir,"file.%02i" % i)
        filetext = "file-%02i\n" % i
        self.mkfile(filename, filetext)
@@ -294,7 +313,7 @@ class ZZipTest(unittest.TestCase):
     zipfile="test3.zip"
     tmpdir="test3.tmp"
     exe=self.bins("mkzip")
-    for i in xrange(1000):
+    for i in range(1000):
        filename = os.path.join(tmpdir,"file.%03i" % i)
        filetext = "file-%03i\n" % i
        self.mkfile(filename, filetext)
@@ -311,7 +330,7 @@ class ZZipTest(unittest.TestCase):
     zipfile="test4.zip"
     tmpdir="test4.tmp"
     exe=self.bins("mkzip")
-    for i in xrange(10000):
+    for i in range(10000):
        filename = os.path.join(tmpdir,"file%04i.txt" % i)
        filetext = "file-%04i\n" % i
        self.mkfile(filename, filetext)
@@ -328,12 +347,12 @@ class ZZipTest(unittest.TestCase):
     zipfile="test5.zip"
     tmpdir="test5.tmp"
     exe=self.bins("mkzip")
-    for depth in xrange(20):
+    for depth in range(20):
       dirpath = ""
-      for i in xrange(depth):
+      for i in range(depth):
         if i:
           dirpath += "subdir%i/" % i
-      for size in xrange(18):
+      for size in range(18):
         size = 2 ** size
         filetext = self.gentext(size)
         filepart = "file%i-%i.txt" % (depth, size)
@@ -3470,7 +3489,7 @@ class ZZipTest(unittest.TestCase):
     setstub="./zzipsetstub" + exeext
     run = shell("{setstub} {exefile} {libstub}".format(**locals()))
     self.assertFalse(run.returncode)
-    os.chmod(exefile, 0755)
+    os.chmod(exefile, 0o755)
     # now ask the new .exe to show some of its own content
     run = shell("./{exefile} {txtfile_name}".format(**locals()))
     self.assertFalse(run.returncode)
@@ -3539,18 +3558,14 @@ if __name__ == "__main__":
         if arg.startswith("_"): arg = arg[1:]
         if matches(method, arg):
           suite.addTest(testclass(method))
-  xmlresults = None
+
   if opt.xmlresults:
+    import xmlrunner
     if os.path.exists(opt.xmlresults):
       os.remove(opt.xmlresults)
-    xmlresults = open(opt.xmlresults, "w")
     logg.info("xml results into %s", opt.xmlresults)
-  #
-  # TextTestRunner(verbosity=opt.verbose).run(suite)
-  if xmlresults:
-    import xmlrunner
     Runner = xmlrunner.XMLTestRunner
-    Runner(xmlresults).run(suite)
+    Runner(output=opt.xmlresults).run(suite)
   else:
     Runner = unittest.TextTestRunner
     Runner(verbosity=opt.verbose).run(suite)

@@ -17,13 +17,13 @@ option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
 # pkg_search_module ( ZZIP zzip )
-find_package ( PythonInterp 2.6 REQUIRED )
+find_package ( Python REQUIRED )
 find_package ( UnixCommands REQUIRED ) # bash cp mv rm gzip tar
 find_program ( MKZIP zip)
 
 set(EXEEXT ${CMAKE_EXECUTABLE_SUFFIX})
 set(README ${CMAKE_SOURCE_DIR}/README)
-set(PY2 ${PYTHON_EXECUTABLE})
+set(PY ${Python_EXECUTABLE})
 set(srcdir ${CMAKE_CURRENT_SOURCE_DIR})
 set(topdir ${CMAKE_SOURCE_DIR})
 
@@ -52,7 +52,7 @@ add_custom_target(sfx ALL DEPENDS zzipshowme${EXEEXT})
 endif()
 
 add_custom_target(tests
-   COMMAND ${PY2} ${srcdir}/zziptests.py --exeext=${EXEEXT} --topsrcdir=${topdir} -v ${TESTFLAGS}
+   COMMAND ${PY} ${srcdir}/zziptests.py --exeext=${EXEEXT} --topsrcdir=${topdir} -v ${TESTFLAGS}
    DEPENDS ../bins/zzcat ../bins/zzdir ../bins/zziptest ../bins/zzxorcat ../bins/zzxorcopy)
 add_custom_command(OUTPUT ../bins/zzcat COMMMAND cd ../bins && $(MAKE) zzcat)
 add_custom_command(OUTPUT ../bins/zzdir COMMMAND cd ../bins && $(MAKE) zzdir)

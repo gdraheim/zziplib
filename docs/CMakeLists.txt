@@ -13,7 +13,7 @@ option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
 # pkg_search_module ( ZZIP zzip )
-find_package(PythonInterp 2.6 REQUIRED)
+find_package(Python REQUIRED)
 find_package(UnixCommands REQUIRED) # bash cp mv rm gzip tar
 find_program(XMLTO xmlto)
 
@@ -23,7 +23,7 @@ set(README ${CMAKE_SOURCE_DIR}/README)
 set(topdir ${CMAKE_SOURCE_DIR})
 set(srcdir ${CMAKE_CURRENT_SOURCE_DIR})
 set(outdir ${CMAKE_CURRENT_BINARY_DIR})
-set(PY2 ${PYTHON_EXECUTABLE})
+set(PY ${Python_EXECUTABLE})
 
 # targets ########################################################
 set(doc_FILES README.MSVC6 README.SDL COPYING.MPL COPYING.LIB COPYING.ZLIB
@@ -63,7 +63,7 @@ add_custom_command(OUTPUT site.html
 add_custom_target(site DEPENDS site.html)
 
 add_custom_command(OUTPUT zzip.xml
-    COMMAND ${PY2} ${srcdir}/zzipdoc/htm2dbk.py ${htm_FILES} zziplib.xml -o ${outdir}/zzip.xml
+    COMMAND ${PY} ${srcdir}/zzipdoc/htm2dbk.py ${htm_FILES} zziplib.xml -o ${outdir}/zzip.xml
     DEPENDS zziplib.xml ${htm_FILES}
     WORKING_DIRECTORY ${srcdir}
     VERBATIM)
@@ -83,25 +83,25 @@ endif()
 
 set(docinfo --package="zziplib" --version=${PROJECT_VERSION})
 add_custom_command(OUTPUT zziplib.xml
-    COMMAND ${PY2} ${srcdir}/makedocs.py ${topdir}/zzip/*.c ${docinfo} --onlymainheader=zzip/lib.h --output=zziplib
+    COMMAND ${PY} ${srcdir}/makedocs.py ${topdir}/zzip/*.c ${docinfo} --onlymainheader=zzip/lib.h --output=zziplib
     COMMAND ${MV} zziplib.docbook zziplib.xml
     DEPENDS libzzip
     BYPRODUCTS zziplib.html)
 add_custom_command(OUTPUT zzipmmapped.xml
-    COMMAND ${PY2} ${srcdir}/makedocs.py ${topdir}/zzip/*.c ${docinfo} --onlymainheader=zzip/mmapped.h --output=zzipmmapped
+    COMMAND ${PY} ${srcdir}/makedocs.py ${topdir}/zzip/*.c ${docinfo} --onlymainheader=zzip/mmapped.h --output=zzipmmapped
     COMMAND ${MV} zzipmmapped.docbook zzipmmapped.xml
     DEPENDS libzzipmmapped
     BYPRODUCTS zzipmmapped.html)
 add_custom_command(OUTPUT zzipfseeko.xml
-    COMMAND ${PY2} ${srcdir}/makedocs.py ${topdir}/zzip/*.c ${docinfo} --onlymainheader=zzip/fseeko.h --output=zzipfseeko
+    COMMAND ${PY} ${srcdir}/makedocs.py ${topdir}/zzip/*.c ${docinfo} --onlymainheader=zzip/fseeko.h --output=zzipfseeko
     COMMAND ${MV} zzipfseeko.docbook zzipfseeko.xml
     DEPENDS libzzipfseeko
     BYPRODUCTS zzipfsseko.html)
 add_custom_command(OUTPUT manpages.tar
     COMMAND ${BASH} -c "test -d man3 && rm -rf man3; mkdir man3"
-    COMMAND ${PY2} ${srcdir}/dbk2man.py -o man3 man zziplib.xml
-    COMMAND ${PY2} ${srcdir}/dbk2man.py -o man3 man zzipmmapped.xml
-    COMMAND ${PY2} ${srcdir}/dbk2man.py -o man3 man zzipfseeko.xml
+    COMMAND ${PY} ${srcdir}/dbk2man.py -o man3 man zziplib.xml
+    COMMAND ${PY} ${srcdir}/dbk2man.py -o man3 man zzipmmapped.xml
+    COMMAND ${PY} ${srcdir}/dbk2man.py -o man3 man zzipfseeko.xml
     COMMAND ${BASH} -c "test -d man3/man3 && mv man3 man3_; test -d man3_/man3 && mv man3_/man3 .; rm -rf man3_"
     COMMAND ${BASH} -c "chmod 664 man3/*.3"
     COMMAND ${BASH} -c "tar cf manpages.tar man3"
@@ -109,10 +109,10 @@ add_custom_command(OUTPUT manpages.tar
     VERBATIM)
 add_custom_command(OUTPUT htmpages.tar
     COMMAND ${BASH} -c "test -d html && rm -rf html; mkdir html"
-    COMMAND ${PY2} ${srcdir}/dbk2man.py -o html html zziplib.xml
-    COMMAND ${PY2} ${srcdir}/dbk2man.py -o html html zzipmmapped.xml
-    COMMAND ${PY2} ${srcdir}/dbk2man.py -o html html zzipfseeko.xml
-    COMMAND ${PY2} ${srcdir}/dir2index.py -o html html
+    COMMAND ${PY} ${srcdir}/dbk2man.py -o html html zziplib.xml
+    COMMAND ${PY} ${srcdir}/dbk2man.py -o html html zzipmmapped.xml
+    COMMAND ${PY} ${srcdir}/dbk2man.py -o html html zzipfseeko.xml
+    COMMAND ${PY} ${srcdir}/dir2index.py -o html html
     COMMAND ${BASH} -c "tar cf htmpages.tar html/*.*"
     DEPENDS zziplib.xml zzipmmapped.xml zzipfseeko.xml
     VERBATIM)
