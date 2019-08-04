@@ -45,7 +45,7 @@ class FunctionListHtmlPage:
             callspec = entry.head_get_callspec()
             head_text = ("<code><b><function>"+namespec+"</function></b>"
                          +callspec+" : "+prespec+"</code>")
-        except Exception:
+        except Exception as e:
             pass
         try:
             extraline = ""
@@ -58,7 +58,7 @@ class FunctionListHtmlPage:
                              '<em><small>'+filename+'</small></em>'+
                              '</td></table>')
             body_text = extraline + body_text
-        except Exception:
+        except Exception as e:
             pass
         def link(text):
             return (text & Match("<function>(\w*)</function>")

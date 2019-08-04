@@ -31,12 +31,12 @@ class HtmlDocument:
     def get_title(self):
         if self.title: return self.title
         try:   return self.text[0].get_title()
-        except Exception: pass
+        except Exception as e: pass
         return self.title
     def _html_meta(self, meta):
         """ accepts adapter objects with .html_meta() """
         try:   return meta.html_meta()
-        except Exception: pass
+        except Exception as e: pass
         return str(meta)
     def _html_style(self, style):
         """ accepts adapter objects with .html_style() and .xml_style() """
@@ -65,7 +65,7 @@ class HtmlDocument:
                 self.navi = fd.read()
                 fd.close()
                 return self.navi
-            except Exception:
+            except Exception as e:
                 pass
         return None
     def html_header(self):
