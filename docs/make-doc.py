@@ -215,7 +215,7 @@ def scan_options (options, list):
         #else
         try:
             input = open(name, "r")
-        except IOError, error:
+        except IOError as error:
             warn(#...... (scan_options) ...............
                 "can not open input file: "+name, error)
             continue
@@ -524,7 +524,7 @@ html.add_page_list(html_pages)
 # and finally print the html-formatted output
 try:
     F = open(o.libhtmlfile, "w")
-except IOError, error:
+except IOError as error:
     warn(# ............. open(o.libhtmlfile, "w") ..............
         "can not open html output file: "+o.libhtmlfile, error)
 else:
@@ -987,7 +987,7 @@ doctype += '"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">'+"\n"
 
 try:
     F = open(o.docbookfile,"w")
-except IOError, error:
+except IOError as error:
     warn("can not open docbook output file: "+o.docbookfile, error)
 else:
     print >> F, doctype, '<reference><title>Manual Pages</title>'
@@ -1009,7 +1009,7 @@ else:
 # _____________________________________________________________________
 try:
     F = open( o.dumpdocfile, "w")
-except IOError, error:
+except IOError as error:
     warn ("can not open"+o.dumpdocfile,error)
 else:
     for func in function_list:

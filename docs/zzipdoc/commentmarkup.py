@@ -31,7 +31,7 @@ class CommentMarkup:
         comment = self.header.comment
         try:
             comment = self.header.get_otherlines()
-        except Exception, e:
+        except Exception as e:
             pass
         mode = ""
         text = ""

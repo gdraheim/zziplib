@@ -23,14 +23,14 @@ class DocbookDocument:
     def get_title(self):
         if self.title: return title
         try:   return self.text[0].get_title()
-        except Exception, e: pass
+        except Exception as e: pass
         return self.title
     def _xml_doctype(self, rootnode):
         return "<!DOCTYPE "+rootnode+self.docbook_dtd+">"
     def _xml_text(self, xml):
         """ accepts adapter objects with .xml_text() """
         try:   return xml.xml_text()
-        except Exception, e: print "DocbookDocument/text", e; pass
+        except Exception as e: print "DocbookDocument/text", e; pass
         return str(xml)
     def _fetch_rootnode(self, text):
         fetch = Match(r"^[^<>]*<(\w+)\b")
@@ -62,7 +62,7 @@ class DocbookDocument:
             print >>fd, xml_text
             fd.close()
             return True
-        except IOError, e:
+        except IOError as e:
             print "could not open '"+filename+"'file", e
             return False
     def save_all(self, filename):
@@ -90,6 +90,6 @@ class DocbookDocument:
             print >>fd, "</"+self.rootnode+">"
             fd.close()
             return True
-        except IOError, e:
+        except IOError as e:
             print "could not open '"+filename+"'file", e
             return False
