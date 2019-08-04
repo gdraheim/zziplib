@@ -371,7 +371,7 @@ def refentry2(man, refentry, subdirectory = ".", title = ""):
     #
     refpurpose = ""
     section = refentry.find("refnamediv")
-    if not section:
+    if section is None:
         logg.warning("no <refnamediv> found in <refentry> for '%s', bad docbook?", refentrytitle)
         if not refentrytitle: raise Exception("not even a refentrytitle")
         manpages = [ refentrytitle ]
