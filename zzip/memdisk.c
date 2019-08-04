@@ -114,7 +114,7 @@ zzip_mem_disk_fdopen(int fd)
     ___ ZZIP_MEM_DISK *dir = zzip_mem_disk_new();
     if (zzip_mem_disk_load(dir, disk) == -1)
     {
-       debug2("unable to load disk fd %s", fd);
+       debug2("unable to load disk fd %i", fd);
     }
     return dir;
     ____;
@@ -244,10 +244,10 @@ zzip_mem_entry_new(ZZIP_DISK * disk, ZZIP_DISK_ENTRY * entry)
     }
 
     {   /* copy the extra blocks to memory as well (maximum 64K each) */
-        zzip_size_t /*    */ ext1_len = zzip_disk_entry_get_extras(entry);
-        char *_zzip_restrict ext1_ptr = zzip_disk_entry_to_extras(entry);
-        zzip_size_t /*    */ ext2_len = zzip_file_header_get_extras(header);
-        char *_zzip_restrict ext2_ptr = zzip_file_header_to_extras(header);
+        zzip_size_t /*           */ ext1_len = zzip_disk_entry_get_extras(entry);
+        zzip_byte_t *_zzip_restrict ext1_ptr = zzip_disk_entry_to_extras(entry);
+        zzip_size_t /*           */ ext2_len = zzip_file_header_get_extras(header);
+        zzip_byte_t *_zzip_restrict ext2_ptr = zzip_file_header_to_extras(header);
 
         if (ext1_len > 0 && ext1_len <= 65535)
         {
