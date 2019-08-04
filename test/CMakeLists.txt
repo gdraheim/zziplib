@@ -65,7 +65,6 @@ add_custom_command(OUTPUT test0.zip
     COMMAND ${CP} ${README} tmp/README
     COMMAND ${BASH} -c "cd tmp && ${MKZIP} ../test0.zip README"
     COMMAND ${CP} test0.zip test.zip
-    COMMAND ${CP} test0.zip ${srcdir}/test.zip
     BYPRODUCTS test.zip
     VERBATIM)
 add_custom_target(testzips ALL DEPENDS test0.zip)
