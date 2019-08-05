@@ -654,7 +654,7 @@ zzip_dir_alloc(zzip_strings_t * fileext)
     return zzip_dir_alloc_ext_io(fileext, 0);
 }
 
-/** => zzip_dir_alloc_ext_io
+/** also: zzip_dir_alloc_ext_io
  * This function will free the zzip_dir handle unless there are still
  * zzip_files attached (that may use its cache buffer).
  * This is the inverse of => zzip_dir_alloc , and both
