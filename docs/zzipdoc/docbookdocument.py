@@ -33,7 +33,7 @@ class DocbookDocument:
     def _xml_text(self, xml):
         """ accepts adapter objects with .xml_text() """
         try:   return xml.xml_text()
-        except Exception as e: print "DocbookDocument/text", e; pass
+        except Exception as e: print("DocbookDocument/text " + e); pass
         return str(xml)
     def _fetch_rootnode(self, text):
         fetch = Match(r"^[^<>]*<(\w+)\b")
