@@ -1,85 +1,92 @@
-from .match import Match
+import re
 
-def markup_link_syntax(text):
+
+def _markup_link_syntax(text):
     """ markup the link-syntax ` => somewhere ` in the text block """
-    return (text
-            & Match(r"(?m)(^|\s)\=\>\"([^\"]*)\"")
-            >> r"\1<link>\2</link>"
-            & Match(r"(?m)(^|\s)\=\>\'([^\']*)\'")
-            >> r"\1<link>\2</link>"
-            & Match(r"(?m)(^|\s)\=\>\s(\w[\w.]*\w\(\d+\))")
-            >> r"\1<link>\2</link>"
-            & Match(r"(?m)(^|\s)\=\>\s([^\s\,\.\!\?]+)")
-            >> r"\1<link>\2</link>")
+    text = re.sub(r"(^|\s)=>\"([^\"]*)\"", r"\1<link>\2</link>", text,
+                  flags=re.M)
+    text = re.sub(r"(^|\s)=>\'([^\']*)\'", r"\1<link>\2</link>", text,
+                  flags=re.M)
+    text = re.sub(r"(^|\s)=>\s(\w[\w.]*\w\(\d+\))", r"\1<link>\2</link>", text,
+                  flags=re.M)
+    text = re.sub(r"(^|\s)=>\s([^\s,.!?]+)", r"\1<link>\2</link>", text,
+                  flags=re.M)
+    return text
 
-class CommentMarkup:
+
+def _markup_line(line):
+    return (line
+            .replace("<c>", "<code>")
+            .replace("</c>", "</code>"))
+
+
+def _markup_para_line(line):
+    return _markup_link_syntax(_markup_line(line))
+
+
+def _markup_screen_line(line):
+    return _markup_line(line.replace("&", "&amp;")
+                        .replace("<", "&lt;")
+                        .replace(">", "&gt;"))
+
+
+class CommentMarkup(object):
     """ using a structure having a '.comment' item - it does pick it up
     and enhances its text with new markups so that they can be represented
     in xml. Use self.xml_text() to get markup text (knows 'this function') """
-    def __init__(self, header = None):
+
+    def __init__(self, header):
         self.header = header
-        self.text = None     # xml'text
-    def get_filename(self):
-        if self.header is None:
-            return None
-        return self.header.get_filename()
-    def parse(self, header = None):
-        if header is not None:
-            self.header = header
-        if self.header is None:
-            return False
-        comment = self.header.comment
-        try:
-            comment = self.header.get_otherlines()
-        except Exception as e:
-            pass
+        self.filename = header.filename
+
+        if hasattr(header, 'otherlines'):
+            comment = header.otherlines
+        else:
+            comment = header.comment
+
         mode = ""
         text = ""
         for line in comment.split("\n"):
-            check = Match()
-            if line & check(r"^\s?\s?\s?[*]\s+[*]\s(.*)"):
+            check = re.search(r"^\s?\s?\s?[*]\s+[*]\s(.*)", line)
+            if check:
                 if mode != "ul":
-                    if mode: text += "</"+mode+">"
-                    mode = "ul" ; text += "<"+mode+">"
+                    if mode: text += "</" + mode + ">"
+                    mode = "ul"
+                    text += "<" + mode + ">"
                 line = check.group(1)
-                text += "<li><p> "+self.markup_para_line(line)+" </p></li>\n"
-            elif line & check(r"^\s?\s?\s?[*](.*)"):
-                if mode != "para":
-                    if mode: text += "</"+mode+">"
-                    mode = "para" ; text += "<"+mode+">"
-                line = check.group(1)
-                if line.strip() == "":
-                    text += "</para><para>"+"\n"
-                else:
-                    text += " "+self.markup_para_line(line)+"\n"
+                text += "<li><p> " + _markup_para_line(line) + " </p></li>\n"
             else:
-                if mode != "screen":
-                    if mode: text += "</"+mode+">"
-                    mode = "screen" ; text += "<"+mode+">"
-                text += " "+self.markup_screen_line(line)+"\n"
-        if mode: text += "</"+mode+">"+"\n"
-        self.text = (text
-                     & Match(r"(<para>)(\s*[R]eturns)") >>r"\1This function\2"
-                     & Match(r"(?s)<para>\s*</para><para>") >> "<para>"
-                     & Match(r"(?s)<screen>\s*</screen>") >> "")
-        return True
-    def markup_screen_line(self, line):
-        return self.markup_line(line.replace("&","&amp;")
-                                .replace("<","&lt;")
-                                .replace(">","&gt;"))
-    def markup_para_line(self, line):
-        return markup_link_syntax(self.markup_line(line))
-    def markup_line(self, line):
-        return (line
-                .replace("<c>","<code>")
-                .replace("</c>","</code>"))
-    def xml_text(self, functionname = None):
-        if self.text is None:
-            if not self.parse(): return None
+                check = re.search(r"^\s?\s?\s?[*](.*)", line)
+                if check:
+                    if mode != "para":
+                        if mode: text += "</" + mode + ">"
+                        mode = "para";
+                        text += "<" + mode + ">"
+                    line = check.group(1)
+                    if line.strip() == "":
+                        text += "</para><para>" + "\n"
+                    else:
+                        text += " " + _markup_para_line(line) + "\n"
+                else:
+                    if mode != "screen":
+                        if mode: text += "</" + mode + ">"
+                        mode = "screen"
+                        text += "<" + mode + ">"
+                    text += " " + _markup_screen_line(line) + "\n"
+        if mode:
+            text += "</" + mode + ">" + "\n"
+        text = re.sub(r"(<para>)(\s*[R]eturns)", r"\1This function\2", text)
+        text = re.sub(r"<para>\s*</para><para>", "<para>", text, flags=re.S)
+        text = re.sub(r"<screen>\s*</screen>", "", text, flags=re.S)
+        self.text = text
+
+    def xml_text(self, functionname=None):
         text = self.text
         if functionname is not None:
-            def function(text): return "<function>"+text+"</function> function"
+            def function(name):
+                return "<function>" + name + "</function> function"
+
             text = (text
-                    .replace("this function", "the "+function(functionname))
-                    .replace("This function", "The "+function(functionname)))
+                    .replace("this function", "the " + function(functionname))
+                    .replace("This function", "The " + function(functionname)))
         return text
