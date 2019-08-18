@@ -1,4 +1,4 @@
-from match import Match
+from .match import Match
 
 def markup_link_syntax(text):
     """ markup the link-syntax ` => somewhere ` in the text block """

@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: UTF-8 -*-
-from match import Match
+from __future__ import print_function
+from .match import Match
 
 class DocbookDocument:
     """ binds some xml content page with additional markup - in this
@@ -30,7 +31,7 @@ class DocbookDocument:
     def _xml_text(self, xml):
         """ accepts adapter objects with .xml_text() """
         try:   return xml.xml_text()
-        except Exception as e: print "DocbookDocument/text", e; pass
+        except Exception as e: print("DocbookDocument/text", e); pass
         return str(xml)
     def _fetch_rootnode(self, text):
         fetch = Match(r"^[^<>]*<(\w+)\b")
@@ -47,7 +48,7 @@ class DocbookDocument:
         return filename
     def save(self, filename = None):
         filename = self._filename(filename)
-        print "writing '"+filename+"'"
+        print("writing '"+filename+"'")
         if len(self.text) > 1:
             self.save_all(filename)
         else:
@@ -58,12 +59,12 @@ class DocbookDocument:
             xml_text = self._xml_text(text)
             rootnode = self._fetch_rootnode(xml_text)
             doctype = self._xml_doctype(rootnode)
-            print >>fd, doctype
-            print >>fd, xml_text
+            print(doctype, file=fd)
+            print(xml_text, file=fd)
             fd.close()
             return True
         except IOError as e:
-            print "could not open '"+filename+"'file", e
+            print("could not open '"+filename+"'file", e)
             return False
     def save_all(self, filename):
         assert len(self.text) > 1
@@ -76,20 +77,20 @@ class DocbookDocument:
             else:
                 rootnode = self.rootnode
             doctype = self._xml_doctype(rootnode)
-            print >>fd, doctype
+            print(doctype, file=fd)
             title = self.get_title()
             if title and self.rootnode in self.has_title_child:
-                print >>fd, "<"+self.rootnode+'><title>'+title+'</title>'
+                print("<"+self.rootnode+'><title>'+title+'</title>', file=fd)
             elif title:
-                print >>fd, "<"+self.rootnode+' id="'+title+'">'
+                print("<"+self.rootnode+' id="'+title+'">', file=fd)
             else:
-                print >>fd, "<"+self.rootnode+'>'
+                print("<"+self.rootnode+'>', file=fd)
             for text in self.text:
                 text = self._xml_text(text)
-                print >>fd, text
-            print >>fd, "</"+self.rootnode+">"
+                print(text, file=fd)
+            print("</"+self.rootnode+">", file=fd)
             fd.close()
             return True
         except IOError as e:
-            print "could not open '"+filename+"'file", e
+            print("could not open '"+filename+"' file", e)
             return False

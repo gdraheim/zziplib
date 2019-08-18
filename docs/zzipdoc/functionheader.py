@@ -1,4 +1,4 @@
-from match import Match
+from .match import Match
 
 class FunctionHeader:
     """ parsing the comment block that is usually presented before

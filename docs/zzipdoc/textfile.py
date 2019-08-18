@@ -1,4 +1,3 @@
-
 def _src_to_xml(text):
     return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt")
 
@@ -45,5 +44,3 @@ class TextFile:
             if x == "\n":
                 line += 1
         return line
-            
-

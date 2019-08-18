@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: UTF-8 -*-
-from match import Match
+from __future__ import print_function
+from .match import Match
 
 class HtmlDocument:
     """ binds some html content page with additional markup - in this
@@ -40,20 +41,20 @@ class HtmlDocument:
         """ accepts adapter objects with .html_style() and .xml_style() """
         ee = None
         try:   return style.html_style()
-        except Exception as e: ee = e; pass
+        except Exception as e: ee = e
         try:   return style.xml_style()
-        except Exception as e: print "HtmlDocument/style", ee, e; pass
+        except Exception as e: print("HtmlDocument/style", ee, e)
         try:   return str(style)
-        except Exception as e: print "HtmlDocument/style", e; return ""
+        except Exception as e: print("HtmlDocument/style", e); return ""
     def _html_text(self, html):
         """ accepts adapter objects with .html_text() and .xml_text() """
         ee = None
         try:   return html.html_text()
-        except Exception as e: ee = e; pass
+        except Exception as e: ee = e
         try:   return html.xml_text()
-        except Exception as e: print "HtmlDocument/text", ee, e; pass
+        except Exception as e: print("HtmlDocument/text", ee, e)
         try:   return str(html)
-        except Exception as e: print "HtmlDocument/text", e; return "&nbsp;"
+        except Exception as e: print("HtmlDocument/text", e); return "&nbsp;"
     def navigation(self):
         if self.navi:
             return self.navi
@@ -103,15 +104,15 @@ class HtmlDocument:
         return filename
     def save(self, filename = None):
         filename = self._filename(filename)
-        print "writing '"+filename+"'"
+        print("writing '"+filename+"'")
         try:
             fd = open(filename, "w")
-            print >>fd, self.html_header()
+            print(self.html_header(), file=fd)
             for text in self.text:
-                print >>fd, self._html_text(text)
-            print >>fd, self.html_footer()
+                print(self._html_text(text), file=fd)
+            print(self.html_footer(), file=fd)
             fd.close()
             return True
         except IOError as e:
-            print "could not open '"+filename+"'file", e
+            print("could not open '"+filename+"'file", e)
             return False

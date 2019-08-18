@@ -7,7 +7,7 @@ import re
 
 # ---------------------------------------------------------- Regex Match()
 # beware, stupid python interprets backslashes in replace-parts only partially!
-class MatchReplace:
+class MatchReplace(object):
     """ A MatchReplace is a mix of a Python Pattern and a Replace-Template """
     def __init__(self, matching, template, count = 0, flags = None):
         """ setup a substition from regex 'matching' into 'template',
@@ -18,8 +18,10 @@ class MatchReplace:
         MatchReplace.__call__(self, matching, template, count, flags)
     def __call__(self, matching, template = None, count = 0, flags = None):
         """ other than __init__ the template may be left off to be unchanged"""
-        if isinstance(count, basestring): # count/flags swapped over?
-            flags = count; count = 0
+        if not isinstance(count, int):
+            raise Exception("Shouldn't have count as non int")
+        #if isinstance(count, basestring): # count/flags swapped over?
+        #    flags = count; count = 0
         if isinstance(matching, Match):
             self.matching = matching
         else:
@@ -48,7 +50,7 @@ class MatchReplace:
     def __rlshift__(self, count):
         self.count = count ; return self
 
-class Match(str):
+class Match(object):
     """ A Match is actually a mix of a Python Pattern and MatchObject """
     def __init__(self, pattern = None, flags = None):
         """ flags is a string: 'i' for case-insensitive etc.; it is just
@@ -57,7 +59,6 @@ class Match(str):
     def __call__(self, pattern, flags = None):
         assert isinstance(pattern, str) or pattern is None
         assert isinstance(flags, str) or flags is None
-        str.__init__(self, pattern)
         self.replaced = 0 # set by subn() inside MatchReplace
         self.found = None # set by search() to a MatchObject
         self.pattern = pattern
@@ -81,23 +82,10 @@ class Match(str):
         return MatchReplace(self, template)
     def __getitem__(self, index):
         return self.group(index)
+    def __str__(self):
+        return self.pattern
     def group(self, index):
         assert self.found is not None
         return self.found.group(index)
     def finditer(self, string):
         return self.regex.finditer(string)
-
-if __name__ == "__main__":
-    # matching:
-    if "foo" & Match("oo"):
-        print "oo"
-    x = Match()
-    if "foo" & x("(o+)"):
-        print x[1]
-    # replacing:
-    y = "fooboo" & Match("oo") >> "ee"
-    print y
-    r = Match("oo") >> "ee"
-    print "fooboo" & r
-    s = MatchReplace("oo", "ee")
-    print "fooboo" & s

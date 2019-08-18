@@ -340,7 +340,7 @@ push @MK_TAGS, "s|<a sect=\\\"[$AZ$NN]\\\"|<a|g;" if not $o{keepsect};
 push @MK_TAGS, "s|<!--[$AX]*[?]-->||g;";
 push @MK_TAGS, "s|<!--\\\$[$AX]*[?]:-->||g;";
 push @MK_TAGS, "s|<!--\\\$[$AX]*:[?=]-->||g;";
-push @MK_TAGS, "s|(<[^<>]*)\\\${[$AX]*:[?=]([^<{}>]*)}([^<>]*>)|\$1\$2\$3|g;";
+push @MK_TAGS, "s|(<[^<>]*)\\\$\\{[$AX]*:[?=]([^<{}>]*)}([^<>]*>)|\$1\$2\$3|g;";
 
 my $TRIMM=" -e 's:^ *::' -e 's: *\$::'";  # trimm away leading/trailing spaces
 sub trimm
@@ -544,17 +544,17 @@ sub info2vars_sed      # generate <!--$vars--> substition sed addon script
     if ($attribvars ne "no") {
 	for (@_INP) {  my $H = "[^<>]*";
     if    (/^=....=formatter /) { next; }
-    elsif (/^<$Q='text'>$V9/){push @OUT,"\$Z='$2';s|<$V1\{$1:[=]$V2}$V3>|<\$1$SS\$Z\$3>|;"}
-    elsif (/^<$Q='Text'>$V9/){push @OUT,"\$Z='$2';s|<$V1\{$1:[=]$V2}$V3>|<\$1$SS\$Z\$3>|;"}
-    elsif (/^<$Q='name'>$V9/){push @OUT,"\$Z='$2';s|<$V1\{$1:[?]$V2}$V3>|<\$1$SS\$Z\$3>|;"}
-    elsif (/^<$Q='Name'>$V9/){push @OUT,"\$Z='$2';s|<$V1\{$1:[?]$V2}$V3>|<\$1$SS\$Z\$3>|;"}
-    elsif (/^<$Q='text'>$V8/){push @OUT,"\$Z='$2';s|<$V1\{$1:[=]$V2}$V3>|<\$1$SS\$Z\$3>|;"}
-    elsif (/^<$Q='Text'>$V8/){push @OUT,"\$Z='$2';s|<$V1\{$1:[=]$V2}$V3>|<\$1$SS\$Z\$3>|;"}
-    elsif (/^<$Q='name'>$V8/){push @OUT,"\$Z='$2';s|<$V1\{$1:[?]$V2}$V3>|<\$1$SS\$Z\$3>|;"}
-    elsif (/^<$Q='Name'>$V8/){push @OUT,"\$Z='$2';s|<$V1\{$1:[?]$V2}$V3>|<\$1$SS\$Z\$3>|;"} 
+    elsif (/^<$Q='text'>$V9/){push @OUT,"\$Z='$2';s|<$V1\\{$1:[=]$V2}$V3>|<\$1$SS\$Z\$3>|;"}
+    elsif (/^<$Q='Text'>$V9/){push @OUT,"\$Z='$2';s|<$V1\\{$1:[=]$V2}$V3>|<\$1$SS\$Z\$3>|;"}
+    elsif (/^<$Q='name'>$V9/){push @OUT,"\$Z='$2';s|<$V1\\{$1:[?]$V2}$V3>|<\$1$SS\$Z\$3>|;"}
+    elsif (/^<$Q='Name'>$V9/){push @OUT,"\$Z='$2';s|<$V1\\{$1:[?]$V2}$V3>|<\$1$SS\$Z\$3>|;"}
+    elsif (/^<$Q='text'>$V8/){push @OUT,"\$Z='$2';s|<$V1\\{$1:[=]$V2}$V3>|<\$1$SS\$Z\$3>|;"}
+    elsif (/^<$Q='Text'>$V8/){push @OUT,"\$Z='$2';s|<$V1\\{$1:[=]$V2}$V3>|<\$1$SS\$Z\$3>|;"}
+    elsif (/^<$Q='name'>$V8/){push @OUT,"\$Z='$2';s|<$V1\\{$1:[?]$V2}$V3>|<\$1$SS\$Z\$3>|;"}
+    elsif (/^<$Q='Name'>$V8/){push @OUT,"\$Z='$2';s|<$V1\\{$1:[?]$V2}$V3>|<\$1$SS\$Z\$3>|;"}
 	}
         for (split / /, $o{variables}) {
-	    {push @OUT,"\$Z='$o{$_}';s|<$V1\{$_:[?]$V2}$V3>|<\$1$SS\$Z\$3>|;"} 
+	    {push @OUT,"\$Z='$o{$_}';s|<$V1\\{$_:[?]$V2}$V3>|<\$1$SS\$Z\$3>|;"}
 	}
     }
     # if value="2004" then generated sed might be "\\12004" which is bad

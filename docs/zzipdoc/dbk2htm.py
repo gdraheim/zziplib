@@ -1,4 +1,4 @@
-from match import Match
+from .match import Match
 import string
 
 class dbk2htm_conversion:
@@ -8,8 +8,8 @@ class dbk2htm_conversion:
     def __init__(self):
         pass
     def section2html(self, text):
-        for str in self.mapping:
-            text = string.replace(text, str, self.mapping[str])
+        for find, replace in self.mapping.items():
+            text = text.replace(find, replace)
         return text
     def paramdef2html(self, text):
         s = Match()

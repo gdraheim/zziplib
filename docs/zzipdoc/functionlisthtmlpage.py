@@ -1,5 +1,6 @@
-from options import *
-from match import Match
+from __future__ import print_function
+from .options import *
+from .match import Match
 
 class FunctionListHtmlPage:
     """ The main part here is to create a TOC (table of contents) at the
@@ -35,7 +36,7 @@ class FunctionListHtmlPage:
         head_text = entry.head_xml_text()
         body_text = entry.body_xml_text(name)
         if not head_text:
-            print "no head_text for", name
+            print("no head_text for", name)
             return
         try:
             prespec = entry.head_get_prespec()
@@ -102,7 +103,7 @@ class FunctionListHtmlPage:
         text &= (Match("(?s)<link>(\w+)</link>")
                  >> (lambda x: self.resolve_internal(x.group(1))))
         if len(self.not_found_in_anchors):
-            print "not found in anchors: ", self.not_found_in_anchors
+            print("not found in anchors:", self.not_found_in_anchors)
         return (text & Match("(?s)<link>([^<>]*)</link>")
                 >> "<code>\\1</code>")
     def resolve_external(self, func, sect):
