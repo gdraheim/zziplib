@@ -65,24 +65,24 @@ zziplib.xml: zziplib.spec $(srcdir)/Makefile.am \
                  $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c
 	$(PYRUN) $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c $(zziplib) \
                    "--package=$(PACKAGE)" "--version=$(VERSION)" \
+                   --docbook=xml \
                    "--onlymainheader=zzip/lib.h" "--output=zziplib"
-	test -s zziplib.docbook && mv zziplib.docbook zziplib.xml
 zzipmmapped.html: zzipmmapped.xml 
 zzipmmapped.xml: zziplib.spec $(srcdir)/Makefile.am \
                  $(srcdir)/zzipdoc/*.py \
                  $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c
 	$(PYRUN) $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c $(zziplib) \
                    "--package=$(PACKAGE)" "--version=$(VERSION)" \
+                   --docbook=xml \
                    "--onlymainheader=zzip/mmapped.h" "--output=zzipmmapped"
-	test -s zzipmmapped.docbook && mv zzipmmapped.docbook zzipmmapped.xml
 zzipfseeko.html: zzipfseeko.xml 
 zzipfseeko.xml: zziplib.spec $(srcdir)/Makefile.am \
                  $(srcdir)/zzipdoc/*.py \
                  $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c
 	$(PYRUN) $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c $(zziplib) \
                    "--package=$(PACKAGE)" "--version=$(VERSION)" \
+                   --docbook=xml \
                    "--onlymainheader=zzip/fseeko.h" "--output=zzipfseeko"
-	test -s zzipfseeko.docbook && mv zzipfseeko.docbook zzipfseeko.xml
 
 omfdir=${datadir}/omf
 pkgomfdir=${omfdir}/${PACKAGE}

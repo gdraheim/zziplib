@@ -5,6 +5,12 @@ import re
 from collections import OrderedDict
 from optparse import OptionParser
 
+try:
+    # noinspection PyCompatibility
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
+
 from zzipdoc.commentmarkup import CommentMarkup
 from zzipdoc.dbk2htm import section2html, paramdef2html
 from zzipdoc.docbookdocument import DocbookDocument
@@ -261,9 +267,12 @@ def makedocs(filenames, o):  # type: (List[str], Any) -> None
 
 def _save_doc(doc, filename):
     try:
+        print("Preparing {filename}".format(filename=filename))
+        output = StringIO()
+        doc.save(output)
         print("Writing {filename}".format(filename=filename))
         with open(filename, "w") as f:
-            doc.save(f)
+            f.write(output.getvalue())
     except IOError:
         print("Error saving document to {filename}".format(filename=filename))
 
