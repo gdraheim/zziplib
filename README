@@ -1,4 +1,4 @@
-... please switch to 'cmake' based builds.
+... please switch to 'cmake' based builds ... [(master)](https://github.com/gdraheim/zziplib/tree/master): [![Build Status](https://dev.azure.com/gdraheim/gdraheim/_apis/build/status/gdraheim.zziplib%20(1)?branchName=master)](https://dev.azure.com/gdraheim/gdraheim/_build/latest?definitionId=4&branchName=master)
 
 PROJECT
   The zziplib provides read access to zipped files in a zip-archive,
