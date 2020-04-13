@@ -2,6 +2,7 @@ import unittest
 import subprocess
 import logging
 import inspect
+import sys
 import os
 import collections
 import shutil
@@ -21,9 +22,7 @@ except ImportError:
     from urllib.parse import quote_plus
     from urllib.request import urlretrieve
 
-try:
-    basestring
-except NameError:
+if sys.version[0] == '3':
     basestring = str
 
 logg = logging.getLogger("test")
@@ -3586,14 +3585,18 @@ if __name__ == "__main__":
         if matches(method, arg):
           suite.addTest(testclass(method))
 
-  if opt.xmlresults:
-    import xmlrunner
+  xmlresults = opt.xmlresults
+  if xmlresults:
+    try: import xmlrunner
+    except: xmlresults=None
+  if xmlresults:
     if os.path.exists(opt.xmlresults):
       os.remove(opt.xmlresults)
     logg.info("xml results into %s", opt.xmlresults)
     Runner = xmlrunner.XMLTestRunner
-    Runner(output=opt.xmlresults).run(suite)
+    result = Runner(output=opt.xmlresults).run(suite)
   else:
     Runner = unittest.TextTestRunner
-    Runner(verbosity=opt.verbose).run(suite)
- 
+    result = Runner(verbosity=opt.verbose).run(suite)
+  if not result.wasSuccessful():
+    sys.exit(1)
