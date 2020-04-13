@@ -16,6 +16,8 @@ GitHub in 2017 for easier collobaration with other projects.
 
 ... [(master)](https://github.com/gdraheim/zziplib/tree/master): [![Build Status](https://dev.azure.com/gdraheim/gdraheim/_apis/build/status/gdraheim.zziplib%20(1)?branchName=master)](https://dev.azure.com/gdraheim/gdraheim/_build/latest?definitionId=4&branchName=master)
 
+**DOCUMENTATION**
+
 * [copying](docs/copying.htm)
   [developer](docs/developer.htm)
   [functions](docs/functions.htm)
