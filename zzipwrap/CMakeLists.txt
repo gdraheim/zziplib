@@ -1,9 +1,12 @@
 cmake_minimum_required (VERSION 3.1)
 project(zzipwrap VERSION "0.13.69" LANGUAGES C)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMakeScripts")
+
 include ( CheckIncludeFiles )
 include ( GNUInstallDirs )
 include ( FindPkgConfig )
+include ( JoinPaths )
 
 # options ########################################################
 option(BUILD_SHARED_LIBS "Build a shared library" ON)
@@ -46,10 +49,12 @@ target_link_libraries(zzipwrap libzzipwrap )
 target_include_directories(zzipwrap PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 
 if(UNIX)
+join_paths(libdir "\${prefix}" "${CMAKE_INSTALL_LIBDIR}")
+join_paths(includedir "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
 add_custom_command(OUTPUT zzipwrap.pc
    COMMAND ${BASH} -c "echo 'prefix=${CMAKE_INSTALL_PREFIX}' > zzipwrap.pc"
-   COMMAND ${BASH} -c "echo 'libdir=\${prefix}/${CMAKE_INSTALL_LIBDIR}' >> zzipwrap.pc"
-   COMMAND ${BASH} -c "echo 'includedir=\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}' >> zzipwrap.pc"
+   COMMAND ${BASH} -c "echo 'libdir=${libdir}' >> zzipwrap.pc"
+   COMMAND ${BASH} -c "echo 'includedir=${includedir}' >> zzipwrap.pc"
    COMMAND ${BASH} -c "echo '' >> zzipwrap.pc"
    COMMAND ${BASH} -c "echo 'Name: ${PROJECT_NAME}' >> zzipwrap.pc"
    COMMAND ${BASH} -c "echo 'Description: Callback Wrappers for ZZipLib' >> zzipwrap.c"
