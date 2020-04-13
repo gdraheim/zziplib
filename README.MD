@@ -26,7 +26,6 @@ GitHub in 2017 for easier collobaration with other projects.
   [64on32](docs/64on32.htm)
   [download](docs/download.htm)
   [history](docs/history.htm)
-
 * [zzip:](docs/zzip-index.htm) 
   [basics](docs/zzip-basics.htm)
   [api](docs/zzip-api.htm)
@@ -40,7 +39,6 @@ GitHub in 2017 for easier collobaration with other projects.
   [xor](docs/zzip-xor.htm)
   [zip](docs/zzip-zip.htm)
   [sfx-make](docs/sfx-make.htm)
-
 * [zziplib](docs/zziplib.htm)
   [mmapped](docs/mmapped.htm)
   [fseeko](docs/fseeko.htm)
