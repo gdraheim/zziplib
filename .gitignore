@@ -3,3 +3,6 @@
 Makefile
 build
 *-linux-*
+*.tmp
+*.pyc
+__pycache__
