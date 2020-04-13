@@ -28,7 +28,7 @@ static const char usage[] =
 
 static int unzzip_version(void)
 {
-    printf (__FILE__" version "ZZIP_PACKAGE" "ZZIP_VERSION"\n");
+    printf (__FILE__ " version " ZZIP_PACKAGE_NAME " " ZZIP_PACKAGE_VERSION "\n");
     return 0;
 }
 

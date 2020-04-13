@@ -1,8 +1,11 @@
 *~
 *.cache
-Makefile
 build
 *-linux-*
+*.pyc
+*.tmp
+docs/man3
+docs/html
 *.tmp
 *.pyc
 __pycache__

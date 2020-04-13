@@ -19,11 +19,11 @@
 #include <stdlib.h>
 
 /* if your system does not have strnlen: */
-zzip__new__ static size_t
+static size_t
 _zzip_strnlen(const char *p, size_t maxlen)
 {
     const char * stop = (char *)memchr(p, '\0', maxlen);
-    return stop ? stop - p : maxlen;
+    return stop ? (size_t)(stop - p) : maxlen;
 }
 #endif
 

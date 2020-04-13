@@ -88,7 +88,7 @@ AX_CREATE_PKGCONFIG_INFO(dnl
 AX_PAX_TAR_CREATE
 AX_PAX_TAR_EXTRACT
 AC_PATH_PROGS(PERL, perl5 perl, echo no perl found for)
-AC_PATH_PROGS(PYTHON, python, echo no python found for)
+AC_PATH_PROGS(PYTHON, python3, echo no python found for)
 AC_PATH_PROGS(MKZIP, zip pkzip, :)
 AC_PATH_PROGS(XMLTO, xmlto, :)
 

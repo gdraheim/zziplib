@@ -1,3 +1,5 @@
+... please switch to 'cmake' base builds.
+
 PROJECT
   The zziplib provides read access to zipped files in a zip-archive,
   using compression based solely on free algorithms provided by zlib.
