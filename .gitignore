@@ -4,8 +4,6 @@ build
 *-linux-*
 *.pyc
 *.tmp
+__pycache__
 docs/man3
 docs/html
-*.tmp
-*.pyc
-__pycache__
