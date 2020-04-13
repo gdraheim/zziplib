@@ -64,7 +64,7 @@ def output(cmd, shell=True):
         logg.info(": %s", " ".join(["'%s'" % item for item in cmd]))
     run = subprocess.Popen(cmd, shell=shell, stdout=subprocess.PIPE)
     out, err = run.communicate()
-    return out
+    return decodes(out)
 def output2(cmd, shell=True):
     if isinstance(cmd, basestring):
         logg.info(": %s", cmd)
@@ -376,11 +376,31 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        cmd = "docker build . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        build = "build --build-arg=no_check=true"
+        cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
         sx____(cmd.format(**locals()))
+        cmd = "docker run -d --name {testname} {images}:{testname} sleep 60"
+        sh____(cmd.format(**locals()))
+        #:# container = self.ip_container(testname)
+        cmd = "docker exec {testname} ls -l /usr/local/bin"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} find /usr/local/include -type f"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
+        sh____(cmd.format(**locals()))
         #
+        cmd = "docker exec {testname} bash -c 'test ! -d /usr/local/include/SDL_rwops_zzip'"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} rpm -q --whatprovides /usr/lib64/pkgconfig/zlib.pc"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} pkg-config --libs zlib"
+        zlib = output(cmd.format(**locals()))
+        self.assertEqual(zlib.strip(), "-lz")
+        #
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -397,11 +417,31 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        cmd = "docker build . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        build = "build --build-arg=no_check=true"
+        cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
         sx____(cmd.format(**locals()))
+        cmd = "docker run -d --name {testname} {images}:{testname} sleep 60"
+        sh____(cmd.format(**locals()))
+        #:# container = self.ip_container(testname)
+        cmd = "docker exec {testname} ls -l /usr/local/bin"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} find /usr/local/include -type f"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
+        sh____(cmd.format(**locals()))
         #
+        cmd = "docker exec {testname} bash -c 'test ! -d /usr/local/include/SDL_rwops_zzip'"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} rpm -q --whatprovides /usr/lib64/pkgconfig/zlib.pc"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} pkg-config --libs zlib"
+        zlib = output(cmd.format(**locals()))
+        self.assertEqual(zlib.strip(), "-lz")
+        #
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -418,11 +458,31 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        cmd = "docker build . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        build = "build --build-arg=no_check=true"
+        cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
         sx____(cmd.format(**locals()))
+        cmd = "docker run -d --name {testname} {images}:{testname} sleep 60"
+        sh____(cmd.format(**locals()))
+        #:# container = self.ip_container(testname)
+        cmd = "docker exec {testname} ls -l /usr/local/bin"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} find /usr/local/include -type f"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
+        sh____(cmd.format(**locals()))
         #
+        cmd = "docker exec {testname} bash -c 'test ! -d /usr/local/include/SDL_rwops_zzip'"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} rpm -q --whatprovides /usr/lib64/pkgconfig/zlib.pc"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} pkg-config --libs zlib"
+        zlib = output(cmd.format(**locals()))
+        self.assertEqual(zlib.strip(), "-lz")
+        #
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -439,11 +499,33 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        cmd = "docker build . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        build = "build --build-arg=no_check=true"
+        cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
         sx____(cmd.format(**locals()))
+        cmd = "docker run -d --name {testname} {images}:{testname} sleep 600"
+        sh____(cmd.format(**locals()))
+        #:# container = self.ip_container(testname)
+        cmd = "docker exec {testname} ls -l /usr/local/bin"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} find /usr/local/include -type f"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} bash -c 'ls -l /usr/local/lib/libzz*'"
+        sh____(cmd.format(**locals()))
         #
+        cmd = "docker exec {testname} bash -c 'test ! -d /usr/local/include/SDL_rwops_zzip'"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} dpkg -S /usr/lib/x86_64-linux-gnu/pkgconfig/zlib.pc"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} pkg-config --libs zlib"
+        zlib = output(cmd.format(**locals()))
+        self.assertEqual(zlib.strip(), "-lz")
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
+        #
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -460,11 +542,26 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        cmd = "docker build . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        build = "build --build-arg=no_check=true"
+        cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
         sx____(cmd.format(**locals()))
+        cmd = "docker run -d --name {testname} {images}:{testname} sleep 60"
+        sh____(cmd.format(**locals()))
+        #:# container = self.ip_container(testname)
+        cmd = "docker exec {testname} ls -l /usr/local/bin"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} find /usr/local/include -type f"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
+        sh____(cmd.format(**locals()))
         #
+        cmd = "docker exec {testname} bash -c 'test -d /usr/local/include/SDL_rwops_zzip'"
+        sh____(cmd.format(**locals()))
+        #
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -481,7 +578,22 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        cmd = "docker build . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        build = "build --build-arg=no_check=true"
+        cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        sh____(cmd.format(**locals()))
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
+        cmd = "docker run -d --name {testname} {images}:{testname} sleep 60"
+        sh____(cmd.format(**locals()))
+        #:# container = self.ip_container(testname)
+        cmd = "docker exec {testname} ls -l /usr/local/bin"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} find /usr/local/include -type f"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
+        sh____(cmd.format(**locals()))
+        #
+        cmd = "docker exec {testname} bash -c 'test -d /usr/local/include/SDL_rwops_zzip'"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
         sx____(cmd.format(**locals()))
@@ -502,7 +614,22 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        cmd = "docker build . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        build = "build --build-arg=no_check=true"
+        cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        sh____(cmd.format(**locals()))
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
+        cmd = "docker run -d --name {testname} {images}:{testname} sleep 60"
+        sh____(cmd.format(**locals()))
+        #:# container = self.ip_container(testname)
+        cmd = "docker exec {testname} ls -l /usr/local/bin"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} find /usr/local/include -type f"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
+        sh____(cmd.format(**locals()))
+        #
+        cmd = "docker exec {testname} bash -c 'test -d /usr/local/include/SDL_rwops_zzip'"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
         sx____(cmd.format(**locals()))
