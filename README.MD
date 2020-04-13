@@ -12,6 +12,38 @@ platforms. Originally maintained on Sourceforge it moved to
 GitHub in 2017 for easier collobaration with other projects.
 
 * for more details, see http://zziplib.sourceforge.net/
-* also check the original [README](README) file
+* also check out the original [README](README) file
 
 ... [(master)](https://github.com/gdraheim/zziplib/tree/master): [![Build Status](https://dev.azure.com/gdraheim/gdraheim/_apis/build/status/gdraheim.zziplib%20(1)?branchName=master)](https://dev.azure.com/gdraheim/gdraheim/_build/latest?definitionId=4&branchName=master)
+
+[copying](docs/copying.htm)
+[developer](docs/developer.htm)
+[functions](docs/functions.htm)
+[php](docs/zip-php.htm)
+[referitals](docs/referentials.htm)
+[future](docs/future.htm)
+[notes](docs/notes.htm)
+[64on32](docs/64on32.htm)
+[download](docs/download.htm)
+[history](docs/history.htm)
+
+[zzip:](docs/zzip-index.htm) 
+[basics](docs/zzip-basics.htm)
+[api](docs/zzip-api.htm)
+[crypt](docs/zzip-crypt.htm)
+[cryptoid](docs/zzip-cryptoid.htm)
+[extio](docs/zzip-extio.htm)
+[extras](docs/zzip-extras.htm)
+[file](docs/zzip-file.htm)
+[parse](docs/zzip-parse.htm)
+[sdl-rwops](docs/zzip-rwops.htm)
+[xor](docs/zzip-xor.htm)
+[zip](docs/zzip-zip.htm)
+[sfx-make](docs/sfx-make.htm)
+
+[zziplib](docs/zziplib.htm)
+[mmapped](docs/mmapped.htm)
+[fseeko](docs/fseeko.htm)
+[download](docs/download.htm)
+[faq](docs/faq.htm)
+(outdated in the source tree)
