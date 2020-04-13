@@ -146,13 +146,8 @@ def htm2dbk_files(args):
             doc.filename = filename
             doc.add(f.read())
             f.close()
-<<<<<<< HEAD
-        except IOError as e:
-            print >> sys.stderr, "can not open "+filename
-=======
         except IOError:
             print("can not open "+filename, file=sys.stderr)
->>>>>>> develop
     return doc.value()
 
 def html2docbook(text):
