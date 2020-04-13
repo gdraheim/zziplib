@@ -29,8 +29,8 @@ _python = "/usr/bin/python"
 SAVETO = "localhost:5000/zziplib"
 IMAGES = "localhost:5000/zziplib/image"
 CENTOS = "centos:7.7.1908"
-UBUNTU = "ubuntu:14.04"
-OPENSUSE = "opensuse/leap:15.0"
+UBUNTU = "ubuntu:16.04"
+OPENSUSE = "opensuse/leap:15.1"
 
 DOCKER_SOCKET = "/var/run/docker.sock"
 
@@ -245,6 +245,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         rmi = "localhost:5000/mirror-packages"
         rep = "ubuntu-repo"
         ver = ver or UBUNTU.split(":")[1]
+        universe = "ubuntu-repo/universe"
+        ok = self.with_local(rmi, universe, ver, "archive.ubuntu.com", "security.ubuntu.com")
+        if ok: return ok
         return self.with_local(rmi, rep, ver, "archive.ubuntu.com", "security.ubuntu.com")
     def with_local_centos_mirror(self, ver = None):
         """ detects a local centos mirror or starts a local
@@ -265,7 +268,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         return self.with_local(rmi, rep, ver, "download.opensuse.org")
     def with_local(self, rmi, rep, ver, *hosts):
         image = "{rmi}/{rep}:{ver}".format(**locals())
-        container = "{rep}-{ver}".format(**locals())
+        container = "{rep}-{ver}".format(**locals()).replace("/","-")
         out, err, ok = output3("docker inspect {image}".format(**locals()))
         image_found = json.loads(out)
         if not image_found:
@@ -521,8 +524,6 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname} pkg-config --libs zlib"
         zlib = output(cmd.format(**locals()))
         self.assertEqual(zlib.strip(), "-lz")
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
         #
         cmd = "docker rm --force {testname}"
         sx____(cmd.format(**locals()))
@@ -595,9 +596,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         #
         cmd = "docker exec {testname} bash -c 'test -d /usr/local/include/SDL_rwops_zzip'"
         sh____(cmd.format(**locals()))
+        #
         cmd = "docker rm --force {testname}"
         sx____(cmd.format(**locals()))
-        #
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -631,9 +632,45 @@ class ZZiplibBuildTest(unittest.TestCase):
         #
         cmd = "docker exec {testname} bash -c 'test -d /usr/local/include/SDL_rwops_zzip'"
         sh____(cmd.format(**locals()))
+        #
         cmd = "docker rm --force {testname}"
         sx____(cmd.format(**locals()))
+        cmd = "docker rmi {saveto}/{savename}:latest"
+        sx____(cmd.format(**locals()))
+        cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
+        sh____(cmd.format(**locals()))
+        cmd = "docker rmi {images}:{testname}"
+        sx____(cmd.format(**locals()))
+        self.rm_testdir()
+    def test_322_ubuntu18_build_dockerfile(self):
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        testname=self.testname()
+        testdir = self.testdir()
+        dockerfile="testbuilds/ubuntu18-sdl2.dockerfile"
+        addhosts = self.local_addhosts(dockerfile)
+        savename = docname(dockerfile)
+        saveto = SAVETO
+        images = IMAGES
+        build = "build --build-arg=no_check=true"
+        cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        sh____(cmd.format(**locals()))
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
+        cmd = "docker run -d --name {testname} {images}:{testname} sleep 600"
+        sh____(cmd.format(**locals()))
+        #:# container = self.ip_container(testname)
+        cmd = "docker exec {testname} ls -l /usr/local/bin"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} find /usr/local/include -type f"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} bash -c 'ls -l /usr/local/lib/libzz*'"
+        sh____(cmd.format(**locals()))
         #
+        cmd = "docker exec {testname} bash -c 'test -d /usr/local/include/SDL_rwops_zzip'"
+        sh____(cmd.format(**locals()))
+        #
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
