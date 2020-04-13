@@ -1,4 +1,4 @@
-... please switch to 'cmake' base builds.
+... please switch to 'cmake' based builds.
 
 PROJECT
   The zziplib provides read access to zipped files in a zip-archive,
