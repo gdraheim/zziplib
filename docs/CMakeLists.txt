@@ -124,7 +124,7 @@ add_custom_target(htmpages DEPENDS htmpages.tar)
 add_custom_target(doc ALL DEPENDS manpages)
 
 # install ########################################################
-set(mandir ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_MANDIR})
+set(mandir ${CMAKE_INSTALL_FULL_MANDIR})
 install(CODE "execute_process(COMMAND ${BASH} -c \"set -e
    mkdir -vp $DESTDIR/${mandir} || ls -ld $DESTDIR/${mandir}
    cd $DESTDIR/${mandir} && tar xf ${CMAKE_CURRENT_BINARY_DIR}/manpages.tar
