@@ -13,7 +13,7 @@ option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
 # pkg_search_module ( ZZIP zzip )
-find_package(PythonInterp REQUIRED)
+find_package(PythonInterp 3.5 REQUIRED)
 find_package(UnixCommands REQUIRED) # bash cp mv rm gzip tar
 find_program(XMLTO xmlto)
 
