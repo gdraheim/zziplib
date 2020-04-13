@@ -1,7 +1,5 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 # -*- coding: UTF-8 -*-
-
-from __future__ import print_function
 
 from zzipdoc.match import Match
 

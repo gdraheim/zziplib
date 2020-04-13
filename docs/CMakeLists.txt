@@ -13,7 +13,7 @@ option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
 # pkg_search_module ( ZZIP zzip )
-find_package(Python REQUIRED)
+find_package(PythonInterp REQUIRED)
 find_package(UnixCommands REQUIRED) # bash cp mv rm gzip tar
 find_program(XMLTO xmlto)
 
@@ -23,7 +23,7 @@ set(README ${CMAKE_SOURCE_DIR}/README)
 set(topdir ${CMAKE_SOURCE_DIR})
 set(srcdir ${CMAKE_CURRENT_SOURCE_DIR})
 set(outdir ${CMAKE_CURRENT_BINARY_DIR})
-set(PY ${Python_EXECUTABLE})
+set(PY ${PYTHON_EXECUTABLE})
 
 # targets ########################################################
 set(doc_FILES README.MSVC6 README.SDL COPYING.MPL COPYING.LIB COPYING.ZLIB

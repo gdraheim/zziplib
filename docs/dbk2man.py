@@ -1,5 +1,4 @@
-#! /usr/bin/python
-from __future__ import print_function
+#! /usr/bin/python3
 
 """ Converts an xml-file with docbook elements into troff manual pages.
     The conversion uses etree expecting <refentry> elements in the input.
