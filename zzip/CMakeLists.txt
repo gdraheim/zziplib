@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 3.1)
 project(zziplib VERSION "0.13.69" LANGUAGES C)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMakeScripts")
+
 # generate _config.h
 include ( CheckIncludeFiles )
 include ( CheckFunctionExists )
@@ -8,6 +10,7 @@ include ( CheckSymbolExists )
 include ( CheckTypeSize )
 include ( TestBigEndian )
 include ( GNUInstallDirs )
+include ( JoinPaths )
 
 # options ###########################################################
 option(BUILD_SHARED_LIBS "Build a shared library" ON)
@@ -212,13 +215,15 @@ add_custom_target(compat ALL DEPENDS compat/zzip.h)
 endif()
 
 if(UNIX)
+join_paths(libdir "\${prefix}" "${CMAKE_INSTALL_LIBDIR}")
+join_paths(includedir "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
 add_custom_command(OUTPUT zziplib.pc
    COMMAND ${BASH} -c "echo 'prefix=${CMAKE_INSTALL_PREFIX}' > zziplib.pc"
-   COMMAND ${BASH} -c "echo 'libdir=\${prefix}/${CMAKE_INSTALL_LIBDIR}' >> zziplib.pc"
-   COMMAND ${BASH} -c "echo 'includedir=\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}' >> zziplib.pc"
+   COMMAND ${BASH} -c "echo 'libdir=${libdir}' >> zziplib.pc"
+   COMMAND ${BASH} -c "echo 'includedir=${includedir}' >> zziplib.pc"
    COMMAND ${BASH} -c "echo '' >> zziplib.pc"
    COMMAND ${BASH} -c "echo 'Name: ${PROJECT_NAME}' >> zziplib.pc"
-   COMMAND ${BASH} -c "echo 'Description: ZZipLib - libZ-based ZIP-access Library with an Easy-to-Use API' >> zziplib.c"
+   COMMAND ${BASH} -c "echo 'Description: ZZipLib - libZ-based ZIP-access Library with an Easy-to-Use API' >> zziplib.pc"
    COMMAND ${BASH} -c "echo 'Version: ${PROJECT_VERSION}' >> zziplib.pc"
    COMMAND ${BASH} -c "echo 'Requires: zlib' >> zziplib.pc"
    COMMAND ${BASH} -c "echo 'Libs: -L\${libdir} -lzzip' >> zziplib.pc"
@@ -263,7 +268,7 @@ if(ZZIPCOMPAT)
   if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
     set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
     set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
-    set(libdir ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+    set(libdir ${CMAKE_INSTALL_FULL_LIBDIR})
     get_target_property(libname libzzip OUTPUT_NAME)
     get_target_property(librelease libzzip RELEASE_POSTFIX)
     get_target_property(libversion libzzip VERSION)
@@ -284,7 +289,7 @@ if(ZZIPLIBTOOL)
   if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
     set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
     set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
-    set(libdir ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+    set(libdir ${CMAKE_INSTALL_FULL_LIBDIR})
     get_target_property(libname libzzip OUTPUT_NAME)
     get_target_property(librelease libzzip RELEASE_POSTFIX)
     get_target_property(libversion libzzip VERSION)
