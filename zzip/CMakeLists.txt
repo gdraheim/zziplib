@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.1)
-project(zziplib VERSION "0.13.69" LANGUAGES C)
+project(zziplib VERSION "0.13.70" LANGUAGES C)
 
 # generate _config.h
 include ( CheckIncludeFiles )

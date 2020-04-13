@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.1)
-project(zzipwrap VERSION "0.13.69" LANGUAGES C)
+project(zzipwrap VERSION "0.13.70" LANGUAGES C)
 
 include ( CheckIncludeFiles )
 include ( GNUInstallDirs )
