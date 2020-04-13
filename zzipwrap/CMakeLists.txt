@@ -58,7 +58,7 @@ add_custom_command(OUTPUT zzipwrap.pc
    COMMAND ${BASH} -c "echo '' >> zzipwrap.pc"
    COMMAND ${BASH} -c "echo 'Name: ${PROJECT_NAME}' >> zzipwrap.pc"
    COMMAND ${BASH} -c "echo 'Description: Callback Wrappers for ZZipLib' >> zzipwrap.pc"
-   COMMAND ${BASH} -c "echo 'Version: ${VERSION}' >> zzipwrap.pc"
+   COMMAND ${BASH} -c "echo 'Version: ${PROJECT_VERSION}' >> zzipwrap.pc"
    COMMAND ${BASH} -c "echo 'Requires: zziplib' >> zzipwrap.pc"
    COMMAND ${BASH} -c "echo 'Libs: -L\${libdir} -lzzipwrap' >> zzipwrap.pc"
    COMMAND ${BASH} -c "echo 'Cflags: -I\${includedir}' >> zzipwrap.pc"
