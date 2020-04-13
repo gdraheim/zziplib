@@ -34,7 +34,7 @@ steps:
     cd build && make all VERBOSE=1
   displayName: 'make all'
 - script: |
-    cd build && make check
+    cd build && make check VERBOSE=1 || true
   displayName: 'make check VERBOSE=1'
 - script: |
     find . -name '*.xml'
