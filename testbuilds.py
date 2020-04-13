@@ -371,8 +371,28 @@ class ZZiplibBuildTest(unittest.TestCase):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         testname=self.testname()
         testdir = self.testdir()
-        name="opensuse15-zziplib"
         dockerfile="testbuilds/opensuse15-build.dockerfile"
+        addhosts = self.local_addhosts(dockerfile)
+        savename = docname(dockerfile)
+        saveto = SAVETO
+        images = IMAGES
+        cmd = "docker build . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        sh____(cmd.format(**locals()))
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
+        #
+        cmd = "docker rmi {saveto}/{savename}:latest"
+        sx____(cmd.format(**locals()))
+        cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
+        sh____(cmd.format(**locals()))
+        cmd = "docker rmi {images}:{testname}"
+        sx____(cmd.format(**locals()))
+        self.rm_testdir()
+    def test_211_centos7_build_dockerfile(self):
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        testname=self.testname()
+        testdir = self.testdir()
+        dockerfile="testbuilds/centos7-build.dockerfile"
         addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
         saveto = SAVETO
