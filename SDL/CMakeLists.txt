@@ -37,5 +37,7 @@ target_include_directories(zzcatsdl PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_BINAR
 endif()
 
 # install ########################################################
+if(SDL_FOUND)
 install(FILES ${ZZIPSDL_SRCS} ${ZZIPSDL_HDRS}
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/SDL_rwops_zzip)
+endif()
