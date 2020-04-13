@@ -13801,7 +13801,7 @@ fi
 done
 test -n "$PERL" || PERL="echo no perl found for"
 
-for ac_prog in python
+for ac_prog in python3
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -15349,7 +15349,7 @@ if test "$enable_sdl" = "no" ; then
    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no, disabled" >&5
 $as_echo "no, disabled" >&6; }
 else
-   enable_sdl=`pkg-config --modversion sdl 2>/dev/null`
+   enable_sdl=`$PKG_CONFIG --modversion sdl 2>/dev/null`
    if test -z "$enable_sdl"; then
       enable_sdl=`sdl-config --version 2>/dev/null`
       SDL_GENERATE="sdl-uninstalled.pc"
