@@ -683,11 +683,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_322_ubuntu18_build_dockerfile(self):
+    def test_321_ubuntu18_sdl2_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         testname=self.testname()
         testdir = self.testdir()
-        dockerfile="testbuilds/ubuntu18-sdl2.dockerfile"
+        dockerfile="testbuilds/ubuntu16-sdl2.dockerfile"
         addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
         saveto = SAVETO
