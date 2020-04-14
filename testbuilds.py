@@ -936,6 +936,47 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
+    def test_911_centos7_automake_dockerfile(self):
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        testname1=self.testname() + "_1"
+        testname2=self.testname() + "_2"
+        testdir = self.testdir()
+        dockerfile1="testbuilds/centos7-automake.dockerfile"
+        dockerfile2="testbuilds/centos7-build.dockerfile"
+        addhosts = self.local_addhosts(dockerfile1)
+        savename1 = docname(dockerfile1)
+        savename2 = docname(dockerfile2)
+        saveto = SAVETO
+        images = IMAGES
+        cmd = "docker rm --force {testname1}"
+        sx____(cmd.format(**locals()))
+        cmd = "docker rm --force {testname2}"
+        sx____(cmd.format(**locals()))
+        cmd = "docker run -d --name {testname1} {addhosts} {saveto}/{savename1} sleep 600"
+        sh____(cmd.format(**locals()))
+        cmd = "docker run -d --name {testname2} {addhosts} {saveto}/{savename2} sleep 600"
+        #
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname2} bash -c 'cd /usr/local && tar czvf /local.tgz .'"
+        sh____(cmd.format(**locals()))
+        cmd = "docker cp {testname2}:/local.tgz tmp.local.tgz"
+        sh____(cmd.format(**locals()))
+        cmd = "docker cp tmp.local.tgz {testname1}:/local.tgz"
+        sh____(cmd.format(**locals()))
+        cmd = "rm tmp.local.tgz"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname1} mkdir -p /new/local"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname1} bash -c 'cd /new/local && tar xzvf /local.tgz'"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname1} diff -urw --no-dereference /usr/local /new/local"
+        sh____(cmd.format(**locals()))
+        #
+        cmd = "docker rm --force {testname1}"
+        sx____(cmd.format(**locals()))
+        cmd = "docker rm --force {testname2}"
+        sx____(cmd.format(**locals()))
+        self.rm_testdir()
 
 
 if __name__ == "__main__":
