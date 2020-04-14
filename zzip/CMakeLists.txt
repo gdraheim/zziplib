@@ -276,6 +276,8 @@ if(ZZIPCOMPAT)
         cd $DESTDIR/${libdir}
         [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
         echo -n .. Installing: `pwd`
+        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}
+        echo -n .. Installing: `pwd`
         ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.10
         echo -n .. Installing: `pwd`
         ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.11
@@ -298,6 +300,12 @@ if(ZZIPLIBTOOL)
         [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
         echo -n .. Installing: `pwd`
         ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
+        echo -n .. Installing: `pwd`
+        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.10
+        echo -n .. Installing: `pwd`
+        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.11
+        echo -n .. Installing: `pwd`
+        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
         \")")
     get_target_property(libname libzzipfseeko OUTPUT_NAME)
     get_target_property(librelease libzzipfseeko RELEASE_POSTFIX)
@@ -307,6 +315,12 @@ if(ZZIPLIBTOOL)
         [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
         echo -n .. Installing: `pwd`
         ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
+        echo -n .. Installing: `pwd`
+        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.10
+        echo -n .. Installing: `pwd`
+        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.11
+        echo -n .. Installing: `pwd`
+        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
         \")")
     get_target_property(libname libzzipmmapped OUTPUT_NAME)
     get_target_property(librelease libzzipmmapped RELEASE_POSTFIX)
@@ -316,6 +330,12 @@ if(ZZIPLIBTOOL)
         [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
         echo -n .. Installing: `pwd`
         ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
+        echo -n .. Installing: `pwd`
+        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.10
+        echo -n .. Installing: `pwd`
+        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.11
+        echo -n .. Installing: `pwd`
+        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
         \")")
   endif()
 endif()
