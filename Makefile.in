@@ -391,6 +391,7 @@ WANT_AUTOMAKE = 1.7
 WANT_AUTOCONF = 2.57
 DIST_SUBDIRS = zzip zzipwrap bins test docs  SDL
 SUBDIRS = zzip zzipwrap bins test docs @SDL@
+DISTCLEANFILES = _configs.sed
 OSC_ROOT = /my/own/osc
 OSC_SRCDIR = $(OSC_ROOT)
 OSC_PROJECT = home:guidod:zziplib-13
@@ -821,6 +822,7 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-test -z "$(DISTCLEANFILES)" || rm -f $(DISTCLEANFILES)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
