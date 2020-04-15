@@ -1008,7 +1008,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_911_centos7_automake_dockerfile(self):
+    def test_9211_centos7_automake_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         testname1=self.testname() + "_1"
         testname2=self.testname() + "_2"
@@ -1068,7 +1068,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_912_centos7_automake_dockerfile(self):
+    def test_9212_centos7_automake_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         testname1=self.testname() + "_1"
         testname2=self.testname() + "_2"
@@ -1128,7 +1128,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_921_centos7_automake_sdl2_dockerfile(self):
+    def test_9311_centos7_automake_sdl2_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         testname1=self.testname() + "_1"
         testname2=self.testname() + "_2"
@@ -1188,7 +1188,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_922_centos7_automake_sdl2_dockerfile(self):
+    def test_9312_centos7_automake_sdl2_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         testname1=self.testname() + "_1"
         testname2=self.testname() + "_2"
