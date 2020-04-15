@@ -1,4 +1,10 @@
-2020-04-18  gdraheim@github
+2020-04-14  gdraheim@github
+    * The testbuilds allow to compile and test for different os via docker
+    * The testbuilds allow to compare new cmake to automake install results
+    * Found fixes to bring base, sdl, manpages and site docs to same level
+    * release 0.13.71
+
+2020-04-14  gdraheim@github
     * there have been tons of bugfixes over the last two years ...
     * Thanks go to Patrick Steinhardt (then at Aservo) for python3 updates
     * Thanks go to Josef Moellers (working at SUSE Labs) for many CVE fixes
