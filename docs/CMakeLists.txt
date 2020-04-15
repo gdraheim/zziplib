@@ -62,10 +62,11 @@ add_custom_command(OUTPUT changes.htm
     DEPENDS ${topdir}/ChangeLog
     VERBATIM)
 
-set(mksite_sh_args --VERSION=${VERSION} --xml --src-dir=${srcdir} --print)
+set(mksite_sh_args --VERSION=${PROJECT_VERSION} --xml --src-dir=${srcdir} --print)
 add_custom_command(OUTPUT site.html
     COMMAND ${CP} ${srcdir}/body.htm site.htm
     COMMAND ${BASH} ${srcdir}/mksite.sh ${mksite_sh_args} site.htm
+    COMMAND ${BASH} -c "for i in *.html; do sed -i -e s:${srcdir}:../../docs: $i; done; true"
     DEPENDS ${htm_FILES} changes.htm
     VERBATIM)
 add_custom_target(site DEPENDS site.html)
