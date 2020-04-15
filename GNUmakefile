@@ -34,3 +34,12 @@ boottrap:
 test_%: ; python3 testbuilds.py $@ -vv
 tests:  ; python3 testbuilds.py -vv
 
+version:
+	oldv=`sed -e '/zziplib.VERSION/!d' -e 's:.*zziplib.VERSION."::' -e 's:".*::' CMakeLists.txt` \
+	; oldr=`echo $$oldv | sed -e 's:.*[.]::'` ; newr=`expr $$oldr + 1` \
+	; newv=`echo $$oldv | sed -e "s:[.]$$oldr\$$:.$$newr:"` \
+	; echo "$$oldv -> $$newv" \
+	; sed -i -e "s:$$oldv:$$newv:" zziplib.spec testbuilds.py \
+	; sed -i -e "s:$$oldv:$$newv:" */CMakeLists.txt \
+	; sed -i -e "s:$$oldv:$$newv:" CMakeLists.txt \
+	; git diff -U0
