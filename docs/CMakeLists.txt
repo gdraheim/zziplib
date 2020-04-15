@@ -89,22 +89,26 @@ add_custom_command(OUTPUT zzip.pdf
 add_custom_target(pdf DEPENDS zzip.pdf)
 endif()
 
-set(docinfo --package="zziplib" --version=${PROJECT_VERSION})
+set(docinfo --package=zziplib --version=${PROJECT_VERSION})
+file(GLOB zzip_sources "${topdir}/zzip/*.c")
 add_custom_command(OUTPUT zziplib.xml
-    COMMAND ${PY} ${srcdir}/makedocs.py ${topdir}/zzip/*.c ${docinfo} --onlymainheader=zzip/lib.h --output=zziplib
+    COMMAND ${PY} ${srcdir}/makedocs.py ${zzip_sources} ${docinfo} --onlymainheader=zzip/lib.h --output=zziplib
     COMMAND ${MV} zziplib.docbook zziplib.xml
     DEPENDS libzzip
-    BYPRODUCTS zziplib.html)
+    BYPRODUCTS zziplib.html
+    VERBATIM)
 add_custom_command(OUTPUT zzipmmapped.xml
-    COMMAND ${PY} ${srcdir}/makedocs.py ${topdir}/zzip/*.c ${docinfo} --onlymainheader=zzip/mmapped.h --output=zzipmmapped
+    COMMAND ${PY} ${srcdir}/makedocs.py ${zzip_sources} ${docinfo} --onlymainheader=zzip/mmapped.h --output=zzipmmapped
     COMMAND ${MV} zzipmmapped.docbook zzipmmapped.xml
     DEPENDS libzzipmmapped
-    BYPRODUCTS zzipmmapped.html)
+    BYPRODUCTS zzipmmapped.html
+    VERBATIM)
 add_custom_command(OUTPUT zzipfseeko.xml
-    COMMAND ${PY} ${srcdir}/makedocs.py ${topdir}/zzip/*.c ${docinfo} --onlymainheader=zzip/fseeko.h --output=zzipfseeko
+    COMMAND ${PY} ${srcdir}/makedocs.py ${zzip_sources} ${docinfo} --onlymainheader=zzip/fseeko.h --output=zzipfseeko
     COMMAND ${MV} zzipfseeko.docbook zzipfseeko.xml
     DEPENDS libzzipfseeko
-    BYPRODUCTS zzipfseeko.html)
+    BYPRODUCTS zzipfseeko.html
+    VERBATIM)
 add_custom_command(OUTPUT manpages.tar
     COMMAND ${BASH} -c "test -d man3 && rm -rf man3; mkdir man3"
     COMMAND ${PY} ${srcdir}/dbk2man.py -o man3 man zziplib.xml
