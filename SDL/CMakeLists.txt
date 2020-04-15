@@ -51,7 +51,7 @@ join_paths(libdir "\${prefix}" "${CMAKE_INSTALL_LIBDIR}")
 join_paths(includedir "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
 add_custom_command(OUTPUT SDL_rwops_zzip.pc
    COMMAND ${BASH} -c "echo 'prefix=${CMAKE_INSTALL_PREFIX}' > SDL_rwops_zzip.pc"
-   COMMAND ${BASH} -c "echo 'zzipsdldir=$prefix/${zzipsdldir}' >> SDL_rwops_zzip.pc"
+   COMMAND ${BASH} -c "echo 'zzipsdldir=\${prefix}/${zzipsdldir}' >> SDL_rwops_zzip.pc"
    COMMAND ${BASH} -c "echo '' >> SDL_rwops_zzip.pc"
    COMMAND ${BASH} -c "echo 'Name: SDL_rwops_zzip' >> SDL_rwops_zzip.pc"
    COMMAND ${BASH} -c "echo 'Version: ${PROJECT_VERSION}' >> SDL_rwops_zzip.pc"
@@ -60,5 +60,8 @@ add_custom_command(OUTPUT SDL_rwops_zzip.pc
    COMMAND ${BASH} -c "echo 'Cflags: -I\${zzipsdldir}' >> SDL_rwops_zzip.pc"
    VERBATIM)
 add_custom_target(pkgconfig-sdl ALL DEPENDS SDL_rwops_zzip.pc)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SDL_rwops_zzip.pc
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig" )
 endif()
 endif()
