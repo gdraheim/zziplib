@@ -370,7 +370,7 @@ class ZZiplibBuildTest(unittest.TestCase):
     def test_100(self):
         logg.info("\n  CENTOS = '%s'", CENTOS)
         self.with_local_centos_mirror()
-    def test_111_centos7_automake_dockerfile(self):
+    def test_201_centos7_automake_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         testname=self.testname()
         testdir = self.testdir()
@@ -411,52 +411,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_112_centos8_automake_dockerfile(self):
+    def test_202_centos8_automake_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/centos8-automake.dockerfile"
-        addhosts = self.local_addhosts(dockerfile)
-        savename = docname(dockerfile)
-        saveto = SAVETO
-        images = IMAGES
-        build = "build --build-arg=no_check=true"
-        cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
-        sh____(cmd.format(**locals()))
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
-        cmd = "docker run -d --name {testname} {images}:{testname} sleep 60"
-        sh____(cmd.format(**locals()))
-        #:# container = self.ip_container(testname)
-        cmd = "docker exec {testname} ls -l /usr/local/bin"
-        sh____(cmd.format(**locals()))
-        cmd = "docker exec {testname} find /usr/local/include -type f"
-        sh____(cmd.format(**locals()))
-        cmd = "docker exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
-        sh____(cmd.format(**locals()))
-        #
-        cmd = "docker exec {testname} bash -c 'test ! -d /usr/local/include/SDL_rwops_zzip'"
-        sh____(cmd.format(**locals()))
-        cmd = "docker exec {testname} rpm -q --whatprovides /usr/lib64/pkgconfig/zlib.pc"
-        sh____(cmd.format(**locals()))
-        cmd = "docker exec {testname} pkg-config --libs zlib"
-        zlib = output(cmd.format(**locals()))
-        self.assertEqual(zlib.strip(), "-lz")
-        #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
-        cmd = "docker rmi {saveto}/{savename}:latest"
-        sx____(cmd.format(**locals()))
-        cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
-        sh____(cmd.format(**locals()))
-        cmd = "docker rmi {images}:{testname}"
-        sx____(cmd.format(**locals()))
-        self.rm_testdir()
-    def test_201_opensuse15_build_dockerfile(self):
-        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
-        testname=self.testname()
-        testdir = self.testdir()
-        dockerfile="testbuilds/opensuse15-build.dockerfile"
         addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
         saveto = SAVETO
@@ -698,6 +657,47 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
+    def test_231_opensuse15_build_dockerfile(self):
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        testname=self.testname()
+        testdir = self.testdir()
+        dockerfile="testbuilds/opensuse15-build.dockerfile"
+        addhosts = self.local_addhosts(dockerfile)
+        savename = docname(dockerfile)
+        saveto = SAVETO
+        images = IMAGES
+        build = "build --build-arg=no_check=true"
+        cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        sh____(cmd.format(**locals()))
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
+        cmd = "docker run -d --name {testname} {images}:{testname} sleep 60"
+        sh____(cmd.format(**locals()))
+        #:# container = self.ip_container(testname)
+        cmd = "docker exec {testname} ls -l /usr/local/bin"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} find /usr/local/include -type f"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
+        sh____(cmd.format(**locals()))
+        #
+        cmd = "docker exec {testname} bash -c 'test ! -d /usr/local/include/SDL_rwops_zzip'"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} rpm -q --whatprovides /usr/lib64/pkgconfig/zlib.pc"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} pkg-config --libs zlib"
+        zlib = output(cmd.format(**locals()))
+        self.assertEqual(zlib.strip(), "-lz")
+        #
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
+        cmd = "docker rmi {saveto}/{savename}:latest"
+        sx____(cmd.format(**locals()))
+        cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
+        sh____(cmd.format(**locals()))
+        cmd = "docker rmi {images}:{testname}"
+        sx____(cmd.format(**locals()))
+        self.rm_testdir()
     @unittest.expectedFailure
     def test_251_windows_static_x64_dockerfile(self):
         logg.warning("     windows-static-x64 compiles fine but segfaults on linking an .exe")
@@ -751,42 +751,6 @@ class ZZiplibBuildTest(unittest.TestCase):
         #:# container = self.ip_container(testname)
         #
         cmd = "docker exec {testname} ls -l /usr/local/bin"
-        sh____(cmd.format(**locals()))
-        #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
-        cmd = "docker rmi {saveto}/{savename}:latest"
-        sx____(cmd.format(**locals()))
-        cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
-        sh____(cmd.format(**locals()))
-        cmd = "docker rmi {images}:{testname}"
-        sx____(cmd.format(**locals()))
-        self.rm_testdir()
-    def test_301_opensuse15_sdl2_dockerfile(self):
-        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
-        testname=self.testname()
-        testdir = self.testdir()
-        dockerfile="testbuilds/opensuse15-sdl2.dockerfile"
-        addhosts = self.local_addhosts(dockerfile)
-        savename = docname(dockerfile)
-        saveto = SAVETO
-        images = IMAGES
-        build = "build --build-arg=no_check=true"
-        cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
-        sh____(cmd.format(**locals()))
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
-        cmd = "docker run -d --name {testname} {images}:{testname} sleep 60"
-        sh____(cmd.format(**locals()))
-        #:# container = self.ip_container(testname)
-        cmd = "docker exec {testname} ls -l /usr/local/bin"
-        sh____(cmd.format(**locals()))
-        cmd = "docker exec {testname} find /usr/local/include -type f"
-        sh____(cmd.format(**locals()))
-        cmd = "docker exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
-        sh____(cmd.format(**locals()))
-        #
-        cmd = "docker exec {testname} bash -c 'test -d /usr/local/include/SDL_rwops_zzip'"
         sh____(cmd.format(**locals()))
         #
         cmd = "docker rm --force {testname}"
@@ -892,6 +856,42 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname} find /usr/local/include -type f"
         sh____(cmd.format(**locals()))
         cmd = "docker exec {testname} bash -c 'ls -l /usr/local/lib/libzz*'"
+        sh____(cmd.format(**locals()))
+        #
+        cmd = "docker exec {testname} bash -c 'test -d /usr/local/include/SDL_rwops_zzip'"
+        sh____(cmd.format(**locals()))
+        #
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
+        cmd = "docker rmi {saveto}/{savename}:latest"
+        sx____(cmd.format(**locals()))
+        cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
+        sh____(cmd.format(**locals()))
+        cmd = "docker rmi {images}:{testname}"
+        sx____(cmd.format(**locals()))
+        self.rm_testdir()
+    def test_331_opensuse15_sdl2_dockerfile(self):
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        testname=self.testname()
+        testdir = self.testdir()
+        dockerfile="testbuilds/opensuse15-sdl2.dockerfile"
+        addhosts = self.local_addhosts(dockerfile)
+        savename = docname(dockerfile)
+        saveto = SAVETO
+        images = IMAGES
+        build = "build --build-arg=no_check=true"
+        cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        sh____(cmd.format(**locals()))
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
+        cmd = "docker run -d --name {testname} {images}:{testname} sleep 60"
+        sh____(cmd.format(**locals()))
+        #:# container = self.ip_container(testname)
+        cmd = "docker exec {testname} ls -l /usr/local/bin"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} find /usr/local/include -type f"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
         sh____(cmd.format(**locals()))
         #
         cmd = "docker exec {testname} bash -c 'test -d /usr/local/include/SDL_rwops_zzip'"
