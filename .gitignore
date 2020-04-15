@@ -4,6 +4,7 @@ build
 build1
 build2
 site.print.htm
+changes.htm
 *-linux-*
 *.pyc
 *.tmp
