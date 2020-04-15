@@ -221,6 +221,8 @@ add_custom_command(OUTPUT zziplib.pc
    COMMAND ${BASH} -c "echo 'prefix=${CMAKE_INSTALL_PREFIX}' > zziplib.pc"
    COMMAND ${BASH} -c "echo 'libdir=${libdir}' >> zziplib.pc"
    COMMAND ${BASH} -c "echo 'includedir=${includedir}' >> zziplib.pc"
+   COMMAND ${BASH} -c "echo 'package=zziplib' >> zziplib.pc"
+   COMMAND ${BASH} -c "echo 'suffix=${CMAKE_EXECUTABLE_SUFFIX}' >> zziplib.pc"
    COMMAND ${BASH} -c "echo '' >> zziplib.pc"
    COMMAND ${BASH} -c "echo 'Name: ${PROJECT_NAME}' >> zziplib.pc"
    COMMAND ${BASH} -c "echo 'Description: ZZipLib - libZ-based ZIP-access Library with an Easy-to-Use API' >> zziplib.pc"
