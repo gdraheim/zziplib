@@ -1568,6 +1568,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.assertFalse(greps(out, "---"))
         self.assertFalse(greps(out, "Only"))
         #
+        cmd = "docker exec {testname1} diff -urw --no-dereference /usr/local /new/local"
+        sx____(cmd.format(**locals()))
+        #
         cmd = "docker rm --force {testname1}"
         sx____(cmd.format(**locals()))
         cmd = "docker rm --force {testname2}"
