@@ -3,6 +3,14 @@ from __future__ import print_function
 from zzipdoc.options import *
 from zzipdoc.match import Match
 
+def short(filename):
+    if filename.startswith("../"):
+        return filename[3:]
+    if filename.startswith(os.sep):
+        parts = ["",""] + filename.split(os.sep)
+        return os.path.join(parts[-2], parts[-1])
+    return filename
+
 class FunctionListHtmlPage:
     """ The main part here is to create a TOC (table of contents) at the
     start of the page - linking down to the descriptions of the functions.
@@ -50,7 +58,7 @@ class FunctionListHtmlPage:
         try:
             extraline = ""
             title = entry.get_title()
-            filename = entry.get_filename().replace("../","")
+            filename = short(entry.get_filename())
             if title:
                 subtitle = '&nbsp;<em>'+title+'</em>'
                 extraline = (self._null_table100+'<td> '+subtitle+' </td>'+
