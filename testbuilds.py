@@ -1060,8 +1060,13 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "docker exec {testname1} bash -c 'find /new/local -name *-0.so -exec rm -v {item} {end}'"
         sh____(cmd.format(**locals()))
-        cmd = "docker exec {testname1} diff -urw --no-dereference /usr/local /new/local"
-        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname1} diff -uw /usr/local/include/zzip/_config.h /new/local/include/zzip/_config.h"
+        sx____(cmd.format(**locals()))
+        cmd = "docker exec {testname1} diff -urw --no-dereference /usr/local /new/local --exclude _config.h"
+        sx____(cmd.format(**locals()))
+        out = output(cmd.format(**locals()))
+        self.assertFalse(greps(out, "---"))
+        self.assertFalse(greps(out, "Only"))
         #
         cmd = "docker rm --force {testname1}"
         sx____(cmd.format(**locals()))
@@ -1120,8 +1125,13 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "docker exec {testname1} bash -c 'find /new/local -name *-0.so -exec rm -v {item} {end}'"
         sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname1} diff -uw /usr/local/include/zzip/_config.h /new/local/include/zzip/_config.h"
+        sx____(cmd.format(**locals()))
         cmd = "docker exec {testname1} diff -urw --no-dereference /usr/local /new/local --exclude _config.h"
-        sh____(cmd.format(**locals()))
+        sx____(cmd.format(**locals()))
+        out = output(cmd.format(**locals()))
+        self.assertFalse(greps(out, "---"))
+        self.assertFalse(greps(out, "Only"))
         #
         cmd = "docker rm --force {testname1}"
         sx____(cmd.format(**locals()))
@@ -1180,8 +1190,13 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "docker exec {testname1} bash -c 'find /new/local -name *-0.so -exec rm -v {item} {end}'"
         sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname1} diff -uw /usr/local/include/zzip/_config.h /new/local/include/zzip/_config.h"
+        sx____(cmd.format(**locals()))
         cmd = "docker exec {testname1} diff -urw --no-dereference /usr/local /new/local --exclude _config.h"
-        sh____(cmd.format(**locals()))
+        sx____(cmd.format(**locals()))
+        out = output(cmd.format(**locals()))
+        self.assertFalse(greps(out, "---"))
+        self.assertFalse(greps(out, "Only"))
         #
         cmd = "docker rm --force {testname1}"
         sx____(cmd.format(**locals()))
@@ -1240,8 +1255,13 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "docker exec {testname1} bash -c 'find /new/local -name *-0.so -exec rm -v {item} {end}'"
         sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname1} diff -uw /usr/local/include/zzip/_config.h /new/local/include/zzip/_config.h"
+        sx____(cmd.format(**locals()))
         cmd = "docker exec {testname1} diff -urw --no-dereference /usr/local /new/local --exclude _config.h"
-        sh____(cmd.format(**locals()))
+        sx____(cmd.format(**locals()))
+        out = output(cmd.format(**locals()))
+        self.assertFalse(greps(out, "---"))
+        self.assertFalse(greps(out, "Only"))
         #
         cmd = "docker rm --force {testname1}"
         sx____(cmd.format(**locals()))
