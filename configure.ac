@@ -252,6 +252,7 @@ case "$enable_mmap" in
       AC_MSG_RESULT(no (just a bit slower)) ;;
 esac
 # ---------------------------------------------------------------
+PKG_PROG_PKG_CONFIG
 AC_MSG_CHECKING(whether making SDL parts)
 SDL=""
 SDL_GENERATE=""
@@ -261,13 +262,18 @@ AC_ARG_ENABLE(sdl, AC_HELP_STRING(
 if test "$enable_sdl" = "no" ; then
    AC_MSG_RESULT([no, disabled])
 else
-   enable_sdl=`$PKG_CONFIG --modversion sdl 2>/dev/null`
-   if test -z "$enable_sdl"; then
-      enable_sdl=`sdl-config --version 2>/dev/null`
-      SDL_GENERATE="sdl-uninstalled.pc"
-      enable_sdl="$enable_sdl (sdl-config)"
+   enable_sdl1=`$PKG_CONFIG --modversion sdl 2>/dev/null`
+   if test -z "$enable_sdl1"; then
+      enable_sdl2=`$PKG_CONFIG --modversion sdl2 2>/dev/null`
+      if test -z "$enable_sdl2"; then
+        enable_sdl3=`sdl-config --version 2>/dev/null`
+        SDL_GENERATE="sdl-uninstalled.pc"
+        enable_sdl="$enable_sdl3 (sdl-config)"
+      else
+        enable_sdl="$enable_sdl2 (pkgconfig sdl2)"
+      fi
    else
-      enable_sdl="$enable_sdl (pkgconfig)"
+      enable_sdl="$enable_sdl1 (pkgconfig sdl)"
    fi
    enable_sdl="$enable_sdl."
    case ".$enable_sdl" in
