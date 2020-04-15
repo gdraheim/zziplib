@@ -1,6 +1,9 @@
 *~
 *.cache
 build
+build1
+build2
+site.print.htm
 *-linux-*
 *.pyc
 *.tmp
