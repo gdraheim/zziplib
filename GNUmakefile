@@ -32,4 +32,5 @@ boottrap:
 -include Makefile
 
 test_%: ; python3 testbuilds.py $@ -vv
+tests:  ; python3 testbuilds.py -vv
 
