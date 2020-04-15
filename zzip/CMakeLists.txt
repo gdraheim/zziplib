@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.1)
-project(zziplib VERSION "0.13.70" LANGUAGES C)
+project(zzip VERSION "0.13.70" LANGUAGES C)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMakeScripts")
 
@@ -22,9 +22,9 @@ option(ZZIPCOMPAT "Build compatibility with old libzzip releases" ON)
 option(ZZIPLIBTOOL "Ensure binary compatibility with libtool" ON)
 
 # used in zzip/_config.h
-set(ZZIP_PACKAGE "${PROJECT_NAME}")
+set(ZZIP_PACKAGE "${PROJECT_NAME}lib")
 set(ZZIP_VERSION "${PROJECT_VERSION}")
-set(ZZIP_PACKAGE_NAME "${PROJECT_NAME}")
+set(ZZIP_PACKAGE_NAME "${PROJECT_NAME}lib")
 set(ZZIP_PACKAGE_VERSION "${PROJECT_VERSION}")
 
 if(ZZIPCOMPAT)
@@ -224,7 +224,7 @@ add_custom_command(OUTPUT zziplib.pc
    COMMAND ${BASH} -c "echo 'package=zziplib' >> zziplib.pc"
    COMMAND ${BASH} -c "echo 'suffix=${CMAKE_EXECUTABLE_SUFFIX}' >> zziplib.pc"
    COMMAND ${BASH} -c "echo '' >> zziplib.pc"
-   COMMAND ${BASH} -c "echo 'Name: ${PROJECT_NAME}' >> zziplib.pc"
+   COMMAND ${BASH} -c "echo 'Name: ${PROJECT_NAME}lib' >> zziplib.pc"
    COMMAND ${BASH} -c "echo 'Description: ZZipLib - libZ-based ZIP-access Library with an Easy-to-Use API' >> zziplib.pc"
    COMMAND ${BASH} -c "echo 'Version: ${PROJECT_VERSION}' >> zziplib.pc"
    COMMAND ${BASH} -c "echo 'Requires: zlib' >> zziplib.pc"
