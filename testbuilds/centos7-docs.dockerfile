@@ -17,5 +17,5 @@ COPY zzip src/zzip
 RUN mkdir src/build
 RUN cd src/build && cmake3 ..
 RUN $no_build || (cd src/build && make)
-RUN cd src/build && make docs
-RUN cd src/build && make install-docs
+RUN cd src/build && make docs VERBOSE=1
+RUN cd src/build && make install-docs VERBOSE=1
