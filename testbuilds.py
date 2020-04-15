@@ -1080,6 +1080,44 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
+    def test_701_centos7_am_docs_dockerfile(self):
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        testname=self.testname()
+        testdir = self.testdir()
+        dockerfile="testbuilds/centos7-am-docs.dockerfile"
+        addhosts = self.local_addhosts(dockerfile)
+        savename = docname(dockerfile)
+        saveto = SAVETO
+        images = IMAGES
+        build = "build --build-arg=no_build=true"
+        cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        sh____(cmd.format(**locals()))
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
+        cmd = "docker run -d --name {testname} {images}:{testname} sleep 60"
+        sh____(cmd.format(**locals()))
+        #:# container = self.ip_container(testname)
+        cmd = "docker exec {testname} ls -l /usr/local/bin"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} find /usr/local/include -type f"
+        sh____(cmd.format(**locals()))
+        #
+        cmd = "docker exec {testname} bash -c 'test ! -d /usr/local/include/zzip/types.h'"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} bash -c 'test -d /usr/local/share/doc/zziplib'"
+        sh____(cmd.format(**locals()))    
+        cmd = "docker exec {testname} bash -c 'test -f /usr/local/share/man/man3/zzip_opendir.3'"
+        sh____(cmd.format(**locals()))
+        #
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
+        cmd = "docker rmi {saveto}/{savename}:latest"
+        sx____(cmd.format(**locals()))
+        cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
+        sh____(cmd.format(**locals()))
+        cmd = "docker rmi {images}:{testname}"
+        sx____(cmd.format(**locals()))
+        self.rm_testdir()
     def test_9211_centos7_automake_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         testname1=self.testname() + "_1"
