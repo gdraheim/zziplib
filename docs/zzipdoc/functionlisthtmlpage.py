@@ -3,9 +3,12 @@ from __future__ import print_function
 from zzipdoc.options import *
 from zzipdoc.match import Match
 
+import os
+import os.path
+
 def short(filename):
-    if filename.startswith("../"):
-        return filename[3:]
+    while filename.startswith("../"):
+        filename = filename[3:]
     if filename.startswith(os.sep):
         parts = ["",""] + filename.split(os.sep)
         return os.path.join(parts[-2], parts[-1])
