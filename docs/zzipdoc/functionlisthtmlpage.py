@@ -21,9 +21,9 @@ class FunctionListHtmlPage:
     _null_table100 =  '<table border="0" width="100%"' \
                      ' cellpadding="0" cellspacing="0">'
     _ul_start = '<table width="100%">'
-    _ul_end = '</table>'
+    _ul_end = '</table>' + "\n"
     _li_start = '<tr><td valign="top">'
-    _li_end = '</td></tr>'
+    _li_end = '</td></tr>' + "\n"
     http_opengroup = "http://www.opengroup.org/onlinepubs/000095399/functions/"
     http_zlib = "http://www.zlib.net/manual.html"
     def __init__(self, o = None):
@@ -36,8 +36,8 @@ class FunctionListHtmlPage:
         if self.o is None: self.o = Options()
         self.not_found_in_anchors = []
     def cut(self):
-        self.text += ("<dt>"+self._ul_start+self.head+self._ul_end+"</dt>"+
-                      "<dd>"+self._ul_start+self.body+self._ul_end+"</dd>")
+        self.text += ("<dt>"+self._ul_start+self.head+self._ul_end+"</dt>"+"\n"+
+                      "<dd>"+self._ul_start+self.body+self._ul_end+"</dd>"+"\n")
         self.head = ""
         self.body = ""
     def add(self, entry):
@@ -64,7 +64,7 @@ class FunctionListHtmlPage:
                 extraline = (self._null_table100+'<td> '+subtitle+' </td>'+
                              '<td align="right"> '+
                              '<em><small>'+filename+'</small></em>'+
-                             '</td></table>')
+                             '</td></table>' + "\n")
             body_text = extraline + body_text
         except Exception as e:
             pass
