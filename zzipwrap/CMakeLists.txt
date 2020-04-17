@@ -13,7 +13,14 @@ option(BUILD_SHARED_LIBS "Build a shared library" ON)
 option(BUILD_STATIC_LIBS "Build the static library" OFF)
 option(BUILD_TESTS "Build test programs" OFF)
 option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
-option(ZZIPLIBTOOL "Ensure binary compatibility with libtool" ON)
+
+if(UNIX)
+option(ZZIP_LIBTOOL "Ensure binary compatibility with libtool" ON)
+option(ZZIP_PKGCONFIG "Generate pkg-config files for linking" ON)
+else()
+option(ZZIP_LIBTOOL "Ensure binary compatibility with libtool" OFF)
+option(ZZIP_PKGCONFIG "Generate pkg-config files for linking" OFF)
+endif()
 
 check_include_files ( unistd.h ZZIP_HAVE_UNISTD_H )
 # set ( ZZIP_HAVE_ZLIB_H 1 )
@@ -48,7 +55,7 @@ add_executable(zzipwrap ${zzipwrap_SRCS} )
 target_link_libraries(zzipwrap libzzipwrap )
 target_include_directories(zzipwrap PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 
-if(UNIX)
+if(ZZIP_PKGCONFIG)
 join_paths(libdir "\${prefix}" "${CMAKE_INSTALL_LIBDIR}")
 join_paths(includedir "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
 add_custom_command(OUTPUT zzipwrap.pc
@@ -69,7 +76,7 @@ endif()
 # install ########################################################
 set(outdir ${CMAKE_CURRENT_BINARY_DIR})
 
-if(UNIX)
+if(ZZIP_PKGCONFIG)
 install(FILES ${outdir}/zzipwrap.pc 
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig" )
 endif()
@@ -79,7 +86,7 @@ install(TARGETS libzzipwrap
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
-if(ZZIPLIBTOOL)
+if(ZZIP_LIBTOOL)
   if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
     set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
     set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
@@ -95,3 +102,8 @@ if(ZZIPLIBTOOL)
         \")")
   endif()
 endif()
+
+# messages #######################################################
+
+message(STATUS "lib zzipwrap symlinks as by libtool: ${ZZIP_LIBTOOL}")
+message(STATUS "installing zzipwrap pkgconfig files: ${ZZIP_PKGCONFIG}")

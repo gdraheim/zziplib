@@ -10,10 +10,16 @@ default:
 	@ test ! -f Makefile || test -f build/Makefile || echo 'DONE make all - please run make check (before make install)'
 
 .PHONY: build-am build-cm
-build-cm: ; mkdir build-cm; cd build-cm && cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$$HOME/local
 build-am: ; mkdir build-am; cd build-am && sh ../configure --prefix=$$HOME/local --enable-sdl
-cm cmake: ; rm -rf build-cm; $(MAKE) build-cm && cd build-cm && $(MAKE) all
+build-cm: ; mkdir build-cm; cd build-cm && cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$$HOME/local
+build-nj: ; mkdir build-nj; cd build-nj && cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$$HOME/local -GNinja
+build-nm: ; mkdir build-nj; cd build-nj && cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$$HOME/local -GNmake
 am autom: ; rm -rf build-am; $(MAKE) build-am && cd build-am && $(MAKE) all
+cm cmake: ; rm -rf build-cm; $(MAKE) build-cm && cd build-cm && $(MAKE) all
+nj ninja: ; rm -rf build-nj; $(MAKE) build-nj && cd build-nj && ninja
+
+build-cm2: ; mkdir build-cm2; cd build-cm2 && cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$$HOME/local -DZZIP_MANPAGES=OFF
+cm2: ; rm -rf build-cm2; $(MAKE) build-cm2 && cd build-cm2 && $(MAKE) all
 
 new: ; rm -rf build; $(MAKE) default
 

@@ -14,6 +14,15 @@ option(BUILD_STATIC_LIBS "Build the static library" OFF)
 option(BUILD_TESTS "Build test programs" OFF)
 option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 
+if(UNIX)
+option(ZZIP_LIBTOOL "Ensure binary compatibility with libtool" ON)
+option(ZZIP_PKGCONFIG "Generate pkg-config files for linking" ON)
+else()
+option(ZZIP_LIBTOOL "Ensure binary compatibility with libtool" OFF)
+option(ZZIP_PKGCONFIG "Generate pkg-config files for linking" OFF)
+endif()
+
+
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
 # pkg_search_module ( ZZIP zzip )
@@ -46,7 +55,7 @@ endif()
 # pkgconfig ######################################################
 
 if(SDL_FOUND)
-if(UNIX)
+if(ZZIP_PKGCONFIG)
 join_paths(libdir "\${prefix}" "${CMAKE_INSTALL_LIBDIR}")
 join_paths(includedir "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
 add_custom_command(OUTPUT SDL_rwops_zzip.pc
@@ -63,5 +72,11 @@ add_custom_target(pkgconfig-sdl ALL DEPENDS SDL_rwops_zzip.pc)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SDL_rwops_zzip.pc
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig" )
-endif()
-endif()
+endif(ZZIP_PKGCONFIG)
+endif(SDL_FOUND)
+
+# messages ##################################################
+
+message(STATUS "installing SDL_rwops_zzip example headers: ${SDL_FOUND}")
+message(STATUS "installing SDL_rwops_zzip pkgconfig files: ${ZZIP_PKGCONFIG}")
+

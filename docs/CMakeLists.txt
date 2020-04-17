@@ -9,6 +9,14 @@ option(BUILD_SHARED_LIBS "Build a shared library" ON)
 option(BUILD_STATIC_LIBS "Build the static library" OFF)
 option(BUILD_TESTS "Build test programs" OFF)
 option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
+option(ZZIP_HTMLSITE "Generate site html pages from docs" OFF)
+option(ZZIP_HTMPAGES "Generate html manpages from sources" OFF)
+
+if(UNIX)
+option(ZZIP_MANPAGES "Generate man3 manpages from sources" ON)
+else()
+option(ZZIP_MANPAGES "Generate man3 manpages from sources" OFF)
+endif()
 
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
@@ -132,14 +140,24 @@ add_custom_command(OUTPUT htmpages.tar
     DEPENDS zziplib.xml zzipmmapped.xml zzipfseeko.xml
     VERBATIM)
 
-add_custom_target(mans DEPENDS manpages)
-add_custom_target(man DEPENDS manpages)
-add_custom_target(htm DEPENDS htmpages)
 add_custom_target(manpages DEPENDS manpages.tar)
 add_custom_target(htmpages DEPENDS htmpages.tar)
 add_custom_target(doc DEPENDS zziplib.xml zzipmmapped.xml zzipfseeko.xml site.html)
 add_custom_target(docs DEPENDS doc manpages htmpages)
+add_custom_target(mans DEPENDS manpages)
 
+if(ZZIP_MANPAGES)
+add_custom_target(man ALL DEPENDS manpages)
+else()
+add_custom_target(man DEPENDS manpages)
+endif()
+if(ZZIP_HTMPAGES)
+add_custom_target(htm ALL DEPENDS htmpages)
+else()
+add_custom_target(htm DEPENDS htmpages)
+endif()
+
+# install ########################################################
 
 string(REPLACE ";" " " all_bins_FILES "${bins_FILES}")
 string(REPLACE ";" " " all_SDLs_FILES "${SDLs_FILES}")
@@ -168,13 +186,24 @@ add_custom_target(install-manpages
    COMMAND ${BASH} -c "cd $DESTDIR${mandir} && tar xf ${outdir}/manpages.tar"
    DEPENDS manpages.tar
    VERBATIM)
+
 add_custom_target(install-docs DEPENDS install-manpages install-htmpages install-site)
 add_custom_target(install-mans DEPENDS install-manpages)
-add_custom_target(install-man  DEPENDS install-manpages)
 
-# install ########################################################
-set(mandir ${CMAKE_INSTALL_FULL_MANDIR})
-install(CODE "execute_process(COMMAND ${BASH} -c \"set -e
-   mkdir -vp $DESTDIR/${mandir} || ls -ld $DESTDIR/${mandir}
-   cd $DESTDIR/${mandir} && tar xf ${CMAKE_CURRENT_BINARY_DIR}/manpages.tar
-   \")")
+if(ZZIP_MANPAGES)
+add_custom_target(install-man ALL DEPENDS install-manpages)
+else()
+add_custom_target(install-man DEPENDS install-manpages)
+endif()
+
+if(ZZIP_HTMPAGES)
+add_custom_target(install-htm ALL DEPENDS install-htmpages)
+else()
+add_custom_target(install-htm DEPENDS install-htmpages)
+endif()
+
+# messages #######################################################
+
+message(STATUS "html site to be generated: ${ZZIP_HTMLSITE}" )
+message(STATUS "man pages to be generated: ${ZZIP_MANPAGES}" )
+message(STATUS "htm pages to be generated: ${ZZIP_HTMPAGES}" )

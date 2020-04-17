@@ -18,8 +18,16 @@ option(BUILD_STATIC_LIBS "Build the static library" OFF)
 option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 option(ZZIPMMAPPED "Build libzzipmmapped (not fully portable)" ON)
 option(ZZIPFSEEKO "Build libzzipfseeko (based on posix.1 api)" ON)
-option(ZZIPCOMPAT "Build compatibility with old libzzip releases" ON)
-option(ZZIPLIBTOOL "Ensure binary compatibility with libtool" ON)
+
+if(UNIX)
+option(ZZIP_COMPAT "Build compatibility with old libzzip releases" ON)
+option(ZZIP_LIBTOOL "Ensure binary compatibility with libtool" ON)
+option(ZZIP_PKGCONFIG "Generate pkg-config files for linking" ON)
+else()
+option(ZZIP_COMPAT "Build compatibility with old libzzip releases" OFF)
+option(ZZIP_LIBTOOL "Ensure binary compatibility with libtool" OFF)
+option(ZZIP_PKGCONFIG "Generate pkg-config files for linking" OFF)
+endif()
 
 # used in zzip/_config.h
 set(ZZIP_PACKAGE "${PROJECT_NAME}lib")
@@ -27,7 +35,7 @@ set(ZZIP_VERSION "${PROJECT_VERSION}")
 set(ZZIP_PACKAGE_NAME "${PROJECT_NAME}lib")
 set(ZZIP_PACKAGE_VERSION "${PROJECT_VERSION}")
 
-if(ZZIPCOMPAT)
+if(ZZIP_COMPAT)
 find_package ( UnixCommands REQUIRED ) # bash cp mv rm gzip tar
 endif()
 
@@ -193,7 +201,7 @@ set_target_properties(libzzipmmapped PROPERTIES OUTPUT_NAME "zzipmmapped" RELEAS
 SET_TARGET_PROPERTIES(libzzipmmapped PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
 endif()
 
-if(ZZIPCOMPAT)
+if(ZZIP_COMPAT)
 add_custom_command(OUTPUT compat/zzip.h
    COMMAND ${BASH} -c "rm -rf compat; mkdir compat"
    COMMAND ${BASH} -c "echo '#ifndef ZZIP_WARNING'     > compat/zzip.h"
@@ -212,9 +220,9 @@ add_custom_command(OUTPUT compat/zzip.h
    BYPRODUCTS compat/zziplib.h compat/zzip-io.h
    VERBATIM)
 add_custom_target(compat ALL DEPENDS compat/zzip.h)
-endif()
+endif(ZZIP_COMPAT)
 
-if(UNIX)
+if(ZZIP_PKGCONFIG)
 join_paths(libdir "\${prefix}" "${CMAKE_INSTALL_LIBDIR}")
 join_paths(includedir "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
 add_custom_command(OUTPUT zziplib.pc
@@ -235,12 +243,12 @@ add_custom_command(OUTPUT zziplib.pc
    BYPRODUCTS zzipmmapped.pc zzipfseeko.pc
    VERBATIM)
 add_custom_target(pkgconfig ALL DEPENDS zziplib.pc)
-endif()
+endif(ZZIP_PKGCONFIG)
 
 # install ########################################################
 set(outdir ${CMAKE_CURRENT_BINARY_DIR})
 
-if(UNIX)
+if(ZZIP_PKGCONFIG)
 install(FILES ${outdir}/zziplib.pc ${outdir}/zzipmmapped.pc ${outdir}/zzipfseeko.pc
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig" )
 endif()
@@ -264,7 +272,7 @@ install(TARGETS libzzipmmapped
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
 
-if(ZZIPCOMPAT)
+if(ZZIP_COMPAT)
   install(FILES ${outdir}/compat/zzip.h ${outdir}/compat/zziplib.h ${outdir}/compat/zzip-io.h 
           DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
   if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
@@ -289,7 +297,7 @@ if(ZZIPCOMPAT)
   endif()
 endif()
 
-if(ZZIPLIBTOOL)
+if(ZZIP_LIBTOOL)
   if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
     set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
     set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
@@ -340,4 +348,12 @@ if(ZZIPLIBTOOL)
         ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
         \")")
   endif()
-endif()
+endif(ZZIP_LIBTOOL)
+
+## messages ##############################################
+
+message(STATUS "lib zzipfseeko  to be compiled: ${ZZIPFSEEKO}")
+message(STATUS "lib zzipmmapped to be compiled: ${ZZIPFSEEKO}")
+message(STATUS "lib zzip symlinks as by libtool: ${ZZIP_LIBTOOL}")
+message(STATUS "installing zzip compat headers: ${ZZIP_COMPAT}")
+message(STATUS "installing zzip pkgconfig files: ${ZZIP_PKGCONFIG}")
