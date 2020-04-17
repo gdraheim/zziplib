@@ -1,8 +1,7 @@
 *~
 *.cache
 build
-build1
-build2
+build-*
 site.print.htm
 changes.htm
 *-linux-*

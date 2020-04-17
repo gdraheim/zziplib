@@ -9,9 +9,11 @@ default:
 	@ test ! -f Makefile || test -f build/Makefile || $(MAKE) all
 	@ test ! -f Makefile || test -f build/Makefile || echo 'DONE make all - please run make check (before make install)'
 
-cm cmake: ; rm -rf build; mkdir build; cd build && cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$$HOME/local
-am autom: ; rm -rf build2; mkdir build2; cd build2 && sh ../configure --prefix=$$HOME/local --enable-sdl
-2: ; cd build2 && $(MAKE) all
+.PHONY: build-am build-cm
+build-cm: ; mkdir build-cm; cd build-cm && cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$$HOME/local
+build-am: ; mkdir build-am; cd build-am && sh ../configure --prefix=$$HOME/local --enable-sdl
+cm cmake: ; rm -rf build-cm; $(MAKE) build-cm && cd build-cm && $(MAKE) all
+am autom: ; rm -rf build-am; $(MAKE) build-am && cd build-am && $(MAKE) all
 
 new: ; rm -rf build; $(MAKE) default
 
