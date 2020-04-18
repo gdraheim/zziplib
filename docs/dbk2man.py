@@ -387,7 +387,7 @@ def refentry2(man, refentry, subdirectory = ".", title = ""):
                 refentrytitle = manpage
             filename = "%s/man%s/%s.%s" % (subdirectory, manvolnum, manpage, manvolnum)
             if manpage != refentrytitle:
-                manpagetext = ".so %s.%s\n" % (refentrytitle, manvolnum)
+                manpagetext = ".so man%s/%s.%s\n" % (manvolnum, refentrytitle, manvolnum)
                 writefile(filename, manpagetext)
             else:
                 manpagetext = text
