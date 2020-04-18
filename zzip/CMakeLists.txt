@@ -317,6 +317,7 @@ if(ZZIP_LIBTOOL)
         echo -n .. Installing: `pwd`
         ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
         \")")
+    if(ZZIPFSEEKO)
     get_target_property(libname libzzipfseeko OUTPUT_NAME)
     get_target_property(librelease libzzipfseeko RELEASE_POSTFIX)
     get_target_property(libversion libzzipfseeko VERSION)
@@ -332,6 +333,8 @@ if(ZZIP_LIBTOOL)
         echo -n .. Installing: `pwd`
         ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
         \")")
+    endif(ZZIPFSEEKO)
+    if(ZZIPMMAPPED)
     get_target_property(libname libzzipmmapped OUTPUT_NAME)
     get_target_property(librelease libzzipmmapped RELEASE_POSTFIX)
     get_target_property(libversion libzzipmmapped VERSION)
@@ -347,7 +350,8 @@ if(ZZIP_LIBTOOL)
         echo -n .. Installing: `pwd`
         ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
         \")")
-  endif()
+    endif(ZZIPMMAPPED)
+  endif(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
 endif(ZZIP_LIBTOOL)
 
 ## messages ##############################################
