@@ -18,8 +18,10 @@ am autom: ; rm -rf build-am; $(MAKE) build-am && cd build-am && $(MAKE) all
 cm cmake: ; rm -rf build-cm; $(MAKE) build-cm && cd build-cm && $(MAKE) all
 nj ninja: ; rm -rf build-nj; $(MAKE) build-nj && cd build-nj && ninja
 
-build-cm2: ; mkdir build-cm2; cd build-cm2 && cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$$HOME/local -DZZIP_MANPAGES=OFF
+build-cm2: ; mkdir build-cm2; cd build-cm2 && cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$$HOME/local -DZZIP_MANPAGES=OFF -DZZIP_INSTALL_BINS=OFF
 cm2: ; rm -rf build-cm2; $(MAKE) build-cm2 && cd build-cm2 && $(MAKE) all
+cm2-install: ; cd build-cm2 && $(MAKE) install
+un uninstall: ; rm -rf $$HOME/local
 
 new: ; rm -rf build; $(MAKE) default
 

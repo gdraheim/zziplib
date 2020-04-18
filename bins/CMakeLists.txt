@@ -14,6 +14,9 @@ option(BUILD_STATIC_LIBS "Build the static library" OFF)
 option(BUILD_TESTS "Build test programs" OFF)
 option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 
+option(ZZIP_INSTALL_BINS "Install the bins/ exanple programs" ON)
+option(ZZIP_INSTALL_ACLOCAL "Install zziplib.m4 aclocal helper" ON)
+
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
 # pkg_search_module ( ZZIP zzip )
@@ -64,8 +67,13 @@ target_include_directories(unzzip-mem   PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_B
 target_include_directories(unzip-mem    PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 
 # install ########################################################
+if(ZZIP_INSTALL_BINS)
 install(TARGETS zzcat zzdir zzxorcat zzxordir zzxorcopy
                 unzzip unzzip-mix unzzip-big unzzip-mem unzip-mem
         DESTINATION "${CMAKE_INSTALL_BINDIR}")
+endif()
+
+if(ZZIP_INSTALL_ACLOCAL)
 install(FILES zziplib.m4
         DESTINATION "${CMAKE_INSTALL_DATADIR}/aclocal")
+endif()
