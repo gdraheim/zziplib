@@ -58,9 +58,10 @@ if(SDL_FOUND)
 if(ZZIP_PKGCONFIG)
 join_paths(libdir "\${prefix}" "${CMAKE_INSTALL_LIBDIR}")
 join_paths(includedir "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
+join_paths(pc_zzipsdldir "\${prefix}" "${zzipsdldir}")
 add_custom_command(OUTPUT SDL_rwops_zzip.pc
    COMMAND ${BASH} -c "echo 'prefix=${CMAKE_INSTALL_PREFIX}' > SDL_rwops_zzip.pc"
-   COMMAND ${BASH} -c "echo 'zzipsdldir=\${prefix}/${zzipsdldir}' >> SDL_rwops_zzip.pc"
+   COMMAND ${BASH} -c "echo 'zzipsdldir=${pc_zzipsdldir}' >> SDL_rwops_zzip.pc"
    COMMAND ${BASH} -c "echo '' >> SDL_rwops_zzip.pc"
    COMMAND ${BASH} -c "echo 'Name: SDL_rwops_zzip' >> SDL_rwops_zzip.pc"
    COMMAND ${BASH} -c "echo 'Version: ${PROJECT_VERSION}' >> SDL_rwops_zzip.pc"
