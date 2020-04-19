@@ -120,7 +120,7 @@ def get_caller_caller_name():
 
 def download_raw(base_url, filename, into, style = "?raw=true"):
     return download(base_url, filename, into, style)
-def download(base_url, filename, into, style = ""):
+def download(base_url, filename, into = None, style = ""):
     data = downloaddir
     if not os.path.isdir(data):
         os.makedirs(data)
@@ -144,11 +144,12 @@ def download(base_url, filename, into, style = ""):
            # re-download it.
            open(subfile, 'a').close()
     #
-    if not os.path.isdir(into):
-        os.makedirs(into)
-    intofile = os.path.join(into, filename)
-    shutil.copy(subfile, intofile)
-    logg.debug("copied %s -> %s", subfile, intofile)
+    if into:
+        if not os.path.isdir(into):
+            os.makedirs(into)
+        intofile = os.path.join(into, filename)
+        shutil.copy(subfile, intofile)
+        logg.debug("copied %s -> %s", subfile, intofile)
     return filename
 
 def output(cmd, shell=True):
@@ -3580,6 +3581,26 @@ if __name__ == "__main__":
   mkzip = opt.mkzip
   unzip = opt.unzip
   exeext = opt.exeext
+  #
+  if downloadonly:
+    downloads = 0
+    for classname in sorted(list(globals())):
+      if not classname.endswith("Test"):
+        continue
+      testclass = globals()[classname]
+      for item in sorted(dir(testclass)):
+        if item.startswith("url_"):
+          name = item.replace("url_", "zip_")
+          if name in testclass.__dict__:
+             url = testclass.__dict__[item]
+             zip = testclass.__dict__[name]
+             download(url, zip)
+             downloads += 1
+    if downloads:
+       sys.exit(0)
+    logg.error("could not download any file")
+    sys.exit(1)
+  #
   if not args: args += [ "test_" ]
   suite = unittest.TestSuite()
   for arg in args:
