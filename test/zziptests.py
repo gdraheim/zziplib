@@ -143,6 +143,10 @@ def download(base_url, filename, into = None, style = ""):
            # download the file so that we won't try to
            # re-download it.
            open(subfile, 'a').close()
+    if not os.path.exists(subfile):
+       return None
+    if os.path.getsize(subfile) < 5:
+       return None
     #
     if into:
         if not os.path.isdir(into):
@@ -1329,7 +1333,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5977
     file_url = self.url_CVE_2017_5977
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5977 available: " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 2])
@@ -1349,7 +1354,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5977
     file_url = self.url_CVE_2017_5977
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5977 available: " + filename)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -1368,7 +1374,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5977
     file_url = self.url_CVE_2017_5977
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5977 available: " + filename)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -1386,7 +1393,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5977
     file_url = self.url_CVE_2017_5977
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5977 available: " + filename)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -1405,7 +1413,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5977
     file_url = self.url_CVE_2017_5977
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5977 available: " + filename)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 255])
@@ -1424,7 +1433,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5977
     file_url = self.url_CVE_2017_5977
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5977 available: " + filename)
     shell("ls -l {tmpdir}/{filename}".format(**locals()))
     size = os.path.getsize(os.path.join(tmpdir, filename))
     self.assertEqual(size, 163)
@@ -1436,7 +1446,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5978
     file_url = self.url_CVE_2017_5978
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5978 available: " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 3])
@@ -1457,7 +1468,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5978
     file_url = self.url_CVE_2017_5978
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5978 available: " + filename)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -1477,7 +1489,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5978
     file_url = self.url_CVE_2017_5978
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5978 available: " + filename)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -1500,7 +1513,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5978
     file_url = self.url_CVE_2017_5978
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5978 available: " + filename)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0,2])
@@ -1521,7 +1535,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5978
     file_url = self.url_CVE_2017_5978
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5978 available: " + filename)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [3])
@@ -1541,7 +1556,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5978
     file_url = self.url_CVE_2017_5978
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5978 available: " + filename)
     shell("ls -l {tmpdir}/{filename}".format(**locals()))
     size = os.path.getsize(os.path.join(tmpdir, filename))
     self.assertEqual(size, 161)
@@ -1553,7 +1569,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5979
     file_url = self.url_CVE_2017_5979
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5979 available: " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -1573,7 +1590,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5979
     file_url = self.url_CVE_2017_5979
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5979 available: " + filename)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -1592,7 +1610,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5979
     file_url = self.url_CVE_2017_5979
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5979 available: " + filename)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -1610,7 +1629,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5979
     file_url = self.url_CVE_2017_5979
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5979 available: " + filename)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -1630,7 +1650,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5979
     file_url = self.url_CVE_2017_5979
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5979 available: " + filename)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 255])
@@ -1649,7 +1670,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5979
     file_url = self.url_CVE_2017_5979
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5979 available: " + filename)
     shell("ls -l {tmpdir}/{filename}".format(**locals()))
     size = os.path.getsize(os.path.join(tmpdir, filename))
     self.assertEqual(size, 155)
@@ -1662,7 +1684,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5974
     file_url = self.url_CVE_2017_5974
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5974 available: " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 9])
@@ -1682,7 +1705,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5974
     file_url = self.url_CVE_2017_5974
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5974 available: " + filename)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -1701,7 +1725,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5974
     file_url = self.url_CVE_2017_5974
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5974 available: " + filename)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -1719,7 +1744,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5974
     file_url = self.url_CVE_2017_5974
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5974 available: " + filename)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -1739,7 +1765,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5974
     file_url = self.url_CVE_2017_5974
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5974 available: " + filename)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 255])
@@ -1758,7 +1785,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5974
     file_url = self.url_CVE_2017_5974
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5974 available: " + filename)
     shell("ls -l {tmpdir}/{filename}".format(**locals()))
     size = os.path.getsize(os.path.join(tmpdir, filename))
     self.assertEqual(size, 161)
@@ -1770,7 +1798,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5975
     file_url = self.url_CVE_2017_5975
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5975 available: " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 2])
@@ -1793,7 +1822,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5975
     file_url = self.url_CVE_2017_5975
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5975 available: " + filename)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -1812,7 +1842,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5975
     file_url = self.url_CVE_2017_5975
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5975 available: " + filename)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -1834,7 +1865,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5975
     file_url = self.url_CVE_2017_5975
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5975 available: " + filename)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0,2])
@@ -1854,7 +1886,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5975
     file_url = self.url_CVE_2017_5975
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5975 available: " + filename)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0,3])
@@ -1874,7 +1907,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5975
     file_url = self.url_CVE_2017_5975
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5975 available: " + filename)
     shell("ls -l {tmpdir}/{filename}".format(**locals()))
     size = os.path.getsize(os.path.join(tmpdir, filename))
     self.assertEqual(size, 151)
@@ -1887,7 +1921,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5976
     file_url = self.url_CVE_2017_5976
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5976 available: " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 2])
@@ -1911,7 +1946,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5976
     file_url = self.url_CVE_2017_5976
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5976 available: " + filename)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -1930,7 +1966,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5976
     file_url = self.url_CVE_2017_5976
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5976 available: " + filename)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -1949,7 +1986,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5976
     file_url = self.url_CVE_2017_5976
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5976 available: " + filename)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -1969,7 +2007,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5976
     file_url = self.url_CVE_2017_5976
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5976 available: " + filename)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 255])
@@ -1988,7 +2027,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5976
     file_url = self.url_CVE_2017_5976
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5976 available: " + filename)
     shell("ls -l {tmpdir}/{filename}".format(**locals()))
     size = os.path.getsize(os.path.join(tmpdir, filename))
     self.assertEqual(size, 188)
@@ -2000,7 +2040,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5980
     file_url = self.url_CVE_2017_5980
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5980 available: " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 2])
@@ -2023,7 +2064,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5980
     file_url = self.url_CVE_2017_5980
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5980 available: " + filename)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -2043,7 +2085,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5980
     file_url = self.url_CVE_2017_5980
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5980 available: " + filename)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -2063,7 +2106,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5980
     file_url = self.url_CVE_2017_5980
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5980 available: " + filename)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [2])
@@ -2083,7 +2127,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5980
     file_url = self.url_CVE_2017_5980
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5980 available: " + filename)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [3])
@@ -2103,7 +2148,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5980
     file_url = self.url_CVE_2017_5980
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5980 available: " + filename)
     shell("ls -l {tmpdir}/{filename}".format(**locals()))
     size = os.path.getsize(os.path.join(tmpdir, filename))
     self.assertEqual(size, 155)
@@ -2116,7 +2162,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5981
     file_url = self.url_CVE_2017_5981
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5981 available: " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 3])
@@ -2138,7 +2185,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5981
     file_url = self.url_CVE_2017_5981
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5981 available: " + filename)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -2157,7 +2205,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5981
     file_url = self.url_CVE_2017_5981
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5981 available: " + filename)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -2176,7 +2225,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5981
     file_url = self.url_CVE_2017_5981
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5981 available: " + filename)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0,2])
@@ -2195,7 +2245,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5981
     file_url = self.url_CVE_2017_5981
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5981 available: " + filename)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0,3])
@@ -2215,7 +2266,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5981
     file_url = self.url_CVE_2017_5981
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2017_5981 available: " + filename)
     shell("ls -l {tmpdir}/{filename}".format(**locals()))
     size = os.path.getsize(os.path.join(tmpdir, filename))
     self.assertEqual(size, 157)
@@ -2227,7 +2279,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_10
     file_url = self.url_CVE_2018_10
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_10 available: " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 9])
@@ -2248,7 +2301,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_10
     file_url = self.url_CVE_2018_10
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_10 available: " + filename)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -2267,7 +2321,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_10
     file_url = self.url_CVE_2018_10
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_10 available: " + filename)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -2286,7 +2341,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_10
     file_url = self.url_CVE_2018_10
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_10 available: " + filename)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0,2])
@@ -2305,7 +2361,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_10
     file_url = self.url_CVE_2018_10
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_10 available: " + filename)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0,3])
@@ -2325,7 +2382,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_10
     file_url = self.url_CVE_2018_10
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_10 available: " + filename)
     exe = self.bins("zzdir")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
         returncodes = [1])
@@ -2337,7 +2395,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_10
     file_url = self.url_CVE_2018_10
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_10 available: " + filename)
     shell("ls -l {tmpdir}/{filename}".format(**locals()))
     size = os.path.getsize(os.path.join(tmpdir, filename))
     self.assertEqual(size, 188)
@@ -2349,7 +2408,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_11
     file_url = self.url_CVE_2018_11
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_11 available: " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 9])
@@ -2370,7 +2430,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_11
     file_url = self.url_CVE_2018_11
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_11 available: " + filename)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -2389,7 +2450,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_11
     file_url = self.url_CVE_2018_11
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_11 available: " + filename)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -2408,7 +2470,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_11
     file_url = self.url_CVE_2018_11
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_11 available: " + filename)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0,2])
@@ -2427,7 +2490,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_11
     file_url = self.url_CVE_2018_11
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_11 available: " + filename)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0,3])
@@ -2450,7 +2514,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_11
     file_url = self.url_CVE_2018_11
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_11 available: " + filename)
     shell("ls -l {tmpdir}/{filename}".format(**locals()))
     size = os.path.getsize(os.path.join(tmpdir, filename))
     self.assertEqual(size, 280)
@@ -2462,7 +2527,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_12
     file_url = self.url_CVE_2018_12
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_12 available: " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [2])
@@ -2483,7 +2549,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_12
     file_url = self.url_CVE_2018_12
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_12 available: " + filename)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -2502,7 +2569,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_12
     file_url = self.url_CVE_2018_12
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_12 available: " + filename)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -2522,7 +2590,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_12
     file_url = self.url_CVE_2018_12
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_12 available: " + filename)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0,2])
@@ -2541,7 +2610,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_12
     file_url = self.url_CVE_2018_12
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_12 available: " + filename)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0,3])
@@ -2561,7 +2631,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_12
     file_url = self.url_CVE_2018_12
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_12 available: " + filename)
     shell("ls -l {tmpdir}/{filename}".format(**locals()))
     size = os.path.getsize(os.path.join(tmpdir, filename))
     self.assertEqual(size, 141)
@@ -2573,7 +2644,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_14
     file_url = self.url_CVE_2018_14
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_14 available: " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [3])
@@ -2595,7 +2667,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_14
     file_url = self.url_CVE_2018_14
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_14 available: " + filename)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -2614,7 +2687,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_14
     file_url = self.url_CVE_2018_14
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_14 available: " + filename)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -2632,7 +2706,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_14
     file_url = self.url_CVE_2018_14
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_14 available: " + filename)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 2])
@@ -2651,7 +2726,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_14
     file_url = self.url_CVE_2018_14
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_14 available: " + filename)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 3])
@@ -2671,7 +2747,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_14
     file_url = self.url_CVE_2018_14
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_14 available: " + filename)
     exe = self.bins("zzdir")
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
         returncodes = [1])
@@ -2684,7 +2761,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_14
     file_url = self.url_CVE_2018_14
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_14 available: " + filename)
     shell("ls -l {tmpdir}/{filename}".format(**locals()))
     size = os.path.getsize(os.path.join(tmpdir, filename))
     self.assertEqual(size, 56)
@@ -2696,7 +2774,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_15
     file_url = self.url_CVE_2018_15
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_15 available: " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [2])
@@ -2717,7 +2796,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_15
     file_url = self.url_CVE_2018_15
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_15 available: " + filename)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -2736,7 +2816,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_15
     file_url = self.url_CVE_2018_15
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_15 available: " + filename)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -2755,7 +2836,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_15
     file_url = self.url_CVE_2018_15
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_15 available: " + filename)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0,2])
@@ -2774,7 +2856,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_15
     file_url = self.url_CVE_2018_15
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_15 available: " + filename)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 3])
@@ -2794,7 +2877,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_15
     file_url = self.url_CVE_2018_15
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_15 available: " + filename)
     shell("ls -l {tmpdir}/{filename}".format(**locals()))
     size = os.path.getsize(os.path.join(tmpdir, filename))
     self.assertEqual(size, 141)
@@ -2806,7 +2890,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_16
     file_url = self.url_CVE_2018_16
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_16 available: " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 9])
@@ -2827,7 +2912,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_16
     file_url = self.url_CVE_2018_16
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_16 available: " + filename)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -2846,7 +2932,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_16
     file_url = self.url_CVE_2018_16
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_16 available: " + filename)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -2865,7 +2952,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_16
     file_url = self.url_CVE_2018_16
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_16 available: " + filename)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0,2])
@@ -2884,7 +2972,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_16
     file_url = self.url_CVE_2018_16
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_16 available: " + filename)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 3])
@@ -2909,7 +2998,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_16
     file_url = self.url_CVE_2018_16
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_16 available: " + filename)
     shell("ls -l {tmpdir}/{filename}".format(**locals()))
     size = os.path.getsize(os.path.join(tmpdir, filename))
     self.assertEqual(size, 124)
@@ -2921,7 +3011,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_17
     file_url = self.url_CVE_2018_17
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_17 available: " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 9])
@@ -2942,7 +3033,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_17
     file_url = self.url_CVE_2018_17
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_17 available: " + filename)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -2960,7 +3052,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_17
     file_url = self.url_CVE_2018_17
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_17 available: " + filename)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -2982,7 +3075,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_17
     file_url = self.url_CVE_2018_17
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_17 available: " + filename)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0,2])
@@ -3001,7 +3095,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_17
     file_url = self.url_CVE_2018_17
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_17 available: " + filename)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 3])
@@ -3021,7 +3116,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_17
     file_url = self.url_CVE_2018_17
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_17 available: " + filename)
     shell("ls -l {tmpdir}/{filename}".format(**locals()))
     size = os.path.getsize(os.path.join(tmpdir, filename))
     self.assertEqual(size, 360)
@@ -3034,7 +3130,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_42
     file_url = self.url_CVE_2018_42
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_42 available: " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [3])
@@ -3056,7 +3153,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_42
     file_url = self.url_CVE_2018_42
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_42 available: " + filename)
     exe = self.bins("zzdir")
     run = shell("{exe} {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -3072,7 +3170,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_43
     file_url = self.url_CVE_2018_43
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_43 available: " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [3])
@@ -3098,7 +3197,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_43
     file_url = self.url_CVE_2018_43
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_43 available: " + filename)
     exe = self.bins("zzdir")
     run = shell("{exe} {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -3116,9 +3216,10 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2018_27
     file_url = self.url_CVE_2018_27
     filesize = self.zip_CVE_2018_27_size
-    download_raw(file_url, filename, tmpdir)
-    if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
-    if ((os.path.getsize(os.path.join(tmpdir, filename)) != filesize)): self.skipTest("missing " + filename)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_27 available: " + filename)
+    if ((os.path.getsize(os.path.join(tmpdir, filename)) != filesize)): 
+        self.skipTest("zip for CVE_2018_27 is confidential: " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 9])
@@ -3140,9 +3241,10 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2018_27
     file_url = self.url_CVE_2018_27
     filesize = self.zip_CVE_2018_27_size
-    download_raw(file_url, filename, tmpdir)
-    if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
-    if ((os.path.getsize(os.path.join(tmpdir, filename)) != filesize)): self.skipTest("missing " + filename)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_27 available: " + filename)
+    if ((os.path.getsize(os.path.join(tmpdir, filename)) != filesize)):
+        self.skipTest("zip for CVE_2018_27 is confidential: " + filename)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -3161,9 +3263,10 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2018_27
     file_url = self.url_CVE_2018_27
     filesize = self.zip_CVE_2018_27_size
-    download_raw(file_url, filename, tmpdir)
-    if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
-    if ((os.path.getsize(os.path.join(tmpdir, filename)) != filesize)): self.skipTest("missing " + filename)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_27 available: " + filename)
+    if ((os.path.getsize(os.path.join(tmpdir, filename)) != filesize)):
+        self.skipTest("zip for CVE_2018_27 is confidential: " + filename)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0])
@@ -3186,9 +3289,10 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2018_27
     file_url = self.url_CVE_2018_27
     filesize = self.zip_CVE_2018_27_size
-    download_raw(file_url, filename, tmpdir)
-    if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
-    if ((os.path.getsize(os.path.join(tmpdir, filename)) != filesize)): self.skipTest("missing " + filename)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_27 available: " + filename)
+    if ((os.path.getsize(os.path.join(tmpdir, filename)) != filesize)):
+        self.skipTest("zip for CVE_2018_27 is confidential: " + filename)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0,2])
@@ -3208,9 +3312,10 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2018_27
     file_url = self.url_CVE_2018_27
     filesize = self.zip_CVE_2018_27_size
-    download_raw(file_url, filename, tmpdir)
-    if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
-    if ((os.path.getsize(os.path.join(tmpdir, filename)) != filesize)): self.skipTest("missing " + filename)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_27 available: " + filename)
+    if ((os.path.getsize(os.path.join(tmpdir, filename)) != filesize)):
+        self.skipTest("zip for CVE_2018_27 is confidential: " + filename)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 3])
@@ -3231,9 +3336,10 @@ class ZZipTest(unittest.TestCase):
     filename = self.zip_CVE_2018_27
     file_url = self.url_CVE_2018_27
     filesize = self.zip_CVE_2018_27_size
-    download_raw(file_url, filename, tmpdir)
-    if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
-    if ((os.path.getsize(os.path.join(tmpdir, filename)) != filesize)): self.skipTest("missing " + filename)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_27 available: " + filename)
+    if ((os.path.getsize(os.path.join(tmpdir, filename)) != filesize)):
+        self.skipTest("zip for CVE_2018_27 is confidential: " + filename)
     shell("ls -l {tmpdir}/{filename}".format(**locals()))
     size = os.path.getsize(os.path.join(tmpdir, filename))
     self.assertEqual(size, filesize) # 56
@@ -3245,7 +3351,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_41
     file_url = self.url_CVE_2018_41
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_41 available: " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [0, 3])
@@ -3267,7 +3374,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_41
     file_url = self.url_CVE_2018_41
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_41 available: " + filename)
     exe = self.bins("zzdir")
     run = shell("{exe} {tmpdir}/{filename} ".format(**locals()),
         returncodes = [1])
@@ -3283,7 +3391,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_39
     file_url = self.url_CVE_2018_39
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_39 available: " + filename)
     if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -3307,7 +3416,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_39
     file_url = self.url_CVE_2018_39
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_39 available: " + filename)
     if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
     exe = self.bins("unzzip-big")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -3326,7 +3436,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_39
     file_url = self.url_CVE_2018_39
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_39 available: " + filename)
     if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -3349,7 +3460,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_39
     file_url = self.url_CVE_2018_39
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_39 available: " + filename)
     if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -3369,7 +3481,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_39
     file_url = self.url_CVE_2018_39
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_39 available: " + filename)
     if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
     exe = self.bins("unzzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -3390,7 +3503,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_39
     file_url = self.url_CVE_2018_39
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_39 available: " + filename)
     if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
     shell("ls -l {tmpdir}/{filename}".format(**locals()))
     size = os.path.getsize(os.path.join(tmpdir, filename))
@@ -3403,7 +3517,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_40
     file_url = self.url_CVE_2018_40
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_40 available: " + filename)
     exe = self.bins("unzip")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [3])
@@ -3429,7 +3544,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_40
     file_url = self.url_CVE_2018_40
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_40 available: " + filename)
     if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
@@ -3455,7 +3571,8 @@ class ZZipTest(unittest.TestCase):
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_17828
     file_url = self.url_CVE_2018_17828
-    download_raw(file_url, filename, tmpdir)
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_40 available: " + filename)
     if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
     exe = self.bins("unzzip-mem")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
