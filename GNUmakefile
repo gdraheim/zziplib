@@ -21,8 +21,8 @@ nj ninja: ; rm -rf build-nj; $(MAKE) build-nj && cd build-nj && ninja
 build-cm2: ; mkdir build-cm2; cd build-cm2 && cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$$HOME/local -DZZIP_MANPAGES=OFF -DZZIP_INSTALL_BINS=OFF -DZZIP_TESTCVE=OFF
 cm2: ; rm -rf build-cm2; $(MAKE) build-cm2 && cd build-cm2 && $(MAKE) all
 cm2-install: ; cd build-cm2 && $(MAKE) install
-cm2-checks: ; cd build-cm2 && $(MAKE) checks
-cm2-check: ; cd build-cm2 && $(MAKE) check
+cm2-checks: ; cd build-cm2 && $(MAKE) checks VERBOSE=1
+cm2-check: ; cd build-cm2 && $(MAKE) check VERBOSE=1
 un uninstall: ; rm -rf $$HOME/local
 
 new: ; rm -rf build; $(MAKE) default
