@@ -34,6 +34,8 @@ mkzip = "zip"
 unzip = "unzip"
 exeext = ""
 bindir = os.path.join("..", "bins")
+downloaddir = "tmp.download"
+downloadonly = False
 
 def shell_string(command):
    return " ".join(["'%s'" % arg.replace("'","\\'") for arg in command])
@@ -119,7 +121,7 @@ def get_caller_caller_name():
 def download_raw(base_url, filename, into, style = "?raw=true"):
     return download(base_url, filename, into, style)
 def download(base_url, filename, into, style = ""):
-    data = "tmp.download"
+    data = downloaddir
     if not os.path.isdir(data):
         os.makedirs(data)
     subname = quote_plus(base_url)
@@ -3548,6 +3550,10 @@ class ZZipTest(unittest.TestCase):
 if __name__ == "__main__":
   import optparse
   _o = optparse.OptionParser("%prog [options] test_xxx")
+  _o.add_option("-D", "--downloadonly", action="store_true", default=downloadonly,
+    help="setup helper: get downloads only [%default]")
+  _o.add_option("-d", "--downloaddir", metavar="DIR", default=downloaddir,
+    help="put and get downloads from here [%default]")
   _o.add_option("-b", "--bindir", metavar="DIR", default=bindir,
     help="path to the bindir to use [%default]")
   _o.add_option("-s", "--topsrcdir", metavar="DIR", default=topsrcdir,
@@ -3566,6 +3572,8 @@ if __name__ == "__main__":
     help="increase logging output [%default]")
   opt, args = _o.parse_args()
   logging.basicConfig(level = logging.WARNING - 10 * opt.verbose)
+  downloadonly = opt.downloadonly
+  downloaddir = opt.downloaddir
   topsrcdir = opt.topsrcdir
   bindir = opt.bindir
   testdatdir = opt.testdatadir
