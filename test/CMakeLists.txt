@@ -64,7 +64,7 @@ add_custom_target(sfx ALL DEPENDS zzipshowme${EXEEXT})
 endif()
 
 add_custom_target(tests
-   COMMAND ${PY} ${srcdir}/zziptests.py --exeext=${EXEEXT} --topsrcdir=${topdir} -v ${TESTFLAGS}
+   COMMAND ${PY} ${srcdir}/zziptests.py --exeext=${EXEEXT} --topsrcdir=${topdir} -v ${TESTFLAGS} --downloads=${ZZIP_TESTCVE}
    DEPENDS ../bins/zzcat ../bins/zzdir ../bins/zziptest ../bins/zzxorcat ../bins/zzxorcopy)
 add_custom_command(OUTPUT ../bins/zzcat COMMMAND cd ../bins && $(MAKE) zzcat)
 add_custom_command(OUTPUT ../bins/zzdir COMMMAND cd ../bins && $(MAKE) zzdir)

@@ -36,6 +36,13 @@ exeext = ""
 bindir = os.path.join("..", "bins")
 downloaddir = "tmp.download"
 downloadonly = False
+nodownloads = False
+
+def yesno(text):
+    if not text: return False
+    if text.lower() in ["y", "yes", "t", "true", "on", "ok"]:
+        return True
+    return False
 
 def shell_string(command):
    return " ".join(["'%s'" % arg.replace("'","\\'") for arg in command])
@@ -121,6 +128,8 @@ def get_caller_caller_name():
 def download_raw(base_url, filename, into, style = "?raw=true"):
     return download(base_url, filename, into, style)
 def download(base_url, filename, into = None, style = ""):
+    if nodownloads:
+        return False
     data = downloaddir
     if not os.path.isdir(data):
         os.makedirs(data)
@@ -3672,6 +3681,9 @@ if __name__ == "__main__":
     help="setup helper: get downloads only [%default]")
   _o.add_option("-d", "--downloaddir", metavar="DIR", default=downloaddir,
     help="put and get downloads from here [%default]")
+  _o.add_option("-n", "--nodownloads", action="store_true", default=nodownloads,
+    help="no downloads / skipping CVE zip file tests [%default]")
+  _o.add_option("--downloads", metavar="YES", default="")
   _o.add_option("-b", "--bindir", metavar="DIR", default=bindir,
     help="path to the bindir to use [%default]")
   _o.add_option("-s", "--topsrcdir", metavar="DIR", default=topsrcdir,
@@ -3692,6 +3704,9 @@ if __name__ == "__main__":
   logging.basicConfig(level = logging.WARNING - 10 * opt.verbose)
   downloadonly = opt.downloadonly
   downloaddir = opt.downloaddir
+  nodownloads = yesno(opt.nodownloads)
+  if opt.downloads:
+    nodownloads = not yesno(opt.downloads)
   topsrcdir = opt.topsrcdir
   bindir = opt.bindir
   testdatdir = opt.testdatadir
