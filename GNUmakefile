@@ -17,6 +17,7 @@ build-nm: ; mkdir build-nj; cd build-nj && cmake .. -DCMAKE_INSTALL_PREFIX:PATH=
 am autom: ; rm -rf build-am; $(MAKE) build-am && cd build-am && $(MAKE) all
 cm cmake: ; rm -rf build-cm; $(MAKE) build-cm && cd build-cm && $(MAKE) all
 nj ninja: ; rm -rf build-nj; $(MAKE) build-nj && cd build-nj && ninja
+cm-install: ; cd build-cm && $(MAKE) install
 
 build-cm2: ; mkdir build-cm2; cd build-cm2 && cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$$HOME/local -DZZIP_MANPAGES=OFF -DZZIP_INSTALL_BINS=OFF -DZZIP_TESTCVE=OFF
 cm2: ; rm -rf build-cm2; $(MAKE) build-cm2 && cd build-cm2 && $(MAKE) all
