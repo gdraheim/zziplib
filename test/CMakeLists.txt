@@ -24,8 +24,17 @@ find_program ( MKZIP zip)
 set(EXEEXT ${CMAKE_EXECUTABLE_SUFFIX})
 set(README ${CMAKE_SOURCE_DIR}/README)
 set(PY ${PYTHON_EXECUTABLE})
+set(outdir ${CMAKE_CURRENT_BINARY_DIR})
 set(srcdir ${CMAKE_CURRENT_SOURCE_DIR})
 set(topdir ${CMAKE_SOURCE_DIR})
+
+# downloads ########################################################
+include(ExternalProject)
+ExternalProject_Add(zziptestdownloads
+   DOWNLOAD_COMMAND ${PY} ${srcdir}/zziptests.py --downloadonly -vv
+   CONFIGURE_COMMAND ""
+   BUILD_COMMAND ${CMAKE_COMMAND} -E create_symlink "${outdir}/zziptestdownloads-prefix/src/tmp.download" "${outdir}/tmp.download"
+   INSTALL_COMMAND "")
 
 # targets ########################################################
 add_executable(zzipself    zzipself.c)
