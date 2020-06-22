@@ -269,6 +269,10 @@ if(ZZIPCOMPAT)
     get_target_property(libversion libzzip VERSION)
     install(CODE "execute_process(COMMAND bash -c \"set -e
         cd $DESTDIR/${libdir}
+        if [ -f ${lib}${libname}${librelease}.${libversion}${dll} ]; then
+          # Fix for APPLE where dylib goes in the end
+          ln -s ${lib}${libname}${librelease}.${libversion}${dll} ${lib}${libname}${librelease}${dll}.${libversion}
+        fi
         [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
         echo -n .. Installing: `pwd`
         ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.10
@@ -290,6 +294,10 @@ if(ZZIPLIBTOOL)
     get_target_property(libversion libzzip VERSION)
     install(CODE "execute_process(COMMAND bash -c \"set -e
         cd $DESTDIR/${libdir}
+        if [ -f ${lib}${libname}${librelease}.${libversion}${dll} ]; then
+          # Fix for APPLE where dylib goes in the end
+          ln -s ${lib}${libname}${librelease}.${libversion}${dll} ${lib}${libname}${librelease}${dll}.${libversion}
+        fi
         [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
         echo -n .. Installing: `pwd`
         ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
@@ -299,6 +307,10 @@ if(ZZIPLIBTOOL)
     get_target_property(libversion libzzipfseeko VERSION)
     install(CODE "execute_process(COMMAND bash -c \"set -e
         cd $DESTDIR/${libdir}
+        if [ -f ${lib}${libname}${librelease}.${libversion}${dll} ]; then
+          # Fix for APPLE where dylib goes in the end
+          ln -s ${lib}${libname}${librelease}.${libversion}${dll} ${lib}${libname}${librelease}${dll}.${libversion}
+        fi
         [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
         echo -n .. Installing: `pwd`
         ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
@@ -308,6 +320,10 @@ if(ZZIPLIBTOOL)
     get_target_property(libversion libzzipmmapped VERSION)
     install(CODE "execute_process(COMMAND bash -c \"set -e
         cd $DESTDIR/${libdir}
+        if [ -f ${lib}${libname}${librelease}.${libversion}${dll} ]; then
+          # Fix for APPLE where dylib goes in the end
+          ln -s ${lib}${libname}${librelease}.${libversion}${dll} ${lib}${libname}${librelease}${dll}.${libversion}
+        fi
         [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
         echo -n .. Installing: `pwd`
         ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
