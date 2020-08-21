@@ -194,6 +194,7 @@ SET_TARGET_PROPERTIES(libzzipmmapped PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVE
 endif()
 
 if(ZZIPCOMPAT)
+find_package ( UnixCommands REQUIRED ) # bash
 add_custom_command(OUTPUT compat/zzip.h
    COMMAND ${BASH} -c "rm -rf compat; mkdir compat"
    COMMAND ${BASH} -c "echo '#ifndef ZZIP_WARNING'     > compat/zzip.h"
@@ -215,6 +216,7 @@ add_custom_target(compat ALL DEPENDS compat/zzip.h)
 endif()
 
 if(UNIX)
+find_package ( UnixCommands REQUIRED ) # bash
 join_paths(libdir "\${prefix}" "${CMAKE_INSTALL_LIBDIR}")
 join_paths(includedir "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
 add_custom_command(OUTPUT zziplib.pc
