@@ -47,6 +47,7 @@ endif()
 
 if(SDL_FOUND)
 if(UNIX)
+find_package ( UnixCommands REQUIRED ) # bash
 join_paths(libdir "\${prefix}" "${CMAKE_INSTALL_LIBDIR}")
 join_paths(includedir "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
 join_paths(pc_zzipsdldir "\${prefix}" "${zzipsdldir}")
