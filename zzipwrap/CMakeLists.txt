@@ -49,6 +49,7 @@ target_link_libraries(zzipwrap libzzipwrap )
 target_include_directories(zzipwrap PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 
 if(UNIX)
+find_package ( UnixCommands REQUIRED ) # bash
 join_paths(libdir "\${prefix}" "${CMAKE_INSTALL_LIBDIR}")
 join_paths(includedir "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
 add_custom_command(OUTPUT zzipwrap.pc
