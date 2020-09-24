@@ -26,6 +26,7 @@ set(README ${CMAKE_SOURCE_DIR}/README)
 set(PY ${PYTHON_EXECUTABLE})
 set(srcdir ${CMAKE_CURRENT_SOURCE_DIR})
 set(topdir ${CMAKE_SOURCE_DIR})
+set(bindir ${CMAKE_BINARY_DIR}/bins )
 
 # targets ########################################################
 add_executable(zzipself    zzipself.c)
@@ -52,13 +53,7 @@ add_custom_target(sfx ALL DEPENDS zzipshowme${EXEEXT})
 endif()
 
 add_custom_target(tests
-   COMMAND ${PY} ${srcdir}/zziptests.py --exeext=${EXEEXT} --topsrcdir=${topdir} -v ${TESTFLAGS}
-   DEPENDS ../bins/zzcat ../bins/zzdir ../bins/zziptest ../bins/zzxorcat ../bins/zzxorcopy)
-add_custom_command(OUTPUT ../bins/zzcat COMMMAND cd ../bins && $(MAKE) zzcat)
-add_custom_command(OUTPUT ../bins/zzdir COMMMAND cd ../bins && $(MAKE) zzdir)
-add_custom_command(OUTPUT ../bins/zziptest COMMMAND cd ../bins && $(MAKE) zziptest)
-add_custom_command(OUTPUT ../bins/zzxorcat COMMMAND cd ../bins && $(MAKE) zzxorcat)
-add_custom_command(OUTPUT ../bins/zzxorcopy COMMMAND cd ../bins && $(MAKE) zzxorcopy)
+   COMMAND ${PY} ${srcdir}/zziptests.py --exeext=${EXEEXT} --topsrcdir=${topdir} --bindir=${bindir} -v ${TESTFLAGS})
 
 add_custom_command(OUTPUT test0.zip
     COMMAND ${BASH} -c "test -d tmp || mkdir tmp"
@@ -70,7 +65,7 @@ add_custom_command(OUTPUT test0.zip
 add_custom_target(testzips ALL DEPENDS test0.zip)
 
 add_custom_target(checks
-    COMMAND ${BASH} -c "../bins/zzcat test/README > test.out"
+    COMMAND ${BASH} -c "${bindir}/zzcat test/README > test.out"
     COMMAND ${BASH} -c "if diff test.out ${README} >/dev/null \
        ; then rm test.out ; echo check OK; true \
        ; else rm test.out ; echo check FAIL ; false; fi"
