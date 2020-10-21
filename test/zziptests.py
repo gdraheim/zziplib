@@ -146,7 +146,10 @@ def download(base_url, filename, into = None, style = ""):
     if not os.path.exists(subfile):
        logg.info("need %s", subfile)
        try:
-           urlretrieve(base_url + "/" + filename + style, subfile)
+           url = base_url + "/" + filename + style
+           url = url.replace("/blob/", "/raw/")
+           logg.info("curl %s", url)
+           urlretrieve(url, subfile)
        except:
            # Ensure zero-length file exists in case we couldn't
            # download the file so that we won't try to
