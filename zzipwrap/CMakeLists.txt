@@ -1,16 +1,26 @@
 cmake_minimum_required (VERSION 3.1)
-project(zzipwrap VERSION "0.13.69" LANGUAGES C)
+project(zzipwrap VERSION "0.13.71" LANGUAGES C)
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMakeScripts")
 
 include ( CheckIncludeFiles )
 include ( GNUInstallDirs )
 include ( FindPkgConfig )
+include ( JoinPaths )
 
 # options ########################################################
 option(BUILD_SHARED_LIBS "Build a shared library" ON)
 option(BUILD_STATIC_LIBS "Build the static library" OFF)
 option(BUILD_TESTS "Build test programs" OFF)
 option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
-option(ZZIPLIBTOOL "Ensure binary compatibility with libtool" ON)
+
+if(UNIX)
+option(ZZIP_LIBTOOL "Ensure binary compatibility with libtool" ON)
+option(ZZIP_PKGCONFIG "Generate pkg-config files for linking" ON)
+else()
+option(ZZIP_LIBTOOL "Ensure binary compatibility with libtool" OFF)
+option(ZZIP_PKGCONFIG "Generate pkg-config files for linking" OFF)
+endif()
 
 check_include_files ( unistd.h ZZIP_HAVE_UNISTD_H )
 # set ( ZZIP_HAVE_ZLIB_H 1 )
@@ -45,15 +55,17 @@ add_executable(zzipwrap ${zzipwrap_SRCS} )
 target_link_libraries(zzipwrap libzzipwrap )
 target_include_directories(zzipwrap PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 
-if(UNIX)
+if(ZZIP_PKGCONFIG)
+join_paths(libdir "\${prefix}" "${CMAKE_INSTALL_LIBDIR}")
+join_paths(includedir "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
 add_custom_command(OUTPUT zzipwrap.pc
    COMMAND ${BASH} -c "echo 'prefix=${CMAKE_INSTALL_PREFIX}' > zzipwrap.pc"
-   COMMAND ${BASH} -c "echo 'libdir=\${prefix}/${CMAKE_INSTALL_LIBDIR}' >> zzipwrap.pc"
-   COMMAND ${BASH} -c "echo 'includedir=\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}' >> zzipwrap.pc"
+   COMMAND ${BASH} -c "echo 'libdir=${libdir}' >> zzipwrap.pc"
+   COMMAND ${BASH} -c "echo 'includedir=${includedir}' >> zzipwrap.pc"
    COMMAND ${BASH} -c "echo '' >> zzipwrap.pc"
    COMMAND ${BASH} -c "echo 'Name: ${PROJECT_NAME}' >> zzipwrap.pc"
-   COMMAND ${BASH} -c "echo 'Description: Callback Wrappers for ZZipLib' >> zzipwrap.c"
-   COMMAND ${BASH} -c "echo 'Version: ${VERSION}' >> zzipwrap.pc"
+   COMMAND ${BASH} -c "echo 'Version: ${PROJECT_VERSION}' >> zzipwrap.pc"
+   COMMAND ${BASH} -c "echo 'Description: Callback Wrappers for ZZipLib' >> zzipwrap.pc"
    COMMAND ${BASH} -c "echo 'Requires: zziplib' >> zzipwrap.pc"
    COMMAND ${BASH} -c "echo 'Libs: -L\${libdir} -lzzipwrap' >> zzipwrap.pc"
    COMMAND ${BASH} -c "echo 'Cflags: -I\${includedir}' >> zzipwrap.pc"
@@ -64,7 +76,7 @@ endif()
 # install ########################################################
 set(outdir ${CMAKE_CURRENT_BINARY_DIR})
 
-if(UNIX)
+if(ZZIP_PKGCONFIG)
 install(FILES ${outdir}/zzipwrap.pc 
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig" )
 endif()
@@ -74,11 +86,11 @@ install(TARGETS libzzipwrap
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
-if(ZZIPLIBTOOL)
+if(ZZIP_LIBTOOL)
   if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
     set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
     set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
-    set(libdir ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+    set(libdir ${CMAKE_INSTALL_FULL_LIBDIR})
     get_target_property(libname libzzipwrap OUTPUT_NAME)
     get_target_property(librelease libzzipwrap RELEASE_POSTFIX)
     get_target_property(libversion libzzipwrap VERSION)
@@ -90,3 +102,8 @@ if(ZZIPLIBTOOL)
         \")")
   endif()
 endif()
+
+# messages #######################################################
+
+message(STATUS "lib zzipwrap symlinks as by libtool: ${ZZIP_LIBTOOL}")
+message(STATUS "installing zzipwrap pkgconfig files: ${ZZIP_PKGCONFIG}")

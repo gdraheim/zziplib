@@ -1,7 +1,5 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 # -*- coding: UTF-8 -*-
-
-from __future__ import print_function
 
 from zzipdoc.match import Match
 
@@ -26,14 +24,14 @@ class DocbookDocument:
     def get_title(self):
         if self.title: return title
         try:   return self.text[0].get_title()
-        except Exception: pass
+        except Exception as e: pass
         return self.title
     def _xml_doctype(self, rootnode):
         return "<!DOCTYPE "+rootnode+self.docbook_dtd+">"
     def _xml_text(self, xml):
         """ accepts adapter objects with .xml_text() """
         try:   return xml.xml_text()
-        except Exception as e: print("DocbookDocument/text" + str(e)); pass
+        except Exception as e: print("DocbookDocument/text " + e); pass
         return str(xml)
     def _fetch_rootnode(self, text):
         fetch = Match(r"^[^<>]*<(\w+)\b")

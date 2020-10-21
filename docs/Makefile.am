@@ -26,7 +26,7 @@ EXTRA_DIST = make-doc.py $(doc_FILES) $(htm_FILES) $(SDL_RWOPS) \
              $(zzipdoc_FILES) sdocbook.css \
              zziplib-manpages.dbk zziplib-master.dbk \
              zziplib-manpages.tar
-CLEANFILES = *.pc *.omf *.tar *.html *.xml
+CLEANFILES = *.pc *.omf *.tar *.html *.xml changes.htm
 DISTCLEANFILES = zziplib.spec 
 
 zzipdoc_FILES = makedocs.py               zzipdoc/__init__.py \
