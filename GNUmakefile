@@ -3,11 +3,9 @@
 # the 'all' target is included from the 'configure'd Makefile
 
 default:
-	@ test -f Makefile || test -d build || (set -x ; mkdir build ; cd build && sh ../configure --prefix=$$HOME)
+	@ test -f Makefile || test -d build || (set -x ; mkdir build ; cd build && cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$$HOME/local)
 	@ test -f Makefile || test ! -f build/Makefile || (set -x ; cd build && $(MAKE) all)
-	@ test -f Makefile || test ! -f build/Makefile || echo 'DONE (cd build && make all) - please run (cd build && make check) now'
-	@ test ! -f Makefile || test -f build/Makefile || $(MAKE) all
-	@ test ! -f Makefile || test -f build/Makefile || echo 'DONE make all - please run make check (before make install)'
+	@ test -f Makefile || test ! -f build/Makefile || echo 'DONE (cd build && make all) - please run (cd build && make check VERBOSE=1) now'
 
 .PHONY: build-am build-cm
 build-am: ; mkdir build-am; cd build-am && sh ../configure --prefix=$$HOME/local --enable-sdl
@@ -44,8 +42,14 @@ boottrap:
 
 -include Makefile
 
-test_%: ; python3 testbuilds.py $@ -vv
+st_%: ; python3 testbuilds.py te$@ -vv
 tests:  ; python3 testbuilds.py -vv
+test_%: ; cd build/test && python3 ../../test/zziptests.py $@ -vv
+downloads:
+	- rm -rf test/tmp.download build/test/tmp.download
+	cd build/test && python3 ../../test/zziptests.py --downloadonly -vv
+check: ; cd build/test && make check VERBOSE=1
+checks: ; cd build/test && make checks VERBOSE=1
 
 version:
 	oldv=`sed -e '/zziplib.VERSION/!d' -e 's:.*zziplib.VERSION."::' -e 's:".*::' CMakeLists.txt` \
