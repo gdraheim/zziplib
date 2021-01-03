@@ -184,7 +184,7 @@ class ZZiplibBuildTest(unittest.TestCase):
             if os.path.isdir(subdir):
                 logg.info("rm -rf %s", subdir)
                 shutil.rmtree(subdir)
-        for filename in ("tmp.local.tgz"):
+        for filename in ("tmp.local.tgz", "docs/htmpages.tar", "docs/manpages.tar", "docs/zziplib.xml", "docs/zzipmmapped.xml", "docs/zzipfseeko.xml"):
             if os.path.isfile(filename):
                 logg.info("rm %s", filename)
                 os.remove(filename)
