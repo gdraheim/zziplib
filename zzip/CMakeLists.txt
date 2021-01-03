@@ -21,13 +21,19 @@ option(ZZIPFSEEKO "Build libzzipfseeko (based on posix.1 api)" ON)
 option(ZZIPCOMPAT "Build compatibility with old libzzip releases" ON)
 option(ZZIPLIBTOOL "Ensure binary compatibility with libtool" ON)
 
+if(UNIX)
+option(ZZIP_PKGCONFIG "Install pkgconfig include .pc files" ON)
+else()
+option(ZZIP_PKGCONFIG "Install pkgconfig include .pc files" OFF)
+endif()
+
 # used in zzip/_config.h
 set(ZZIP_PACKAGE "${PROJECT_NAME}lib")
 set(ZZIP_VERSION "${PROJECT_VERSION}")
 set(ZZIP_PACKAGE_NAME "${PROJECT_NAME}lib")
 set(ZZIP_PACKAGE_VERSION "${PROJECT_VERSION}")
 
-if(ZZIPCOMPAT)
+if(ZZIPCOMPAT OR ZZIP_PKGCONFIG)
 find_package ( UnixCommands REQUIRED ) # bash cp mv rm gzip tar
 endif()
 
@@ -215,7 +221,7 @@ add_custom_command(OUTPUT compat/zzip.h
 add_custom_target(compat ALL DEPENDS compat/zzip.h)
 endif()
 
-if(UNIX)
+if(ZZIP_PKGCONFIG)
 join_paths(libdir "\${prefix}" "${CMAKE_INSTALL_LIBDIR}")
 join_paths(includedir "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
 add_custom_command(OUTPUT zziplib.pc
@@ -241,7 +247,7 @@ endif()
 # install ########################################################
 set(outdir ${CMAKE_CURRENT_BINARY_DIR})
 
-if(UNIX)
+if(ZZIP_PKGCONFIG)
 install(FILES ${outdir}/zziplib.pc ${outdir}/zzipmmapped.pc ${outdir}/zzipfseeko.pc
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig" )
 endif()
