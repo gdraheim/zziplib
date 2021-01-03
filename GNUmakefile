@@ -2,54 +2,45 @@
 
 # the 'all' target is included from the 'configure'd Makefile
 
-default:
-	@ test -f Makefile || test -d build || (set -x ; mkdir build ; cd build && cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$$HOME/local)
-	@ test -f Makefile || test ! -f build/Makefile || (set -x ; cd build && $(MAKE) all)
-	@ test -f Makefile || test ! -f build/Makefile || echo 'DONE (cd build && make all) - please run (cd build && make check VERBOSE=1) now'
+BUILDSOURCES=..
+BUILD=build
+CMAKE=cmake
+NINJA=ninja
+PREFIX=$$HOME/local
 
-.PHONY: build-am build-cm
-build-am: ; mkdir build-am; cd build-am && sh ../configure --prefix=$$HOME/local --enable-sdl
-build-cm: ; mkdir build-cm; cd build-cm && cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$$HOME/local
-build-nj: ; mkdir build-nj; cd build-nj && cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$$HOME/local -GNinja
-build-nm: ; mkdir build-nj; cd build-nj && cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$$HOME/local -GNmake
-am autom: ; rm -rf build-am; $(MAKE) build-am && cd build-am && $(MAKE) all
-cm cmake: ; rm -rf build-cm; $(MAKE) build-cm && cd build-cm && $(MAKE) all
-nj ninja: ; rm -rf build-nj; $(MAKE) build-nj && cd build-nj && ninja
-cm-install: ; cd build-cm && $(MAKE) install
+.PHONY: build docs bins test
 
-build-cm2: ; mkdir build-cm2; cd build-cm2 && cmake .. -DCMAKE_INSTALL_PREFIX:PATH=$$HOME/local -DZZIP_MANPAGES=OFF -DZZIP_INSTALL_BINS=OFF -DZZIP_TESTCVE=OFF
-cm2: ; rm -rf build-cm2; $(MAKE) build-cm2 && cd build-cm2 && $(MAKE) all
-cm2-install: ; cd build-cm2 && $(MAKE) install
-cm2-checks: ; cd build-cm2 && $(MAKE) checks VERBOSE=1
-cm2-check: ; cd build-cm2 && $(MAKE) check VERBOSE=1
-un uninstall: ; rm -rf $$HOME/local
+default: build
+build:
+	@ test -f Makefile || test -d $(BUILD) || (set -x ; mkdir $(BUILD) ; cd $(BUILD) && $(CMAKE) $(BUILDSOURCES) -DCMAKE_INSTALL_PREFIX:PATH=$(PREFIX) $(OPTIONS))
+	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/Makefile || (set -x ; cd $(BUILD) && $(MAKE) all)
+	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/rules.ninja || (set -x ; cd $(BUILD) && $(NINJA) all)
+	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/Makefile || echo 'DONE (cd $(BUILD) && $(MAKE) all) - please run (cd $(BUILD) && $(MAKE) check VERBOSE=1) now'
+	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/rules.ninja || echo 'DONE (cd $(BUILD) && $(NINJA) all) - please run (cd $(BUILD) && $(NINJA) check) now'
 
-new: ; rm -rf build; $(MAKE) default
+new: ; rm -rf $(BUILD); $(MAKE) build
 
-auto:
-	aclocal -I m4 && autoconf -I m4 && autoheader && automake
+ninja: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-GNinja
+nmake: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-GNmake
+cmake: ; rm -rf $(BUILD) && $(MAKE) build "OPTIONS=-DZZIP_MANPAGES=OFF -DZZIP_INSTALL_BINS=OFF -DZZIP_TESTCVE=OFF"
 
-boottrap:
-	rm -rf .deps .libs
-	rm -f config.guess config.sub stamp-h.in
-	rm -f install-sh ltconfig ltmain.sh depcomp mkinstalldirs
-	rm -f config.h config.h.in config.log config.cache configure
-	rm -f aclocal.m4 Makefile Makefile.in
-	aclocal 
-	autoconf 
-	autoheader 
-	automake -a -c 
+check checks:
+	@ test ! -f $(BUILD)/Makefile    || (set -x; cd $(BUILD) && $(MAKE) $@ VERBOSE=1)
+	@ test ! -f $(BUILD)/rules.ninja || (set -x; cd $(BUILD) && $(NINJA) $@)
+install docs:
+	@ test ! -f $(BUILD)/Make        || (set -x; cd $(BUILD) && $(MAKE) $@)
+	@ test ! -f $(BUILD)/rules.ninja || (set -x; cd $(BUILD) && $(NINJA) $@)
 
--include Makefile
+un uninstalls:
+	@ case "$(PREFIX)" in */local) echo rm -rf "'$(PREFIX)'" ; rm -rf "$(PREFIX)" ;; *) echo skipped rm -rf "'$(PREFIX)'" ;; esac
 
 st_%: ; python3 testbuilds.py te$@ -vv
 tests:  ; python3 testbuilds.py -vv
 test_%: ; cd build/test && python3 ../../test/zziptests.py $@ -vv
+
 downloads:
 	- rm -rf test/tmp.download build/test/tmp.download
 	cd build/test && python3 ../../test/zziptests.py --downloadonly -vv
-check: ; cd build/test && make check VERBOSE=1
-checks: ; cd build/test && make checks VERBOSE=1
 
 version:
 	oldv=`sed -e '/zziplib.VERSION/!d' -e 's:.*zziplib.VERSION."::' -e 's:".*::' CMakeLists.txt` \
