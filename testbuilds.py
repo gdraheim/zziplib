@@ -178,6 +178,16 @@ class ZZiplibBuildTest(unittest.TestCase):
             shutil.rmtree(newdir)
         os.makedirs(newdir)
         return newdir
+    def rm_old(self, testname = None):
+        testname = testname or self.caller_testname()
+        for subdir in ("docs/man3", "docs/html"):
+            if os.path.isdir(subdir):
+                logg.info("rm -rf %s", subdir)
+                shutil.rmtree(subdir)
+        for filename in ("tmp.local.tgz"):
+            if os.path.isfile(filename):
+                logg.info("rm %s", filename)
+                os.remove(filename)
     def rm_testdir(self, testname = None):
         testname = testname or self.caller_testname()
         newdir = "tmp/tmp."+testname
@@ -372,6 +382,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.with_local_centos_mirror()
     def test_201_centos7_automake_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/centos7-am-build.dockerfile"
@@ -413,6 +425,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_202_centos8_automake_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/centos8-am-build.dockerfile"
@@ -454,6 +468,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_211_centos7_cmake_build_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/centos7-cm-build.dockerfile"
@@ -495,6 +511,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_212_centos8_cmake_build_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/centos8-cm-build.dockerfile"
@@ -536,6 +554,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_221_ubuntu16_cmake_build_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/ubuntu16-cm-build.dockerfile"
@@ -577,6 +597,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_222_ubuntu18_cmake_build_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/ubuntu18-cm-build.dockerfile"
@@ -618,6 +640,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_225_ubuntu16_32bit_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/ubuntu16-32bit.dockerfile"
@@ -659,6 +683,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_231_opensuse15_cmake_build_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/opensuse15-cm-build.dockerfile"
@@ -702,6 +728,8 @@ class ZZiplibBuildTest(unittest.TestCase):
     def test_251_windows_static_x64_dockerfile(self):
         logg.warning("     windows-static-x64 compiles fine but segfaults on linking an .exe")
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/windows-static-x64.dockerfile"
@@ -734,6 +762,8 @@ class ZZiplibBuildTest(unittest.TestCase):
     def test_252_windows_shared_x64_dockerfile(self):
         logg.warning("     windows-shared-x64 compiles fine but segfaults on linking an .exe")
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/windows-shared-x64.dockerfile"
@@ -764,6 +794,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_301_centos7_automake_sdl2_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/centos7-am-sdl2.dockerfile"
@@ -800,6 +832,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_302_centos8_automake_sdl2_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/centos8-am-sdl2.dockerfile"
@@ -836,6 +870,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_311_centos7_cmake_sdl2_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/centos7-cm-sdl2.dockerfile"
@@ -872,6 +908,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_312_centos8_cmake_sdl2_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/centos8-cm-sdl2.dockerfile"
@@ -908,6 +946,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_321_ubuntu18_cmake_sdl2_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/ubuntu16-cm-sdl2.dockerfile"
@@ -944,6 +984,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_331_opensuse15_cmake_sdl2_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/opensuse15-cm-sdl2.dockerfile"
@@ -980,6 +1022,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_411_centos7_cmake_sdl2_destdir_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/centos7-cm-destdir-sdl2.dockerfile"
@@ -1016,6 +1060,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_412_centos8_cmake_sdl2_destdir_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/centos8-cm-destdir-sdl2.dockerfile"
@@ -1052,6 +1098,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_421_ubuntu16_azure_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/ubuntu16-azure.dockerfile"
@@ -1082,6 +1130,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_431_opensuse15_ninja_sdl2_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/opensuse15-nj-sdl2.dockerfile"
@@ -1118,6 +1168,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_701_centos7_am_docs_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/centos7-am-docs.dockerfile"
@@ -1156,6 +1208,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_711_centos7_cmake_docs_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/centos7-cm-docs.dockerfile"
@@ -1194,6 +1248,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_911_centos7_am_cm_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname1=self.testname() + "_am"
         testname2=self.testname() + "_cm"
         testdir = self.testdir()
@@ -1261,6 +1317,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_912_centos8_am_cm_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname1=self.testname() + "_am"
         testname2=self.testname() + "_cm"
         testdir = self.testdir()
@@ -1328,6 +1386,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_931_centos7_am_cm_sdl2_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname1=self.testname() + "_am"
         testname2=self.testname() + "_cm"
         testdir = self.testdir()
@@ -1395,6 +1455,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_932_centos7_am_cm_sdl2_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname1=self.testname() + "_am"
         testname2=self.testname() + "_cm"
         testdir = self.testdir()
@@ -1462,6 +1524,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_941_centos7_cm_sdl2_or_destdir_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname1=self.testname() + "_usr"
         testname2=self.testname() + "_new"
         testdir = self.testdir()
@@ -1516,6 +1580,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_942_centos7_cm_sdl2_or_destdir_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname1=self.testname() + "_usr"
         testname2=self.testname() + "_new"
         testdir = self.testdir()
@@ -1570,6 +1636,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_963_opensuse_cm_or_nj_sdl2_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname1=self.testname() + "_cm"
         testname2=self.testname() + "_nj"
         testdir = self.testdir()
@@ -1619,6 +1687,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
     def test_977_centos7_am_cm_docs_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
         testname1=self.testname() + "_am"
         testname2=self.testname() + "_cm"
         testdir = self.testdir()
