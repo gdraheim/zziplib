@@ -723,6 +723,7 @@ class ZZipTest(unittest.TestCase):
   #####################################################################
   def test_20400_infozip_cat_test0_zip(self):
     """ run inzo-zip cat test.zip using just archive README """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     zipfile = "test0.zip"
     getfile = "README"
     logfile = "test0.readme.pk.txt"
@@ -732,6 +733,7 @@ class ZZipTest(unittest.TestCase):
     self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
   def test_20401_infozip_cat_test1_zip(self):
     """ run info-zip cat test.zip using just archive README """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     zipfile = "test1.zip"
     getfile = "README"
     logfile = "test1.readme.pk.txt"
@@ -744,6 +746,7 @@ class ZZipTest(unittest.TestCase):
     self.assertEqual("file-1\n", run.output)
   def test_20402_infozip_cat_test2_zip(self):
     """ run info-zip cat test.zip using just archive README """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     zipfile = "test2.zip"
     getfile = "README"
     logfile = "test2.readme.pk.txt"
@@ -756,6 +759,7 @@ class ZZipTest(unittest.TestCase):
     self.assertEqual("file-22\n", run.output)
   def test_20405_zzcat_big_test5_zip(self):
     """ run info-zip cat test.zip using archive README """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     zipfile = "test5.zip"
     getfile = "README"
     logfile = "test5.readme.pk.txt"
@@ -1026,6 +1030,7 @@ class ZZipTest(unittest.TestCase):
 
   def test_20500_infozipdir_test0_zip(self):
     """ run info-zip dir test0.zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     zipfile = "test0.zip"
     getfile = "test0.zip"
     exe = self.bins("unzip")
@@ -1034,6 +1039,7 @@ class ZZipTest(unittest.TestCase):
     self.assertLess(len(run.output), 230)
   def test_20501_infozipdir_test1_zip(self):
     """ run info-zip dir test1.zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     zipfile = "test1.zip"
     getfile = "test1.zip"
     exe = self.bins("unzip")
@@ -1044,6 +1050,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' README\n', run.output)
   def test_20502_infozipdir_big_test2_zip(self):
     """ run info-zip dir test2.zip """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     zipfile = "test2.zip"
     getfile = "test2.zip"
     exe = self.bins("unzip")
@@ -1053,6 +1060,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' file.99\n', run.output)
   def test_20503_infozipdir_big_test3_zip(self):
     """ run info-zip dir test3.zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     zipfile = "test3.zip"
     getfile = "test3.zip"
     exe = self.bins("unzip")
@@ -1062,6 +1070,7 @@ class ZZipTest(unittest.TestCase):
     self.assertIn(' file.999\n', run.output)
   def test_20504_infozipdir_big_test4_zip(self):
     """ run info-zip dir test4.zip """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     zipfile = "test4.zip"
     getfile = "test4.zip"
     exe = self.bins("unzip")
@@ -1343,6 +1352,7 @@ class ZZipTest(unittest.TestCase):
   zip_CVE_2017_5977 = "00153-zziplib-invalidread-zzip_mem_entry_extra_block"
   def test_59770_infozipdir_CVE_2017_5977(self):
     """ run info-zip dir test0.zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5977
     file_url = self.url_CVE_2017_5977
@@ -1456,6 +1466,7 @@ class ZZipTest(unittest.TestCase):
   zip_CVE_2017_5978 = "00156-zziplib-oobread-zzip_mem_entry_new"
   def test_59780_infozipdir_CVE_2017_5978(self):
     """ run info-zip dir test0.zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5978
     file_url = self.url_CVE_2017_5978
@@ -1579,6 +1590,7 @@ class ZZipTest(unittest.TestCase):
   zip_CVE_2017_5979 = "00157-zziplib-nullptr-prescan_entry"
   def test_59790_infozipdir_CVE_2017_5979(self):
     """ run info-zip dir test0.zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5979
     file_url = self.url_CVE_2017_5979
@@ -1694,6 +1706,7 @@ class ZZipTest(unittest.TestCase):
   zip_CVE_2017_5974 = "00150-zziplib-heapoverflow-__zzip_get32"
   def test_59740_infozipdir_CVE_2017_5974(self):
     """ run info-zip dir test0.zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5974
     file_url = self.url_CVE_2017_5974
@@ -1808,6 +1821,7 @@ class ZZipTest(unittest.TestCase):
   zip_CVE_2017_5975 = "00151-zziplib-heapoverflow-__zzip_get64"
   def test_59750_infozipdir_CVE_2017_5975(self):
     """ run info-zip dir test0.zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5975
     file_url = self.url_CVE_2017_5975
@@ -1931,6 +1945,7 @@ class ZZipTest(unittest.TestCase):
   zip_CVE_2017_5976 = "00152-zziplib-heapoverflow-zzip_mem_entry_extra_block"
   def test_59760_infozipdir_CVE_2017_5976(self):
     """ run info-zip dir test0.zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5976
     file_url = self.url_CVE_2017_5976
@@ -2050,6 +2065,7 @@ class ZZipTest(unittest.TestCase):
   zip_CVE_2017_5980 = "00154-zziplib-nullptr-zzip_mem_entry_new"
   def test_59800_infozipdir_CVE_2017_5980(self):
     """ run info-zip dir test0.zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5980
     file_url = self.url_CVE_2017_5980
@@ -2172,6 +2188,7 @@ class ZZipTest(unittest.TestCase):
   zip_CVE_2017_5981 = "00161-zziplib-assertionfailure-seeko_C"
   def test_59810_infozipdir_CVE_2017_5981(self):
     """ run info-zip dir test0.zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     tmpdir = self.testdir()
     filename = self.zip_CVE_2017_5981
     file_url = self.url_CVE_2017_5981
@@ -2289,6 +2306,7 @@ class ZZipTest(unittest.TestCase):
   zip_CVE_2018_10 = "zziplib_0-13-67_zzdir_invalid-memory-access_main.zip"
   def test_63010(self):
     """ info unzip -l $(CVE).zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_10
     file_url = self.url_CVE_2018_10
@@ -2418,6 +2436,7 @@ class ZZipTest(unittest.TestCase):
   zip_CVE_2018_11 = "zziplib_0-13-67_unzzip_infinite-loop_unzzip_cat_file.zip"
   def test_63110(self):
     """ info unzip -l $(CVE).zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_11
     file_url = self.url_CVE_2018_11
@@ -2537,6 +2556,7 @@ class ZZipTest(unittest.TestCase):
   zip_CVE_2018_12 = "zziplib_0-13-67_unzip-mem_buffer-access-with-incorrect-length-value_zzip_disk_fread.zip"
   def test_63810(self):
     """ info unzip -l $(CVE).zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_12
     file_url = self.url_CVE_2018_12
@@ -2654,6 +2674,7 @@ class ZZipTest(unittest.TestCase):
   zip_CVE_2018_14 = "zziplib_0-13-67_zzdir_memory-alignment-errors___zzip_fetch_disk_trailer.zip"
   def test_64840(self):
     """ info unzip -l $(CVE).zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_14
     file_url = self.url_CVE_2018_14
@@ -2784,6 +2805,7 @@ class ZZipTest(unittest.TestCase):
   zip_CVE_2018_15 = "zziplib_0-13-67_unzip-mem_memory-alignment-errors_zzip_disk_findfirst.zip"
   def test_65400(self):
     """ info unzip -l $(CVE).zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_15
     file_url = self.url_CVE_2018_15
@@ -2900,6 +2922,7 @@ class ZZipTest(unittest.TestCase):
   zip_CVE_2018_16 = "zziplib_0-13-67_unzzip_memory-aligment-errors___zzip_fetch_disk_trailer.zip"
   def test_65410(self):
     """ info unzip -l $(CVE).zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_16
     file_url = self.url_CVE_2018_16
@@ -3021,6 +3044,7 @@ class ZZipTest(unittest.TestCase):
   zip_CVE_2018_17 = "zziplib_0-13-67_unzip-mem_memory-alignment-errors_zzip_disk_findfirst_64.zip"
   def test_65420(self):
     """ info unzip -l $(CVE).zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_17
     file_url = self.url_CVE_2018_17
@@ -3140,6 +3164,7 @@ class ZZipTest(unittest.TestCase):
   zip_CVE_2018_42 = "c006-unknown-add-main"
   def test_65430(self):
     """ info unzip -l $(CVE).zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_42
     file_url = self.url_CVE_2018_42
@@ -3180,6 +3205,7 @@ class ZZipTest(unittest.TestCase):
   zip_CVE_2018_43 = "c008-main-unknown-de"
   def test_65440(self):
     """ info unzip -l $(CVE).zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_43
     file_url = self.url_CVE_2018_43
@@ -3225,6 +3251,7 @@ class ZZipTest(unittest.TestCase):
   zip_CVE_2018_27_size = 56
   def test_65450(self):
     """ info unzip -l $(CVE).zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_27
     file_url = self.url_CVE_2018_27
@@ -3361,6 +3388,7 @@ class ZZipTest(unittest.TestCase):
   zip_CVE_2018_41 = "c005-bus-zzip_parse_root_directory" # CVE-2018-7726.
   def test_65460(self):
     """ info unzip -l $(CVE).zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_41
     file_url = self.url_CVE_2018_41
@@ -3401,6 +3429,7 @@ class ZZipTest(unittest.TestCase):
   zip_CVE_2018_39 = "003-unknow-def-zip"
   def test_65470(self):
     """ info unzip -l $(CVE).zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_39
     file_url = self.url_CVE_2018_39
@@ -3527,6 +3556,7 @@ class ZZipTest(unittest.TestCase):
   zip_CVE_2018_40 = "002-mem-leaks-zip"
   def test_65480(self):
     """ info unzip -l $(CVE).zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
     tmpdir = self.testdir()
     filename = self.zip_CVE_2018_40
     file_url = self.url_CVE_2018_40
@@ -3718,8 +3748,9 @@ if __name__ == "__main__":
      logg.error("  no infozip 'zip' found, expect failing tests (given -Z %s)", opt.mkzip)
   else:
      mkzip = opt.mkzip
-  if opt.unzip.endswith("-NOTFOUND"):
-     logg.error("no infozip 'unzip' found, expect failing tests (given -U %s)", opt.unzip)
+  if opt.unzip.endswith("-NOTFOUND") or len(opt.unzip) < 3:
+     logg.error("no infozip 'unzip' found, expect skipped tests (given -U %s)", opt.unzip)
+     unzip_skip = True
   else:
      unzip = opt.unzip
   exeext = opt.exeext
