@@ -50,6 +50,7 @@ target_include_directories(libzzipwrap PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_BI
 
 set_target_properties(libzzipwrap PROPERTIES OUTPUT_NAME "zzipwrap" RELEASE_POSTFIX "-${RELNUM}")
 SET_TARGET_PROPERTIES(libzzipwrap PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
+set_target_properties(libzzipwrap PROPERTIES DEFINE_SYMBOL "libzzip_EXPORTS")
 
 add_executable(zzipwrap ${zzipwrap_SRCS} )
 target_link_libraries(zzipwrap libzzipwrap )
