@@ -1253,8 +1253,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname1=self.testname() + "_am"
         testname2=self.testname() + "_cm"
         testdir = self.testdir()
-        dockerfile1="testbuilds/centos7-am-build.dockerfile"
-        dockerfile2="testbuilds/centos7-cm-build.dockerfile"
+        dockerfile1="testbuilds/centos7-am-build.dockerfile" # make st_201
+        dockerfile2="testbuilds/centos7-cm-build.dockerfile" # make st_211
         addhosts = self.local_addhosts(dockerfile1)
         savename1 = docname(dockerfile1)
         savename2 = docname(dockerfile2)
@@ -1322,8 +1322,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname1=self.testname() + "_am"
         testname2=self.testname() + "_cm"
         testdir = self.testdir()
-        dockerfile1="testbuilds/centos8-am-build.dockerfile"
-        dockerfile2="testbuilds/centos8-cm-build.dockerfile"
+        dockerfile1="testbuilds/centos8-am-build.dockerfile" # make st_202
+        dockerfile2="testbuilds/centos8-cm-build.dockerfile" # make st_212
         addhosts = self.local_addhosts(dockerfile1)
         savename1 = docname(dockerfile1)
         savename2 = docname(dockerfile2)
@@ -1391,8 +1391,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname1=self.testname() + "_am"
         testname2=self.testname() + "_cm"
         testdir = self.testdir()
-        dockerfile1="testbuilds/centos7-am-sdl2.dockerfile"
-        dockerfile2="testbuilds/centos7-cm-sdl2.dockerfile"
+        dockerfile1="testbuilds/centos7-am-sdl2.dockerfile" # make st_301
+        dockerfile2="testbuilds/centos7-cm-sdl2.dockerfile" # make st_311
         addhosts = self.local_addhosts(dockerfile1)
         savename1 = docname(dockerfile1)
         savename2 = docname(dockerfile2)
@@ -1460,8 +1460,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname1=self.testname() + "_am"
         testname2=self.testname() + "_cm"
         testdir = self.testdir()
-        dockerfile1="testbuilds/centos8-am-sdl2.dockerfile"
-        dockerfile2="testbuilds/centos8-cm-sdl2.dockerfile"
+        dockerfile1="testbuilds/centos8-am-sdl2.dockerfile" # make st_302
+        dockerfile2="testbuilds/centos8-cm-sdl2.dockerfile" # make st_312
         addhosts = self.local_addhosts(dockerfile1)
         savename1 = docname(dockerfile1)
         savename2 = docname(dockerfile2)
@@ -1529,8 +1529,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname1=self.testname() + "_usr"
         testname2=self.testname() + "_new"
         testdir = self.testdir()
-        dockerfile1="testbuilds/centos7-cm-sdl2.dockerfile"
-        dockerfile2="testbuilds/centos7-cm-destdir-sdl2.dockerfile"
+        dockerfile1="testbuilds/centos7-cm-sdl2.dockerfile"          # make st_311
+        dockerfile2="testbuilds/centos7-cm-destdir-sdl2.dockerfile"  # make st_411
         addhosts = self.local_addhosts(dockerfile1)
         savename1 = docname(dockerfile1)
         savename2 = docname(dockerfile2)
@@ -1585,8 +1585,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname1=self.testname() + "_usr"
         testname2=self.testname() + "_new"
         testdir = self.testdir()
-        dockerfile1="testbuilds/centos8-cm-sdl2.dockerfile"
-        dockerfile2="testbuilds/centos8-cm-destdir-sdl2.dockerfile"
+        dockerfile1="testbuilds/centos8-cm-sdl2.dockerfile"          # make st_312
+        dockerfile2="testbuilds/centos8-cm-destdir-sdl2.dockerfile"  # make st_412
         addhosts = self.local_addhosts(dockerfile1)
         savename1 = docname(dockerfile1)
         savename2 = docname(dockerfile2)
@@ -1641,8 +1641,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname1=self.testname() + "_cm"
         testname2=self.testname() + "_nj"
         testdir = self.testdir()
-        dockerfile1="testbuilds/opensuse15-cm-sdl2.dockerfile"
-        dockerfile2="testbuilds/opensuse15-nj-sdl2.dockerfile"
+        dockerfile1="testbuilds/opensuse15-cm-sdl2.dockerfile"  # make st_331
+        dockerfile2="testbuilds/opensuse15-nj-sdl2.dockerfile"  # make st_431
         addhosts = self.local_addhosts(dockerfile1)
         savename1 = docname(dockerfile1)
         savename2 = docname(dockerfile2)
