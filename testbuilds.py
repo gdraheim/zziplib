@@ -1326,10 +1326,10 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_9311_centos7_automake_sdl2_dockerfile(self):
+    def test_931_centos7_am_cm_sdl2_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
-        testname1=self.testname() + "_1"
-        testname2=self.testname() + "_2"
+        testname1=self.testname() + "_am"
+        testname2=self.testname() + "_cm"
         testdir = self.testdir()
         dockerfile1="testbuilds/centos7-am-sdl2.dockerfile"
         dockerfile2="testbuilds/centos7-cm-sdl2.dockerfile"
@@ -1383,6 +1383,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname1} diff -urw --no-dereference /usr/local /new/local --exclude _config.h"
         sx____(cmd.format(**locals()))
         out = output(cmd.format(**locals()))
+        if "---" in out or "Only" in out:
+            logg.warning("out>>\n%s", out)
         self.assertFalse(greps(out, "---"))
         self.assertFalse(greps(out, "Only"))
         #
@@ -1391,10 +1393,10 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_9312_centos7_automake_sdl2_dockerfile(self):
+    def test_932_centos7_am_cm_sdl2_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
-        testname1=self.testname() + "_1"
-        testname2=self.testname() + "_2"
+        testname1=self.testname() + "_am"
+        testname2=self.testname() + "_cm"
         testdir = self.testdir()
         dockerfile1="testbuilds/centos8-am-sdl2.dockerfile"
         dockerfile2="testbuilds/centos8-cm-sdl2.dockerfile"
@@ -1448,6 +1450,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname1} diff -urw --no-dereference /usr/local /new/local --exclude _config.h"
         sx____(cmd.format(**locals()))
         out = output(cmd.format(**locals()))
+        if "---" in out or "Only" in out:
+            logg.warning("out>>\n%s", out)
         self.assertFalse(greps(out, "---"))
         self.assertFalse(greps(out, "Only"))
         #
