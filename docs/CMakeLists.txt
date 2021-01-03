@@ -126,7 +126,7 @@ add_custom_command(OUTPUT manpages.tar
     COMMAND ${BASH} -c "test -d man3/man3 && mv man3 man3_; test -d man3_/man3 && mv man3_/man3 .; rm -rf man3_"
     COMMAND ${BASH} -c "chmod 664 man3/*.3"
     COMMAND ${BASH} -c "tar cf manpages.tar man3"
-    COMMAND ${BASH} -c "ls -l `pwd`/manpages.tar `pwd`/htmpages.tar >&2 || true"
+    COMMAND ${BASH} -c "ls -l `pwd`/manpages.tar >&2 || true"
     DEPENDS zziplib.xml zzipmmapped.xml zzipfseeko.xml
     VERBATIM)
 add_custom_command(OUTPUT htmpages.tar
@@ -136,7 +136,7 @@ add_custom_command(OUTPUT htmpages.tar
     COMMAND ${PY} ${srcdir}/dbk2man.py -o html html zzipfseeko.xml
     COMMAND ${PY} ${srcdir}/dir2index.py -o html html
     COMMAND ${BASH} -c "tar cf htmpages.tar html/*.*"
-    COMMAND ${BASH} -c "ls -l `pwd`/htmpages.tar `pwd`/manpages.tar >&2 || true"
+    COMMAND ${BASH} -c "ls -l `pwd`/htmpages.tar || true"
     DEPENDS zziplib.xml zzipmmapped.xml zzipfseeko.xml
     VERBATIM)
 
