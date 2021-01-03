@@ -452,11 +452,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_211_centos7_build_dockerfile(self):
+    def test_211_centos7_cmake_build_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         testname=self.testname()
         testdir = self.testdir()
-        dockerfile="testbuilds/centos7-build.dockerfile"
+        dockerfile="testbuilds/centos7-cm-build.dockerfile"
         addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
         saveto = SAVETO
@@ -493,11 +493,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_212_centos8_build_dockerfile(self):
+    def test_212_centos8_cmake_build_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         testname=self.testname()
         testdir = self.testdir()
-        dockerfile="testbuilds/centos8-build.dockerfile"
+        dockerfile="testbuilds/centos8-cm-build.dockerfile"
         addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
         saveto = SAVETO
@@ -834,11 +834,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_311_centos7_sdl2_dockerfile(self):
+    def test_311_centos7_cmake_sdl2_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         testname=self.testname()
         testdir = self.testdir()
-        dockerfile="testbuilds/centos7-sdl2.dockerfile"
+        dockerfile="testbuilds/centos7-cm-sdl2.dockerfile"
         addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
         saveto = SAVETO
@@ -870,11 +870,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_312_centos8_sdl2_dockerfile(self):
+    def test_312_centos8_cmake_sdl2_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         testname=self.testname()
         testdir = self.testdir()
-        dockerfile="testbuilds/centos8-sdl2.dockerfile"
+        dockerfile="testbuilds/centos8-cm-sdl2.dockerfile"
         addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
         saveto = SAVETO
@@ -978,11 +978,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_411_centos7_sdl2_destdir_dockerfile(self):
+    def test_411_centos7_cmake_sdl2_destdir_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         testname=self.testname()
         testdir = self.testdir()
-        dockerfile="testbuilds/centos7-destdir-sdl2.dockerfile"
+        dockerfile="testbuilds/centos7-cm-destdir-sdl2.dockerfile"
         addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
         saveto = SAVETO
@@ -1014,11 +1014,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_412_centos8_sdl2_destdir_dockerfile(self):
+    def test_412_centos8_cmake_sdl2_destdir_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         testname=self.testname()
         testdir = self.testdir()
-        dockerfile="testbuilds/centos8-destdir-sdl2.dockerfile"
+        dockerfile="testbuilds/centos8-cm-destdir-sdl2.dockerfile"
         addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
         saveto = SAVETO
@@ -1198,7 +1198,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname2=self.testname() + "_2"
         testdir = self.testdir()
         dockerfile1="testbuilds/centos7-am-build.dockerfile"
-        dockerfile2="testbuilds/centos7-build.dockerfile"
+        dockerfile2="testbuilds/centos7-cm-build.dockerfile"
         addhosts = self.local_addhosts(dockerfile1)
         savename1 = docname(dockerfile1)
         savename2 = docname(dockerfile2)
@@ -1263,7 +1263,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname2=self.testname() + "_2"
         testdir = self.testdir()
         dockerfile1="testbuilds/centos8-am-build.dockerfile"
-        dockerfile2="testbuilds/centos8-build.dockerfile"
+        dockerfile2="testbuilds/centos8-cm-build.dockerfile"
         addhosts = self.local_addhosts(dockerfile1)
         savename1 = docname(dockerfile1)
         savename2 = docname(dockerfile2)
@@ -1328,7 +1328,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname2=self.testname() + "_2"
         testdir = self.testdir()
         dockerfile1="testbuilds/centos7-am-sdl2.dockerfile"
-        dockerfile2="testbuilds/centos7-sdl2.dockerfile"
+        dockerfile2="testbuilds/centos7-cm-sdl2.dockerfile"
         addhosts = self.local_addhosts(dockerfile1)
         savename1 = docname(dockerfile1)
         savename2 = docname(dockerfile2)
@@ -1393,7 +1393,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname2=self.testname() + "_2"
         testdir = self.testdir()
         dockerfile1="testbuilds/centos8-am-sdl2.dockerfile"
-        dockerfile2="testbuilds/centos8-sdl2.dockerfile"
+        dockerfile2="testbuilds/centos8-cm-sdl2.dockerfile"
         addhosts = self.local_addhosts(dockerfile1)
         savename1 = docname(dockerfile1)
         savename2 = docname(dockerfile2)
@@ -1457,8 +1457,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname1=self.testname() + "_1"
         testname2=self.testname() + "_2"
         testdir = self.testdir()
-        dockerfile1="testbuilds/centos7-sdl2.dockerfile"
-        dockerfile2="testbuilds/centos7-destdir-sdl2.dockerfile"
+        dockerfile1="testbuilds/centos7-cm-sdl2.dockerfile"
+        dockerfile2="testbuilds/centos7-cm-destdir-sdl2.dockerfile"
         addhosts = self.local_addhosts(dockerfile1)
         savename1 = docname(dockerfile1)
         savename2 = docname(dockerfile2)
@@ -1509,8 +1509,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname1=self.testname() + "_1"
         testname2=self.testname() + "_2"
         testdir = self.testdir()
-        dockerfile1="testbuilds/centos8-sdl2.dockerfile"
-        dockerfile2="testbuilds/centos8-destdir-sdl2.dockerfile"
+        dockerfile1="testbuilds/centos8-cm-sdl2.dockerfile"
+        dockerfile2="testbuilds/centos8-cm-destdir-sdl2.dockerfile"
         addhosts = self.local_addhosts(dockerfile1)
         savename1 = docname(dockerfile1)
         savename2 = docname(dockerfile2)
