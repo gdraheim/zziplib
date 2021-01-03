@@ -1154,11 +1154,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_711_centos7_docs_dockerfile(self):
+    def test_711_centos7_cmake_docs_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         testname=self.testname()
         testdir = self.testdir()
-        dockerfile="testbuilds/centos7-docs.dockerfile"
+        dockerfile="testbuilds/centos7-cm-docs.dockerfile"
         addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
         saveto = SAVETO
@@ -1623,7 +1623,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname2=self.testname() + "_cm"
         testdir = self.testdir()
         dockerfile1="testbuilds/centos7-am-docs.dockerfile"
-        dockerfile2="testbuilds/centos7-docs.dockerfile"
+        dockerfile2="testbuilds/centos7-cm-docs.dockerfile"
         addhosts = self.local_addhosts(dockerfile1)
         savename1 = docname(dockerfile1)
         savename2 = docname(dockerfile2)
