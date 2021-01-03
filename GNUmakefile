@@ -34,6 +34,10 @@ install docs:
 un uninstalls:
 	@ case "$(PREFIX)" in */local) echo rm -rf "'$(PREFIX)'" ; rm -rf "$(PREFIX)" ;; *) echo skipped rm -rf "'$(PREFIX)'" ;; esac
 
+rms: ; docker images --format '{{.Repository}} {{.ID}}' | grep localhost:5000/systemctl/ | cut -d ' ' -f 2 | xargs --no-run-if-empty docker rmi -f
+rmi: ; docker images --format '{{.Repository}} {{.ID}}' | grep localhost:5000/zziplib/ | cut -d ' ' -f 2 | xargs --no-run-if-empty docker rmi -f
+rmf: ; docker ps -a --format '{{.Image}} {{.ID}}' | grep localhost:5000/zziplib/ | cut -d ' ' -f 2 | xargs --no-run-if-empty docker rm -f
+
 st_%: ; python3 testbuilds.py te$@ -vv
 tests:  ; python3 testbuilds.py -vv
 test_%: ; cd build/test && python3 ../../test/zziptests.py $@ -vv
