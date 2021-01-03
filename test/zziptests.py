@@ -32,6 +32,7 @@ testdatadir = "testdata.d"
 readme = "README"
 mkzip = "zip"
 unzip = "unzip"
+unzip_skip = False
 exeext = ""
 bindir = os.path.join("..", "bins")
 downloaddir = "tmp.download"
@@ -3713,8 +3714,14 @@ if __name__ == "__main__":
   topsrcdir = opt.topsrcdir
   bindir = opt.bindir
   testdatdir = opt.testdatadir
-  mkzip = opt.mkzip
-  unzip = opt.unzip
+  if opt.mkzip.endswith("-NOTFOUND"):
+     logg.error("  no infozip 'zip' found, expect failing tests (given -Z %s)", opt.mkzip)
+  else:
+     mkzip = opt.mkzip
+  if opt.unzip.endswith("-NOTFOUND"):
+     logg.error("no infozip 'unzip' found, expect failing tests (given -U %s)", opt.unzip)
+  else:
+     unzip = opt.unzip
   exeext = opt.exeext
   #
   if downloadonly:
