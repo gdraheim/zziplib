@@ -1460,10 +1460,10 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_9411_centos7_automake_sdl2_dockerfile(self):
+    def test_941_centos7_cm_sdl2_or_destdir_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
-        testname1=self.testname() + "_1"
-        testname2=self.testname() + "_2"
+        testname1=self.testname() + "_usr"
+        testname2=self.testname() + "_new"
         testdir = self.testdir()
         dockerfile1="testbuilds/centos7-cm-sdl2.dockerfile"
         dockerfile2="testbuilds/centos7-cm-destdir-sdl2.dockerfile"
@@ -1504,6 +1504,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname1} diff -urw --no-dereference /usr/local /new/local"
         sx____(cmd.format(**locals()))
         out = output(cmd.format(**locals()))
+        if "---" in out or "Only" in out:
+            logg.warning("out>>\n%s", out)
         self.assertFalse(greps(out, "---"))
         self.assertFalse(greps(out, "Only"))
         #
@@ -1512,10 +1514,10 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_9412_centos7_automake_sdl2_dockerfile(self):
+    def test_942_centos7_cm_sdl2_or_destdir_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
-        testname1=self.testname() + "_1"
-        testname2=self.testname() + "_2"
+        testname1=self.testname() + "_usr"
+        testname2=self.testname() + "_new"
         testdir = self.testdir()
         dockerfile1="testbuilds/centos8-cm-sdl2.dockerfile"
         dockerfile2="testbuilds/centos8-cm-destdir-sdl2.dockerfile"
@@ -1556,6 +1558,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname1} diff -urw --no-dereference /usr/local /new/local"
         sx____(cmd.format(**locals()))
         out = output(cmd.format(**locals()))
+        if "---" in out or "Only" in out:
+            logg.warning("out>>\n%s", out)
         self.assertFalse(greps(out, "---"))
         self.assertFalse(greps(out, "Only"))
         #
@@ -1564,10 +1568,10 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_9431_opensuse_ninja_sdl2_dockerfile(self):
+    def test_963_opensuse_cm_or_nj_sdl2_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
-        testname1=self.testname() + "_1"
-        testname2=self.testname() + "_2"
+        testname1=self.testname() + "_cm"
+        testname2=self.testname() + "_nj"
         testdir = self.testdir()
         dockerfile1="testbuilds/opensuse15-sdl2.dockerfile"
         dockerfile2="testbuilds/opensuse15-ninja-sdl2.dockerfile"
@@ -1603,6 +1607,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname1} diff -urw --no-dereference /usr/local /new/local"
         sx____(cmd.format(**locals()))
         out = output(cmd.format(**locals()))
+        if "---" in out or "Only" in out:
+            logg.warning("out>>\n%s", out)
         self.assertFalse(greps(out, "---"))
         self.assertFalse(greps(out, "Only"))
         #
@@ -1611,10 +1617,10 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_9711_centos7_docs_dockerfile(self):
+    def test_977_centos7_am_cm_docs_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
-        testname1=self.testname() + "_1"
-        testname2=self.testname() + "_2"
+        testname1=self.testname() + "_am"
+        testname2=self.testname() + "_cm"
         testdir = self.testdir()
         dockerfile1="testbuilds/centos7-am-docs.dockerfile"
         dockerfile2="testbuilds/centos7-docs.dockerfile"
@@ -1656,6 +1662,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname1} diff -urw --no-dereference --brief /usr/local /new/local"
         sx____(cmd.format(**locals()))
         out = output(cmd.format(**locals()))
+        if "---" in out or "Only" in out:
+            logg.warning("out>>\n%s", out)
         self.assertFalse(greps(out, "---"))
         self.assertFalse(greps(out, "Only"))
         #
