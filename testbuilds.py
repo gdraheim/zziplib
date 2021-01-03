@@ -657,11 +657,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_231_opensuse15_build_dockerfile(self):
+    def test_231_opensuse15_cmake_build_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         testname=self.testname()
         testdir = self.testdir()
-        dockerfile="testbuilds/opensuse15-build.dockerfile"
+        dockerfile="testbuilds/opensuse15-cm-build.dockerfile"
         addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
         saveto = SAVETO
@@ -942,11 +942,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_331_opensuse15_sdl2_dockerfile(self):
+    def test_331_opensuse15_cmake_sdl2_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         testname=self.testname()
         testdir = self.testdir()
-        dockerfile="testbuilds/opensuse15-sdl2.dockerfile"
+        dockerfile="testbuilds/opensuse15-cm-sdl2.dockerfile"
         addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
         saveto = SAVETO
@@ -1084,7 +1084,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         testname=self.testname()
         testdir = self.testdir()
-        dockerfile="testbuilds/opensuse15-ninja-sdl2.dockerfile"
+        dockerfile="testbuilds/opensuse15-nj-sdl2.dockerfile"
         addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
         saveto = SAVETO
@@ -1573,8 +1573,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname1=self.testname() + "_cm"
         testname2=self.testname() + "_nj"
         testdir = self.testdir()
-        dockerfile1="testbuilds/opensuse15-sdl2.dockerfile"
-        dockerfile2="testbuilds/opensuse15-ninja-sdl2.dockerfile"
+        dockerfile1="testbuilds/opensuse15-cm-sdl2.dockerfile"
+        dockerfile2="testbuilds/opensuse15-nj-sdl2.dockerfile"
         addhosts = self.local_addhosts(dockerfile1)
         savename1 = docname(dockerfile1)
         savename2 = docname(dockerfile2)
