@@ -3,7 +3,6 @@ docker_mirror_RAW = https://raw.githubusercontent.com/gdraheim/docker-mirror-pac
 docker_mirror_py = docker_mirror.py
 docker_mirror_pyi = docker_mirror.pyi
 copy:
-	@ test -d docker-mirror-packages-repo || mkdir docker-mirror-packages-repo
 	@ if test -d ../docker-mirror-packages-repo; then : \
 	; cp -v ../docker-mirror-packages-repo/docker_mirror.py $(docker_mirror_py) \
 	; cp -v ../docker-mirror-packages-repo/docker_mirror.pyi $(docker_mirror_pyi) \
