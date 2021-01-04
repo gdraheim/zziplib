@@ -1041,8 +1041,6 @@ class ZZiplibBuildTest(unittest.TestCase):
         #
         cmd = "docker exec {testname} find src -name *.xml"
         sh____(cmd.format(**locals()))
-        cmd = "docker exec {testname} bash -c 'cd src && make test_65430'"
-        sh____(cmd.format(**locals()))
         #
         cmd = "docker rm --force {testname}"
         sx____(cmd.format(**locals()))
