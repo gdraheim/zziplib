@@ -28,9 +28,11 @@ _python = "/usr/bin/python"
 
 SAVETO = "localhost:5000/zziplib"
 IMAGES = "localhost:5000/zziplib/image"
-CENTOS = "centos:7.7.1908"
-UBUNTU = "ubuntu:16.04"
-OPENSUSE = "opensuse/leap:15.1"
+CENTOS8 = "centos:8.3.2011"
+CENTOS7 = "centos:7.9.2009"
+UBUNTU1 = "ubuntu:18.04"
+UBUNTU2 = "ubuntu:16.04"
+OPENSUSE5 = "opensuse/leap:15.2"
 SOFTWARE = "../Software"
 
 DOCKER_SOCKET = "/var/run/docker.sock"
@@ -279,34 +281,24 @@ class ZZiplibBuildTest(unittest.TestCase):
         if FORCE or NOCACHE:
             return " --no-cache"
         return ""
-    def drop_container(self, name):
-        cmd = "docker rm --force {name}"
-        sx____(cmd.format(**locals()))
-    def drop_centos(self):
-        self.drop_container("centos")
-    def drop_ubuntu(self):
-        self.drop_container("ubuntu")
-    def drop_opensuse(self):
-        self.drop_container("opensuse")
-    def make_opensuse(self):
-        self.make_container("opensuse", OPENSUSE)
-    def make_ubuntu(self):
-        self.make_container("ubuntu", UBUNTU)
-    def make_centos(self):
-        self.make_container("centos", CENTOS)
-    def make_container(self, name, image):
-        self.drop_container(name)
-        local_image = self.local_image(image)
-        cmd = "docker run --detach --name {name} {local_image} sleep 1000"
-        sh____(cmd.format(**locals()))
-        print("                 # " + local_image)
-        print("  docker exec -it "+name+" bash")
     #
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
     #
-    def test_100(self):
-        logg.info("\n  CENTOS = '%s'", CENTOS)
-        self.with_local_centos_mirror()
+    def test_101(self):
+        logg.info("\n  UBUNTU1 = '%s'", UBUNTU1)
+        self.start_mirror(UBUNTU1)
+    def test_102(self):
+        logg.info("\n  UBUNTU2 = '%s'", UBUNTU2)
+        self.start_mirror(UBUNTU2)
+    def test_105(self):
+        logg.info("\n  OPENSUSE5 = '%s'", OPENSUSE5)
+        self.start_mirror(OPENSUSE5)
+    def test_107(self):
+        logg.info("\n  CENTOS7 = '%s'", CENTOS7)
+        self.start_mirror(CENTOS7, "--epel")
+    def test_108(self):
+        logg.info("\n  CENTOS8 = '%s'", CENTOS8)
+        self.start_mirror(CENTOS8)
     def test_207_centos7_automake_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
@@ -318,7 +310,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_check=true"
+        build = "build --build-arg=no_check=true" + self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
@@ -361,7 +353,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_check=true"
+        build = "build --build-arg=no_check=true" + self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
@@ -404,7 +396,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_check=true"
+        build = "build --build-arg=no_check=true" + self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
@@ -447,7 +439,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_check=true"
+        build = "build --build-arg=no_check=true" + self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
@@ -490,7 +482,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_check=true"
+        build = "build --build-arg=no_check=true" + self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
@@ -533,7 +525,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_check=true"
+        build = "build --build-arg=no_check=true" + self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
@@ -576,7 +568,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_check=true"
+        build = "build --build-arg=no_check=true" + self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
@@ -619,7 +611,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_check=true"
+        build = "build --build-arg=no_check=true" + self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
@@ -664,7 +656,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_check=true"
+        build = "build --build-arg=no_check=true" + self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
@@ -698,7 +690,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_check=true"
+        build = "build --build-arg=no_check=true" + self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
@@ -730,7 +722,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_check=true"
+        build = "build --build-arg=no_check=true" + self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
@@ -768,7 +760,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_check=true"
+        build = "build --build-arg=no_check=true" + self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
@@ -806,7 +798,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_check=true"
+        build = "build --build-arg=no_check=true" + self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
@@ -844,7 +836,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_check=true"
+        build = "build --build-arg=no_check=true" + self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
@@ -882,7 +874,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_check=true"
+        build = "build --build-arg=no_check=true" + self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
@@ -920,7 +912,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_check=true"
+        build = "build --build-arg=no_check=true" + self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
@@ -958,7 +950,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_check=true"
+        build = "build --build-arg=no_check=true" + self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
@@ -996,7 +988,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_check=true"
+        build = "build --build-arg=no_check=true" + self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
@@ -1034,7 +1026,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_install=true"
+        build = "build --build-arg=no_install=true" + self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
@@ -1066,7 +1058,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_check=true"
+        build = "build --build-arg=no_check=true" + self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
@@ -1104,7 +1096,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_build=true"
+        build = "build --build-arg=no_build=true" + self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
@@ -1145,6 +1137,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         saveto = SAVETO
         images = IMAGES
         build = "build" # "build --build-arg=no_build=true"
+        build += self.nocache()
         cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "docker rm --force {testname}"
