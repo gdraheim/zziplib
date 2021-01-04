@@ -2,7 +2,7 @@
 """ Testcases for zziplib build system """
 
 __copyright__ = "(C) Guido Draheim, all rights reserved"""
-__version__ = "0.13.71"
+__version__ = "0.13.72"
 
 import subprocess
 import os.path
