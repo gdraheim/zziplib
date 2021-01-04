@@ -1041,6 +1041,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         #
         cmd = "docker exec {testname} find src -name *.xml"
         sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} bash -c 'cd src && make test_65430'"
+        sh____(cmd.format(**locals()))
         #
         cmd = "docker rm --force {testname}"
         sx____(cmd.format(**locals()))
@@ -1049,6 +1051,35 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
         sh____(cmd.format(**locals()))
         cmd = "docker rmi {images}:{testname}"
+        sx____(cmd.format(**locals()))
+        self.rm_testdir()
+    @unittest.expectedFailure
+    def test_424_ubuntu20_azure_dockerfile(self):
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
+        dockerfile="testbuilds/ubuntu20-azure.dockerfile" # reusing test_423
+        savename = docname(dockerfile)
+        saveto = SAVETO
+        images = IMAGES
+        testname=self.testname()
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
+        cmd = "docker run -d --name {testname} {saveto}/{savename} sleep 60"
+        sh____(cmd.format(**locals()))
+        #:# container = self.ip_container(testname)
+        #
+        logg.error("\n\n\t Ubuntu ships 'unzip' that can not handle these CVE zip files .. creating core dumps\n\n")
+        cmd = "docker exec {testname} bash -c 'cd src/build/test && python3 ../../test/zziptests.py test_65430'"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} bash -c 'cd src/build/test && python3 ../../test/zziptests.py test_65440'"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} bash -c 'cd src/build/test && python3 ../../test/zziptests.py test_65480'"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} bash -c 'cd src/build/test && python3 ../../test/zziptests.py test_65485'"
+        sh____(cmd.format(**locals()))
+        #
+        cmd = "docker rm --force {testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
     def test_435_opensuse15_ninja_sdl2_dockerfile(self):
