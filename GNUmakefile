@@ -8,7 +8,7 @@ CMAKE=cmake
 NINJA=ninja
 PREFIX=$$HOME/local
 
-.PHONY: build docs bins test
+.PHONY: build docs bins test tests testbuilds
 
 default: build
 build:
@@ -40,6 +40,7 @@ rmf: ; docker ps -a --format '{{.Image}} {{.ID}}' | grep localhost:5000/zziplib/
 
 st_%: ; python3 testbuilds.py te$@ -vv --no-cache
 tests:  ; python3 testbuilds.py -vv
+testbuilds: ; python3 testbuilds.py -vv --no-cache
 test_%: ; cd build/test && python3 ../../test/zziptests.py $@ -vv
 
 downloads:
