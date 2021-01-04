@@ -1,7 +1,8 @@
-FROM centos:7.7.1908
+FROM centos:7.9.2009
 ARG no_build=false
 
 RUN yum install -y epel-release
+RUN echo sslverify=false >> /etc/yum.conf
 RUN yum install -y gcc zlib-devel python3 cmake3 make unzip zip gzip tar
 
 RUN mkdir src
