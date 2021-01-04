@@ -13,9 +13,13 @@ RUN yum search sdl
 RUN yum install -y gcc zlib-devel python3 cmake make unzip zip gzip tar diffutils  SDL2-devel
 
 RUN mkdir src
-COPY CMakeLists.txt README COPYING.LIB ChangeLog src/
-COPY Makefile.am Makefile.in configure.ac configure config.h.in zziplib.spec src/
+COPY Makefile.am Makefile.in old.configure.ac old.configure config.h.in zziplib.spec src/
+RUN test ! -f src/old.configure || mv src/old.configure src/configure
+RUN test ! -f src/old.configure.ac || mv src/old.configure.ac src/configure.ac
 COPY uses src/uses
+
+COPY CMakeLists.txt README COPYING.LIB ChangeLog src/
+COPY CMakeScripts src/CMakeScripts
 COPY bins src/bins
 COPY docs src/docs
 COPY test src/test
