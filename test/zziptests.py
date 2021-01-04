@@ -3657,6 +3657,113 @@ class ZZipTest(unittest.TestCase):
     self.assertFalse(run.returncode)
     self.rm_testdir()
 
+  url_CVE_2020_04 = "https://github.com/gdraheim/zziplib/files/5340201"
+  zip_CVE_2020_04 = "2020_10_OutagesPUReasons.zip"
+  def test_65570(self):
+    """ info unzip -l $(CVE).zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2020_04
+    file_url = self.url_CVE_2020_04
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2018_39 available: " + filename)
+    if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
+    exe = self.bins("unzip")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0])
+    #
+    run = shell("cd {tmpdir} && {exe} -o {filename}".format(**locals()),
+        returncodes = [0])
+    self.assertEqual(os.path.getsize(tmpdir+"/2020_10_OutagesPUReasons.csv"), 2590160)
+    self.rm_testdir()
+  @unittest.expectedFailure
+  def test_65571(self):
+    """ unzzip-big -l $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2020_04
+    file_url = self.url_CVE_2020_04
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2020_04 available: " + filename)
+    if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
+    exe = self.bins("unzzip-big")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0])
+    #
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertEqual(os.path.getsize(tmpdir+"/2020_10_OutagesPUReasons.csv"), 2590160)
+    self.rm_testdir()
+  @unittest.expectedFailure
+  def test_65572(self):
+    """ unzzip-mem -l $(CVE).zip """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2020_04
+    file_url = self.url_CVE_2020_04
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2020_04 available: " + filename)
+    if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
+    exe = self.bins("unzzip-mem")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 1)
+    # self.assertEqual(len(errors(run.errors)), 1)
+    #
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 1)
+    self.assertEqual(os.path.getsize(tmpdir+"/2020_10_OutagesPUReasons.csv"), 2590160)
+    #
+    run = shell("cd {tmpdir} && ../{exe} -p {filename} ".format(**locals()),
+        returncodes = [0])
+    self.rm_testdir()
+  @unittest.expectedFailure
+  def test_65573(self):
+    """ unzzip-mix -l $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2020_04
+    file_url = self.url_CVE_2020_04
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2020_04 available: " + filename)
+    if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
+    exe = self.bins("unzzip-mix")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0])
+    #
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0,2])
+    self.assertLess(len(run.output), 30)
+    self.assertEqual(os.path.getsize(tmpdir+"/2020_10_OutagesPUReasons.csv"), 2590160)
+    self.rm_testdir()
+  @unittest.expectedFailure
+  def test_65574(self):
+    """ unzzip-zap -l $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2020_04
+    file_url = self.url_CVE_2020_04
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2020_04 available: " + filename)
+    if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
+    exe = self.bins("unzzip")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0])
+    #
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertEqual(os.path.getsize(tmpdir+"/2020_10_OutagesPUReasons.csv"), 2590160)
+    self.rm_testdir()
+  def test_65579(self):
+    """ check $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2020_04
+    file_url = self.url_CVE_2020_04
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2020_04 available: " + filename)
+    if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
+    shell("ls -l {tmpdir}/{filename}".format(**locals()))
+    size = os.path.getsize(os.path.join(tmpdir, filename))
+    self.assertEqual(size, 171344)
+
+
   def test_91000_zzshowme_check_sfx(self):
     """ create an *.exe that can extract its own zip content """
     mkzip=self.bins("mkzip")
