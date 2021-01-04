@@ -32,6 +32,7 @@ CENTOS8 = "centos:8.3.2011"
 CENTOS7 = "centos:7.9.2009"
 UBUNTU1 = "ubuntu:18.04"
 UBUNTU2 = "ubuntu:16.04"
+UBUNTU3 = "ubuntu:20.04"
 OPENSUSE5 = "opensuse/leap:15.2"
 SOFTWARE = "../Software"
 
@@ -290,6 +291,9 @@ class ZZiplibBuildTest(unittest.TestCase):
     def test_102(self):
         logg.info("\n  UBUNTU2 = '%s'", UBUNTU2)
         self.start_mirror(UBUNTU2)
+    def test_103(self):
+        logg.info("\n  UBUNTU3 = '%s'", UBUNTU3)
+        self.start_mirror(UBUNTU3, "--universe")
     def test_105(self):
         logg.info("\n  OPENSUSE5 = '%s'", OPENSUSE5)
         self.start_mirror(OPENSUSE5)
@@ -1015,13 +1019,13 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_421_ubuntu16_azure_dockerfile(self):
+    def test_423_ubuntu20_azure_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
         testname=self.testname()
         testdir = self.testdir()
-        dockerfile="testbuilds/ubuntu16-azure.dockerfile"
+        dockerfile="testbuilds/ubuntu20-azure.dockerfile"
         addhosts = self.local_addhosts(dockerfile, "--universe")
         savename = docname(dockerfile)
         saveto = SAVETO
