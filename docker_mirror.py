@@ -1,10 +1,10 @@
 #! /usr/bin/python3
 # from __future__ import print_function
 
-__copyright__ = "(C) 2020 Guido Draheim"
+__copyright__ = "(C) 2021 Guido Draheim"
 __contact__ = "https://github.com/gdraheim/docker-mirror-packages-repo"
 __license__ = "CC0 Creative Commons Zero (Public Domain)"
-__version__ = "1.6.2504"
+__version__ = "1.6.3007"
 
 from collections import OrderedDict, namedtuple
 import os.path
@@ -24,6 +24,7 @@ logg = logging.getLogger("mirror")
 DOCKER = "docker"
 ADDHOSTS = False
 ADDEPEL = False
+UNIVERSE = False
 
 LEAP = "opensuse/leap"
 SUSE = "opensuse"
@@ -275,6 +276,7 @@ class DockerMirrorPackagesRepo:
             other docker containers"""
         rmi = "localhost:5000/mirror-packages"
         rep = "ubuntu-repo"
+        if UNIVERSE: rep = "ubuntu-repo/universe"
         ver = self.get_ubuntu_latest_version(onlyversion(image))
         return self.docker_mirror(rmi, rep, ver, "archive.ubuntu.com", "security.ubuntu.com")
     def get_ubuntu_docker_mirrors(self, image):
@@ -369,8 +371,9 @@ class DockerMirrorPackagesRepo:
         main = self.get_opensuse_docker_mirror(image)
         return [main]
     def docker_mirror(self, rmi, rep, ver, *hosts):
+        req = rep.replace("/", "-")
         image = "{rmi}/{rep}:{ver}".format(**locals())
-        cname = "{rep}-{ver}".format(**locals())
+        cname = "{req}-{ver}".format(**locals())
         return DockerMirror(cname, image, list(hosts))
     #
     def get_extra_mirrors(self, image):
@@ -634,6 +637,8 @@ if __name__ == "__main__":
                     help="show addhost options for 'docker run' [%(default)s]")
     _o.add_argument("--epel", action="store_true", default=ADDEPEL,
                     help="addhosts for epel as well [%(default)s]")
+    _o.add_argument("--universe", action="store_true", default=UNIVERSE,
+                    help="addhosts using universe variant [%(default)s]")
     commands = ["help", "detect", "image", "repo", "info", "facts", "start", "stop"]
     _o.add_argument("command", nargs="?", default="detect", help="|".join(commands))
     _o.add_argument("image", nargs="?", default=None, help="defaults to image name of the local host system")
@@ -641,6 +646,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=max(0, logging.WARNING - opt.verbose * 10))
     ADDHOSTS = opt.add_hosts
     ADDEPEL = opt.epel  # centos epel-repo
+    UNIVERSE = opt.universe  # ubuntu universe repo
     command = "detect"
     repo = DockerMirrorPackagesRepo()
     if opt.command in ["?", "help"]:
