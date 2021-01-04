@@ -3775,6 +3775,107 @@ class ZZipTest(unittest.TestCase):
     self.assertEqual(size, 171344)
 
 
+  url_CVE_2019_69 = "https://github.com/gdraheim/zziplib/files/3001317"
+  zip_CVE_2019_69 = "zip_poc.zip"
+  def test_65670(self):
+    """ info unzip -l $(CVE).zip  """
+    if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2019_69
+    file_url = self.url_CVE_2019_69
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2019_69 available: " + filename)
+    if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
+    exe = self.bins("unzip")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [2])
+    self.assertTrue(greps(run.errors, "missing 6 bytes in zipfile"))
+    #
+    run = shell("cd {tmpdir} && {exe} -o {filename}".format(**locals()),
+        returncodes = [3])
+    self.rm_testdir()
+  def test_65671(self):
+    """ unzzip-big -l $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2019_69
+    file_url = self.url_CVE_2019_69
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2019_69 available: " + filename)
+    if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
+    exe = self.bins("unzzip-big")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0])
+    #
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [1])
+    self.rm_testdir()
+  def test_65672(self):
+    """ unzzip-mem -l $(CVE).zip """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2019_69
+    file_url = self.url_CVE_2019_69
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2019_69 available: " + filename)
+    if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
+    exe = self.bins("unzzip-mem")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [0])
+    # self.assertLess(len(run.output), 1)
+    # self.assertEqual(len(errors(run.errors)), 1)
+    #
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [0])
+    self.assertLess(len(run.output), 1)
+    #
+    run = shell("cd {tmpdir} && ../{exe} -p {filename} ".format(**locals()),
+        returncodes = [0])
+    self.rm_testdir()
+  def test_65673(self):
+    """ unzzip-mix -l $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2019_69
+    file_url = self.url_CVE_2019_69
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2019_69 available: " + filename)
+    if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
+    exe = self.bins("unzzip-mix")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [2])
+    self.assertTrue(greps(run.errors, "Invalid or incomplete"))
+    #
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [2])
+    # self.assertLess(len(run.output), 30)
+    self.assertTrue(greps(run.errors, "Invalid or incomplete"))
+    self.rm_testdir()
+  def test_65674(self):
+    """ unzzip-zap -l $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2019_69
+    file_url = self.url_CVE_2019_69
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2019_69 available: " + filename)
+    if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
+    exe = self.bins("unzzip")
+    run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
+        returncodes = [3])
+    #
+    run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
+        returncodes = [3])
+    self.assertTrue(greps(run.errors, "Zipfile corrupted"))
+    self.rm_testdir()
+  def test_65679(self):
+    """ check $(CVE).zip  """
+    tmpdir = self.testdir()
+    filename = self.zip_CVE_2019_69
+    file_url = self.url_CVE_2019_69
+    if not download_raw(file_url, filename, tmpdir):
+        self.skipTest("no zip_CVE_2019_69 available: " + filename)
+    if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
+    shell("ls -l {tmpdir}/{filename}".format(**locals()))
+    size = os.path.getsize(os.path.join(tmpdir, filename))
+    self.assertEqual(size, 155)
+
   url_CVE_2019_70 = "https://github.com/gdraheim/zziplib/files/3006594"
   zip_CVE_2019_70 = "POC.zip"
   def test_65770(self):
