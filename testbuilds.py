@@ -1118,7 +1118,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_707_centos7_am_docs_dockerfile(self):
+    def test_707_centos7_automake_docs_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
