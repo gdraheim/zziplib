@@ -189,6 +189,18 @@ struct zzip_extra_zip64
     zzip_byte_t  z_diskstart[4];      /* disk where the file starts */
 } ZZIP_GNUC_PACKED;
 
+/* Zip64 end of central dir locator */
+struct zzip_disk64_locator
+{
+#   define ZZIP_DISK64_LOCATOR_MAGIC 0x07064b50
+#   define ZZIP_DISK64_LOCATOR_CHECKMAGIC(__p) ZZIP_CHECKMAGIC(__p,'P','K','\6','\7')
+    zzip_byte_t  z_magic[4]; /* end of central dir signature (0x06054b50) */
+    zzip_byte_t  z_rootdisk[4]; /* number of disk with the zip64 directory */
+    zzip_byte_t  z_rootseek[8]; /* relative offset of the zip64 directory */
+    zzip_byte_t  z_numdisks[4];    /* total numer of disks */
+    /* followed by zip64 extensible data sector (of variable size) */
+} ZZIP_GNUC_PACKED;
+
 /* Zip64 end of central dir record */
 struct zzip_disk64_trailer
 {
