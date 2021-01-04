@@ -1,4 +1,4 @@
-FROM opensuse/leap:15.1
+FROM opensuse/leap:15.2
 ARG no_check=false
 ARG no_install=false
 # -DMAKE_INSTALL_PREFIX:PATH=/usr
