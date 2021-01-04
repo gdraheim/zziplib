@@ -1022,7 +1022,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname=self.testname()
         testdir = self.testdir()
         dockerfile="testbuilds/ubuntu16-azure.dockerfile"
-        addhosts = self.local_addhosts(dockerfile)
+        addhosts = self.local_addhosts(dockerfile, "--universe")
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES

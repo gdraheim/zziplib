@@ -5,7 +5,7 @@ ARG no_install=false
 RUN apt-get update
 RUN apt-get install -y gcc zlib1g-dev python3 cmake zip gzip tar pkg-config
 RUN apt-get install -y unzip
-# RUN apt-get install -y libsdl2-dev
+RUN apt-get install -y libsdl2-dev
 RUN apt-get install -y --fix-broken --ignore-missing python3-wheel || true
 RUN apt-get install -y --fix-broken --ignore-missing python3-pip || true
 RUN pip3 install unittest-xml-reporting
