@@ -92,7 +92,7 @@ static void zzip_mem_entry_make(ZZIP_MEM_DISK* disk,
 				ZZIP_MEM_ENTRY* entry)
 {
     FILE* file = fopen (entry->zz_name, "wb");
-    if (file) { zzip_mem_entry_pipe (disk, entry, file); fclose (file); }
+    if (file) { zzip_mem_entry_pipe (disk, entry, file); fclose (file); return; }
     perror (entry->zz_name);
     if (status < EXIT_WARNINGS) status = EXIT_WARNINGS;
 }
