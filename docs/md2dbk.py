@@ -83,9 +83,8 @@ def _blocks(input: str) -> Generator[str, None, None]:
                     if text:
                         yield text
                         text = ""
-                    yield "</itemizedlist>"
+                    yield "</itemizedlist>\n"
                 listblock = newblock # may become empty
-            listblock = newblock
         for newblock in endblockquote:
             yield newblock
         if not line.strip():
@@ -326,7 +325,7 @@ def _blocks(input: str) -> Generator[str, None, None]:
                     if text:
                         yield text
                         text = ""
-                    yield "</itemizedlist>"
+                    yield "</itemizedlist>\n"
                 listblock = newblock # may become empty
             listblock = newblock
         for newblock in endblockquote:
