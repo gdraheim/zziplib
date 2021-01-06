@@ -70,11 +70,12 @@ add_custom_command(OUTPUT changes.htm
     DEPENDS ${topdir}/ChangeLog
     VERBATIM)
 
-set(mksite_sh_args --VERSION=${PROJECT_VERSION} --xml --src-dir=${srcdir} --print)
 add_custom_command(OUTPUT site.html
-    COMMAND ${CP} ${srcdir}/body.htm site.htm
-    COMMAND ${BASH} ${srcdir}/mksite.sh ${mksite_sh_args} site.htm
-    COMMAND ${BASH} -c "for i in *.html; do sed -i -e s:${srcdir}:../../docs: $i; done; true"
+    COMMAND ${BASH} -c "test -d ${outdir}/site || mkdir -p ${outdir}/site"
+    COMMAND ${CP} ${srcdir}/body.htm ${outdir}/site/site.htm
+    COMMAND ${CP} ${outdir}/changes.htm ${outdir}/site/changes.htm
+    COMMAND ${BASH} -c "cd ${outdir}/site && ${BASH} ${srcdir}/mksite.sh --VERSION=${PROJECT_VERSION} --xml --src-dir=${srcdir} --print site.htm"
+    COMMAND ${BASH} -c "cd ${outdir}/site; for i in *.html; do sed -i -e s:${srcdir}:../../docs: $i; done; true"
     DEPENDS ${htm_FILES} changes.htm
     VERBATIM)
 add_custom_target(site DEPENDS site.html)
@@ -162,15 +163,16 @@ endif()
 string(REPLACE ";" " " all_bins_FILES "${bins_FILES}")
 string(REPLACE ";" " " all_SDLs_FILES "${SDLs_FILES}")
 add_custom_target(install-site
-   COMMAND ${BASH} -c "ls -l ${CMAKE_CURRENT_BINARY_DIR}/site.html"
+   COMMAND ${BASH} -c "ls -l ${CMAKE_CURRENT_BINARY_DIR}/site/site.html"
    COMMAND ${BASH} -c "mkdir -vp $DESTDIR${docdir}  >&2 || ls -ld $DESTDIR${docdir} >&2"
    COMMAND ${BASH} -c "cd ${outdir} && cp zziplib.html zzipmmapped.html zzipfseeko.html $DESTDIR${docdir}/"
    COMMAND ${BASH} -c "cd ${srcdir} && cp README.* COPYING.* $DESTDIR${docdir}/"
    COMMAND ${BASH} -c "cd ${topdir} && cp ChangeLog          $DESTDIR${docdir}/"
    COMMAND ${BASH} -c "cd ${topdir} && cp ${all_bins_FILES}  $DESTDIR${docdir}/"
    COMMAND ${BASH} -c "cd ${topdir} && cp ${all_SDLs_FILES}  $DESTDIR${docdir}/"
-   COMMAND ${BASH} -c "cd $DESTDIR${docdir} && cp ${outdir}/*.html ."
+   COMMAND ${BASH} -c "cd ${outdir}/site && cp *.html        $DESTDIR${docdir}/"
    COMMAND ${BASH} -c "cd $DESTDIR${docdir} && ln -s zzip-index.html index.html"
+   ########################################################################
    DEPENDS site.html zziplib.html zzipmmapped.html zzipfseeko.html
    VERBATIM)
 add_custom_target(install-htmpages
