@@ -76,6 +76,9 @@ def _blocks(input: str) -> Generator[str, None, None]:
                pass
             elif listblock.count("*") < newblock.count("*"):
                 for newdepth in range(listblock.count("*"), newblock.count("*")):
+                    if text:
+                        yield text
+                        text = ""
                     yield "<itemizedlist>"
                 listblock = newblock
             elif newblock.count("*") < listblock.count("*"):
@@ -326,6 +329,9 @@ def _blocks(input: str) -> Generator[str, None, None]:
             # assert not fenced
             if listblock.count("*") < newblock.count("*"):
                 for newdepth in range(listblock.count("*"), newblock.count("*")):
+                    if text:
+                        yield text
+                        text = ""
                     yield "<itemizedlist>"
                 listblock = newblock
             elif newblock.count("*") < listblock.count("*"):
@@ -449,14 +455,14 @@ def _xmlblocks(block):
             return [ "<hr width=\"80%\" align=\"center\" />" ]
     #################################################
     blocks = []
-    if re.match("\\[\w+\\]:", line):
+    if re.match("\\[\w[-\w]*\\]:", line):
         text = ""
         remainder = ""
         for line in block.splitlines():
             if remainder:
                 remainder += line + "\n"
                 continue
-            m = re.match("\\[(\w+)]: +(\\S+) +(\\S.*)", line)
+            m = re.match("\\[(\w[-\w]*)]: +(\\S+) +(\\S.*)", line)
             if m:
                 if m.group(2) in ["#"] and m.group(1) in ["date"]:
                     text += "<%s>%s</%s>" % (m.group(1), escape(m.group(3)), m.group(1))
@@ -464,12 +470,12 @@ def _xmlblocks(block):
                     text += "<meta name=\"%s\" href=\"%s\" content=\"%s\" />" % (m.group(1), escape(m.group(2)), escape(m.group(3)))
                 blocks += [ text ]
                 continue
-            m = re.match("\\[(\w+)]: +(\\S+)", line)
+            m = re.match("\\[(\w[-\w]*)]: +(\\S+)", line)
             if m:
                 text += "<meta name=\"%s\" href=\"%s\" content=\"%s\" />" % (m.group(1), escape(m.group(2)), m.group(1))
                 blocks += [ text ]
                 continue
-            m = re.match("\\[(\w+)]:", line)
+            m = re.match("\\[(\w[-\w]*)]:", line)
             if m:
                 text += "<a name=\"%s\" />" % (m.group(1))
                 blocks += [ text ]
