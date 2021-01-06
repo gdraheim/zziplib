@@ -70,9 +70,9 @@ def _blocks(input: str) -> Generator[str, None, None]:
                     newblock = _newlist2.group(1)
             indent = _indents.group(1)
             # if less indent then end listblock
-            if len(indent) > len(listblock):
+            if len(indent) >= len(listblock):
                 pass
-            if fenced:
+            elif fenced:
                pass
             elif listblock.count("*") < newblock.count("*"):
                 for newdepth in range(listblock.count("*"), newblock.count("*")):
@@ -490,7 +490,7 @@ def _xmlblocks(block):
         for n in range(len(lines)):
             line_0 = lines[n]
             line_1 = ""
-            if n+1 < len(lines): line_n_1 = lines[n+1]
+            if n+1 < len(lines): line_1 = lines[n+1]
             _li0 = re.match(" ? ? ?([*][*]*) *(.*)", line_0)
             _li1 = re.match(" ? ? ?([*][*]*) *(.*)", line_1)
             if not endblock:
@@ -504,7 +504,10 @@ def _xmlblocks(block):
                 if _li0 and (_li1 or not line_1.strip()):
                     blocks += [ "<listitem>%s</listitem>" % formatting(_li0.group(2)) ]
                     continue
-            endblock += lines[n] + "\n"
+            if _li0:
+                endblock += _li0.group(2) + "\n"
+            else:
+                endblock += line_0 + "\n"
         if endblock:
             blocks += [ "<listitem><para>%s</para></listitem>" % formatting(endblock) ]
         return blocks

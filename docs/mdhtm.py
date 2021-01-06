@@ -34,4 +34,6 @@ for arg in args:
        part = part.replace("</ul></blockquote>", "</ul>\n</blockquote>")
        part = part.replace("<P><small>", "<P>\n<small>")
        part = part.replace("</small></P>", "</small>\n</P>")
+       part = part.replace("<ul><li>", "<ul>\n<li>")
+       part = part.replace("</li></ul>", "</li>\n</ul>")
        print(part)
