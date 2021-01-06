@@ -24,7 +24,7 @@ ninja: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-GNinja
 nmake: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-GNmake
 cmake: ; rm -rf $(BUILD) && $(MAKE) build "OPTIONS=-DZZIP_MANPAGES=OFF -DZZIP_INSTALL_BINS=OFF -DZZIP_TESTCVE=OFF"
 
-check checks:
+check checks site install-site:
 	@ test ! -f $(BUILD)/Makefile    || (set -x; cd $(BUILD) && $(MAKE) $@ VERBOSE=1)
 	@ test ! -f $(BUILD)/rules.ninja || (set -x; cd $(BUILD) && $(NINJA) $@)
 install docs:
@@ -59,3 +59,4 @@ version:
 
 -include GNUmakefile.win10
 -include docker_mirror.mk
+-include docs.mk
