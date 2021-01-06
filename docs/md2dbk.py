@@ -1,0 +1,582 @@
+#! /usr/bin/python3
+
+from __future__ import print_function, absolute_import, division
+from typing import List, Generator
+import re
+from html import escape
+
+import logging
+logg = logging.getLogger("MD2DBK")
+
+SingleUnderscore = False
+SingleAsterisk = False
+
+hint = """ The markdown syntax as clarified by CommonMark wants to make sure that parsers
+can be written easily. That comes from a first pass to detect the block structure
+and a second pass to convert the markup within. As such you should make sure that
+after each block there is an empty line. As such, to put empty lines into a block
+you need to use some kind of fenced block. The GFM (github flavoured markdown)
+clarifies that fenced blocks do not need a blank line before or after. Text lines
+not inside a fenced block will always be added rstrip()ed to the block."""
+
+def blocks(text: str) -> List[str]:
+    logg.debug(">> (%i)", len(text))
+    blocks: List[str] = []
+    for block in _blocks(text):
+        blocks.append(block)
+    return blocks
+def _blocks(input: str) -> Generator[str, None, None]:
+    logg.debug(">> (%i)", len(input))
+    text = ""
+    fenced = "" # or indent or html
+    for line in input.splitlines():
+        logg.debug("| %s", line)
+        if not line.strip():
+            if not fenced:
+                if text:
+                    yield text
+                    text = ""
+                continue
+        # check to end an html block
+        if fenced.startswith("<"):
+            if fenced == "<script":
+                text += line + "\n"
+                if "</script>" in line:
+                    yield text
+                    text = ""
+                    fenced = ""
+                    continue
+            if fenced == "<pre":
+                text += line + "\n"
+                if "</pre>" in line:
+                    yield text
+                    text = ""
+                    fenced = ""
+                    continue
+            if fenced == "<style":
+                text += line + "\n"
+                if "</style>" in line:
+                    yield text
+                    text = ""
+                    fenced = ""
+                    continue
+            if fenced == "<![CDATA[":
+                text += line + "\n"
+                if "]]>" in line:
+                    yield text
+                    text = ""
+                    fenced = ""
+                    continue
+            if fenced == "<!--":
+                text += line + "\n"
+                if "-->" in line:
+                    yield text
+                    text = ""
+                    fenced = ""
+                    continue
+            if fenced == "<!":
+                text += line + "\n"
+                if ">" in line:
+                    yield text
+                    text = ""
+                    fenced = ""
+                    continue
+            if fenced == "<?":
+                text += line + "\n"
+                if "?>" in line:
+                    yield text
+                    text = ""
+                    fenced = ""
+                    continue
+            if fenced.startswith("</"):
+                text += line + "\n"
+                if fenced in line:
+                    yield text
+                    text = ""
+                    fenced = ""
+                    continue
+            if not line.strip():
+                yield text
+                text = ""
+                fenced = ""
+                continue
+            # or else
+            text += line + "\n"
+            continue
+        # check to start an html block
+        if not fenced and not text and line.startswith("<"):
+            if re.search("^[<]script(>| |$)", line):
+               fenced = "<script"
+               text = line + "\n"
+               continue
+            if re.search("^[<]pre(>| |$)", line):
+               fenced = "<pre"
+               text = line + "\n"
+               continue
+            if re.search("^[<]style(>| |$)", line):
+               fenced = "<style"
+               text = line + "\n"
+               continue
+            if line.startswith("<![CDATA["):
+               fenced = "<![CDATA["
+               text = line + "\n"
+               continue
+            if line.startswith("<!--"):
+               fenced = "<!--"
+               text = line + "\n"
+               continue
+            if line.startswith("<!"):
+               fenced = "<!"
+               text = line + "\n"
+               continue
+            if line.startswith("<?"):
+               fenced = "<?"
+               text = line + "\n"
+               continue
+            tag = re.match("<(\\w+>)", line)
+            if tag:
+               fenced = "</"+tag.group(1)
+               text = line + "\n"
+               continue
+        # check for indented code blocks
+        if re.match("^    .*", line):
+            m = re.match("^( *).*", line)
+            indent = m.group(1)
+            if not fenced and not text:
+                text = line
+                fenced = indent
+                continue
+            if fenced and indent.startswith(fenced):
+                text += line + "\n"
+                continue
+        if fenced.startswith(" "):
+            if not line.strip():
+                text += line
+                continue
+            # not enough indent
+            if text:
+                yield text
+                text = ""
+            fenced = ""
+            # fallthrough
+        if line.strip().startswith("```"):
+            if not fenced:
+                if text:
+                    yield text
+                    text = ""
+                fenced = line[:line.rfind("`")+1]
+                text = line + "\n"
+                logg.debug("> fenced = '%s'", fenced)
+                continue
+            if fenced.strip().startswith("```"):
+                if line.startswith(fenced):
+                    text += line + "\n"
+                    yield text
+                    text = ""
+                    fenced = ""
+                    continue
+        if line.strip().startswith("~~~"):
+            if not fenced:
+                if text:
+                    yield text
+                    text = ""
+                fenced = line[:line.rfind("~")+1]
+                text = line + "\n"
+                logg.debug("> fenced = '%s'", fenced)
+                continue
+            if fenced.strip().startswith("~~~"):
+                if line.startswith(fenced):
+                    text += line + "\n"
+                    yield text
+                    text = ""
+                    fenced = ""
+                    continue
+        if fenced:
+           text += line + "\n"
+           continue
+        # setext headers should not be paragraphs or thematic brakes
+        # ... unlike GFM we do simply required atleast 3 "=" or "-"
+        if re.match(" ? ? ?[=][=][=][=]* *$", line):
+            if not text.strip(): pass
+            elif re.match("^ ? ? ?[#][#]* .*", text): pass
+            elif re.match("^ ? ? ?[-][-]* .*", text): pass
+            elif re.match("^ ? ? ?[>][>]* .*", text): pass
+            else:
+                text = "# "+text # level 1 sections
+                continue
+        if re.match(" ? ? ?[-][-][-][-]* *$", line):
+            if not text.strip(): pass
+            elif re.match("^ ? ? ?[#][#]* .*", text): pass
+            elif re.match("^ ? ? ?[-][-]* .*", text): pass
+            elif re.match("^ ? ? ?[>][>]* .*", text): pass
+            else:
+                text = "## "+text # level 2 section
+                continue
+        # thematic breaks allow a lot of space characters in GFM
+        if re.match(" ? ? ?[*] *[*] *[*] *[* ]*$", line):
+            if text:
+                yield text
+                text = ""
+            yield "--- "+line
+        if re.match("^ ? ? ?[-] *[-] *[-] *[- ]*$", line):
+            if text:
+                yield text
+                text = ""
+            yield "--- "+line
+        if re.match("^ ? ? ?[_] *[_] *[_] *[_ ]*$", line):
+            if text:
+                yield text
+                text = ""
+            yield "--- "+line
+        # or else
+        if line.rstrip():
+            text += line.rstrip() + "\n"
+    if text:
+        yield text
+        text = ""
+
+def xmlblocks(text):
+    blocks: List[str] = []
+    for block in _blocks(text):
+        blocks += _xmlblocks(block)
+    return blocks
+
+def firstline(block):
+    x = block.find("\r")
+    y = block.find("\n")
+    if x >= 0 and y >= 0:
+        return block[:min(x,y)]
+    elif x >= 0 or y >= 0:
+        return block[:max(x,y)]
+    return block
+
+def _xmlblocks(block):
+    line = firstline(block)
+    # html is passed through as such
+    if line.startswith("<"):
+        if re.search("^[<]script(>| |$)", line):
+           return [ block ]
+        if re.search("^[<]pre(>| |$)", line):
+           return [ block ]
+        if re.search("^[<]style(>| |$)", line):
+           return [ block ]
+        if line.startswith("<![CDATA["):
+           return [ block ]
+        if line.startswith("<!--"):
+           return [ block ]
+        if line.startswith("<!"):
+           return [ block ]
+        if line.startswith("<?"):
+           return [ block ]
+        tag = re.match("<(\\w+>)", line)
+        if tag:
+           return [ "<para>"+block+"</para>" ]
+    # indended code needs to be escaped
+    if re.match("^    .*", line):
+       return [ "<pre>%s</pre>" % escape(block) ]
+    if line.strip().startswith("```"):
+        result = ""
+        x = line.find("`")
+        y = line.rfind("`")
+        indent = line[x]
+        fenced = line[:y+1]
+        for nextline in block.splitlines():
+            if not result: # first line
+                y = nextline.rfind("`")
+                info = nextline[y+1:]
+                if info:
+                    result = "<screen info=\"%s\">" % escape(info)
+                else:
+                    result = "<screen>"
+                continue
+            if nextline.startswith(fenced):
+                break
+            result += escape(nextline[x:]) + "\n"
+        if result:
+            return [ result + "</screen>\n" ]
+        return []
+    if line.strip().startswith("~~~"):
+        result = ""
+        x = line.find("`")
+        y = line.rfind("`")
+        indent = line[x]
+        fenced = line[:y+1]
+        for nextline in block.splitlines():
+            if not result: # first line
+                y = nextline.rfind("`")
+                info = nextline[y+1:]
+                if info:
+                    result = "<screen info=\"%s\">" % escape(info)
+                else:
+                    result = "<screen>"
+                continue
+            if nextline.startswith(fenced):
+                break
+            result += escape(nextline[x:]) + "\n"
+        if result:
+            return [ result + "</screen>\n" ]
+        return []
+    #################################################
+    blocks = []
+    if re.match("\\[\w+\\]:", line):
+        text = ""
+        remainder = ""
+        for line in block.splitlines():
+            if remainder:
+                remainder += line + "\n"
+                continue
+            m = re.match("\\[(\w+)]: +(\\S+) +(\\S.*)", line)
+            if m:
+                if m.group(2) in ["#"] and m.group(1) in ["date"]:
+                    text += "<%s>%s</%s>" % (m.group(1), escape(m.group(3)), m.group(1))
+                else:
+                    text += "<meta name=\"%s\" href=\"%s\" content=\"%s\" />" % (m.group(1), escape(m.group(2)), escape(m.group(3)))
+                blocks += [ text ]
+                continue
+            m = re.match("\\[(\w+)]: +(\\S+)", line)
+            if m:
+                text += "<meta name=\"%s\" href=\"%s\" content=\"%s\" />" % (m.group(1), escape(m.group(2)), m.group(1))
+                blocks += [ text ]
+                continue
+            m = re.match("\\[(\w+)]:", line)
+            if m:
+                text += "<a name=\"%s\" />" % (m.group(1))
+                blocks += [ text ]
+                continue
+            remainder = line + "\n"
+        block = remainder
+        line = firstline(block)
+    heading = re.match(" ? ? ?([#][#]*)(.*)", line)
+    if heading:
+        marks = heading.group(1)
+        title = heading.group(2)
+        subtitle = ""
+        if marks in title:
+            title, subtitle = title.split(marks, 1)
+        result = ""
+        end = ""
+        for nextline in block.splitlines():
+            if not result: # first line
+                result = "<sect%i>" % len(marks)
+                end = "\n</sect%i>" % len(marks)
+                result += "<title>%s</title>" % formatting(title.strip())
+                if subtitle.strip():
+                    end = "</subtitle>" + end
+                    result += "\n<subtitle>" + formatting(subtitle.strip())
+                continue
+            if nextline.strip():
+                if "<subtitle>" not in result:
+                    end = "</subtitle>" + end
+                    result += "\n<subtitle>"
+                result += formatting(nextline) + "\n"
+        blocks = [ result + end ]
+        return blocks
+    if re.match(" ? ? ?[*][*]* *(.*)", line):
+        blocks += [ "<listitem><para>%s</para></listitem>" % formatting(block) ]
+        return blocks
+    if re.match(" ? ? ?[-] *(.*)", line):
+        blocks += [ "<listitem><para>%s</para></listitem>" % formatting(block) ]
+        return blocks
+    if block.strip():
+        blocks += [ "<para>%s</para>" % formatting(block) ]
+    return blocks
+
+escaping = { "*": "ast", "[": "lbra", "]" : "rbra", "(": "lpar", ")": "rpar", "\n<br />": "br"  }
+descaping = dict([(name, char) for char, name in escaping.items() ])
+
+def formatting(block):
+    return descapes(inlines(escapes(block)))
+def descapes(block):
+    return re.sub("(&(\w+);)", lambda m: ((m.group(2) in descaping) and descaping[m.group(2)] or m.group(1)), block)
+def keeping(block):
+    return re.sub("(.)", lambda m: ((m.group(1) in escaping) and ("&%s;" % escaping[m.group(1)]) or m.group(1)), block)
+def escapes(block):
+    """ it does html escape plus remove backslash escapes """
+    # the backslash will use escaping/descaping codes to help inline markup later
+    text = ""
+    esc = ""
+    for c in block:
+        if esc == "\\":
+            if c == "\r":
+                esc = "\r"
+                continue
+            if c == "\n":
+                esc = ""
+                text += "&br;"
+                continue
+            if c in escaping:
+               text += "&%s;" % escaping[c]
+            else:
+               text += c
+            esc = ""
+            continue
+        if esc == "\r":
+            if c == "\n":
+                esc = ""
+                text += "&br;"
+                continue
+            esc = ""
+            # fallthrough
+        if c == "\\":
+            esc = c
+            continue
+        if c == "`":
+            text += "`"
+            continue
+        if c == "<":
+            text += "&lt;"
+            continue
+        if c == ">":
+            text += "&gt;"
+            continue
+        if c == "&":
+            text += "&amp;"
+            continue
+        if c == "\"":
+            text += "&quot;"
+            continue
+        text += c
+    return text
+def inlines(block):
+    text = block[:]
+    text = re.sub("\\[([^[\\]<>]*)\\]\\(<([^[\\]<>]*)>\\)",
+        lambda m: "<a href=\"%s\">%s</a>" % (keeping(m.group(2)), m.group(1)),
+        text)
+    text = re.sub("\\[([^[\\]<>]*)\\]\\(([/#][^[\\]<>]*)\\)",
+        lambda m: "<a href=\"%s\">%s</a>" % (keeping(m.group(2)), m.group(1)),
+        text)
+    text = re.sub("\\[([^[\\]<>]*)\\]\\(([^[\\]<>]*.html?)\\)",
+        lambda m: "<a href=\"%s\">%s</a>" % (keeping(m.group(2)), m.group(1)),
+        text)
+    text = re.sub("\\[([^[\\]<>]*)\\]\\(([^[\\]<>]*.md)\\)",
+        lambda m: "<a href=\"%s\">%s</a>" % (keeping(m.group(2)), m.group(1)),
+        text)
+    text = re.sub("\\[([^[\\]<>]*)\\]\\(([^[\\]<>]*)\\)",
+        lambda m: "<a link=\"%s\">%s</a>" % (keeping(m.group(2)), m.group(1)),
+        text)
+    text = re.sub("([`]([^`<>]*)[`])",
+        lambda m: "<code>%s</code>" % keeping(m.group(2)),
+        text)
+    text = re.sub("([*][*][*]([^*]*)[*][*][*])",
+        lambda m: "<strong><big>%s</big></strong>" % m.group(2),
+        text)
+    text = re.sub("([_][_][_]([^_]*)[_][_][_])",
+        lambda m: "<strong><small>%s</small></strong>" % m.group(2),
+        text)
+    text = re.sub("([*][*]([^*]*)[*][*])",
+        lambda m: "<strong>%s</strong>" % m.group(2),
+        text)
+    text = re.sub("([_][_]([^_]*)[_][_])",
+        lambda m: "<em><small>%s</small></em>" % m.group(2),
+        text)
+    if SingleAsterisk:
+        text = re.sub("(?m)([*]([^*]*)[*])",
+            lambda m: "<em>%s</em>" % m.group(2),
+            text)
+    else:
+        text = re.sub("(?m)([*](\".*\")[*])",
+            lambda m: "<em>%s</em>" % m.group(2),
+            text)
+        text = re.sub("(?m)([*](&quot;.*&quot;)[*])",
+            lambda m: "<em>%s</em>" % m.group(2),
+            text)
+        text = re.sub("(?m)([*]([^ ]*)[*])",
+            lambda m: "<em>%s</em>" % m.group(2),
+            text)
+    if SingleUnderscore:
+        text = re.sub("([_]([^_]*)[_])",
+            lambda m: "<em>%s</em>" % (escape(m.group(2))),
+            text)
+    text = re.sub("([*][*][*](.*)[*][*][*])",
+        lambda m: "<strong><big>%s</big></strong>" % m.group(2),
+        text)
+    text = re.sub("([_][_][_](.*)[_][_][_])",
+        lambda m: "<strong><small>%s</small></strong>" % m.group(2),
+        text)
+    text = re.sub("([*][*](.*)[*][*])",
+        lambda m: "<strong>%s</strong>" % m.group(2),
+        text)
+    text = re.sub("([_][_](.*)[_][_])",
+        lambda m: "<em><small>%s</small></em>" % m.group(2),
+        text)
+    if SingleAsterisk:
+        text = re.sub("([*](.*)[*])",
+            lambda m: "<em>%s</em>" % m.group(2),
+            text)
+    else:
+        text = re.sub("(?m)([*](\"[^\"]*\")[*])",
+            lambda m: "<em>%s</em>" % m.group(2),
+            text)
+        text = re.sub("(?m)([*](&quot;.*&quot;)[*])",
+            lambda m: "<em>%s</em>" % m.group(2),
+            text)
+        text = re.sub("(?m)([*]([^ ]*)[*])",
+            lambda m: "<em>%s</em>" % m.group(2),
+            text)
+    if SingleUnderscore:
+        text = re.sub("([_](.*)[_])",
+            lambda m: "<em>%s</em>" % (escape(m.group(2))),
+            text)
+    return text
+
+if __name__ == "__main__":
+    from optparse import OptionParser
+    _o = OptionParser("%prog [-options] filename...")
+    _o.add_option("-v", "--verbose", action="count", default=0,
+                   help="increase logging level")
+    _o.add_option("-b", "--blocks", action="store_true", default=0,
+                   help="show block structure")
+    _o.add_option("-c", "--xmlblocks", action="store_true", default=0,
+                   help="show xml block structure")
+    _o.add_option("-r", "--returns", action="store_true", default=0,
+                   help="returns as htm text")
+    opt, args = _o.parse_args()
+    logging.basicConfig(level = logging.ERROR - 10 * opt.verbose)
+    document: List[str] = []
+    for arg in args:
+        logg.info(">> %s", arg)
+        document += blocks(open(arg, "r").read())
+    if opt.blocks:
+        for block in document:
+            show = "| " + block.replace("\n", "\n| ")
+            if show.endswith("\n| "): show = show[:-2]
+            if not show.endswith("\n"): show += "\n"
+            print(show)
+            if opt.verbose > 2:
+                print("-----------")
+    if opt.xmlblocks:
+        for block in document:
+            for part in _xmlblocks(block):
+                show = "| " + part.replace("\n", "\n| ")
+                if show.endswith("\n| "): show = show[:-2]
+                if not show.endswith("\n"): show += "\n"
+                print(show)
+                if opt.verbose > 2:
+                   print("-----------")
+    if opt.returns:
+        for block in document:
+            for part in _xmlblocks(block):
+                part = re.sub("<sect1><title>(.*)</title>", "<h1>\\1</h1>", part)
+                part = re.sub("<sect2><title>(.*)</title>", "<h2>\\1</h2>", part)
+                part = re.sub("<sect3><title>(.*)</title>", "<h3>\\1</h3>", part)
+                part = re.sub("<sect4><title>(.*)</title>", "<h4>\\1</h4>", part)
+                part = part.replace("<para>","<P>\n")
+                part = part.replace("</para>","</P>")
+                part = part.replace("</sect1>","")
+                part = part.replace("</sect2>","")
+                part = part.replace("</sect3>","")
+                part = part.replace("<subtitle>", "")
+                part = part.replace("</subtitle>", "")
+                part = part.replace("<screen>", "<pre>\n")
+                part = part.replace("</screen>", "</pre>")
+                part = part.replace("<strong>", "<b>")
+                part = part.replace("</strong>", "</b>")
+                # part = part.replace("<code>", "`")
+                # part = part.replace("</code>", "`")
+                part = part.replace("&quot;", "\"")
+                print(part)
+    if not opt.returns and not opt.xmlblocks and not opt.blocks:
+        for block in document:
+            for part in _xmlblocks(block):
+                print(part)
+
