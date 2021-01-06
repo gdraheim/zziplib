@@ -194,6 +194,11 @@ def _blocks(input: str) -> Generator[str, None, None]:
                fenced = "</"+tag.group(1)
                text = line + "\n"
                continue
+            tag = re.match("<(\\w+) [ ]*\\w+=[^<>]*>", line)
+            if tag:
+               fenced = "</"+tag.group(1)+">"
+               text = line + "\n"
+               continue
         # check for indented code blocks
         if re.match("^    .*", line):
             m = re.match("^( *).*", line)
@@ -385,6 +390,10 @@ def _xmlblocks(block):
                 return [ block ]
             else:
                 return [ "<para>" + block + "</para>" ]
+        tag = re.match("(</?(\\w+) [ ]*\\w+=[^<>]*>)", line)
+        if tag:
+            if True:
+                return [ block ]
     # indended code needs to be escaped
     if re.match("^    .*", line):
        return [ "<pre>%s</pre>" % escape(block) ]
