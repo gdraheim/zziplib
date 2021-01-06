@@ -39,14 +39,14 @@
 
 <a alt="Tarballs, RPM-archive and windll-ZIPs can be downloaded from"
   href="http://sourceforge.net/project/showfiles.php?group_id=6389">
- Download Area </a></b><br />
+ Sourceforge Download Area </a></b><br />
 
 <a alt="Sourceforge Project CVS web access"
    href="http://zziplib.svn.sourceforge.net/viewvc/zziplib/">Sourceforge SVN</a><br />
 <a alt="Sourceforge Project Index Page"
    href="http://sourceforge.net/projects/zziplib">Sourceforge Project</a><br />
 <a alt="the zziplib webpage at sourceforge"
-   href="http://zziplib.sourceforge.net">zziplib.sf.net
+   href="http://zziplib.sourceforge.net"><b>zziplib.sf.net</b>
   <small><i>Home</i></small></a><br />
 
 
