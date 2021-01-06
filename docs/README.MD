@@ -30,6 +30,13 @@
 
 <small>derived from <a href="site.htm">site.htm</a></small>
 
+<p align="right">
+     <a href="http://sourceforge.net/project/?group_id=6389">
+        <img src="http://sourceforge.net/sflogo.php?group_id=6389&type=2"
+            border="0" alt="sourceforge.net" width="125" height="37">
+     </a>
+</p>
+
 <a alt="Tarballs, RPM-archive and windll-ZIPs can be downloaded from"
   href="http://sourceforge.net/project/showfiles.php?group_id=6389">
  Download Area </a></b><br />
@@ -42,12 +49,6 @@
    href="http://zziplib.sourceforge.net">zziplib.sf.net
   <small><i>Home</i></small></a><br />
 
-<p align="right">
-     <a href="http://sourceforge.net/project/?group_id=6389">
-        <img src="http://sourceforge.net/sflogo.php?group_id=6389&type=2"
-            border="0" alt="sourceforge.net" width="125" height="37">
-     </a>
-</p>
 
 <p align="right"><small>
 <br> <small>(C)</small> Guido Draheim
