@@ -1,6 +1,6 @@
-## Exported Functions 
-
 <date>2006-09-21</date>
+
+## Exported Functions 
 
 The ZZipLib Project does already provide THREE libraries. The classic
 zziplib.so (via "zzip/lib.h") is the most prominent one and used in

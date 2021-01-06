@@ -1,4 +1,4 @@
-[date]: # 2004-05-18
+<date> 2004-05-18 </date>
 
 ## Download 
 what to get to get it

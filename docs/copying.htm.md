@@ -1,4 +1,4 @@
-[date]: # 2004
+<date> 2004 </date>
 
 ## COPYING - license information 
 the public license terms

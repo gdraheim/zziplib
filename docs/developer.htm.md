@@ -1,4 +1,4 @@
-[date]: # 2009-08-23
+<date> 2009-08-23 </date>
 
 ## Developer 
 sourceforge SVN area

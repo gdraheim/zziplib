@@ -1,4 +1,4 @@
-[date]: # February 2003
+<date> February 2003 </date>
 
 ## Configuration 
 of other projects using zziplib
