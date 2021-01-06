@@ -30,13 +30,15 @@ def _blocks(input: str) -> Generator[str, None, None]:
     text = ""
     fenced = "" # or indent or html
     blockquote = ""
+    listblock = ""
     for nextline in input.splitlines():
         logg.debug("| %s", nextline)
         line = nextline
+        endblockquote = []
         if blockquote:
             newblock = ""
-            _blockquote1 = re.match("([>]+)\\s(\\s*)$", line)
-            _blockquote2 = re.match("([>]+)\\s(.*)", line)
+            _blockquote1 = re.match("([>]+)(\\s*)$", nextline)
+            _blockquote2 = re.match("([>]+)\\s(.*)", nextline)
             if _blockquote1:
                 newblock = _blockquote1.group(1)
                 line = _blockquote1.group(2)
@@ -54,8 +56,38 @@ def _blocks(input: str) -> Generator[str, None, None]:
                     if text:
                         yield text
                         text = ""
-                    yield "</blockquote>"
+                    endblockquote += [ "</blockquote>" ]
                 blockquote = newblock # may become empty
+        if listblock:
+            newblock = ""
+            _indents = re.match("( *)(.*)", line)
+            _newlist1 = re.match("([*]+)(\\s*)$", line)
+            _newlist2 = re.match("([*]+)\\s(.*)", line)
+            if _newlist1 or _newlist2:
+                if _newlist1:
+                    newblock = _newlist1.group(1)
+                if _newlist2:
+                    newblock = _newlist2.group(1)
+            indent = _indents.group(1)
+            # if less indent then end listblock
+            if len(indent) > len(listblock):
+                pass
+            if fenced:
+               pass
+            elif listblock.count("*") < newblock.count("*"):
+                for newdepth in range(listblock.count("*"), newblock.count("*")):
+                    yield "<itemizedlist>"
+                listblock = newblock
+            elif newblock.count("*") < listblock.count("*"):
+                for newdepth in range(newblock.count("*"), listblock.count("*")):
+                    if text:
+                        yield text
+                        text = ""
+                    yield "</itemizedlist>"
+                listblock = newblock # may become empty
+            listblock = newblock
+        for newblock in endblockquote:
+            yield newblock
         if not line.strip():
             if not fenced:
                 if text:
@@ -65,43 +97,43 @@ def _blocks(input: str) -> Generator[str, None, None]:
         # check to end an html block
         if fenced.startswith("<"):
             if fenced == "<script":
-                text += line + "\n"
                 if "</script>" in line:
+                    text += line + "\n"
                     yield text
                     text = ""
                     fenced = ""
                     continue
             if fenced == "<pre":
-                text += line + "\n"
                 if "</pre>" in line:
+                    text += line + "\n"
                     yield text
                     text = ""
                     fenced = ""
                     continue
             if fenced == "<style":
-                text += line + "\n"
                 if "</style>" in line:
+                    text += line + "\n"
                     yield text
                     text = ""
                     fenced = ""
                     continue
             if fenced == "<![CDATA[":
-                text += line + "\n"
                 if "]]>" in line:
+                    text += line + "\n"
                     yield text
                     text = ""
                     fenced = ""
                     continue
             if fenced == "<!--":
-                text += line + "\n"
                 if "-->" in line:
+                    text += line + "\n"
                     yield text
                     text = ""
                     fenced = ""
                     continue
             if fenced == "<!":
-                text += line + "\n"
                 if ">" in line:
+                    text += line + "\n"
                     yield text
                     text = ""
                     fenced = ""
@@ -114,8 +146,8 @@ def _blocks(input: str) -> Generator[str, None, None]:
                     fenced = ""
                     continue
             if fenced.startswith("</"):
-                text += line + "\n"
                 if fenced in line:
+                    text += line + "\n"
                     yield text
                     text = ""
                     fenced = ""
@@ -126,7 +158,7 @@ def _blocks(input: str) -> Generator[str, None, None]:
                 fenced = ""
                 continue
             # or else
-            text += line + "\n"
+            text += line + "\n" #
             continue
         # check to start an html block
         if not fenced and not text and line.startswith("<"):
@@ -253,7 +285,8 @@ def _blocks(input: str) -> Generator[str, None, None]:
                 yield text
                 text = ""
             yield "--- "+line
-        _blockquote1 = re.match("([>]+)\\s(\\s*)$", nextline)
+        endblockquote = []
+        _blockquote1 = re.match("([>]+)(\\s*)$", nextline)
         _blockquote2 = re.match("([>]+)\\s(.*)", nextline)
         if _blockquote1 or _blockquote2:
             newblock = ""
@@ -273,14 +306,40 @@ def _blocks(input: str) -> Generator[str, None, None]:
                     if text:
                         yield text
                         text = ""
-                    yield "</blockquote>"
+                    endblockquote += [ "</blockquote>" ]
                 blockquote = newblock # may become empty
+        _newlist1 = re.match("([*]+)(\\s*)$", line)
+        _newlist2 = re.match("([*]+)\\s(.*)", line)
+        if _newlist1 or _newlist2:
+            newblock = ""
+            if _newlist1:
+                newblock = _newlist1.group(1)
+            if _newlist2:
+                newblock = _newlist2.group(1)
+            # assert not fenced
+            if listblock.count("*") < newblock.count("*"):
+                for newdepth in range(listblock.count("*"), newblock.count("*")):
+                    yield "<itemizedlist>"
+                listblock = newblock
+            elif newblock.count("*") < listblock.count("*"):
+                for newdepth in range(newblock.count("*"), listblock.count("*")):
+                    if text:
+                        yield text
+                        text = ""
+                    yield "</itemizedlist>"
+                listblock = newblock # may become empty
+            listblock = newblock
+        for newblock in endblockquote:
+            yield newblock
         # or else
         if line.rstrip():
             text += line.rstrip() + "\n"
     if text:
         yield text
         text = ""
+    for olddepth in range(listblock.count("*")):
+        yield "</itemizedlist>"
+        listblock = ""
     for olddepth in range(blockquote.count(">")):
         yield "</blockquote>"
         blockquote = ""
@@ -320,7 +379,7 @@ def _xmlblocks(block):
            return [ block ]
         tag = re.match("(</?(\\w+)>)", line)
         if tag:
-            if tag.group(2) in ["blockquote"]:
+            if tag.group(2) in ["blockquote", "itemizedlist", "date"]:
                 return [ block ]
             else:
                 return [ "<para>" + block + "</para>" ]
@@ -425,7 +484,29 @@ def _xmlblocks(block):
         blocks = [ result + end ]
         return blocks
     if re.match(" ? ? ?[*][*]* *(.*)", line):
-        blocks += [ "<listitem><para>%s</para></listitem>" % formatting(block) ]
+        # decompose a tight block
+        lines = list(block.splitlines())
+        endblock = ""
+        for n in range(len(lines)):
+            line_0 = lines[n]
+            line_1 = ""
+            if n+1 < len(lines): line_n_1 = lines[n+1]
+            _li0 = re.match(" ? ? ?([*][*]*) *(.*)", line_0)
+            _li1 = re.match(" ? ? ?([*][*]*) *(.*)", line_1)
+            if not endblock:
+                if _li0 and (_li1 or not line_1.strip()):
+                    blocks += [ "<listitem> %s</listitem>" % formatting(_li0.group(2)) ]
+                    continue
+            else:
+                if _li0:
+                    blocks += [ "<listitem><para>%s</para></listitem>" % formatting(endblock) ]
+                    endblock = ""
+                if _li0 and (_li1 or not line_1.strip()):
+                    blocks += [ "<listitem>%s</listitem>" % formatting(_li0.group(2)) ]
+                    continue
+            endblock += lines[n] + "\n"
+        if endblock:
+            blocks += [ "<listitem><para>%s</para></listitem>" % formatting(endblock) ]
         return blocks
     if re.match(" ? ? ?[-] *(.*)", line):
         blocks += [ "<listitem><para>%s</para></listitem>" % formatting(block) ]
@@ -492,20 +573,22 @@ def escapes(block):
     return text
 def inlines(block):
     text = block[:]
-    text = re.sub("\\[([^[\\]<>]*)\\]\\(<([^[\\]<>]*)>\\)",
+    text = re.sub("\\[([^\\[\\]<>]*)\\]\\(<([^\\[\\]<>()]*)>\\)",
         lambda m: "<a href=\"%s\">%s</a>" % (keeping(m.group(2)), m.group(1)),
         text)
-    text = re.sub("\\[([^[\\]<>]*)\\]\\(([/#][^[\\]<>]*)\\)",
+    text = re.sub("\\[([^\\[\\]<>]*)\\]\\(([/#][^\\[\\]<>()]*)\\)",
         lambda m: "<a href=\"%s\">%s</a>" % (keeping(m.group(2)), m.group(1)),
         text)
-    text = re.sub("\\[([^[\\]<>]*)\\]\\(([^[\\]<>]*.html?)\\)",
+    text = re.sub("\\[([^\\[\\]<>]*)\\]\\(([^\\[\\]<>()]*[./][^[\\]<>()]*)\\)",
         lambda m: "<a href=\"%s\">%s</a>" % (keeping(m.group(2)), m.group(1)),
         text)
-    text = re.sub("\\[([^[\\]<>]*)\\]\\(([^[\\]<>]*.md)\\)",
+    text = re.sub("\\[([^\\[\\]<>]*)\\]\\(([^\\[\\]<>()]*)\\)",
+        # lambda m: "<a link=\"%s\">%s</a>" % (keeping(m.group(2)), m.group(1)),
         lambda m: "<a href=\"%s\">%s</a>" % (keeping(m.group(2)), m.group(1)),
         text)
-    text = re.sub("\\[([^[\\]<>]*)\\]\\(([^[\\]<>]*)\\)",
-        lambda m: "<a link=\"%s\">%s</a>" % (keeping(m.group(2)), m.group(1)),
+    text = re.sub("\\[(\\[[^\\[\\]<>]*\\])\\]\\(([^\\[\\]<>()]*)\\)",
+        # lambda m: "<a link=\"%s\">%s</a>" % (keeping(m.group(2)), m.group(1)),
+        lambda m: "<a href=\"%s\">%s</a>" % (keeping(m.group(2)), m.group(1)),
         text)
     text = re.sub("([`]([^`<>]*)[`])",
         lambda m: "<code>%s</code>" % keeping(m.group(2)),
@@ -618,6 +701,7 @@ if __name__ == "__main__":
                 part = part.replace("</sect1>","")
                 part = part.replace("</sect2>","")
                 part = part.replace("</sect3>","")
+                part = part.replace("</sect4>","")
                 part = part.replace("<subtitle>", "")
                 part = part.replace("</subtitle>", "")
                 part = part.replace("<screen>", "<pre>\n")
@@ -626,6 +710,10 @@ if __name__ == "__main__":
                 part = part.replace("</strong>", "</b>")
                 # part = part.replace("<code>", "`")
                 # part = part.replace("</code>", "`")
+                part = part.replace("<itemizedlist>","<ul>\n")
+                part = part.replace("</itemizedlist>","</ul>")
+                part = part.replace("<listitem>","<li>")
+                part = part.replace("</listitem>","</li>")
                 part = part.replace("&quot;", "\"")
                 print(part)
     if not opt.returns and not opt.xmlblocks and not opt.blocks:
