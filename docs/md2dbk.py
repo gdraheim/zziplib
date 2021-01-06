@@ -29,8 +29,33 @@ def _blocks(input: str) -> Generator[str, None, None]:
     logg.debug(">> (%i)", len(input))
     text = ""
     fenced = "" # or indent or html
-    for line in input.splitlines():
-        logg.debug("| %s", line)
+    blockquote = ""
+    for nextline in input.splitlines():
+        logg.debug("| %s", nextline)
+        line = nextline
+        if blockquote:
+            newblock = ""
+            _blockquote1 = re.match("([>]+)\\s(\\s*)$", line)
+            _blockquote2 = re.match("([>]+)\\s(.*)", line)
+            if _blockquote1:
+                newblock = _blockquote1.group(1)
+                line = _blockquote1.group(2)
+            elif _blockquote2:
+                newblock = _blockquote2.group(1)
+                line = _blockquote2.group(2)
+            if fenced:
+                pass
+            elif blockquote.count(">") < newblock.count(">"):
+                for newdepth in range(blockquote.count(">"), newblock.count(">")):
+                    yield "<blockquote>"
+                blockquote = newblock
+            elif newblock.count(">") < blockquote.count(">"):
+                for newdepth in range(newblock.count(">"), blockquote.count(">")):
+                    if text:
+                        yield text
+                        text = ""
+                    yield "</blockquote>"
+                blockquote = newblock # may become empty
         if not line.strip():
             if not fenced:
                 if text:
@@ -228,12 +253,37 @@ def _blocks(input: str) -> Generator[str, None, None]:
                 yield text
                 text = ""
             yield "--- "+line
+        _blockquote1 = re.match("([>]+)\\s(\\s*)$", nextline)
+        _blockquote2 = re.match("([>]+)\\s(.*)", nextline)
+        if _blockquote1 or _blockquote2:
+            newblock = ""
+            if _blockquote1:
+                newblock = _blockquote1.group(1)
+                line = _blockquote1.group(2)
+            if _blockquote2:
+                newblock = _blockquote2.group(1)
+                line = _blockquote2.group(2)
+            # assert not fenced
+            if blockquote.count(">") < newblock.count(">"):
+                for newdepth in range(blockquote.count(">"), newblock.count(">")):
+                    yield "<blockquote>"
+                blockquote = newblock
+            elif newblock.count(">") < blockquote.count(">"):
+                for newdepth in range(newblock.count(">"), blockquote.count(">")):
+                    if text:
+                        yield text
+                        text = ""
+                    yield "</blockquote>"
+                blockquote = newblock # may become empty
         # or else
         if line.rstrip():
             text += line.rstrip() + "\n"
     if text:
         yield text
         text = ""
+    for olddepth in range(blockquote.count(">")):
+        yield "</blockquote>"
+        blockquote = ""
 
 def xmlblocks(text):
     blocks: List[str] = []
@@ -268,9 +318,12 @@ def _xmlblocks(block):
            return [ block ]
         if line.startswith("<?"):
            return [ block ]
-        tag = re.match("<(\\w+>)", line)
+        tag = re.match("(</?(\\w+)>)", line)
         if tag:
-           return [ "<para>"+block+"</para>" ]
+            if tag.group(2) in ["blockquote"]:
+                return [ block ]
+            else:
+                return [ "<para>" + block + "</para>" ]
     # indended code needs to be escaped
     if re.match("^    .*", line):
        return [ "<pre>%s</pre>" % escape(block) ]
