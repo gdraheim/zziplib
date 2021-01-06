@@ -1,6 +1,6 @@
 ## ZZIP Library Documentation
 
-<div><img style="float:right" src="dir-zzip-192.png" /></div>
+<div style="float:right"><img src="dir-zzip-192.png" /></div>
 
 * [Library](zzip-index.htm.md)
 * [ZIP Access](zzip-zip.htm.md)
