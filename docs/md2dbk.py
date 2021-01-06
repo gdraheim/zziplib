@@ -274,16 +274,19 @@ def _blocks(input: str) -> Generator[str, None, None]:
                 yield text
                 text = ""
             yield "--- "+line
+            continue
         if re.match("^ ? ? ?[-] *[-] *[-] *[- ]*$", line):
             if text:
                 yield text
                 text = ""
             yield "--- "+line
+            continue
         if re.match("^ ? ? ?[_] *[_] *[_] *[_ ]*$", line):
             if text:
                 yield text
                 text = ""
             yield "--- "+line
+            continue
         endblockquote = []
         _blockquote1 = re.match("([>]+)(\\s*)$", nextline)
         _blockquote2 = re.match("([>]+)\\s(.*)", nextline)
@@ -427,6 +430,14 @@ def _xmlblocks(block):
         if result:
             return [ result + "</screen>\n" ]
         return []
+    if True:
+        # thematic breaks allow a lot of space characters in GFM
+        if re.match(" ? ? ?[*] *[*] *[*] *[* ]*$", line):
+            return [ "<hr />" ]
+        if re.match("^ ? ? ?[-] *[-] *[-] *[- ]*$", line):
+            return [ "<hr width=\"60%\" align=\"center\" />" ]
+        if re.match("^ ? ? ?[_] *[_] *[_] *[_ ]*$", line):
+            return [ "<hr width=\"80%\" align=\"center\" />" ]
     #################################################
     blocks = []
     if re.match("\\[\w+\\]:", line):
