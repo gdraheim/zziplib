@@ -42,14 +42,12 @@
    href="http://zziplib.sourceforge.net">zziplib.sf.net
   <small><i>Home</i></small></a><br />
 
-====
-
-<center>
+<p align="right">
      <a href="http://sourceforge.net/project/?group_id=6389">
         <img src="http://sourceforge.net/sflogo.php?group_id=6389&type=2"
             border="0" alt="sourceforge.net" width="125" height="37">
      </a>
-</center>
+</p>
 
 <p align="right"><small>
 <br> <small>(C)</small> Guido Draheim
