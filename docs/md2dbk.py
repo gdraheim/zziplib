@@ -621,6 +621,9 @@ def inlines(block):
         text = re.sub("(?m)([*]([^ ]*)[*])",
             lambda m: "<em>%s</em>" % m.group(2),
             text)
+        text = re.sub("(?m)([*]([^ ]* [^ ]*)[*])",
+            lambda m: "<em>%s</em>" % m.group(2),
+            text)
     if SingleUnderscore:
         text = re.sub("([_]([^_]*)[_])",
             lambda m: "<em>%s</em>" % (escape(m.group(2))),
@@ -649,6 +652,9 @@ def inlines(block):
             lambda m: "<em>%s</em>" % m.group(2),
             text)
         text = re.sub("(?m)([*]([^ ]*)[*])",
+            lambda m: "<em>%s</em>" % m.group(2),
+            text)
+        text = re.sub("(?m)([*]([^ ]* [^ ]*)[*])",
             lambda m: "<em>%s</em>" % m.group(2),
             text)
     if SingleUnderscore:
@@ -698,12 +704,14 @@ if __name__ == "__main__":
                 part = re.sub("<sect2><title>(.*)</title>", "<h2>\\1</h2>", part)
                 part = re.sub("<sect3><title>(.*)</title>", "<h3>\\1</h3>", part)
                 part = re.sub("<sect4><title>(.*)</title>", "<h4>\\1</h4>", part)
+                part = re.sub("<sect6><title>(.*)</title>", "<DT>\\1</DT>", part)
                 part = part.replace("<para>","<P>\n")
                 part = part.replace("</para>","</P>")
                 part = part.replace("</sect1>","")
                 part = part.replace("</sect2>","")
                 part = part.replace("</sect3>","")
                 part = part.replace("</sect4>","")
+                part = part.replace("</sect6>","")
                 part = part.replace("<subtitle>", "")
                 part = part.replace("</subtitle>", "")
                 part = part.replace("<screen>", "<pre>\n")
