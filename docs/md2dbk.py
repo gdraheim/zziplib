@@ -698,7 +698,7 @@ if __name__ == "__main__":
                    help="show block structure")
     _o.add_option("-c", "--xmlblocks", action="store_true", default=0,
                    help="show xml block structure")
-    _o.add_option("-r", "--returns", action="store_true", default=0,
+    _o.add_option("-r", "--htm", action="store_true", default=0,
                    help="returns as htm text")
     opt, args = _o.parse_args()
     logging.basicConfig(level = logging.ERROR - 10 * opt.verbose)
@@ -723,9 +723,11 @@ if __name__ == "__main__":
                 print(show)
                 if opt.verbose > 2:
                    print("-----------")
-    if opt.returns:
+    if opt.htm:
         for block in document:
             for part in _xmlblocks(block):
+                if "<subtitle>" in part:
+                   part = re.sub("(?s)</title>\\s*<subtitle>","</title> <subtitle>", part)
                 part = re.sub("<sect1><title>(.*)</title>", "<h1>\\1</h1>", part)
                 part = re.sub("<sect2><title>(.*)</title>", "<h2>\\1</h2>", part)
                 part = re.sub("<sect3><title>(.*)</title>", "<h3>\\1</h3>", part)
@@ -740,8 +742,8 @@ if __name__ == "__main__":
                 part = part.replace("</sect6>","")
                 part = part.replace("<subtitle>", "")
                 part = part.replace("</subtitle>", "")
-                part = part.replace("<screen>", "<pre>\n")
-                part = part.replace("</screen>", "</pre>")
+                part = part.replace("<screen>", "<PRE>\n")
+                part = part.replace("</screen>", "</PRE>")
                 part = part.replace("<strong>", "<b>")
                 part = part.replace("</strong>", "</b>")
                 # part = part.replace("<code>", "`")
@@ -751,8 +753,8 @@ if __name__ == "__main__":
                 part = part.replace("<listitem>","<li>")
                 part = part.replace("</listitem>","</li>")
                 part = part.replace("&quot;", "\"")
-                print(part)
-    if not opt.returns and not opt.xmlblocks and not opt.blocks:
+                print(part + "\n")
+    if not opt.htm and not opt.xmlblocks and not opt.blocks:
         for block in document:
             for part in _xmlblocks(block):
                 print(part)

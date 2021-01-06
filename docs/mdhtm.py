@@ -10,7 +10,7 @@ for arg in args:
    for line in open(arg):
        part = line.rstrip()
        part = re.sub("`([^`]*)`", "<code>\\1</code>", part)
-       part = re.sub("(?m)(</[hH][1234]>) *(\\S+)", "\\1\n\\2", part)
+       # part = re.sub("(?m)(</[hH][1234]>) *(\\S+)", "\\1\n\\2", part)
        part = part.replace("<br>", "<br />")
        part = part.replace("<>", " ")
        # part = part.replace("<center>", "")
