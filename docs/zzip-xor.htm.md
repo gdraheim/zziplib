@@ -1,14 +1,12 @@
-<section> <date> 15. July 2002 </date>
-<h2> ZIP Obfuscation </h2>       Using obfuscations like XOR.
+<date> 15. July 2002 </date>
 
-<!--border-->
+## ZIP Obfuscation 
+Using obfuscations like XOR.
 
-<section>
-<h3> The EXT/IO calls </h3>
+### The EXT/IO calls 
 
-<P>
-  You really should read the section about the
-  <a href="zzip-extio.html">EXT/IO feature</a> of the zziplib since the
+You really should read the section about the
+  [EXT/IO feature](zzip-extio.html) of the zziplib since the
   obfuscation routines are built on top of it. In order to use obfuscation,
   you will generally need to use all the three additional argument that
   can be passsed to _open_ext_io functions. For the XOR-example, only one
@@ -18,60 +16,59 @@
   to wonder about the encryption/decryption pair, and it is a stateless
   obfuscation that does not need to know about the current position
   within the zip-datafile or zippedfile-datatream.
-</P><P>
-  The examples provided just use a simple routine for xoring data that
-  is defined in all the three of the example programs: <pre>
-      static int xor_value = 0x55;
+
+The examples provided just use a simple routine for xoring data that
+  is defined in all the three of the example programs: 
+
+```
+static int xor_value = 0x55;
       static zzip_ssize_t xor_read (int f, void* p, zzip_size_t l)
       {
           zzip_size_t r = read(f, p, l);
 	  zzip_size_t x;  char* q = p;
-          for (x=0; x &lt; r; x++) q[x] ^= xor_value;
+          for (x=0; x < r; x++) q[x] ^= xor_value;
           return r;
       }
-  </pre>
-</P><P>
-  and place this routine into the io-handlers after initializing
-  the structure: <pre>
-    zzip_init_io (&amp;xor_handlers, 0); xor_handlers.read = &amp;xor_read;
-  </pre>
-</P>
+```
 
-</section><section>
-<h3> The examples </h3>
+and place this routine into the io-handlers after initializing
+  the structure: 
 
-<P>
-  There are three example programs. The first one is
-  <a href="zzxorcopy.c">zzxorcopy.c</a> which actually is not a zziplib 
+```
+zzip_init_io (&xor_handlers, 0); xor_handlers.read = &xor_read;
+```
+
+### The examples 
+
+There are three example programs. The first one is
+  [zzxorcopy.c](zzxorcopy.c) which actually is not a zziplib 
   based program. It just opens a file via stdio, loops through all data bytes 
   it can read thereby xor'ing it, and writes it out to the output file. A 
-  call like <code><nobr>"zzxorcopy file.zip file.dat"</nobr></code> will
+  call like `"zzxorcopy file.zip file.dat"` will
   create an obfuscated dat-file from a zip-file that has been possibly
   create with the normal infozip tools or any other archive program to
   generate a zip-file. The output dat-file is not recognized by normal
   zip-enabled apps - the filemagic is obfuscated too. This output
   dat-file however is subject to the other two example programs.
-</P><P>
-  The <a href="zzxordir.c">zzxordir.c</a> program will open such an obfuscated
+
+The [zzxordir.c](zzxordir.c) program will open such an obfuscated
   zip file and decode the central directory of that zip. Everything is
   still there in just the way it can be shown with the normal unzip
-  programs and routines. And the <a href="zzxorcat.c">zzxorcat.c</a> program 
+  programs and routines. And the [zzxorcat.c](zzxorcat.c) program 
   can extract data from this obfuscated zip - and print it un-obfuscated
   to the screen. These example programs can help you jumpstart with
   your own set of obfuscator routines, possibly more complex ones.
-</P><P>
-  By the way, just compare those with their non-xor counterparts that
-  you can find in <a href="zzdir.c">zzdir.c</a> and 
-  <a href="zzxorcat.c">zzxorcat.c</a>. Notice that the difference is
+
+By the way, just compare those with their non-xor counterparts that
+  you can find in [zzdir.c](zzdir.c) and 
+  [zzxorcat.c](zzxorcat.c). Notice that the difference is
   in the setup part until the _open_ call after which one can just
   use the normal zzip_ routines on that obfuscated file. This is
   great for developing since you can start of with the magic-wrappers
   working on real-files then slowly turning to pack-files that hold
   most of the data and finally ending with a zip-only and obfuscated
   dat-file for your project.
-</P>
 
-<p align="right"><small><small>
+<small><small>
 <a href="copying.html">staticlinking?</a>
-</small></small></p>
-</section></section>
+</small></small>

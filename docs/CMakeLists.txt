@@ -49,6 +49,13 @@ set(htm_FILES zzip-index.htm zzip-zip.htm zzip-file.htm zzip-sdl-rwops.htm
             configs.htm sfx-make.htm   developer.htm download.htm
             history.htm referentials.htm  faq.htm copying.htm notes.htm
             functions.htm zip-php.htm)
+set(htm_md_FILES zzip-index.htm.md zzip-zip.htm.md zzip-file.htm.md zzip-sdl-rwops.htm.md
+            zzip-extio.htm.md zzip-xor.htm.md zzip-crypt.htm.md zzip-cryptoid.htm.md
+            zzip-api.htm.md zzip-basics.htm.md zzip-extras.htm.md zzip-parse.htm.md
+            64on32.htm.md future.htm.md fseeko.htm.md mmapped.htm.md memdisk.htm.md
+            configs.htm.md sfx-make.htm.md developer.htm.md download.htm.md
+            history.htm.md referentials.htm.md faq.htm.md copying.htm.md notes.htm.md
+            functions.htm.md zip-php.htm.md)
 set(bins_FILES ${bins}/zzdir.c ${bins}/zzcat.c ${bins}/zzobfuscated.c ${bins}/zziptest.c ${bins}/zzxordir.c ${bins}/zzxorcat.c ${bins}/zzxorcopy.c )
 set(SDLs_FILES ${SDLs}/SDL_rwops_zzcat.c ${SDLs}/SDL_rwops_zzip.c ${SDLs}/SDL_rwops_zzip.h )
 set(zzipdoc_FILES makedocs.py          zzipdoc/__init__.py
@@ -70,15 +77,18 @@ add_custom_command(OUTPUT changes.htm
     DEPENDS ${topdir}/ChangeLog
     VERBATIM)
 
-add_custom_command(OUTPUT site.html
+add_custom_command(OUTPUT site/site.html
     COMMAND ${BASH} -c "test -d ${outdir}/site || mkdir -p ${outdir}/site"
     COMMAND ${CP} ${srcdir}/body.htm ${outdir}/site/site.htm
     COMMAND ${CP} ${outdir}/changes.htm ${outdir}/site/changes.htm
-    COMMAND ${BASH} -c "cd ${outdir}/site && ${BASH} ${srcdir}/mksite.sh --VERSION=${PROJECT_VERSION} --xml --src-dir=${srcdir} --print site.htm"
-    COMMAND ${BASH} -c "cd ${outdir}/site; for i in *.html; do sed -i -e s:${srcdir}:../../docs: $i; done; true"
-    DEPENDS ${htm_FILES} changes.htm
+    # COMMAND ${CP} "${htm_FILES}" ${outdir}/site/
+    COMMAND ${BASH} -c "cp -v ${srcdir}/*.md ${outdir}/site/"
+    COMMAND ${BASH} -c "cp -v ${srcdir}/*.css ${outdir}/site/"
+    COMMAND ${BASH} -c "cd ${outdir}/site; for i in *.md; do ${PYTHON} ${srcdir}/md2dbk.py $i --htm > `basename $i .md`; done"
+    COMMAND ${BASH} -c "cd ${outdir}/site && ${BASH} ${srcdir}/mksite.sh --VERSION=${PROJECT_VERSION} --xml --print site.htm"
+    DEPENDS ${htm_md_FILES} changes.htm ${srcdir}/md2dbk.py
     VERBATIM)
-add_custom_target(site DEPENDS site.html)
+add_custom_target(site DEPENDS site/site.html)
 
 add_custom_command(OUTPUT zzip.xml
     COMMAND ${PY} ${srcdir}/zzipdoc/htm2dbk.py ${htm_FILES} zziplib.xml -o ${outdir}/zzip.xml
@@ -173,7 +183,7 @@ add_custom_target(install-site
    COMMAND ${BASH} -c "cd ${outdir}/site && cp *.html        $DESTDIR${docdir}/"
    COMMAND ${BASH} -c "cd $DESTDIR${docdir} && ln -s zzip-index.html index.html"
    ########################################################################
-   DEPENDS site.html zziplib.html zzipmmapped.html zzipfseeko.html
+   DEPENDS site/site.html zziplib.html zzipmmapped.html zzipfseeko.html
    VERBATIM)
 add_custom_target(install-htmpages
    COMMAND ${BASH} -c "mkdir -vp $DESTDIR${docdir}  >&2 || ls -ld $DESTDIR${docdir} >&2"
