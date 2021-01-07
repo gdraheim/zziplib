@@ -1,6 +1,12 @@
 #! /usr/bin/python3
 
 from __future__ import print_function, absolute_import, division
+
+__copyright__ = "(C) 2021 Guido Draheim"
+__contact__ = "https://github.com/gdraheim/zziplib"
+__license__ = "CC0 Creative Commons Zero (Public Domain)"
+__version__ = "0.13.72"
+
 from typing import List, Generator
 import re
 from html import escape
@@ -26,6 +32,10 @@ def blocks(text: str) -> List[str]:
         blocks.append(block)
     return blocks
 def _blocks(input: str) -> Generator[str, None, None]:
+    """ this function cuts the input string into text blocks.
+    The original text content is not modified but some additional
+    container blocks are generated which return the single-line 
+    xml start/stop tag of blockquote and itemizedlist."""
     logg.debug(">> (%i)", len(input))
     text = ""
     fenced = "" # or indent or html
@@ -358,6 +368,8 @@ def _blocks(input: str) -> Generator[str, None, None]:
         blockquote = ""
 
 def xmlblocks(text):
+    """ Combines _blocks() and _xml() conversion, so that a full
+        text becomes a series of xml snippets in docbook format."""
     blocks: List[str] = []
     for block in _blocks(text):
         blocks += _xmlblocks(block)
@@ -373,6 +385,9 @@ def firstline(block):
     return block
 
 def _xmlblocks(block):
+    """ Given a text block from the _blocks() sequence the text is
+    converted into a series of xml snippets. Blocks from multiple 
+    files may be concatenatd in this stream. """
     line = firstline(block)
     # html is passed through as such
     if line.startswith("<"):
@@ -600,6 +615,7 @@ def escapes(block):
         text += c
     return text
 def inlines(block):
+    """ if some text is identfied the inline markdown formatting is applied."""
     text = block[:]
     text = re.sub("\\[([^\\[\\]<>]*)\\]\\(<([^\\[\\]<>()]*)>\\)",
         lambda m: "<a href=\"%s\">%s</a>" % (keeping(m.group(2)), m.group(1)),
@@ -724,6 +740,7 @@ if __name__ == "__main__":
                 if opt.verbose > 2:
                    print("-----------")
     if opt.htm:
+        # this is usually used in zziplib to provide input to the old mksite.sh script.
         for block in document:
             for part in _xmlblocks(block):
                 if "<subtitle>" in part:
@@ -755,7 +772,7 @@ if __name__ == "__main__":
                 part = part.replace("&quot;", "\"")
                 print(part + "\n")
     if not opt.htm and not opt.xmlblocks and not opt.blocks:
+        # the docbook xml needs some enhancements.
         for block in document:
             for part in _xmlblocks(block):
                 print(part)
-
