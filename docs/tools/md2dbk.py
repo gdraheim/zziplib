@@ -7,7 +7,7 @@ __contact__ = "https://github.com/gdraheim/zziplib"
 __license__ = "CC0 Creative Commons Zero (Public Domain)"
 __version__ = "0.13.72"
 
-from typing import List, Generator
+from typing import List, Generator, Optional
 import re
 from html import escape
 
@@ -25,17 +25,34 @@ you need to use some kind of fenced block. The GFM (github flavoured markdown)
 clarifies that fenced blocks do not need a blank line before or after. Text lines
 not inside a fenced block will always be added rstrip()ed to the block."""
 
+class ContainerMarkup:
+    newUL = "" # default "<UL>"
+    endUL = "" # default "</UL>"
+    newLI = "" # default "<LI>"
+    endLI = "" # default "</LI>"
+    newBQ = "" # default "<BQ>"
+    endBQ = "" # default "</BQ>"
+    UL = "itemizedlist"
+    LI = "listitem"
+    BQ = "blockquote"
+    preSE1 = "# "
+    preSE2 = "## "
+    preHR1 = "--- "
+    preHR2 = "--- "
+    preHR2 = "--- "
+
 def blocks(text: str) -> List[str]:
     logg.debug(">> (%i)", len(text))
     blocks: List[str] = []
     for block in _blocks(text):
         blocks.append(block)
     return blocks
-def _blocks(input: str) -> Generator[str, None, None]:
+def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str, None, None]:
     """ this function cuts the input string into text blocks.
     The original text content is not modified but some additional
     container blocks are generated which return the single-line 
     xml start/stop tag of blockquote and itemizedlist."""
+    mark = mark or ContainerMarkup()
     logg.debug(">> (%i)", len(input))
     text = ""
     fenced = "" # or indent or html
@@ -66,7 +83,7 @@ def _blocks(input: str) -> Generator[str, None, None]:
                     if text:
                         yield text
                         text = ""
-                    endblockquote += [ "</blockquote>" ]
+                    endblockquote += [ mark.endBQ or "</%s>" % mark.BQ ]
                 blockquote = newblock # may become empty
         if listblock:
             newblock = ""
@@ -89,14 +106,14 @@ def _blocks(input: str) -> Generator[str, None, None]:
                     if text:
                         yield text
                         text = ""
-                    yield "<itemizedlist>"
+                    yield "<%s>" % mark.UL
                 listblock = newblock
             elif newblock.count("*") < listblock.count("*"):
                 for newdepth in range(newblock.count("*"), listblock.count("*")):
                     if text:
                         yield text
                         text = ""
-                    yield "</itemizedlist>\n"
+                    yield "</%s>" % mark.UL
                 listblock = newblock # may become empty
         for newblock in endblockquote:
             yield newblock
@@ -276,7 +293,7 @@ def _blocks(input: str) -> Generator[str, None, None]:
             elif re.match("^ ? ? ?[-][-]* .*", text): pass
             elif re.match("^ ? ? ?[>][>]* .*", text): pass
             else:
-                text = "# "+text # level 1 sections
+                text = mark.preSE1 + text # level 1 sections
                 continue
         if re.match(" ? ? ?[-][-][-][-]* *$", line):
             if not text.strip(): pass
@@ -284,26 +301,26 @@ def _blocks(input: str) -> Generator[str, None, None]:
             elif re.match("^ ? ? ?[-][-]* .*", text): pass
             elif re.match("^ ? ? ?[>][>]* .*", text): pass
             else:
-                text = "## "+text # level 2 section
+                text = mark.preSE2 + text # level 2 section
                 continue
         # thematic breaks allow a lot of space characters in GFM
         if re.match(" ? ? ?[*] *[*] *[*] *[* ]*$", line):
             if text:
                 yield text
                 text = ""
-            yield "--- "+line
+            yield mark.preHR1 + line
             continue
         if re.match("^ ? ? ?[-] *[-] *[-] *[- ]*$", line):
             if text:
                 yield text
                 text = ""
-            yield "--- "+line
+            yield mark.preHR2 + line
             continue
         if re.match("^ ? ? ?[_] *[_] *[_] *[_ ]*$", line):
             if text:
                 yield text
                 text = ""
-            yield "--- "+line
+            yield mark.preHR3 + line
             continue
         endblockquote = []
         _blockquote1 = re.match("([>]+)(\\s*)$", nextline)
@@ -319,14 +336,14 @@ def _blocks(input: str) -> Generator[str, None, None]:
             # assert not fenced
             if blockquote.count(">") < newblock.count(">"):
                 for newdepth in range(blockquote.count(">"), newblock.count(">")):
-                    yield "<blockquote>"
+                    yield mark.newBQ or "<%s>" % mark.BQ
                 blockquote = newblock
             elif newblock.count(">") < blockquote.count(">"):
                 for newdepth in range(newblock.count(">"), blockquote.count(">")):
                     if text:
                         yield text
                         text = ""
-                    endblockquote += [ "</blockquote>" ]
+                    endblockquote += [ mark.endBQ or "</%s>" % mark.BQ ]
                 blockquote = newblock # may become empty
         _newlist1 = re.match("([*]+)(\\s*)$", line)
         _newlist2 = re.match("([*]+)\\s(.*)", line)
@@ -342,14 +359,14 @@ def _blocks(input: str) -> Generator[str, None, None]:
                     if text:
                         yield text
                         text = ""
-                    yield "<itemizedlist>"
+                    yield mark.newUL or "<%s>" % mark.UL
                 listblock = newblock
             elif newblock.count("*") < listblock.count("*"):
                 for newdepth in range(newblock.count("*"), listblock.count("*")):
                     if text:
                         yield text
                         text = ""
-                    yield "</itemizedlist>\n"
+                    yield mark.endUL or "</%s>" % mark.UL
                 listblock = newblock # may become empty
             listblock = newblock
         for newblock in endblockquote:
@@ -361,10 +378,10 @@ def _blocks(input: str) -> Generator[str, None, None]:
         yield text
         text = ""
     for olddepth in range(listblock.count("*")):
-        yield "</itemizedlist>"
+        yield mark.endUL or "</%s>" % mark.UL
         listblock = ""
     for olddepth in range(blockquote.count(">")):
-        yield "</blockquote>"
+        yield mark.endBQ or "</%s>" % mark.BQ
         blockquote = ""
 
 def xmlblocks(text):
