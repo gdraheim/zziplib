@@ -324,7 +324,7 @@ SDL_RWOPS = $(SDL)/SDL_rwops_zzcat.c \
 changelog = @top_srcdir@/ChangeLog
 EXTRA_DIST = make-doc.py $(doc_FILES) $(htm_FILES) $(SDL_RWOPS) \
              make-doc.pl make-dbk.pl   mksite.sh mksite.pl body.htm \
-             dbk2man.py dir2index.py \
+             tools/dbk2man.py tools/dir2index.py \
              $(zzipdoc_FILES) sdocbook.css \
              zziplib-manpages.dbk zziplib-master.dbk \
              zziplib-manpages.tar
@@ -660,12 +660,12 @@ manpages.tar : zziplib.xml zzipmmapped.xml zzipfseeko.xml
 	; then echo going to regenerate "$@" in subdir "'"man"'" \
 	; echo 'test ! -d man3 || rm man3/* ; test -d man3 || mkdir man3' \
 	;       test ! -d man3 || rm man3/* ; test -d man3 || mkdir man3  \
-	; echo     '$(srcdir)/dbk2man.py -o man3 man zziplib.xml' \
-	; $(PYTHON) $(srcdir)/dbk2man.py -o man3 man zziplib.xml  \
-	; echo     '$(srcdir)/dbk2man.py -o man3 man zzipmmapped.xml' \
-	; $(PYTHON) $(srcdir)/dbk2man.py -o man3 man zzipmmapped.xml  \
-	; echo     '$(srcdir)/dbk2man.py -o man3 man zzipfseeko.xml' \
-	; $(PYTHON) $(srcdir)/dbk2man.py -o man3 man zzipfseeko.xml  \
+	; echo     '$(srcdir)/tools/dbk2man.py -o man3 man zziplib.xml' \
+	; $(PYTHON) $(srcdir)/tools/dbk2man.py -o man3 man zziplib.xml  \
+	; echo     '$(srcdir)/tools/dbk2man.py -o man3 man zzipmmapped.xml' \
+	; $(PYTHON) $(srcdir)/tools/dbk2man.py -o man3 man zzipmmapped.xml  \
+	; echo     '$(srcdir)/tools/dbk2man.py -o man3 man zzipfseeko.xml' \
+	; $(PYTHON) $(srcdir)/tools/dbk2man.py -o man3 man zzipfseeko.xml  \
 	; if test -d man3/man3; then mv man3 man3_ \
 	;   mv man3_/man3 man3; rm -r man3_; fi \
 	; echo 'chmod 664 man3/*.3' \
@@ -699,14 +699,14 @@ htmpages.tar : zziplib.xml zzipmmapped.xml zzipfseeko.xml zziplib-manpages.dbk
 	;       test ! -d html || rm html/* ; test -d html || mkdir html  \
 	; echo 'cp $(srcdir)/zziplib-manpages.dbk zziplib-manpages.xml' \
 	;       cp $(srcdir)/zziplib-manpages.dbk zziplib-manpages.xml \
-	; echo     '$(srcdir)/dbk2man.py -o html html zziplib.xml' \
-	; $(PYTHON) $(srcdir)/dbk2man.py -o html html zziplib.xml  \
-	; echo     '$(srcdir)/dbk2man.py -o html html zzipmmapped.xml' \
-	; $(PYTHON) $(srcdir)/dbk2man.py -o html html zzipmmapped.xml  \
-	; echo     '$(srcdir)/dbk2man.py -o html html zzipfseeko.xml' \
-	; $(PYTHON) $(srcdir)/dbk2man.py -o html html zzipfseeko.xml  \
-	; echo     '$(srcdir)/dir2index.py -o html html ' \
-	; $(PYTHON) $(srcdir)/dir2index.py -o html html   \
+	; echo     '$(srcdir)/tools/dbk2man.py -o html html zziplib.xml' \
+	; $(PYTHON) $(srcdir)/tools/dbk2man.py -o html html zziplib.xml  \
+	; echo     '$(srcdir)/tools/dbk2man.py -o html html zzipmmapped.xml' \
+	; $(PYTHON) $(srcdir)/tools/dbk2man.py -o html html zzipmmapped.xml  \
+	; echo     '$(srcdir)/tools/dbk2man.py -o html html zzipfseeko.xml' \
+	; $(PYTHON) $(srcdir)/tools/dbk2man.py -o html html zzipfseeko.xml  \
+	; echo     '$(srcdir)/tools/dir2index.py -o html html ' \
+	; $(PYTHON) $(srcdir)/tools/dir2index.py -o html html   \
 	; echo '$(PAX_TAR_CREATE) $@ html/*.*' \
 	;       $(PAX_TAR_CREATE) $@ html/*.*  \
 	; fi ; true
