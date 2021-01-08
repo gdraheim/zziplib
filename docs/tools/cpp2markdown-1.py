@@ -1,12 +1,18 @@
-#! /usr/bin/env python3
+#! /usr/bin/python3
+
+from __future__ import print_function
 
 import pygments.lexers.compiled as lexer
 import optparse
 import re
+import sys
 from pygments.token import Token
 import logging
 
 logg = logging.getLogger(__name__)
+
+if sys.version[0] == "3":
+    xrange = range
 
 FileComment = "FileComment"
 FileInclude = "FileInclude"
