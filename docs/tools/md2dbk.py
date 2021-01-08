@@ -26,15 +26,16 @@ clarifies that fenced blocks do not need a blank line before or after. Text line
 not inside a fenced block will always be added rstrip()ed to the block."""
 
 class ContainerMarkup:
+    newBQ = "" # default "<BQ>"
+    endBQ = "" # default "</BQ>"
     newUL = "" # default "<UL>"
     endUL = "" # default "</UL>"
     newLI = "" # default "<LI>"
     endLI = "" # default "</LI>"
-    newBQ = "" # default "<BQ>"
-    endBQ = "" # default "</BQ>"
+    endnewLI = "" # default "</LI><LI>"
+    BQ = "blockquote"
     UL = "itemizedlist"
     LI = "listitem"
-    BQ = "blockquote"
     preSE1 = "# "
     preSE2 = "## "
     preHR1 = "--- "
@@ -76,7 +77,7 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
                 pass
             elif blockquote.count(">") < newblock.count(">"):
                 for newdepth in range(blockquote.count(">"), newblock.count(">")):
-                    yield "<blockquote>"
+                    yield mark.newBQ or "<%s>" % mark.BQ
                 blockquote = newblock
             elif newblock.count(">") < blockquote.count(">"):
                 for newdepth in range(newblock.count(">"), blockquote.count(">")):
@@ -106,15 +107,26 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
                     if text:
                         yield text
                         text = ""
-                    yield "<%s>" % mark.UL
+                    yield mark.newUL or "<%s>" % mark.UL
+                    yield mark.newLI or "<%s>" % mark.LI
                 listblock = newblock
             elif newblock.count("*") < listblock.count("*"):
                 for newdepth in range(newblock.count("*"), listblock.count("*")):
                     if text:
                         yield text
                         text = ""
-                    yield "</%s>" % mark.UL
+                    yield mark.endLI or "</%s>" % mark.LI
+                    yield mark.endUL or "</%s>" % mark.UL
                 listblock = newblock # may become empty
+            else:
+                if True:
+                    if text:
+                        yield text
+                        text = ""
+                if mark.endnewLI:
+                    yield mark.endnewLI
+                else:
+                    yield (mark.endLI or "</%s>" % mark.LI) + (mark.newLI or "<%s>" % mark.LI)
         for newblock in endblockquote:
             yield newblock
         if not line.strip():
@@ -360,14 +372,24 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
                         yield text
                         text = ""
                     yield mark.newUL or "<%s>" % mark.UL
+                    yield mark.newLI or "<%s>" % mark.LI
                 listblock = newblock
             elif newblock.count("*") < listblock.count("*"):
                 for newdepth in range(newblock.count("*"), listblock.count("*")):
                     if text:
                         yield text
                         text = ""
+                    yield mark.endLI or "</%s>" % mark.LI
                     yield mark.endUL or "</%s>" % mark.UL
                 listblock = newblock # may become empty
+            else:
+                if text:
+                    yield text
+                    text = ""
+                    if mark.endnewLI:
+                        yield mark.endnewLI
+                    else:
+                        yield (mark.endLI or "</%s>" % mark.LI) + (mark.newLI or "<%s>" % mark.LI)
             listblock = newblock
         for newblock in endblockquote:
             yield newblock
@@ -378,6 +400,7 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
         yield text
         text = ""
     for olddepth in range(listblock.count("*")):
+        yield mark.endLI or "</%s>" % mark.LI
         yield mark.endUL or "</%s>" % mark.UL
         listblock = ""
     for olddepth in range(blockquote.count(">")):
