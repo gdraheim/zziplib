@@ -782,6 +782,8 @@ if __name__ == "__main__":
     if opt.htm:
         # this is usually used in zziplib to provide input to the old mksite.sh script.
         for block in document:
+            if block in ["<listitem>", "</listitem>", "</listitem><listitem>"]:
+                continue
             for part in _xmlblocks(block):
                 if "<subtitle>" in part:
                    part = re.sub("(?s)</title>\\s*<subtitle>","</title> <subtitle>", part)
