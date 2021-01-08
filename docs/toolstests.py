@@ -235,12 +235,13 @@ class md2dbkTests(TestCase):
                              "</listitem>", "</itemizedlist>", 
                              "</listitem>", "</itemizedlist>", 
                              "</listitem>", "</itemizedlist>", "b\n",
-                             "<itemizedlist>", "* c\n", 
+                             "<itemizedlist>", "<listitem>", "* c\n", 
                              "</listitem>", "</itemizedlist>"])
     def test_1225(self):
         b = md2dbk.blocks("* a\n** x\n** y\nb\n* c")
         self.assertEqual(b, ["<itemizedlist>", "<listitem>","* a\n", 
-                             "<itemizedlist>", "<listitem>","** x\n** y\n", 
+                             "<itemizedlist>", "<listitem>","** x\n",
+                             "</listitem><listitem>", "** y\n", 
                              "</listitem>", "</itemizedlist>", 
                              "</listitem>", "</itemizedlist>", "b\n",
                              "<itemizedlist>", "<listitem>","* c\n", 
@@ -249,19 +250,21 @@ class md2dbkTests(TestCase):
         b = md2dbk.blocks("* a\n** x\n* y\n\nb")
         self.assertEqual(b, ["<itemizedlist>", "<listitem>","* a\n", 
                              "<itemizedlist>", "<listitem>","** x\n", 
-                             "</listitem>", "</itemizedlist>", "* y\n", 
+                             "</listitem>", "</itemizedlist>", "<listitem>", "* y\n", 
                              "</listitem>", "</itemizedlist>", "b\n"])
     def test_1227(self):
         b = md2dbk.blocks("* a\n** x\n* y\n* z\n\nb")
-        self.assertEqual(b, ["<itemizedlist>", "<listitem>","* a\n", 
+        self.assertEqual(b,  ["<itemizedlist>", "<listitem>","* a\n", 
                              "<itemizedlist>", "<listitem>","** x\n", 
-                             "</listitem>", "</itemizedlist>", "* y\n* z\n", 
+                             "</listitem>", "</itemizedlist>", 
+                             "<listitem>", "* y\n",
+                             "</listitem><listitem>", "* z\n", 
                              "</listitem>", "</itemizedlist>", "b\n"])
     def test_1228(self):
         b = md2dbk.blocks("* a\n** x\n* y\n** z\n\nb")
         self.assertEqual(b, ["<itemizedlist>", "<listitem>","* a\n", 
                              "<itemizedlist>", "<listitem>","** x\n", 
-                             "</listitem>", "</itemizedlist>", "* y\n", 
+                             "</listitem>", "</itemizedlist>", "<listitem>", "* y\n", 
                              "<itemizedlist>", "<listitem>","** z\n", 
                              "</listitem>", "</itemizedlist>", 
                              "</listitem>", "</itemizedlist>", "b\n"])
