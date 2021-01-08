@@ -579,7 +579,7 @@ def _xmlblocks(block):
             _li1 = re.match(" ? ? ?([*][*]*) *(.*)", line_1)
             if not endblock:
                 if _li0 and (_li1 or not line_1.strip()):
-                    blocks += [ "<listitem> %s</listitem>" % formatting(_li0.group(2)) ]
+                    blocks += [ "<listitem>%s</listitem>" % formatting(_li0.group(2)) ]
                     continue
             else:
                 if _li0:
