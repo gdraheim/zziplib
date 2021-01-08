@@ -32,13 +32,13 @@ HOMEPAGE
   the latest release announcements, watch the GitHub project.
 
 INSTALLATION
-  The zziplib sources are built with gnu autotools and they should
-  be easy to install on unixish systems via the usual sequence of
-  `configure && make && make check && make install`. Many distributors
-  ship prebuilt packages e.g. in rpm format. Additionally there are
-  MSVC project files shipped along for usage with the Microsoft
-  VisualC series of compilers. There should be no problem either
-  when crosscompiling the zziplib for a third host platform.
+  The zziplib sources are built with cmake. This allows to build it
+  easily with make / ninja on unixish systems via the usual sequence of
+  `cmake3 && make && make check && make install`. Many distributors
+  ship prebuilt packages e.g. in rpm format. Additionally cmake allows
+  to generate MSVC project files - the old ones will be dropped soon.
+  There should be no problem either when crosscompiling the zziplib 
+  for a third host platform.
 
 MAINTENANCE
   The zziplib library is intentionally a lightweight interface to
