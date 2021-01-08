@@ -118,6 +118,8 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
                     yield mark.endLI or "</%s>" % mark.LI
                     yield mark.endUL or "</%s>" % mark.UL
                 listblock = newblock # may become empty
+                if _newlist1 or _newlist2:
+                    yield mark.newLI or "<%s>" % mark.LI
             else:
                 if True:
                     if text:
@@ -382,6 +384,8 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
                     yield mark.endLI or "</%s>" % mark.LI
                     yield mark.endUL or "</%s>" % mark.UL
                 listblock = newblock # may become empty
+                if _newlist1 or _newlist2:
+                    yield mark.newLI or "<%s>" % mark.LI
             else:
                 if text:
                     yield text
