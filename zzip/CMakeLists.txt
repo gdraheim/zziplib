@@ -276,6 +276,22 @@ install(TARGETS libzzipmmapped
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
 
+if(ZZIP_COMPAT OR ZZIP_LIBTOOL)
+  if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
+    execute_process(COMMAND bash -c "ln --help"
+        OUTPUT_VARIABLE ln_verbose_help
+        ERROR_QUIET
+    )
+    string(FIND "${ln_verbose_help}" "verbose" ln_verbose_found)
+    if(${ln_verbose_found} STREQUAL "-1")
+        set(ln_svf "ln -sf")
+    else()
+        set(ln_svf "ln -svf")
+    endif()
+    message(STATUS "Can symlink libraries with: ${ln_svf}")
+  endif()
+endif()
+
 if(ZZIP_COMPAT)
   install(FILES ${outdir}/compat/zzip.h ${outdir}/compat/zziplib.h ${outdir}/compat/zzip-io.h 
           DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
@@ -294,13 +310,13 @@ if(ZZIP_COMPAT)
         fi
         [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
         echo -n .. Installing: `pwd`
-        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}
+        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}
         echo -n .. Installing: `pwd`
-        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.10
+        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.10
         echo -n .. Installing: `pwd`
-        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.11
+        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.11
         echo -n .. Installing: `pwd`
-        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
+        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
         \")")
   endif()
 endif()
@@ -321,13 +337,13 @@ if(ZZIP_LIBTOOL)
         fi
         [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
         echo -n .. Installing: `pwd`
-        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
+        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
         echo -n .. Installing: `pwd`
-        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.10
+        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.10
         echo -n .. Installing: `pwd`
-        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.11
+        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.11
         echo -n .. Installing: `pwd`
-        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
+        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
         \")")
     if(ZZIPFSEEKO)
     get_target_property(libname libzzipfseeko OUTPUT_NAME)
@@ -341,13 +357,13 @@ if(ZZIP_LIBTOOL)
         fi
         [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
         echo -n .. Installing: `pwd`
-        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
+        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
         echo -n .. Installing: `pwd`
-        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.10
+        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.10
         echo -n .. Installing: `pwd`
-        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.11
+        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.11
         echo -n .. Installing: `pwd`
-        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
+        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
         \")")
     endif(ZZIPFSEEKO)
     if(ZZIPMMAPPED)
@@ -362,13 +378,13 @@ if(ZZIP_LIBTOOL)
         fi
         [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
         echo -n .. Installing: `pwd`
-        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
+        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
         echo -n .. Installing: `pwd`
-        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.10
+        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.10
         echo -n .. Installing: `pwd`
-        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.11
+        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.11
         echo -n .. Installing: `pwd`
-        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
+        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
         \")")
     endif(ZZIPMMAPPED)
   endif(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
