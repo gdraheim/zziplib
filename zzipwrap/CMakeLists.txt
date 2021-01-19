@@ -89,6 +89,22 @@ install(TARGETS libzzipwrap
 
 if(ZZIP_LIBTOOL)
   if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
+    execute_process(COMMAND bash -c "ln --help"
+        OUTPUT_VARIABLE ln_verbose_help
+        ERROR_QUIET
+    )
+    string(FIND "${ln_verbose_help}" "verbose" ln_verbose_found)
+    if(${ln_verbose_found} STREQUAL "-1")
+        set(ln_svf "ln -sf")
+    else()
+        set(ln_svf "ln -svf")
+    endif()
+    message(STATUS "Can symlink libraries with: ${ln_svf}")
+  endif()
+endif()
+
+if(ZZIP_LIBTOOL)
+  if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
     set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
     set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
     set(libdir ${CMAKE_INSTALL_FULL_LIBDIR})
@@ -99,7 +115,7 @@ if(ZZIP_LIBTOOL)
         cd $DESTDIR/${libdir}
         [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
         echo -n .. Installing: `pwd`
-        ln -svf ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
+        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
         \")")
   endif()
 endif()
