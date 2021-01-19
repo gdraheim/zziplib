@@ -11,6 +11,7 @@ include ( CheckTypeSize )
 include ( TestBigEndian )
 include ( GNUInstallDirs )
 include ( JoinPaths )
+include ( CheckVerboseSymlink )
 
 # options ###########################################################
 option(BUILD_SHARED_LIBS "Build a shared library" ON)
@@ -278,17 +279,7 @@ endif()
 
 if(ZZIP_COMPAT OR ZZIP_LIBTOOL)
   if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
-    execute_process(COMMAND bash -c "ln --help"
-        OUTPUT_VARIABLE ln_verbose_help
-        ERROR_QUIET
-    )
-    string(FIND "${ln_verbose_help}" "verbose" ln_verbose_found)
-    if(${ln_verbose_found} STREQUAL "-1")
-        set(ln_svf "ln -sf")
-    else()
-        set(ln_svf "ln -svf")
-    endif()
-    message(STATUS "Can symlink libraries with: ${ln_svf}")
+    find_ln_svf()
   endif()
 endif()
 
