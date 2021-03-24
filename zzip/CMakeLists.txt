@@ -306,7 +306,8 @@ if(ZZIP_COMPAT)
         cd $DESTDIR/${libdir}
         if [ -f ${lib}${libname}${librelease}.${libversion}${dll} ]; then
           # Fix for APPLE where dylib goes in the end
-          ln -s ${lib}${libname}${librelease}.${libversion}${dll} ${lib}${libname}${librelease}${dll}.${libversion}
+          echo -n .. Installing: `pwd`
+          ${ln_svf} ${lib}${libname}${librelease}.${libversion}${dll} ${lib}${libname}${librelease}${dll}.${libversion}
         fi
         [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
         echo -n .. Installing: `pwd`
@@ -333,7 +334,8 @@ if(ZZIP_LIBTOOL)
         cd $DESTDIR/${libdir}
         if [ -f ${lib}${libname}${librelease}.${libversion}${dll} ]; then
           # Fix for APPLE where dylib goes in the end
-          ln -s ${lib}${libname}${librelease}.${libversion}${dll} ${lib}${libname}${librelease}${dll}.${libversion}
+          echo -n .. Installing: `pwd`
+          ${ln_svf} ${lib}${libname}${librelease}.${libversion}${dll} ${lib}${libname}${librelease}${dll}.${libversion}
         fi
         [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
         echo -n .. Installing: `pwd`
@@ -353,7 +355,8 @@ if(ZZIP_LIBTOOL)
         cd $DESTDIR/${libdir}
         if [ -f ${lib}${libname}${librelease}.${libversion}${dll} ]; then
           # Fix for APPLE where dylib goes in the end
-          ln -s ${lib}${libname}${librelease}.${libversion}${dll} ${lib}${libname}${librelease}${dll}.${libversion}
+          echo -n .. Installing: `pwd`
+          ${ln_svf} ${lib}${libname}${librelease}.${libversion}${dll} ${lib}${libname}${librelease}${dll}.${libversion}
         fi
         [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
         echo -n .. Installing: `pwd`
@@ -374,7 +377,8 @@ if(ZZIP_LIBTOOL)
         cd $DESTDIR/${libdir}
         if [ -f ${lib}${libname}${librelease}.${libversion}${dll} ]; then
           # Fix for APPLE where dylib goes in the end
-          ln -s ${lib}${libname}${librelease}.${libversion}${dll} ${lib}${libname}${librelease}${dll}.${libversion}
+          echo -n .. Installing: `pwd`
+          ${ln_svf} ${lib}${libname}${librelease}.${libversion}${dll} ${lib}${libname}${librelease}${dll}.${libversion}
         fi
         [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
         echo -n .. Installing: `pwd`
