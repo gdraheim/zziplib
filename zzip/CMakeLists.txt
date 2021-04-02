@@ -291,7 +291,7 @@ if(ZZIP_COMPAT OR ZZIP_LIBTOOL)
       ${outdir}/${lib}${libname}${librelease}${dll}.10
       ${outdir}/${lib}${libname}${librelease}${dll}.11
       ${outdir}/${lib}${libname}${librelease}${dll}.12
-      TYPE LIB)
+      DESTINATION ${CMAKE_INSTALL_LIBDIR})
   endif()
 endif()
 
@@ -311,7 +311,7 @@ if(ZZIP_LIBTOOL)
         )
     install(FILES
         ${outdir}/${lib}${libname}${dll}
-        TYPE LIB)
+        DESTINATION ${CMAKE_INSTALL_LIBDIR})
     if(ZZIPFSEEKO)
     get_target_property(libname libzzipfseeko OUTPUT_NAME)
     get_target_property(librelease libzzipfseeko RELEASE_POSTFIX)
@@ -324,7 +324,7 @@ if(ZZIP_LIBTOOL)
         ${outdir}/${lib}${libname}${librelease}${dll}.10
         ${outdir}/${lib}${libname}${librelease}${dll}.11
         ${outdir}/${lib}${libname}${librelease}${dll}.12
-        TYPE LIB)
+        DESTINATION ${CMAKE_INSTALL_LIBDIR})
     endif(ZZIPFSEEKO)
     if(ZZIPMMAPPED)
     get_target_property(libname libzzipmmapped OUTPUT_NAME)
@@ -338,7 +338,7 @@ if(ZZIP_LIBTOOL)
         ${outdir}/${lib}${libname}${librelease}${dll}.10
         ${outdir}/${lib}${libname}${librelease}${dll}.11
         ${outdir}/${lib}${libname}${librelease}${dll}.12
-        TYPE LIB)
+        DESTINATION ${CMAKE_INSTALL_LIBDIR})
     endif(ZZIPMMAPPED)
   endif(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
 endif(ZZIP_LIBTOOL)
