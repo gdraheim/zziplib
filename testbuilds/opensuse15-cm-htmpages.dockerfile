@@ -1,6 +1,7 @@
 FROM opensuse/leap:15.2
 ARG no_check=false
 ARG no_install=false
+ARG no_parallel=false
 
 RUN zypper mr --no-gpgcheck repo-oss repo-update
 RUN zypper refresh repo-oss
@@ -19,6 +20,7 @@ COPY zzip src/zzip
 RUN mkdir src/build
 # RUN cd src/build && cmake .. -DZZIPSDL=OFF -DZZIPDOCS=ON -DZZIP_HTMLSITE=ON -DZZIP_HTMPAGES=ON -DZZIPTEST=OFF
 RUN cd src/build && cmake .. -DZZIPSDL=OFF -DZZIPDOCS=ON -DZZIP_HTMLSITE=ON -DZZIP_HTMPAGES=ON -DZZIP_TESTCVE=OFF
-RUN cd src/build && make -j8 -w all VERBOSE=ON
+RUN if $no_parallel; then cd src/build && make all VERBOSE=ON; else \
+                  cd src/build && make -j8 -w all VERBOSE=ON; fi
 RUN $no_check || (cd src/build && make check)
 RUN $no_install || (cd src/build && make install)

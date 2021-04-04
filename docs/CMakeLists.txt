@@ -98,6 +98,31 @@ add_custom_command(OUTPUT zzip.pdf
 add_custom_target(pdf DEPENDS zzip.pdf)
 endif()
 
+string(REPLACE ";" " " all_bins_FILES "${bins_FILES}")
+string(REPLACE ";" " " all_SDLs_FILES "${SDLs_FILES}")
+add_custom_command(OUTPUT htmlsite.tar
+    COMMAND ${BASH} -c "ls -l ${CMAKE_CURRENT_BINARY_DIR}/site.html"
+    COMMAND ${BASH} -c "mkdir -vp site  >&2 || ls -ld site >&2"
+    COMMAND ${BASH} -c "cd ${outdir} && cp zziplib.html zzipmmapped.html zzipfseeko.html site/"
+    COMMAND ${BASH} -c "cd ${srcdir} && cp README.* COPYING.* ${outdir}/site/"
+    COMMAND ${BASH} -c "cd ${topdir} && cp ChangeLog          ${outdir}/site/"
+    COMMAND ${BASH} -c "cd ${topdir} && cp ${all_bins_FILES}  ${outdir}/site/"
+    COMMAND ${BASH} -c "cd ${topdir} && cp ${all_SDLs_FILES}  ${outdir}/site/"
+    COMMAND ${BASH} -c "cd site && cp ${outdir}/*.html ."
+    COMMAND ${BASH} -c "cd site && ln -s zzip-index.html index.html"
+    COMMAND ${BASH} -c "tar cf htmlsite.tar site/*.*"
+    COMMAND ${BASH} -c "ls -l `pwd`/htmlsite.tar || true"
+    #  DEPENDS site.html zziplib.html zzipmmapped.html zzipfseeko.html
+    DEPENDS    site.html zziplib.xml  zzipmmapped.xml  zzipfseeko.xml
+    VERBATIM)
+if(ZZIP_HTMLSITE)
+add_custom_target(htmlsite ALL DEPENDS htmlsite.tar COMMAND ${BASH} -c "ls -l htmlsite.tar")
+else()
+add_custom_target(htmlsite DEPENDS htmlsite.tar COMMAND ${BASH} -c "ls -l htmlsite.tar")
+endif()
+
+####
+
 set(docinfo --package=zziplib --version=${PROJECT_VERSION})
 file(GLOB zzip_sources "${topdir}/zzip/*.c")
 add_custom_command(OUTPUT zziplib.xml
@@ -159,8 +184,6 @@ endif()
 
 # install ########################################################
 
-string(REPLACE ";" " " all_bins_FILES "${bins_FILES}")
-string(REPLACE ";" " " all_SDLs_FILES "${SDLs_FILES}")
 add_custom_target(install-site
    COMMAND ${BASH} -c "ls -l ${CMAKE_CURRENT_BINARY_DIR}/site.html"
    COMMAND ${BASH} -c "mkdir -vp $DESTDIR${docdir}  >&2 || ls -ld $DESTDIR${docdir} >&2"
@@ -171,19 +194,31 @@ add_custom_target(install-site
    COMMAND ${BASH} -c "cd ${topdir} && cp ${all_SDLs_FILES}  $DESTDIR${docdir}/"
    COMMAND ${BASH} -c "cd $DESTDIR${docdir} && cp ${outdir}/*.html ."
    COMMAND ${BASH} -c "cd $DESTDIR${docdir} && ln -s zzip-index.html index.html"
+   COMMAND ${BASH} -c "echo running install-site is deprecated - just enable cmake -DZZIP_HTMLSITE=ON >&2"
    DEPENDS site.html zziplib.html zzipmmapped.html zzipfseeko.html
    VERBATIM)
 add_custom_target(install-htmpages
    COMMAND ${BASH} -c "mkdir -vp $DESTDIR${docdir}  >&2 || ls -ld $DESTDIR${docdir} >&2"
    COMMAND ${BASH} -c "cp -r ${outdir}/html $DESTDIR${docdir}/"
    COMMAND ${BASH} -c "cd $DESTDIR${docdir} && mv html man"
+   COMMAND ${BASH} -c "echo running install-htmpages is deprecated - just enable cmake -DZZIP_HTMPAGES=ON >&2"
    DEPENDS htmpages.tar
    VERBATIM)
 add_custom_target(install-manpages
    COMMAND ${BASH} -c "mkdir -vp $DESTDIR${mandir}  >&2 || ls -ld $DESTDIR${mandir} >&2"
    COMMAND ${BASH} -c "cp -r ${outdir}/man3 $DESTDIR${mandir}/"
+   COMMAND ${BASH} -c "echo running install-manpages is deprecated - just enable cmake -DZZIP_MANPAGES=ON >&2"
    DEPENDS manpages.tar
    VERBATIM)
+add_custom_target(install-docs DEPENDS install-manpages install-htmpages install-site)
+add_custom_target(install-mans DEPENDS install-manpages)
+add_custom_target(install-man DEPENDS install-manpages)
+add_custom_target(install-htm DEPENDS install-htmpages)
+
+if(ZZIP_HTMLSITE)
+   install(CODE "message(STATUS \"Installing: html site to ${docdir}/man\")")
+   install(DIRECTORY ${outdir}/site/ DESTINATION ${docdir} MESSAGE_NEVER)
+endif()
 if(ZZIP_HTMPAGES)
    install(CODE "message(STATUS \"Installing: html pages to ${docdir}/man\")")
    install(DIRECTORY ${outdir}/html/ DESTINATION ${docdir}/man MESSAGE_NEVER)
@@ -192,10 +227,6 @@ if(ZZIP_MANPAGES)
    install(CODE "message(STATUS \"Installing: man3 pages to ${mandir}/man3\")")
    install(DIRECTORY ${outdir}/man3/ DESTINATION ${mandir}/man3 MESSAGE_NEVER)
 endif()
-add_custom_target(install-docs DEPENDS install-manpages install-htmpages install-site)
-add_custom_target(install-mans DEPENDS install-manpages)
-add_custom_target(install-man DEPENDS install-manpages)
-add_custom_target(install-htm DEPENDS install-htmpages)
 
 # messages #######################################################
 
