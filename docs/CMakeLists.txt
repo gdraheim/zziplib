@@ -216,7 +216,7 @@ add_custom_target(install-man DEPENDS install-manpages)
 add_custom_target(install-htm DEPENDS install-htmpages)
 
 if(ZZIP_HTMLSITE)
-   install(CODE "message(STATUS \"Installing: html site to ${docdir}/man\")")
+   install(CODE "message(STATUS \"Installing: html site to ${docdir}\")")
    install(DIRECTORY ${outdir}/site/ DESTINATION ${docdir} MESSAGE_NEVER)
 endif()
 if(ZZIP_HTMPAGES)
