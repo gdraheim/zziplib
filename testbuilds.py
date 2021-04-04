@@ -38,6 +38,7 @@ SOFTWARE = "../Software"
 
 DOCKER_SOCKET = "/var/run/docker.sock"
 DOCKER = "docker"
+KEEP = False
 FORCE = False
 NOCACHE = False
 
@@ -337,8 +338,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         zlib = output(cmd.format(**locals()))
         self.assertEqual(zlib.strip(), "-lz")
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -380,8 +382,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         zlib = output(cmd.format(**locals()))
         self.assertEqual(zlib.strip(), "-lz")
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -423,8 +426,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         zlib = output(cmd.format(**locals()))
         self.assertEqual(zlib.strip(), "-lz")
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -466,8 +470,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         zlib = output(cmd.format(**locals()))
         self.assertEqual(zlib.strip(), "-lz")
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -509,8 +514,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         zlib = output(cmd.format(**locals()))
         self.assertEqual(zlib.strip(), "-lz")
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -552,8 +558,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         zlib = output(cmd.format(**locals()))
         self.assertEqual(zlib.strip(), "-lz")
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -595,8 +602,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         zlib = output(cmd.format(**locals()))
         self.assertEqual(zlib.strip(), "-lz")
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -638,8 +646,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         zlib = output(cmd.format(**locals()))
         self.assertEqual(zlib.strip(), "-lz")
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -672,8 +681,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname} ls -l /usr/local/bin"
         sh____(cmd.format(**locals()))
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -706,8 +716,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname} ls -l /usr/local/bin"
         sh____(cmd.format(**locals()))
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -744,8 +755,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname} bash -c 'test -d /usr/local/include/SDL_rwops_zzip'"
         sh____(cmd.format(**locals()))
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -782,8 +794,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname} bash -c 'test -d /usr/local/include/SDL_rwops_zzip'"
         sh____(cmd.format(**locals()))
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -820,8 +833,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname} bash -c 'test -d /usr/local/include/SDL_rwops_zzip'"
         sh____(cmd.format(**locals()))
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -858,8 +872,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname} bash -c 'test -d /usr/local/include/SDL_rwops_zzip'"
         sh____(cmd.format(**locals()))
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -896,8 +911,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname} bash -c 'test -d /usr/local/include/SDL_rwops_zzip'"
         sh____(cmd.format(**locals()))
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -934,8 +950,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname} bash -c 'test -d /usr/local/include/SDL_rwops_zzip'"
         sh____(cmd.format(**locals()))
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -972,8 +989,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname} bash -c 'test -d /new/usr/local/include/SDL_rwops_zzip'"
         sh____(cmd.format(**locals()))
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -1010,8 +1028,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname} bash -c 'test -d /new/usr/local/include/SDL_rwops_zzip'"
         sh____(cmd.format(**locals()))
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -1042,8 +1061,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname} find src -name *.xml"
         sh____(cmd.format(**locals()))
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -1077,8 +1097,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname} bash -c 'cd src/build/test && python3 ../../test/zziptests.py test_65485'"
         sh____(cmd.format(**locals()))
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         self.rm_testdir()
     def test_435_opensuse15_ninja_sdl2_dockerfile(self):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
@@ -1109,8 +1130,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname} bash -c 'test -d /usr/local/include/SDL_rwops_zzip'"
         sh____(cmd.format(**locals()))
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -1149,8 +1171,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname} bash -c 'test -f /usr/local/share/man/man3/zzip_opendir.3'"
         sh____(cmd.format(**locals()))
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -1190,8 +1213,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker exec {testname} bash -c 'test -f /usr/local/share/man/man3/zzip_opendir.3'"
         sh____(cmd.format(**locals()))
         #
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
         cmd = "docker rmi {saveto}/{savename}:latest"
         sx____(cmd.format(**locals()))
         cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
@@ -1712,6 +1736,8 @@ if __name__ == "__main__":
        help="use another docker execution engine [%default]")
     _o.add_option("-M","--mirror", metavar="EXE", default=MIRROR,
        help="use another docker_mirror.py script [%default]")
+    _o.add_option("-k","--keep", action="count", default=0,
+       help="keep docker build container [%default]")
     _o.add_option("-f","--force", action="count", default=0,
        help="force the rebuild steps [%default]")
     _o.add_option("-x","--no-cache", action="count", default=0,
@@ -1726,6 +1752,7 @@ if __name__ == "__main__":
     _python = opt.python
     DOCKER = opt.docker
     MIRROR = opt.mirror
+    KEEP = opt.keep
     FORCE = opt.force
     NOCACHE = opt.no_cache
     #
