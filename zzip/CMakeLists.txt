@@ -19,7 +19,7 @@ option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 option(ZZIPMMAPPED "Build libzzipmmapped (not fully portable)" ON)
 option(ZZIPFSEEKO "Build libzzipfseeko (based on posix.1 api)" ON)
 
-if(UNIX)
+if(UNIX OR MINGW)
 option(ZZIP_COMPAT "Build compatibility with old libzzip releases" ON)
 option(ZZIP_LIBTOOL "Ensure binary compatibility with libtool" ON)
 option(ZZIP_PKGCONFIG "Generate pkg-config files for linking" ON)
