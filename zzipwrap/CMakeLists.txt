@@ -48,8 +48,11 @@ add_library(libzzipwrap ${libzzipwrap_SRCS} )
 target_link_libraries(libzzipwrap libzzip ZLIB::ZLIB )
 target_include_directories(libzzipwrap PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 
-set_target_properties(libzzipwrap PROPERTIES OUTPUT_NAME "zzipwrap" RELEASE_POSTFIX "-${RELNUM}")
+set_target_properties(libzzipwrap PROPERTIES OUTPUT_NAME "zzipwrap")
+if(BUILD_SHARED_LIBS)
+set_target_properties(libzzipwrap PROPERTIES RELEASE_POSTFIX "-${RELNUM}")
 SET_TARGET_PROPERTIES(libzzipwrap PROPERTIES VERSION ${VERNUM}.${FIXNUM} SOVERSION ${VERNUM})
+endif()
 set_target_properties(libzzipwrap PROPERTIES DEFINE_SYMBOL "libzzip_EXPORTS")
 
 add_executable(zzipwrap ${zzipwrap_SRCS} )
