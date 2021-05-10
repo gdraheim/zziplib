@@ -12,7 +12,7 @@ option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 option(ZZIP_HTMLSITE "Generate site html pages from docs" OFF)
 option(ZZIP_HTMPAGES "Generate html manpages from sources" OFF)
 
-if(UNIX)
+if(UNIX OR MINGW)
 option(ZZIP_MANPAGES "Generate man3 manpages from sources" ON)
 else()
 option(ZZIP_MANPAGES "Generate man3 manpages from sources" OFF)
