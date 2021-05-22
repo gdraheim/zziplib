@@ -61,3 +61,12 @@ version:
 -include GNUmakefile.win10
 -include docker_mirror.mk
 -include docs.mk
+
+clean:
+	- test -d $(BUILD) && rm -rf $(BUILD)
+	- test -d tmp && rm -rf tmp
+	- find . -name CMakeCache.txt | xargs --no-run-if-empty rm -v
+	- find . -name cmake_install.cmake | xargs --no-run-if-empty rm -v
+	- find . -name CMakeFiles | xargs --no-run-if-empty rm -r
+	- find . -name Makefile | xargs --no-run-if-empty rm -r
+	- rm *~
