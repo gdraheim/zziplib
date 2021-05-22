@@ -28,7 +28,7 @@ check checks:
 	@ test ! -f $(BUILD)/Makefile    || (set -x; cd $(BUILD) && $(MAKE) $@ VERBOSE=1)
 	@ test ! -f $(BUILD)/rules.ninja || (set -x; cd $(BUILD) && $(NINJA) $@)
 install docs:
-	@ test ! -f $(BUILD)/Make        || (set -x; cd $(BUILD) && $(MAKE) $@)
+	@ test ! -f $(BUILD)/Makefile    || (set -x; cd $(BUILD) && $(MAKE) $@)
 	@ test ! -f $(BUILD)/rules.ninja || (set -x; cd $(BUILD) && $(NINJA) $@)
 
 un uninstalls:
@@ -60,3 +60,11 @@ version:
 
 -include GNUmakefile.win10
 -include docker_mirror.mk
+
+clean:
+	- test -d $(BUILD) && rm -rf $(BUILD)
+	- find . -name CMakeCache.txt | xargs --no-run-if-empty rm -v
+	- find . -name cmake_install.cmake | xargs --no-run-if-empty rm -v
+	- find . -name CMakeFiles | xargs --no-run-if-empty rm -r
+	- find . -name Makefile | xargs --no-run-if-empty rm -r
+	- rm *~
