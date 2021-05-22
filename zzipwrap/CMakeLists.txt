@@ -15,7 +15,7 @@ option(BUILD_STATIC_LIBS "Build the static library" OFF)
 option(BUILD_TESTS "Build test programs" OFF)
 option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 
-if(UNIX)
+if(UNIX OR MINGW)
 option(ZZIP_LIBTOOL "Ensure binary compatibility with libtool" ON)
 option(ZZIP_PKGCONFIG "Generate pkg-config files for linking" ON)
 else()
@@ -86,7 +86,24 @@ endif()
 install(FILES ${libzzipwrap_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/zzip )
 install(TARGETS libzzipwrap
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+if(ZZIP_LIBTOOL)
+  if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
+    execute_process(COMMAND bash -c "ln --help"
+        OUTPUT_VARIABLE ln_verbose_help
+        ERROR_QUIET
+    )
+    string(FIND "${ln_verbose_help}" "verbose" ln_verbose_found)
+    if(${ln_verbose_found} STREQUAL "-1")
+        set(ln_svf "ln -sf")
+    else()
+        set(ln_svf "ln -svf")
+    endif()
+    message(STATUS "Can symlink libraries with: ${ln_svf}")
+  endif()
+endif()
 
 if(ZZIP_LIBTOOL)
   if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)

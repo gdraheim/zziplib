@@ -38,6 +38,7 @@ rms: ; docker images --format '{{.Repository}} {{.ID}}' | grep localhost:5000/sy
 rmi: ; docker images --format '{{.Repository}} {{.ID}}' | grep localhost:5000/zziplib/ | cut -d ' ' -f 2 | xargs --no-run-if-empty docker rmi -f
 rmf: ; docker ps -a --format '{{.Image}} {{.ID}}' | grep localhost:5000/zziplib/ | cut -d ' ' -f 2 | xargs --no-run-if-empty docker rm -f
 
+keep/st_%: ; python3 testbuilds.py te$(notdir $@) -vv --no-cache --keep
 st_%: ; python3 testbuilds.py te$@ -vv --no-cache
 tests:  ; python3 testbuilds.py -vv
 testbuilds: ; python3 testbuilds.py -vv --no-cache
