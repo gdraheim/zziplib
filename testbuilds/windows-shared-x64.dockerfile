@@ -21,7 +21,7 @@ RUN { echo "[requires]" \
 
 RUN mkdir src/build
 RUN cd src/build && conan install ..
-RUN cd src/build && cmake .. -DCMAKE_TOOLCHAIN_FILE=./conan_paths.cmake -DBUILD_STATIC_LIBS=OFF -DCMAKE_SYSTEM_NAME=Windows
+RUN cd src/build && cmake .. -DCMAKE_TOOLCHAIN_FILE=./conan_paths.cmake -DCMAKE_SYSTEM_NAME=Windows
 RUN cd src/build && cmake --build .
 # RUN $no_check || (cd src/build && make check)
 # RUN $no_install || (cd src/build && make install)
