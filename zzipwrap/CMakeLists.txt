@@ -7,11 +7,9 @@ include ( CheckIncludeFiles )
 include ( GNUInstallDirs )
 include ( FindPkgConfig )
 include ( JoinPaths )
-include ( CheckVerboseSymlink )
 
 # options ########################################################
 option(BUILD_SHARED_LIBS "Build a shared library" ON)
-option(BUILD_STATIC_LIBS "Build the static library" OFF)
 option(BUILD_TESTS "Build test programs" OFF)
 option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 
@@ -21,6 +19,12 @@ option(ZZIP_PKGCONFIG "Generate pkg-config files for linking" ON)
 else()
 option(ZZIP_LIBTOOL "Ensure binary compatibility with libtool" OFF)
 option(ZZIP_PKGCONFIG "Generate pkg-config files for linking" OFF)
+endif()
+
+if(ZZIP_LIBTOOL OR ZZIP_PKGCONFIG)
+option(ZZIP_LIBLATEST "Ensure libname.lib links to libname-REL.lib" ON)
+else()
+option(ZZIP_LIBLATEST "Ensure libname.lib links to libname-REL.lib" OFF)
 endif()
 
 check_include_files ( unistd.h ZZIP_HAVE_UNISTD_H )
@@ -89,43 +93,23 @@ install(TARGETS libzzipwrap
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-if(ZZIP_LIBTOOL)
-  if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
-    execute_process(COMMAND bash -c "ln --help"
-        OUTPUT_VARIABLE ln_verbose_help
-        ERROR_QUIET
-    )
-    string(FIND "${ln_verbose_help}" "verbose" ln_verbose_found)
-    if(${ln_verbose_found} STREQUAL "-1")
-        set(ln_svf "ln -sf")
-    else()
-        set(ln_svf "ln -svf")
-    endif()
-    message(STATUS "Can symlink libraries with: ${ln_svf}")
-  endif()
-endif()
-
-if(ZZIP_LIBTOOL)
-  if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
-    find_ln_svf()
-  endif()
-endif()
-
-if(ZZIP_LIBTOOL)
-  if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
+if(ZZIP_LIBLATEST)
+  if(BUILD_SHARED_LIBS)
     set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
     set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
+  else()
+    set(lib ${CMAKE_STATIC_LIBRARY_PREFIX})
+    set(dll ${CMAKE_STATIC_LIBRARY_SUFFIX})
+  endif()
     set(libdir ${CMAKE_INSTALL_FULL_LIBDIR})
     get_target_property(libname libzzipwrap OUTPUT_NAME)
     get_target_property(librelease libzzipwrap RELEASE_POSTFIX)
-    get_target_property(libversion libzzipwrap VERSION)
-    install(CODE "execute_process(COMMAND bash -c \"set -e
-        cd $DESTDIR/${libdir}
-        [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
-        echo -n .. Installing: `pwd`
-        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
-        \")")
-  endif()
+    add_custom_target(libzzipwrap_latest ALL
+        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:libzzipwrap> ${lib}${libname}${dll}
+        )
+    install(FILES
+        ${outdir}/${lib}${libname}${dll}
+        DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
 
 # messages #######################################################

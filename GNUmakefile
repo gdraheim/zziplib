@@ -19,6 +19,7 @@ build:
 	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/rules.ninja || echo 'DONE (cd $(BUILD) && $(NINJA) all) - please run (cd $(BUILD) && $(NINJA) check) now'
 
 new: ; rm -rf $(BUILD); $(MAKE) build
+static: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-DBUILD_SHARED_LIBS=OFF
 
 ninja: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-GNinja
 nmake: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-GNmake
@@ -64,7 +65,6 @@ version:
 
 clean:
 	- test -d $(BUILD) && rm -rf $(BUILD)
-	- test -d tmp && rm -rf tmp
 	- find . -name CMakeCache.txt | xargs --no-run-if-empty rm -v
 	- find . -name cmake_install.cmake | xargs --no-run-if-empty rm -v
 	- find . -name CMakeFiles | xargs --no-run-if-empty rm -r
