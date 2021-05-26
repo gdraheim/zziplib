@@ -70,4 +70,7 @@ clean:
 	- find . -name cmake_install.cmake | xargs --no-run-if-empty rm -v
 	- find . -name CMakeFiles | xargs --no-run-if-empty rm -r
 	- find . -name Makefile | xargs --no-run-if-empty rm -r
+	- rm -r docs/zzipdoc/__pycache__
+	- rm -r docs/zzipdoc/*.pyc
+	- rm -f autom4te.cache
 	- rm *~
