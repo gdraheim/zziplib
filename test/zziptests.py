@@ -3662,7 +3662,7 @@ class ZZipTest(unittest.TestCase):
     self.assertFalse(run.returncode)
     # list the ZIPfile
     exe=self.bins("unzip-mem");
-    run = shell("{chdir} {tmpdir} && ../{exe} -v {zipname}.zip".format(**locals()), returncodes = [0,-8])
+    run = shell("{chdir} {tmpdir} && ../{exe} -v {zipname}.zip".format(**locals()), returncodes = [0,-8,136])
     logg.error("FIXME: unzip-mem test_65485 is not solved")
     self.skipTest("FIXME: not solved")
     self.assertFalse(run.returncode)
@@ -3841,12 +3841,12 @@ class ZZipTest(unittest.TestCase):
     exe = self.bins("unzzip-mix")
     run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
         returncodes = [2])
-    self.assertTrue(greps(run.errors, "Invalid or incomplete"))
+    self.assertTrue(greps(run.errors, "Invalid or incomplete") or greps(run.errors, "Illegal byte sequence"))
     #
     run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
         returncodes = [2])
     # self.assertLess(len(run.output), 30)
-    self.assertTrue(greps(run.errors, "Invalid or incomplete"))
+    self.assertTrue(greps(run.errors, "Invalid or incomplete") or greps(run.errors, "Illegal byte sequence"))
     self.rm_testdir()
   def test_65674(self):
     """ unzzip-zap -l $(CVE).zip  """
