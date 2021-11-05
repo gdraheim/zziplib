@@ -137,7 +137,7 @@ FILE* create_fopen(char* name, char* mode, int subdirs)
    {
       char* p = strrchr(name_stripped, '/');
       if (p) {
-          char* dir_name = _zzip_strndup(name_stripped, p-name);
+          char* dir_name = _zzip_strndup(name_stripped, p-name_stripped);
           makedirs(dir_name); 
           free (dir_name);
       }
