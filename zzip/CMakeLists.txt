@@ -350,8 +350,12 @@ if(ZZIP_LIBLATEST)
   endif()
     get_target_property(libname libzzip OUTPUT_NAME)
     get_target_property(librelease libzzip RELEASE_POSTFIX)
+    set(libzzip_target "${lib}${libname}${dll}")
+    add_custom_command(OUTPUT ${libzzip_target} 
+        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:libzzip> ${libzzip_target}
+        )
     add_custom_target(libzzip_latest ALL
-        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:libzzip> ${lib}${libname}${dll}
+        DEPENDS ${libzzip_target}
         )
     install(FILES
         ${outdir}/${lib}${libname}${dll}
@@ -359,8 +363,12 @@ if(ZZIP_LIBLATEST)
     if(ZZIPFSEEKO)
     get_target_property(libname libzzipfseeko OUTPUT_NAME)
     get_target_property(librelease libzzipfseeko RELEASE_POSTFIX)
+    set(libzzipfseeko_target "${lib}${libname}${dll}")
+    add_custom_command(OUTPUT ${libzzipfseeko_target} 
+        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:libzzip> ${libzzipfseeko_target}
+        )
     add_custom_target(libzzipfseeko_latest ALL
-        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:libzzipfseeko> ${lib}${libname}${dll}
+        DEPENDS ${libzzipfseeko_target}
         )
     install(FILES
         ${outdir}/${lib}${libname}${dll}
@@ -369,8 +377,12 @@ if(ZZIP_LIBLATEST)
     if(ZZIPMMAPPED)
     get_target_property(libname libzzipmmapped OUTPUT_NAME)
     get_target_property(librelease libzzipmmapped RELEASE_POSTFIX)
+    set(libzzipmmaped_target "${lib}${libname}${dll}")
+    add_custom_command(OUTPUT ${libzzipmmaped_target} 
+        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:libzzip> ${libzzipmmaped_target}
+        )
     add_custom_target(libzzipmmaped_latest ALL
-        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:libzzipmmapped> ${lib}${libname}${dll}
+        DEPENDS ${libzzipmmaped_target}
         )
     install(FILES
         ${outdir}/${lib}${libname}${dll}
