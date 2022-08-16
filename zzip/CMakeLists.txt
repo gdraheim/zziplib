@@ -11,6 +11,7 @@ include ( CheckTypeSize )
 include ( TestBigEndian )
 include ( GNUInstallDirs )
 include ( JoinPaths )
+include ( CheckCompilerFlag )
 
 # options ###########################################################
 option(BUILD_SHARED_LIBS "Build a shared library" ON)
@@ -108,6 +109,7 @@ configure_file ( ${CMAKE_CURRENT_SOURCE_DIR}/_config.h.cmake ${CMAKE_CURRENT_BIN
 find_package ( ZLIB REQUIRED )
 
 if(UNIX)
+CHECK_COMPILER_FLAG(C "-Warray-bounds" HAS_WARRAY_BOUNDS)
     add_definitions(
         -Wpointer-arith
         -Wsign-compare
@@ -115,8 +117,12 @@ if(UNIX)
         # -Wdeclaration-after-statement
         -Werror-implicit-function-declaration
         -Wstrict-aliasing
+    )
+  if(HAS_WARRAY_BOUNDS)
+    add_definitions(
         -Warray-bounds
     )
+  endif()
 endif()
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ${BUILD_SHARED_LIBS})
