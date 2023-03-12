@@ -1,10 +1,5 @@
 #! /usr/bin/python3
-
-import sys
-print(sys.path)
-sys.path += ["."]
-print(sys.path)
-
+import toolstestpath  # noqa
 from tools import md2dbk
 from unittest import TestCase, TestSuite, TextTestRunner, main
 from fnmatch import fnmatchcase as matches
