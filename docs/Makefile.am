@@ -14,6 +14,13 @@ htm_FILES = zzip-index.htm zzip-zip.htm zzip-file.htm zzip-sdl-rwops.htm \
             configs.htm sfx-make.htm   developer.htm download.htm \
             history.htm referentials.htm  faq.htm copying.htm notes.htm \
             functions.htm zip-php.htm
+htm_md_FILES = zzip-index.htm.md zzip-zip.htm.md zzip-file.htm.md zzip-sdl-rwops.htm.md \
+            zzip-extio.htm.md zzip-xor.htm.md zzip-crypt.htm.md zzip-cryptoid.htm.md \
+            zzip-api.htm.md  zzip-basics.htm.md zzip-extras.htm.md zzip-parse.htm.md \
+            64on32.htm.md future.htm.md fseeko.htm.md mmapped.htm.md memdisk.htm.md \
+            configs.htm.md sfx-make.htm.md   developer.htm download.htm.md \
+            history.htm.md referentials.htm.md  faq.htm.md copying.htm.md notes.htm.md \
+            functions.htm.md zip-php.htm.md
 htms_FILES = changes.htm
 SDL = @top_srcdir@/SDL
 SDL_RWOPS = $(SDL)/SDL_rwops_zzcat.c \
@@ -38,10 +45,6 @@ zzipdoc_FILES = makedocs.py               zzipdoc/__init__.py \
 	zzipdoc/functionprototype.py      zzipdoc/htmldocument.py \
                                           zzipdoc/docbookdocument.py
 
-html_FILES = $(htm_FILES:.htm=.html)       $(htms_FILES:.htm=.html) \
-             $(htm_FILES:.htm=.print.html) $(htms_FILES:.htm=.print.html) \
-             site.html site.print.html
-
 all : all-am default
 default : doc @MAINTAINER_MODE_FALSE@ mans
 clean-doc clean-docs : clean-unpack
@@ -52,7 +55,7 @@ install-data-local : @MAINTAINER_MODE_FALSE@ install-mans
 # -------------------------------------------------------------------
 zziplib.spec : @top_srcdir@/$(PACKAGE).spec
 	@ cp $? $@ # the two zzip-doc.* will grep through zziplib.spec
-doc  : $(doc_FILES) site.html
+doc  : $(doc_FILES) site/site.html
 docs : doc manpages.tar htmpages.tar
 # docu : docs
 docu : 
@@ -93,9 +96,9 @@ DOCEXAMPLES = $(bins)/zzdir.c $(bins)/zzcat.c \
               $(bins)/zzxordir.c $(bins)/zzxorcat.c \
 	      $(bins)/zzxorcopy.c        $(SDL_RWOPS)
 
-install-docs: $(doc_FILES) $(man_FILES) site.html htmpages.tar
+install-docs: $(doc_FILES) $(man_FILES) site/site.html htmpages.tar
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)
-	$(INSTALL_DATA) $(html_FILES) $(DESTDIR)$(pkgdocdir)
+	$(INSTALL_DATA) site/*.html site/*.css $(DESTDIR)$(pkgdocdir)
 	for i in $(doc_FILES) $(DOCEXAMPLES) $(changelog) $(srcdir)/README.* \
 	; do $(INSTALL_DATA) `test -f $$i || echo $(srcdir)/`$$i \
 	    $(DESTDIR)$(pkgdocdir) ; done
@@ -276,12 +279,14 @@ install-omf : omf zziplib.xml zzipmmapped.xml zzipfseeko.xml
 	- test ".$(DESTDIR)" != "." || scrollkeeper-update -v
 
 # ----------------------------------------------- mksite.sh for the main html
-site.htm : body.htm
-	cp $(srcdir)/body.htm site.htm
 mksite_sh_args = --VERSION=$(VERSION) --xml --src-dir=$(srcdir) --print
-site.html : body.htm site.htm mksite.sh $(htm_FILES) $(htms_FILES)
-	cp $(srcdir)/body.htm site.htm
-	perl $(srcdir)/mksite.pl $(mksite_sh_args) site.htm || \
+site/site.html : body.htm changes.htm mksite.sh $(htm_md_FILES) $(htms_FILES)
+        test -d ${outdir}/site || mkdir -p ${outdir}/site
+	cp $(srcdir)/body.htm ${outdir}/site/site.htm
+	cp $(outdir)/changes.htm ${outdir}/site/changes.htm
+	cp -v ${srcdir}/*.md ${outdir}/site/
+	cp -v ${srcdir}/*.css ${outdir}/site/
+	cd ${outdir}/site; for i in *.md; do ${PYTHON} ${srcdir}/tools/md2dbk.py $$i --htm > `basename $$i .md` ; done
 	$(SHELL) $(srcdir)/mksite.sh $(mksite_sh_args) site.htm
 
 changes.htm : $(top_srcdir)/ChangeLog Makefile 
