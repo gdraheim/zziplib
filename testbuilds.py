@@ -4,6 +4,7 @@
 __copyright__ = "(C) Guido Draheim, all rights reserved"""
 __version__ = "0.13.72"
 
+from typing import Union, Optional, Tuple, List, Iterator
 import subprocess
 import os.path
 import time
@@ -14,6 +15,7 @@ import inspect
 import types
 import logging
 import re
+from collections import namedtuple
 from fnmatch import fnmatchcase as fnmatch
 from glob import glob
 import json
@@ -45,7 +47,7 @@ NOCACHE = False
 MAINDIR = os.path.dirname(sys.argv[0]) or "."
 MIRROR = os.path.join(MAINDIR, "docker_mirror.py")
 
-def decodes(text):
+def decodes(text: Union[bytes, str]) -> str:
     if text is None: return None
     if isinstance(text, bytes):
         encoded = sys.getdefaultencoding()
@@ -56,19 +58,19 @@ def decodes(text):
         except:
             return text.decode("latin-1")
     return text
-def sh____(cmd, shell=True):
+def sh____(cmd: Union[str, List[str]], shell: bool = True) -> int:
     if isinstance(cmd, basestring):
         logg.info(": %s", cmd)
     else:
         logg.info(": %s", " ".join(["'%s'" % item for item in cmd]))
     return subprocess.check_call(cmd, shell=shell)
-def sx____(cmd, shell=True):
+def sx____(cmd: Union[str, List[str]], shell: bool = True) -> int:
     if isinstance(cmd, basestring):
         logg.info(": %s", cmd)
     else:
         logg.info(": %s", " ".join(["'%s'" % item for item in cmd]))
     return subprocess.call(cmd, shell=shell)
-def output(cmd, shell=True):
+def output(cmd: Union[str, List[str]], shell: bool = True) -> str:
     if isinstance(cmd, basestring):
         logg.info(": %s", cmd)
     else:
@@ -76,7 +78,7 @@ def output(cmd, shell=True):
     run = subprocess.Popen(cmd, shell=shell, stdout=subprocess.PIPE)
     out, err = run.communicate()
     return decodes(out)
-def output2(cmd, shell=True):
+def output2(cmd: Union[str, List[str]], shell: bool = True) -> Tuple[str, int]:
     if isinstance(cmd, basestring):
         logg.info(": %s", cmd)
     else:
@@ -84,7 +86,7 @@ def output2(cmd, shell=True):
     run = subprocess.Popen(cmd, shell=shell, stdout=subprocess.PIPE)
     out, err = run.communicate()
     return decodes(out), run.returncode
-def output3(cmd, shell=True):
+def output3(cmd: Union[str, List[str]], shell: bool = True) -> Tuple[str, str, int]:
     if isinstance(cmd, basestring):
         logg.info(": %s", cmd)
     else:
@@ -92,8 +94,9 @@ def output3(cmd, shell=True):
     run = subprocess.Popen(cmd, shell=shell, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = run.communicate()
     return decodes(out), decodes(err), run.returncode
-def background(cmd, shell=True):
-    BackgroundProcess = collections.namedtuple("BackgroundProcess", ["pid", "run", "log"])
+
+BackgroundProcess = namedtuple("BackgroundProcess", ["pid", "run", "log"])
+def background(cmd: List[str], shell: bool = True) -> BackgroundProcess:
     log = open(os.devnull, "wb")
     run = subprocess.Popen(cmd, shell=shell, stdout=log, stderr=log)
     pid = run.pid
@@ -101,36 +104,38 @@ def background(cmd, shell=True):
     return BackgroundProcess(pid, run, log)
 
 
-def _lines(lines):
+def _lines(lines: Union[str, List[str]]) -> List[str]:
     if isinstance(lines, basestring):
-        lines = lines.split("\n")
-        if len(lines) and lines[-1] == "":
-            lines = lines[:-1]
+        xlines = lines.split("\n")
+        if len(xlines) and xlines[-1] == "":
+            xlines = xlines[:-1]
+        return xlines
     return lines
-def lines(text):
+def lines(text: Union[str, List[str]]) -> List[str]:
     lines = []
     for line in _lines(text):
         lines.append(line.rstrip())
     return lines
-def grep(pattern, lines):
+def grep(pattern: str, lines: Union[str, List[str]]) -> Iterator[str]:
     for line in _lines(lines):
         if re.search(pattern, line.rstrip()):
             yield line.rstrip()
-def greps(lines, pattern):
+def greps(lines: Union[str, List[str]], pattern: str) -> List[str]:
     return list(grep(pattern, lines))
 
-def download(base_url, filename, into):
+def download(base_url: str, filename: str, into: str) -> None:
     if not os.path.isdir(into):
         os.makedirs(into)
     if not os.path.exists(os.path.join(into, filename)):
         sh____("cd {into} && wget {base_url}/{filename}".format(**locals()))
-def text_file(filename, content):
+def text_file(filename: str, content: str) -> None:
     filedir = os.path.dirname(filename)
     if not os.path.isdir(filedir):
         os.makedirs(filedir)
     f = open(filename, "w")
     if content.startswith("\n"):
         x = re.match("(?s)\n( *)", content)
+        assert x is not None
         indent = x.group(1)
         for line in content[1:].split("\n"):
             if line.startswith(indent):
@@ -139,25 +144,25 @@ def text_file(filename, content):
     else:
         f.write(content)
     f.close()
-def shell_file(filename, content):
+def shell_file(filename: str, content: str) -> None:
     text_file(filename, content)
     os.chmod(filename, 0o770)
-def copy_file(filename, target):
+def copy_file(filename: str, target: str) -> None:
     targetdir = os.path.dirname(target)
     if not os.path.isdir(targetdir):
         os.makedirs(targetdir)
     shutil.copyfile(filename, target)
-def copy_tool(filename, target):
+def copy_tool(filename: str, target: str) -> None:
     copy_file(filename, target)
     os.chmod(target, 0o750)
 
-def get_caller_name():
-    frame = inspect.currentframe().f_back.f_back
-    return frame.f_code.co_name
-def get_caller_caller_name():
-    frame = inspect.currentframe().f_back.f_back.f_back
-    return frame.f_code.co_name
-def os_path(root, path):
+def get_caller_name() -> str:
+    frame = inspect.currentframe().f_back.f_back  # type: ignore[union-attr]
+    return frame.f_code.co_name  # type: ignore[union-attr]
+def get_caller_caller_name() -> str:
+    frame = inspect.currentframe().f_back.f_back.f_back  # type: ignore[union-attr]
+    return frame.f_code.co_name  # type: ignore[union-attr]
+def os_path(root: Optional[str], path: str) -> str:
     if not root:
         return path
     if not path:
@@ -165,10 +170,10 @@ def os_path(root, path):
     while path.startswith(os.path.sep):
         path = path[1:]
     return os.path.join(root, path)
-def docname(path):
+def docname(path: str) -> str:
     return os.path.splitext(os.path.basename(path))[0]
 
-def link_software(software, parts):
+def link_software(software: str, parts: str) -> None:
     software = software or "Software"
     shelf = SOFTWARE
     for part in parts.split(","):
@@ -184,7 +189,7 @@ def link_software(software, parts):
                         os.makedirs(intodir)
                     if not os.path.isfile(intofile):
                         os.link(fromfile, intofile)
-def unlink_software(software, parts):
+def unlink_software(software: str, parts: str) -> None:
     software = software or "Software"
     shelf = SOFTWARE
     for part in parts.split(","):
@@ -198,26 +203,26 @@ def unlink_software(software, parts):
                         os.unlink(intofile)
 
 class ZZiplibBuildTest(unittest.TestCase):
-    def caller_testname(self):
+    def caller_testname(self) -> str:
         name = get_caller_caller_name()
         x1 = name.find("_")
         if x1 < 0: return name
         x2 = name.find("_", x1 + 1)
         if x2 < 0: return name
         return name[:x2]
-    def testname(self, suffix=None):
+    def testname(self, suffix: Optional[str] = None) -> str:
         name = self.caller_testname()
         if suffix:
             return name + "_" + suffix
         return name
-    def testdir(self, testname=None):
+    def testdir(self, testname: Optional[str] = None) -> str:
         testname = testname or self.caller_testname()
         newdir = "tmp/tmp." + testname
         if os.path.isdir(newdir):
             shutil.rmtree(newdir)
         os.makedirs(newdir)
         return newdir
-    def rm_old(self, testname=None):
+    def rm_old(self, testname: Optional[str] = None) -> None:
         testname = testname or self.caller_testname()
         for subdir in ("docs/man3", "docs/html"):
             if os.path.isdir(subdir):
@@ -227,25 +232,25 @@ class ZZiplibBuildTest(unittest.TestCase):
             if os.path.isfile(filename):
                 logg.info("rm %s", filename)
                 os.remove(filename)
-    def rm_testdir(self, testname=None):
+    def rm_testdir(self, testname: Optional[str] = None) -> str:
         testname = testname or self.caller_testname()
         newdir = "tmp/tmp." + testname
         if os.path.isdir(newdir):
             shutil.rmtree(newdir)
         return newdir
-    def makedirs(self, path):
+    def makedirs(self, path: str) -> None:
         if not os.path.isdir(path):
             os.makedirs(path)
-    def user(self):
+    def user(self) -> str:
         import getpass
-        getpass.getuser()
-    def ip_container(self, name):
+        return getpass.getuser()
+    def ip_container(self, name: str) -> str:
         values = output("docker inspect " + name)
         values = json.loads(values)
         if not values or "NetworkSettings" not in values[0]:
             logg.critical(" docker inspect %s => %s ", name, values)
-        return values[0]["NetworkSettings"]["IPAddress"]
-    def local_image(self, image):
+        return values[0]["NetworkSettings"]["IPAddress"]  # type: ignore[index]
+    def local_image(self, image: str) -> str:
         """ attach local centos-repo / opensuse-repo to docker-start enviroment.
             Effectivly when it is required to 'docker start centos:x.y' then do
             'docker start centos-repo:x.y' before and extend the original to 
@@ -256,7 +261,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         if add_hosts:
             return "{add_hosts} {image}".format(**locals())
         return image
-    def local_addhosts(self, dockerfile, extras=None):
+    def local_addhosts(self, dockerfile: str, extras: Optional[str] = None) -> str:
         image = ""
         for line in open(dockerfile):
             m = re.match('[Ff][Rr][Oo][Mm] *"([^"]*)"', line)
@@ -271,39 +276,39 @@ class ZZiplibBuildTest(unittest.TestCase):
         if image:
             return self.start_mirror(image, extras)
         return ""
-    def start_mirror(self, image, extras=None):
+    def start_mirror(self, image: str, extras: Optional[str] = None) -> str:
         extras = extras or ""
         docker = DOCKER
         mirror = MIRROR
         cmd = "{mirror} start {image} --add-hosts {extras}"
         out = output(cmd.format(**locals()))
         return decodes(out).strip()
-    def nocache(self):
+    def nocache(self) -> str:
         if FORCE or NOCACHE:
             return " --no-cache"
         return ""
     #
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
     #
-    def test_101_docker_mirror_ubuntu1(self):
+    def test_101_docker_mirror_ubuntu1(self) -> None:
         logg.info("\n  UBUNTU1 = '%s'", UBUNTU1)
         self.start_mirror(UBUNTU1)
-    def test_102_docker_mirror_ubuntu2(self):
+    def test_102_docker_mirror_ubuntu2(self) -> None:
         logg.info("\n  UBUNTU2 = '%s'", UBUNTU2)
         self.start_mirror(UBUNTU2)
-    def test_103_docker_mirror_ubuntu3(self):
+    def test_103_docker_mirror_ubuntu3(self) -> None:
         logg.info("\n  UBUNTU3 = '%s'", UBUNTU3)
         self.start_mirror(UBUNTU3, "--universe")
-    def test_105_docker_mirror_opensuse5(self):
+    def test_105_docker_mirror_opensuse5(self) -> None:
         logg.info("\n  OPENSUSE5 = '%s'", OPENSUSE5)
         self.start_mirror(OPENSUSE5)
-    def test_107_docker_mirror_centos7(self):
+    def test_107_docker_mirror_centos7(self) -> None:
         logg.info("\n  CENTOS7 = '%s'", CENTOS7)
         self.start_mirror(CENTOS7, "--epel")
-    def test_108_docker_mirror_centos7(self):
+    def test_108_docker_mirror_centos7(self) -> None:
         logg.info("\n  CENTOS8 = '%s'", CENTOS8)
         self.start_mirror(CENTOS8)
-    def test_207_centos7_automake_dockerfile(self):
+    def test_207_centos7_automake_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -347,7 +352,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_208_centos8_automake_dockerfile(self):
+    def test_208_centos8_automake_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -391,7 +396,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_217_centos7_cmake_build_dockerfile(self):
+    def test_217_centos7_cmake_build_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -435,7 +440,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_218_centos8_cmake_build_dockerfile(self):
+    def test_218_centos8_cmake_build_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -479,7 +484,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_221_ubuntu16_cmake_build_dockerfile(self):
+    def test_221_ubuntu16_cmake_build_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -523,7 +528,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_222_ubuntu18_cmake_build_dockerfile(self):
+    def test_222_ubuntu18_cmake_build_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -567,7 +572,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_224_ubuntu16_32bit_dockerfile(self):
+    def test_224_ubuntu16_32bit_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -611,7 +616,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_235_opensuse15_cmake_build_dockerfile(self):
+    def test_235_opensuse15_cmake_build_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -656,7 +661,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         sx____(cmd.format(**locals()))
         self.rm_testdir()
     @unittest.expectedFailure
-    def test_250_windows_static_x64_dockerfile(self):
+    def test_250_windows_static_x64_dockerfile(self) -> None:
         logg.warning("     windows-static-x64 compiles fine but segfaults on linking an .exe")
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
@@ -691,7 +696,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         sx____(cmd.format(**locals()))
         self.rm_testdir()
     @unittest.expectedFailure
-    def test_260_windows_shared_x64_dockerfile(self):
+    def test_260_windows_shared_x64_dockerfile(self) -> None:
         logg.warning("     windows-shared-x64 compiles fine but segfaults on linking an .exe")
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
@@ -725,7 +730,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_307_centos7_automake_sdl2_dockerfile(self):
+    def test_307_centos7_automake_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -764,7 +769,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_308_centos8_automake_sdl2_dockerfile(self):
+    def test_308_centos8_automake_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -803,7 +808,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_317_centos7_cmake_sdl2_dockerfile(self):
+    def test_317_centos7_cmake_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -842,7 +847,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_318_centos8_cmake_sdl2_dockerfile(self):
+    def test_318_centos8_cmake_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -881,7 +886,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_322_ubuntu18_cmake_sdl2_dockerfile(self):
+    def test_322_ubuntu18_cmake_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -920,7 +925,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_335_opensuse15_cmake_sdl2_dockerfile(self):
+    def test_335_opensuse15_cmake_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -959,7 +964,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_417_centos7_cmake_sdl2_destdir_dockerfile(self):
+    def test_417_centos7_cmake_sdl2_destdir_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -998,7 +1003,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_418_centos8_cmake_sdl2_destdir_dockerfile(self):
+    def test_418_centos8_cmake_sdl2_destdir_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1037,7 +1042,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_423_ubuntu20_azure_dockerfile(self):
+    def test_423_ubuntu20_azure_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1071,7 +1076,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         sx____(cmd.format(**locals()))
         self.rm_testdir()
     @unittest.expectedFailure
-    def test_424_ubuntu20_azure_dockerfile(self):
+    def test_424_ubuntu20_azure_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1100,7 +1105,7 @@ class ZZiplibBuildTest(unittest.TestCase):
             cmd = "docker rm --force {testname}"
             sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_435_opensuse15_ninja_sdl2_dockerfile(self):
+    def test_435_opensuse15_ninja_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1139,7 +1144,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_440_opensuse15_cm_htmpages_dockerfile(self):
+    def test_440_opensuse15_cm_htmpages_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1178,7 +1183,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_441_opensuse15_cm_htmpages_dockerfile(self):
+    def test_441_opensuse15_cm_htmpages_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1217,7 +1222,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_707_centos7_automake_docs_dockerfile(self):
+    def test_707_centos7_automake_docs_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1258,7 +1263,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_717_centos7_cmake_docs_dockerfile(self):
+    def test_717_centos7_cmake_docs_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1300,7 +1305,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_917_centos7_am_cm_dockerfile(self):
+    def test_917_centos7_am_cm_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1369,7 +1374,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_918_centos8_am_cm_dockerfile(self):
+    def test_918_centos8_am_cm_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1438,7 +1443,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_937_centos7_am_cm_sdl2_dockerfile(self):
+    def test_937_centos7_am_cm_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1507,7 +1512,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_938_centos8_am_cm_sdl2_dockerfile(self):
+    def test_938_centos8_am_cm_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1576,7 +1581,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_947_centos7_cm_sdl2_or_destdir_dockerfile(self):
+    def test_947_centos7_cm_sdl2_or_destdir_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1632,7 +1637,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_948_centos8_cm_sdl2_or_destdir_dockerfile(self):
+    def test_948_centos8_cm_sdl2_or_destdir_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1688,7 +1693,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_965_opensuse_cm_or_nj_sdl2_dockerfile(self):
+    def test_965_opensuse_cm_or_nj_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1739,7 +1744,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_977_centos7_am_cm_docs_dockerfile(self):
+    def test_977_centos7_am_cm_docs_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1867,7 +1872,7 @@ if __name__ == "__main__":
     if opt.xmlresults:
         if os.path.exists(opt.xmlresults):
             os.remove(opt.xmlresults)
-        xmlresults = open(opt.xmlresults, "wb")
+        xmlresults = open(opt.xmlresults, "wb")  # type: ignore[assignment]
         logg.info("xml results into %s", opt.xmlresults)
     if xmlresults:
         import xmlrunner  # type: ignore
