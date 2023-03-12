@@ -1,10 +1,10 @@
 #! /usr/bin/python3
 # from __future__ import print_function
 
-__copyright__ = "(C) 2021 Guido Draheim"
+__copyright__ = "(C) 2023 Guido Draheim"
 __contact__ = "https://github.com/gdraheim/docker-mirror-packages-repo"
 __license__ = "CC0 Creative Commons Zero (Public Domain)"
-__version__ = "1.6.3007"
+__version__ = "1.6.5107"
 
 from collections import OrderedDict, namedtuple
 import os.path
@@ -24,6 +24,7 @@ logg = logging.getLogger("mirror")
 DOCKER = "docker"
 ADDHOSTS = False
 ADDEPEL = False
+UPDATES = False
 UNIVERSE = False
 
 LEAP = "opensuse/leap"
@@ -276,6 +277,7 @@ class DockerMirrorPackagesRepo:
             other docker containers"""
         rmi = "localhost:5000/mirror-packages"
         rep = "ubuntu-repo"
+        if UPDATES: rep = "ubuntu-repo/updates"
         if UNIVERSE: rep = "ubuntu-repo/universe"
         ver = self.get_ubuntu_latest_version(onlyversion(image))
         return self.docker_mirror(rmi, rep, ver, "archive.ubuntu.com", "security.ubuntu.com")
@@ -626,6 +628,14 @@ class DockerMirrorPackagesRepo:
             return " ".join(self.add_hosts(image, done))
         else:
             return json.dumps(done, indent=2)
+    def from_dockerfile(self, dockerfile, defaults=None):
+        if os.path.isdir(dockerfile):
+            dockerfile = os.path.join(dockerfile, "Dockerfile")
+        for line in open(dockerfile):
+            found = re.match(r"(?:FROM|from)\s+(\w\S+)(.*)", line)
+            if found:
+                return found.group(1)
+        return defaults
 
 if __name__ == "__main__":
     from argparse import ArgumentParser
@@ -637,8 +647,12 @@ if __name__ == "__main__":
                     help="show addhost options for 'docker run' [%(default)s]")
     _o.add_argument("--epel", action="store_true", default=ADDEPEL,
                     help="addhosts for epel as well [%(default)s]")
+    _o.add_argument("--updates", "--update", action="store_true", default=UPDATES,
+                    help="addhosts using updates variant [%(default)s]")
     _o.add_argument("--universe", action="store_true", default=UNIVERSE,
                     help="addhosts using universe variant [%(default)s]")
+    _o.add_argument("-f", "--file", metavar="DOCKERFILE", default=None,
+                    help="default to image FROM the dockerfile [%(default)s]")
     commands = ["help", "detect", "image", "repo", "info", "facts", "start", "stop"]
     _o.add_argument("command", nargs="?", default="detect", help="|".join(commands))
     _o.add_argument("image", nargs="?", default=None, help="defaults to image name of the local host system")
@@ -646,9 +660,12 @@ if __name__ == "__main__":
     logging.basicConfig(level=max(0, logging.WARNING - opt.verbose * 10))
     ADDHOSTS = opt.add_hosts
     ADDEPEL = opt.epel  # centos epel-repo
+    UPDATES = opt.updates
     UNIVERSE = opt.universe  # ubuntu universe repo
     command = "detect"
     repo = DockerMirrorPackagesRepo()
+    if not opt.image and opt.file:
+        opt.image = repo.from_dockerfile(opt.file)
     if opt.command in ["?", "help"]:
         print(repo.helps())
     elif opt.command in ["detect", "image"]:
