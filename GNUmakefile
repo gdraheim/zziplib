@@ -66,7 +66,7 @@ downloads:
 mans: testmanpages
 testmanpages: ; cd docs && $(MAKE) $@ BUILD=$(realpath $(BUILD))
 
-# release
+# release .............................
 version:
 	oldv=`sed -e '/zziplib.VERSION/!d' -e 's:.*zziplib.VERSION."::' -e 's:".*::' CMakeLists.txt` \
 	; oldr=`echo $$oldv | sed -e 's:.*[.]::'` ; newr=`expr $$oldr + 1` \
@@ -77,7 +77,32 @@ version:
 	; sed -i -e "s:$$oldv:$$newv:" CMakeLists.txt \
 	; git diff -U0
 
-# extras
+# style ...............................
+mypy:
+	zypper install -y mypy
+	zypper install -y python3-click python3-pathspec
+
+MYPY = mypy
+MYPY_STRICT = --strict --show-error-codes --show-error-context --no-warn-unused-ignores --python-version 3.6 --implicit-reexport
+AUTOPEP8=autopep8
+AUTOPEP8_INPLACE= --in-place
+AUTOPEP8_ASDIFF= --diff
+
+%.type:
+	$(MYPY) $(MYPY_STRICT) $(MYPY_OPTIONS) $(@:.type=)
+
+%.pep1:
+	$(AUTOPEP8) $(AUTOPEP8_OPTIONS) $(@:.pep1=) $(AUTOPEP8_ASDIFF)
+
+%.pep8:
+	$(AUTOPEP8) $(AUTOPEP8_OPTIONS) $(@:.pep8=) $(AUTOPEP8_INPLACE)
+	git --no-pager diff $(@:.pep8=)
+
+type:  testbuilds.py.type test/zziptests.py.type docs/toolstests.py.type
+style: testbuilds.py.pep8 test/zziptests.py.pep8 docs/toolstests.py.pep8
+pep1:  testbuilds.py.pep1 test/zziptests.py.pep1 docs/toolstests.py.pep1
+
+# extras ..............................
 -include GNUmakefile.win10
 -include docker_mirror.mk
 -include docs.mk
