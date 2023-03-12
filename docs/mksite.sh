@@ -595,6 +595,7 @@ dx_init()
     mkpathdir "$tmp"
     dx_meta formatter `basename $opt_formatter` > "$tmp/$F.$DATA"
     for opt in $opt_variables ; do case "$opt" in # commandline --def=value
+      src_*) continue ;;
       *_*) op_=`echo "$opt" | sed -e "y/_/-/"`    # makes for <!--$def-->
            dx_meta "$op_" `eval echo "\\\$opt_$opt"` ;; 
       *)   dx_text "$opt" `eval echo "\\\$opt_$opt"` ;;
