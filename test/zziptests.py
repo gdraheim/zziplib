@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+from typing import Union, Optional, Tuple, List, Dict, Sequence, Iterator, cast
 import unittest
 import subprocess
 import logging
@@ -12,15 +14,15 @@ import errno
 from fnmatch import fnmatchcase as matches
 
 try:
-    from cStringIO import StringIO
+    from cStringIO import StringIO  # type: ignore[import, attr-defined]
 except ImportError:
-    from io import StringIO
+    from io import StringIO  # Python3
 
 try:
-    from urllib import quote_plus, urlretrieve
+    from urllib import quote_plus, urlretrieve  # type: ignore[import, attr-defined]
 except ImportError:
-    from urllib.parse import quote_plus
-    from urllib.request import urlretrieve
+    from urllib.parse import quote_plus  # Python3
+    from urllib.request import urlretrieve  # Python3
 
 if sys.version[0] == '3':
     basestring = str
@@ -39,13 +41,13 @@ downloaddir = "tmp.download"
 downloadonly = False
 nodownloads = False
 
-def yesno(text):
+def yesno(text: str) -> bool:
     if not text: return False
     if text.lower() in ["y", "yes", "t", "true", "on", "ok"]:
         return True
     return False
 
-def decodes(text):
+def decodes(text: Union[str, bytes]) -> str:
     if text is None: return None
     if isinstance(text, bytes):
         encoded = sys.getdefaultencoding()
@@ -55,13 +57,17 @@ def decodes(text):
             return text.decode(encoded)
         except:
             return text.decode("latin-1")
+    return text
 
-def shell_string(command):
+def shell_string(command: List[str]) -> str:
     return " ".join(["'%s'" % arg.replace("'", "\\'") for arg in command])
 
-def shell(command, shell=True, calls=False, cwd=None, env=None, lang=None, returncodes=None):
+Shell = collections.namedtuple("Shell", ["returncode", "output", "errors", "shell"])
+def shell(command: Union[str, List[str]], shell: bool = True,  # ..
+          # ..
+          calls: bool = False, cwd: Optional[str] = None, env: Optional[Dict[str, str]] = None, lang: Optional[str] = None,
+          returncodes: Optional[Sequence[Optional[int]]] = None) -> Shell:
     returncodes = returncodes or [None, 0]
-    Shell = collections.namedtuple("Shell", ["returncode", "output", "errors", "shell"])
     if isinstance(command, basestring):
         sh_command = command
         command = [command]
@@ -130,16 +136,16 @@ def shell(command, shell=True, calls=False, cwd=None, env=None, lang=None, retur
                 logg.debug("ERR: %s", line)
     return Shell(run.returncode, output, errors, sh_command)
 
-def get_caller_name():
-    frame = inspect.currentframe().f_back.f_back
-    return frame.f_code.co_name
-def get_caller_caller_name():
-    frame = inspect.currentframe().f_back.f_back.f_back
-    return frame.f_code.co_name
+def get_caller_name() -> str:
+    frame = inspect.currentframe().f_back.f_back  # type: ignore[union-attr]
+    return frame.f_code.co_name  # type: ignore[union-attr]
+def get_caller_caller_name() -> str:
+    frame = inspect.currentframe().f_back.f_back.f_back  # type: ignore[union-attr]
+    return frame.f_code.co_name  # type: ignore[union-attr]
 
-def download_raw(base_url, filename, into, style="?raw=true"):
+def download_raw(base_url: str, filename: str, into: Optional[str], style: str = "?raw=true") -> Union[None, bool, str]:
     return download(base_url, filename, into, style)
-def download(base_url, filename, into=None, style=""):
+def download(base_url: str, filename: str, into: Optional[str] = None, style: str = "") -> Union[None, bool, str]:
     if nodownloads:
         return False
     data = downloaddir
@@ -180,19 +186,19 @@ def download(base_url, filename, into=None, style=""):
         logg.debug("copied %s -> %s", subfile, intofile)
     return filename
 
-def output(cmd, shell=True):
+def output(cmd: Union[str, List[str]], shell: bool = True) -> str:
     run = subprocess.Popen(cmd, shell=shell, stdout=subprocess.PIPE)
     out, err = run.communicate()
     return out.decode('utf-8')
-def grep(pattern, lines):
+def grep(pattern: str, lines: Union[str, List[str]]) -> Iterator[str]:
     if isinstance(lines, basestring):
         lines = lines.split("\n")
     for line in lines:
         if re.search(pattern, line.rstrip()):
             yield line.rstrip()
-def greps(lines, pattern):
+def greps(lines: Union[str, List[str]], pattern: str) -> List[str]:
     return list(grep(pattern, lines))
-def all_errors(lines):
+def all_errors(lines: Union[str, List[str]]) -> Iterator[str]:
     if isinstance(lines, basestring):
         lines = lines.split("\n")
     for line in lines:
@@ -203,47 +209,47 @@ def all_errors(lines):
         if "HINT:" in line:
             continue
         yield line.rstrip()
-def errors(lines):
+def errors(lines: Union[str, List[str]]) -> List[str]:
     return list(all_errors(lines))
 
 class ZZipTest(unittest.TestCase):
     @property
-    def t(self):
+    def t(self) -> str:
         if not os.path.isdir(testdatadir):
             os.makedirs(testdatadir)
-        return testdatdir
+        return testdatadir
     @property
-    def s(self):
+    def s(self) -> str:
         return topsrcdir
-    def src(self, name):
+    def src(self, name: str) -> str:
         return os.path.join(self.s, name)
-    def assertErrorMessage(self, errors, errno):
+    def assertErrorMessage(self, errors: str, errno: int) -> None:
         self.assertIn(': ' + os.strerror(errno), errors)
-    def readme(self):
+    def readme(self) -> str:
         f = open(self.src(readme))
         text = f.read()
         f.close()
         return text
-    def mkfile(self, name, content):
+    def mkfile(self, name: str, content: str) -> None:
         b = os.path.dirname(name)
         if not os.path.isdir(b):
             os.makedirs(b)
         f = open(name, "w")
         f.write(content)
         f.close()
-    def bins(self, name):
+    def bins(self, name: str) -> str:
         if name == "unzip": return unzip
         if name == "mkzip": return mkzip
         exe = os.path.join(bindir, name)
         if exeext: exe += exeext
         return exe
-    def gdb_bins(self, name):
+    def gdb_bins(self, name: str) -> str:
         if name == "unzip": return unzip
         if name == "mkzip": return mkzip
         exe = os.path.join(bindir, ".libs", name)
         if exeext: exe += exeext
         return exe
-    def gentext(self, size):
+    def gentext(self, size: int) -> str:
         random.seed(1234567891234567890)
         result = StringIO()
         old1 = ''
@@ -256,44 +262,44 @@ class ZZipTest(unittest.TestCase):
                 old2 = x
                 break
             result.write(x)
-        return result.getvalue()
-    def caller_testname(self):
+        return cast(str, result.getvalue())
+    def caller_testname(self) -> str:
         name = get_caller_caller_name()
         x1 = name.find("_")
         if x1 < 0: return name
         x2 = name.find("_", x1 + 1)
         if x2 < 0: return name
         return name[:x2]
-    def testname(self, suffix=None):
+    def testname(self, suffix: Optional[str] = None) -> str:
         name = self.caller_testname()
         if suffix:
             return name + "_" + suffix
         return name
-    def testzip(self, testname=None):
+    def testzip(self, testname: Optional[str] = None) -> str:
         testname = testname or self.caller_testname()
         zipname = testname + ".zip"
         return zipname
-    def testdir(self, testname=None):
+    def testdir(self, testname: Optional[str] = None) -> str:
         testname = testname or self.caller_testname()
         newdir = "tmp." + testname
         if os.path.isdir(newdir):
             shutil.rmtree(newdir)
         os.makedirs(newdir)
         return newdir
-    def rm_testdir(self, testname=None):
+    def rm_testdir(self, testname: Optional[str] = None) -> str:
         testname = testname or self.caller_testname()
         newdir = "tmp." + testname
         if os.path.isdir(newdir):
             shutil.rmtree(newdir)
         return newdir
-    def rm_testzip(self, testname=None):
+    def rm_testzip(self, testname: Optional[str] = None) -> bool:
         testname = testname or self.caller_testname()
         zipname = testname + ".zip"
         if os.path.exists(zipname):
             os.remove(zipname)
         return True
     ################################################################
-    def test_1000_make_test0_zip(self):
+    def test_1000_make_test0_zip(self) -> None:
         """ create a test.zip for later tests using standard 'zip'
         It will fall back to a variant in the source code if 'zip'
         is not installed on the build host. The content is just
@@ -306,7 +312,7 @@ class ZZipTest(unittest.TestCase):
         self.mkfile(filename, filetext)
         shell("{exe} ../{zipfile} README".format(**locals()), cwd=tmpdir)
         self.assertGreater(os.path.getsize(zipfile), 10)
-    def test_10001_make_test1_zip(self):
+    def test_10001_make_test1_zip(self) -> None:
         """ create a test1.zip for later tests using standard 'zip'
         It will fall back to a variant in the source code if 'zip'
         is not installed on the build host. The archive has 10
@@ -323,7 +329,7 @@ class ZZipTest(unittest.TestCase):
         self.mkfile(filename, filetext)
         shell("{exe} ../{zipfile} ??*.* README".format(**locals()), cwd=tmpdir)
         self.assertGreater(os.path.getsize(zipfile), 10)
-    def test_10002_make_test2_zip(self):
+    def test_10002_make_test2_zip(self) -> None:
         """ create a test2.zip for later tests using standard 'zip'
         It will NOT fall back to a variant in the source code.
         The archive has 100 generic files with known content. """
@@ -339,7 +345,7 @@ class ZZipTest(unittest.TestCase):
         self.mkfile(filename, filetext)
         shell("{exe} ../{zipfile} ??*.* README".format(**locals()), cwd=tmpdir)
         self.assertGreater(os.path.getsize(zipfile), 10)
-    def test_10003_make_test3_zip(self):
+    def test_10003_make_test3_zip(self) -> None:
         """ create a test3.zip for later tests using standard 'zip'
         It will NOT fall back to a variant in the source code.
         The archive has 1000 generic files with known content. """
@@ -355,7 +361,7 @@ class ZZipTest(unittest.TestCase):
         self.mkfile(filename, filetext)
         shell("{exe} ../{zipfile} ??*.* README".format(**locals()), cwd=tmpdir)
         self.assertGreater(os.path.getsize(zipfile), 10)
-    def test_10004_make_test4_zip(self):
+    def test_10004_make_test4_zip(self) -> None:
         """ create a test4.zip for later tests using standard 'zip'
         It will NOT fall back to a variant in the source code.
         The archive has 10000 generic files with known content
@@ -372,7 +378,7 @@ class ZZipTest(unittest.TestCase):
         self.mkfile(filename, filetext)
         shell("{exe} -n README ../{zipfile} ??*.* README".format(**locals()), cwd=tmpdir)
         self.assertGreater(os.path.getsize(zipfile), 1000000)
-    def test_10005_make_test5_zip(self):
+    def test_10005_make_test5_zip(self) -> None:
         """ create a test5.zip for later tests using standard 'zip'
         It will NOT fall back to a variant in the source code.
         The archive has files at multiple subdirectories depth
@@ -396,7 +402,7 @@ class ZZipTest(unittest.TestCase):
         self.mkfile(filename, filetext)
         shell("{exe} ../{zipfile} -r file* subdir* README".format(**locals()), cwd=tmpdir)
         self.assertGreater(os.path.getsize(zipfile), 1000000)
-    def test_10010_make_test0_dat(self):
+    def test_10010_make_test0_dat(self) -> None:
         """ create test.dat from test.zip with xorcopy """
         zipfile = "test0.zip"
         datfile = "test0x.dat"
@@ -404,7 +410,7 @@ class ZZipTest(unittest.TestCase):
         shell("{exe} {zipfile} {datfile}".format(**locals()))
         self.assertGreater(os.path.getsize(datfile), 10)
         self.assertEqual(os.path.getsize(datfile), os.path.getsize(zipfile))
-    def test_10011_make_test1_dat(self):
+    def test_10011_make_test1_dat(self) -> None:
         """ create test.dat from test.zip with xorcopy """
         zipfile = "test1.zip"
         datfile = "test1x.dat"
@@ -412,7 +418,7 @@ class ZZipTest(unittest.TestCase):
         shell("{exe} {zipfile} {datfile}".format(**locals()))
         self.assertGreater(os.path.getsize(datfile), 10)
         self.assertEqual(os.path.getsize(datfile), os.path.getsize(zipfile))
-    def test_10012_make_test2_dat(self):
+    def test_10012_make_test2_dat(self) -> None:
         """ create test.dat from test.zip with xorcopy """
         zipfile = "test2.zip"
         datfile = "test2x.dat"
@@ -420,7 +426,7 @@ class ZZipTest(unittest.TestCase):
         shell("{exe} {zipfile} {datfile}".format(**locals()))
         self.assertGreater(os.path.getsize(datfile), 10)
         self.assertEqual(os.path.getsize(datfile), os.path.getsize(zipfile))
-    def test_10013_make_test3_dat(self):
+    def test_10013_make_test3_dat(self) -> None:
         """ create test.dat from test.zip with xorcopy """
         zipfile = "test3.zip"
         datfile = "test3x.dat"
@@ -428,7 +434,7 @@ class ZZipTest(unittest.TestCase):
         shell("{exe} {zipfile} {datfile}".format(**locals()))
         self.assertGreater(os.path.getsize(datfile), 10)
         self.assertEqual(os.path.getsize(datfile), os.path.getsize(zipfile))
-    def test_10014_make_test4_dat(self):
+    def test_10014_make_test4_dat(self) -> None:
         """ create test.dat from test.zip with xorcopy """
         zipfile = "test4.zip"
         datfile = "test4x.dat"
@@ -436,42 +442,42 @@ class ZZipTest(unittest.TestCase):
         shell("{exe} {zipfile} {datfile}".format(**locals()))
         self.assertGreater(os.path.getsize(datfile), 10)
         self.assertEqual(os.path.getsize(datfile), os.path.getsize(zipfile))
-    def test_20000_zziptest_test0_zip(self):
+    def test_20000_zziptest_test0_zip(self) -> None:
         """ run zziptest on test.zip """
         zipfile = "test0.zip"
         logfile = "test0.log"
         exe = self.bins("zziptest")
         shell("{exe} --quick {zipfile} | tee {logfile}".format(**locals()))
         self.assertGreater(os.path.getsize(logfile), 10)
-    def test_20001_zziptest_test1_zip(self):
+    def test_20001_zziptest_test1_zip(self) -> None:
         """ run zziptest on test.zip """
         zipfile = "test1.zip"
         logfile = "test1.log"
         exe = self.bins("zziptest")
         shell("{exe} --quick {zipfile} | tee {logfile}".format(**locals()))
         self.assertGreater(os.path.getsize(logfile), 10)
-    def test_20002_zziptest_test2_zip(self):
+    def test_20002_zziptest_test2_zip(self) -> None:
         """ run zziptest on test.zip """
         zipfile = "test2.zip"
         logfile = "test2.log"
         exe = self.bins("zziptest")
         shell("{exe} --quick {zipfile} | tee {logfile}".format(**locals()))
         self.assertGreater(os.path.getsize(logfile), 10)
-    def test_20003_zziptest_test3_zip(self):
+    def test_20003_zziptest_test3_zip(self) -> None:
         """ run zziptest on test.zip """
         zipfile = "test3.zip"
         logfile = "test3.log"
         exe = self.bins("zziptest")
         shell("{exe} --quick {zipfile} | tee {logfile}".format(**locals()))
         self.assertGreater(os.path.getsize(logfile), 10)
-    def test_20004_zziptest_test4_zip(self):
+    def test_20004_zziptest_test4_zip(self) -> None:
         """ run zziptest on test.zip """
         zipfile = "test4.zip"
         logfile = "test4.log"
         exe = self.bins("zziptest")
         shell("{exe} --quick {zipfile} | tee {logfile}".format(**locals()))
         self.assertGreater(os.path.getsize(logfile), 10)
-    def test_20010_zzcat_test0_zip(self):
+    def test_20010_zzcat_test0_zip(self) -> None:
         """ run zzcat on test.zip using just test/README """
         zipfile = "test0.zip"
         getfile = "test0/README"
@@ -480,7 +486,7 @@ class ZZipTest(unittest.TestCase):
         run = shell("{exe} {getfile} | tee {logfile}".format(**locals()))
         self.assertGreater(os.path.getsize(logfile), 10)
         self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
-    def test_20011_zzcat_test1_zip(self):
+    def test_20011_zzcat_test1_zip(self) -> None:
         """ run zzcat on test.zip using just test/README """
         zipfile = "test1.zip"
         getfile = "test1/README"
@@ -492,7 +498,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "test1/file.1"
         run = shell("{exe} {getfile}".format(**locals()))
         self.assertEqual("file-1\n", run.output)
-    def test_20012_zzcat_test2_zip(self):
+    def test_20012_zzcat_test2_zip(self) -> None:
         """ run zzcat on test.zip using just test/README """
         zipfile = "test2.zip"
         getfile = "test2/README"
@@ -504,7 +510,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "test2/file.22"
         run = shell("{exe} {getfile}".format(**locals()))
         self.assertEqual("file-22\n", run.output)
-    def test_20013_zzcat_test3_zip(self):
+    def test_20013_zzcat_test3_zip(self) -> None:
         """ run zzcat on test.zip using just test/README """
         zipfile = "test3.zip"
         getfile = "test3/README"
@@ -516,7 +522,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "test3/file.999"
         run = shell("{exe} {getfile}".format(**locals()))
         self.assertEqual("file-999\n", run.output)
-    def test_20014_zzcat_test4_zip(self):
+    def test_20014_zzcat_test4_zip(self) -> None:
         """ run zzcat on test.zip using just test/README """
         zipfile = "test4.zip"
         getfile = "test4/README"
@@ -528,7 +534,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "test4/file9999.txt"
         run = shell("{exe} {getfile}".format(**locals()))
         self.assertEqual("file-9999\n", run.output)
-    def test_20020_zzdir_test0_zip(self):
+    def test_20020_zzdir_test0_zip(self) -> None:
         """ run zzdir on test0.zip using just 'test0' """
         zipfile = "test0.zip"
         getfile = "test0"
@@ -537,7 +543,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' README\n', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertLess(len(run.output), 30)
-    def test_20021_zzdir_test1_zip(self):
+    def test_20021_zzdir_test1_zip(self) -> None:
         """ run zzdir on test1.zip using just 'test1' """
         zipfile = "test1.zip"
         getfile = "test1"
@@ -549,7 +555,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' README\n', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20022_zzdir_test2_zip(self):
+    def test_20022_zzdir_test2_zip(self) -> None:
         """ run zzdir on test2.zip using just 'test2' """
         zipfile = "test2.zip"
         getfile = "test2"
@@ -560,7 +566,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file.99\n', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20023_zzdir_test3_zip(self):
+    def test_20023_zzdir_test3_zip(self) -> None:
         """ run zzdir on test3.zip using just 'test3' """
         zipfile = "test3.zip"
         getfile = "test3"
@@ -571,7 +577,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file.999\n', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20024_zzdir_test4_zip(self):
+    def test_20024_zzdir_test4_zip(self) -> None:
         """ run zzdir on test4.zip using just 'test4' """
         zipfile = "test4.zip"
         getfile = "test4"
@@ -582,7 +588,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file9999.txt\n', run.output)
         self.assertNotIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20320_zzxordir_test0_dat(self):
+    def test_20320_zzxordir_test0_dat(self) -> None:
         """ run zzxordir on test0x.dat """
         zipfile = "test0x.dat"
         getfile = "test0x.dat"
@@ -596,7 +602,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' README\n', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertLess(len(run.output), 30)
-    def test_20321_zzxordir_test1_dat(self):
+    def test_20321_zzxordir_test1_dat(self) -> None:
         """ run zzxordir on test1x.dat using just 'test1x' """
         zipfile = "test1x.dat"
         getfile = "test1x.dat"
@@ -613,7 +619,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' README\n', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20322_zzxordir_test2_dat(self):
+    def test_20322_zzxordir_test2_dat(self) -> None:
         """ run zzxordir on test2x.dat using just 'test2x' """
         zipfile = "test2x.dat"
         getfile = "test2x"
@@ -629,7 +635,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file.99\n', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20323_zzxordir_test3_dat(self):
+    def test_20323_zzxordir_test3_dat(self) -> None:
         """ run zzxordir on test3x.dat using just 'test3x' """
         zipfile = "test3x.dat"
         getfile = "test3x"
@@ -645,7 +651,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file.999\n', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20324_zzxordir_test4_zip(self):
+    def test_20324_zzxordir_test4_zip(self) -> None:
         """ run zzxordir on test4x.dat using just 'test4x' """
         zipfile = "test4x.dat"
         getfile = "test4x"
@@ -661,7 +667,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file9999.txt\n', run.output)
         self.assertNotIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20340_zzxorcat_test0_zip(self):
+    def test_20340_zzxorcat_test0_zip(self) -> None:
         """ run zzxorcat on testx.zip using just testx/README """
         getfile = "test0x/README"
         logfile = "test0x.readme.txt"
@@ -673,7 +679,7 @@ class ZZipTest(unittest.TestCase):
         run = shell("{exe} {getfile} | tee {logfile}".format(**locals()))
         self.assertGreater(os.path.getsize(logfile), 10)
         self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
-    def test_20341_zzxorcat_test1_zip(self):
+    def test_20341_zzxorcat_test1_zip(self) -> None:
         """ run zzxorcat on testx.zip using just testx/README """
         getfile = "test1x/README"
         logfile = "test1x.readme.txt"
@@ -688,7 +694,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "test1x/file.1"
         run = shell("{exe} {getfile}".format(**locals()))
         self.assertEqual("file-1\n", run.output)
-    def test_20342_zzxorcat_test2_zip(self):
+    def test_20342_zzxorcat_test2_zip(self) -> None:
         """ run zzxorcat on testx.zip using just testx/README """
         getfile = "test2x/README"
         logfile = "test2x.readme.txt"
@@ -703,7 +709,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "test2x/file.22"
         run = shell("{exe} {getfile}".format(**locals()))
         self.assertEqual("file-22\n", run.output)
-    def test_20343_zzxorcat_test3_zip(self):
+    def test_20343_zzxorcat_test3_zip(self) -> None:
         """ run zzxorcat on testx.zip using just testx/README """
         getfile = "test3x/README"
         logfile = "test3x.readme.txt"
@@ -718,7 +724,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "test3x/file.999"
         run = shell("{exe} {getfile}".format(**locals()))
         self.assertEqual("file-999\n", run.output)
-    def test_20344_zzxorcat_test4_zip(self):
+    def test_20344_zzxorcat_test4_zip(self) -> None:
         """ run zzxorcat on testx.zip using just testx/README """
         getfile = "test4x/README"
         logfile = "test4x.readme.txt"
@@ -732,7 +738,7 @@ class ZZipTest(unittest.TestCase):
     #####################################################################
     # check unzzip
     #####################################################################
-    def test_20400_infozip_cat_test0_zip(self):
+    def test_20400_infozip_cat_test0_zip(self) -> None:
         """ run inzo-zip cat test.zip using just archive README """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         zipfile = "test0.zip"
@@ -742,7 +748,7 @@ class ZZipTest(unittest.TestCase):
         run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
         self.assertGreater(os.path.getsize(logfile), 10)
         self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
-    def test_20401_infozip_cat_test1_zip(self):
+    def test_20401_infozip_cat_test1_zip(self) -> None:
         """ run info-zip cat test.zip using just archive README """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         zipfile = "test1.zip"
@@ -755,7 +761,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "file.1"
         run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
         self.assertEqual("file-1\n", run.output)
-    def test_20402_infozip_cat_test2_zip(self):
+    def test_20402_infozip_cat_test2_zip(self) -> None:
         """ run info-zip cat test.zip using just archive README """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         zipfile = "test2.zip"
@@ -768,7 +774,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "file.22"
         run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
         self.assertEqual("file-22\n", run.output)
-    def test_20405_zzcat_big_test5_zip(self):
+    def test_20405_zzcat_big_test5_zip(self) -> None:
         """ run info-zip cat test.zip using archive README """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         zipfile = "test5.zip"
@@ -782,7 +788,7 @@ class ZZipTest(unittest.TestCase):
         compare = self.gentext(1024)
         run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
         self.assertEqual(compare, run.output)
-    def test_20410_zzcat_big_test0_zip(self):
+    def test_20410_zzcat_big_test0_zip(self) -> None:
         """ run zzcat-big on test.zip using just archive README """
         zipfile = "test0.zip"
         getfile = "README"
@@ -791,7 +797,7 @@ class ZZipTest(unittest.TestCase):
         run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
         self.assertGreater(os.path.getsize(logfile), 10)
         self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
-    def test_20411_zzcat_big_test1_zip(self):
+    def test_20411_zzcat_big_test1_zip(self) -> None:
         """ run zzcat-big on test.zip using just archive README """
         zipfile = "test1.zip"
         getfile = "README"
@@ -803,7 +809,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "file.1"
         run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
         self.assertEqual("file-1\n", run.output)
-    def test_20412_zzcat_big_test2_zip(self):
+    def test_20412_zzcat_big_test2_zip(self) -> None:
         """ run zzcat-seeke on test.zip using just archive README """
         zipfile = "test2.zip"
         getfile = "README"
@@ -815,7 +821,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "file.22"
         run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
         self.assertEqual("file-22\n", run.output)
-    def test_20415_zzcat_big_test5_zip(self):
+    def test_20415_zzcat_big_test5_zip(self) -> None:
         """ run zzcat-big on test.zip using archive README """
         zipfile = "test5.zip"
         getfile = "README"
@@ -828,7 +834,7 @@ class ZZipTest(unittest.TestCase):
         compare = self.gentext(1024)
         run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
         self.assertEqual(compare, run.output)
-    def test_20420_zzcat_mem_test0_zip(self):
+    def test_20420_zzcat_mem_test0_zip(self) -> None:
         """ run zzcat-mem on test.zip using just archive README """
         zipfile = "test0.zip"
         getfile = "README"
@@ -837,7 +843,7 @@ class ZZipTest(unittest.TestCase):
         run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
         self.assertGreater(os.path.getsize(logfile), 10)
         self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
-    def test_20421_zzcat_mem_test1_zip(self):
+    def test_20421_zzcat_mem_test1_zip(self) -> None:
         """ run zzcat-mem on test.zip using archive README """
         zipfile = "test1.zip"
         getfile = "README"
@@ -849,7 +855,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "file.1"
         run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
         self.assertEqual("file-1\n", run.output)
-    def test_20422_zzcat_mem_test2_zip(self):
+    def test_20422_zzcat_mem_test2_zip(self) -> None:
         """ run zzcat-mem on test.zip using archive README """
         zipfile = "test2.zip"
         getfile = "README"
@@ -861,7 +867,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "file.22"
         run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
         self.assertEqual("file-22\n", run.output)
-    def test_20423_zzcat_mem_test3_zip(self):
+    def test_20423_zzcat_mem_test3_zip(self) -> None:
         """ run zzcat-mem on test.zip using archive README """
         zipfile = "test3.zip"
         getfile = "README"
@@ -873,7 +879,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "file.999"
         run = shell("{exe} -p {zipfile}  {getfile}".format(**locals()))
         self.assertEqual("file-999\n", run.output)
-    def test_20424_zzcat_mem_test4_zip(self):
+    def test_20424_zzcat_mem_test4_zip(self) -> None:
         """ run zzcat-mem on test.zip using archive README """
         zipfile = "test4.zip"
         getfile = "README"
@@ -885,7 +891,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "file9999.txt"
         run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
         self.assertEqual("file-9999\n", run.output)
-    def test_20425_zzcat_mem_test5_zip(self):
+    def test_20425_zzcat_mem_test5_zip(self) -> None:
         """ run zzcat-mem on test.zip using archive README """
         zipfile = "test5.zip"
         getfile = "README"
@@ -898,7 +904,7 @@ class ZZipTest(unittest.TestCase):
         compare = self.gentext(1024)
         run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
         self.assertEqual(compare, run.output)
-    def test_20430_zzcat_mix_test0_zip(self):
+    def test_20430_zzcat_mix_test0_zip(self) -> None:
         """ run zzcat-mix on test.zip using just archive README """
         zipfile = "test0.zip"
         getfile = "README"
@@ -907,7 +913,7 @@ class ZZipTest(unittest.TestCase):
         run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
         self.assertGreater(os.path.getsize(logfile), 10)
         self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
-    def test_20431_zzcat_mix_test1_zip(self):
+    def test_20431_zzcat_mix_test1_zip(self) -> None:
         """ run zzcat-mix on test.zip using archive README """
         zipfile = "test1.zip"
         getfile = "README"
@@ -919,7 +925,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "file.1"
         run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
         self.assertEqual("file-1\n", run.output)
-    def test_20432_zzcat_mix_test2_zip(self):
+    def test_20432_zzcat_mix_test2_zip(self) -> None:
         """ run zzcat-mix on test.zip using archive README """
         zipfile = "test2.zip"
         getfile = "README"
@@ -931,7 +937,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "file.22"
         run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
         self.assertEqual("file-22\n", run.output)
-    def test_20433_zzcat_mix_test3_zip(self):
+    def test_20433_zzcat_mix_test3_zip(self) -> None:
         """ run zzcat-mix on test.zip using archive README """
         zipfile = "test3.zip"
         getfile = "README"
@@ -943,7 +949,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "file.999"
         run = shell("{exe} -p {zipfile}  {getfile}".format(**locals()))
         self.assertEqual("file-999\n", run.output)
-    def test_20434_zzcat_mix_test4_zip(self):
+    def test_20434_zzcat_mix_test4_zip(self) -> None:
         """ run zzcat-mix on test.zip using archive README """
         zipfile = "test4.zip"
         getfile = "README"
@@ -955,7 +961,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "file9999.txt"
         run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
         self.assertEqual("file-9999\n", run.output)
-    def test_20435_zzcat_mix_test5_zip(self):
+    def test_20435_zzcat_mix_test5_zip(self) -> None:
         """ run zzcat-mix on test.zip using archive README """
         zipfile = "test5.zip"
         getfile = "README"
@@ -968,7 +974,7 @@ class ZZipTest(unittest.TestCase):
         compare = self.gentext(1024)
         run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
         self.assertEqual(compare, run.output)
-    def test_20440_zzcat_zap_test0_zip(self):
+    def test_20440_zzcat_zap_test0_zip(self) -> None:
         """ run zzcat-zap on test.zip using just archive README """
         zipfile = "test0.zip"
         getfile = "README"
@@ -977,7 +983,7 @@ class ZZipTest(unittest.TestCase):
         run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
         self.assertGreater(os.path.getsize(logfile), 10)
         self.assertEqual(run.output.split("\n"), self.readme().split("\n"))
-    def test_20441_zzcat_zap_test1_zip(self):
+    def test_20441_zzcat_zap_test1_zip(self) -> None:
         """ run zzcat-zap on test.zip using archive README """
         zipfile = "test1.zip"
         getfile = "README"
@@ -989,7 +995,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "file.1"
         run = shell("{exe} -p {zipfile} {getfile} | tee {logfile}".format(**locals()))
         self.assertEqual("file-1\n", run.output)
-    def test_20442_zzcat_zap_test2_zip(self):
+    def test_20442_zzcat_zap_test2_zip(self) -> None:
         """ run zzcat-zap on test.zip using archive README """
         zipfile = "test2.zip"
         getfile = "README"
@@ -1001,7 +1007,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "file.22"
         run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
         self.assertEqual("file-22\n", run.output)
-    def test_20443_zzcat_zap_test3_zip(self):
+    def test_20443_zzcat_zap_test3_zip(self) -> None:
         """ run zzcat-zap on test.zip using archive README """
         zipfile = "test3.zip"
         getfile = "README"
@@ -1013,7 +1019,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "file.999"
         run = shell("{exe} -p {zipfile}  {getfile}".format(**locals()))
         self.assertEqual("file-999\n", run.output)
-    def test_20444_zzcat_zap_test4_zip(self):
+    def test_20444_zzcat_zap_test4_zip(self) -> None:
         """ run zzcat-zap on test.zip using archive README """
         zipfile = "test4.zip"
         getfile = "README"
@@ -1025,7 +1031,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "file9999.txt"
         run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
         self.assertEqual("file-9999\n", run.output)
-    def test_20445_zzcat_zap_test5_zip(self):
+    def test_20445_zzcat_zap_test5_zip(self) -> None:
         """ run zzcat-zap on test.zip using archive README """
         zipfile = "test5.zip"
         getfile = "README"
@@ -1039,7 +1045,7 @@ class ZZipTest(unittest.TestCase):
         run = shell("{exe} -p {zipfile} {getfile}".format(**locals()))
         self.assertEqual(compare, run.output)
 
-    def test_20500_infozipdir_test0_zip(self):
+    def test_20500_infozipdir_test0_zip(self) -> None:
         """ run info-zip dir test0.zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         zipfile = "test0.zip"
@@ -1048,7 +1054,7 @@ class ZZipTest(unittest.TestCase):
         run = shell("{exe} -l {getfile} ".format(**locals()))
         self.assertIn(' README\n', run.output)
         self.assertLess(len(run.output), 230)
-    def test_20501_infozipdir_test1_zip(self):
+    def test_20501_infozipdir_test1_zip(self) -> None:
         """ run info-zip dir test1.zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         zipfile = "test1.zip"
@@ -1059,7 +1065,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file.2\n', run.output)
         self.assertIn(' file.9\n', run.output)
         self.assertIn(' README\n', run.output)
-    def test_20502_infozipdir_big_test2_zip(self):
+    def test_20502_infozipdir_big_test2_zip(self) -> None:
         """ run info-zip dir test2.zip """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         zipfile = "test2.zip"
@@ -1069,7 +1075,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file.01\n', run.output)
         self.assertIn(' file.22\n', run.output)
         self.assertIn(' file.99\n', run.output)
-    def test_20503_infozipdir_big_test3_zip(self):
+    def test_20503_infozipdir_big_test3_zip(self) -> None:
         """ run info-zip dir test3.zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         zipfile = "test3.zip"
@@ -1079,7 +1085,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file.001\n', run.output)
         self.assertIn(' file.222\n', run.output)
         self.assertIn(' file.999\n', run.output)
-    def test_20504_infozipdir_big_test4_zip(self):
+    def test_20504_infozipdir_big_test4_zip(self) -> None:
         """ run info-zip dir test4.zip """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         zipfile = "test4.zip"
@@ -1089,7 +1095,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file0001.txt\n', run.output)
         self.assertIn(' file2222.txt\n', run.output)
         self.assertIn(' file9999.txt\n', run.output)
-    def test_20505_infozipdir_big_test5_zip(self):
+    def test_20505_infozipdir_big_test5_zip(self) -> None:
         """ run info-zip dir on test5.zip """
         zipfile = "test5.zip"
         getfile = "test5.zip"
@@ -1099,7 +1105,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn('/subdir5/subdir6/', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20510_zzdir_big_test0_zip(self):
+    def test_20510_zzdir_big_test0_zip(self) -> None:
         """ run zzdir-big on test0.zip  """
         zipfile = "test0.zip"
         getfile = "test0.zip"
@@ -1107,7 +1113,7 @@ class ZZipTest(unittest.TestCase):
         run = shell("{exe} -l {getfile} ".format(**locals()))
         self.assertIn(' README\n', run.output)
         self.assertLess(len(run.output), 30)
-    def test_20511_zzdir_big_test1_zip(self):
+    def test_20511_zzdir_big_test1_zip(self) -> None:
         """ run zzdir-big on test1.zip  """
         zipfile = "test1.zip"
         getfile = "test1.zip"
@@ -1117,7 +1123,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file.2\n', run.output)
         self.assertIn(' file.9\n', run.output)
         self.assertIn(' README\n', run.output)
-    def test_20512_zzdir_big_test2_zip(self):
+    def test_20512_zzdir_big_test2_zip(self) -> None:
         """ run zzdir-big on test2.zip """
         zipfile = "test2.zip"
         getfile = "test2.zip"
@@ -1126,7 +1132,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file.01\n', run.output)
         self.assertIn(' file.22\n', run.output)
         self.assertIn(' file.99\n', run.output)
-    def test_20513_zzdir_big_test3_zip(self):
+    def test_20513_zzdir_big_test3_zip(self) -> None:
         """ run zzdir-big on test3.zip  """
         zipfile = "test3.zip"
         getfile = "test3.zip"
@@ -1135,7 +1141,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file.001\n', run.output)
         self.assertIn(' file.222\n', run.output)
         self.assertIn(' file.999\n', run.output)
-    def test_20514_zzdir_big_test4_zip(self):
+    def test_20514_zzdir_big_test4_zip(self) -> None:
         """ run zzdir-big on test4.zip """
         zipfile = "test4.zip"
         getfile = "test4.zip"
@@ -1144,7 +1150,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file0001.txt\n', run.output)
         self.assertIn(' file2222.txt\n', run.output)
         self.assertIn(' file9999.txt\n', run.output)
-    def test_20515_zzdir_big_test5_zip(self):
+    def test_20515_zzdir_big_test5_zip(self) -> None:
         """ run zzdir-big on test5.zip """
         zipfile = "test5.zip"
         getfile = "test5.zip"
@@ -1154,7 +1160,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn('/subdir5/subdir6/', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20520_zzdir_mem_test0_zip(self):
+    def test_20520_zzdir_mem_test0_zip(self) -> None:
         """ run zzdir-mem on test0.zip  """
         zipfile = "test0.zip"
         getfile = "test0.zip"
@@ -1163,7 +1169,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' README\n', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertLess(len(run.output), 30)
-    def test_20521_zzdir_mem_test1_zip(self):
+    def test_20521_zzdir_mem_test1_zip(self) -> None:
         """ run zzdir-mem on test1.zip  """
         zipfile = "test1.zip"
         getfile = "test1.zip"
@@ -1175,7 +1181,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' README\n', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20522_zzdir_mem_test2_zip(self):
+    def test_20522_zzdir_mem_test2_zip(self) -> None:
         """ run zzdir-mem on test2.zip """
         zipfile = "test2.zip"
         getfile = "test2.zip"
@@ -1186,7 +1192,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file.99\n', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20523_zzdir_mem_test3_zip(self):
+    def test_20523_zzdir_mem_test3_zip(self) -> None:
         """ run zzdir-mem on test3.zip  """
         zipfile = "test3.zip"
         getfile = "test3.zip"
@@ -1197,7 +1203,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file.999\n', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20524_zzdir_mem_test4_zip(self):
+    def test_20524_zzdir_mem_test4_zip(self) -> None:
         """ run zzdir-mem on test4.zip """
         zipfile = "test4.zip"
         getfile = "test4.zip"
@@ -1208,7 +1214,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file9999.txt\n', run.output)
         self.assertNotIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20525_zzdir_mem_test5_zip(self):
+    def test_20525_zzdir_mem_test5_zip(self) -> None:
         """ run zzdir-mem on test5.zip """
         zipfile = "test5.zip"
         getfile = "test5.zip"
@@ -1218,7 +1224,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn('/subdir5/subdir6/', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20530_zzdir_mix_test0_zip(self):
+    def test_20530_zzdir_mix_test0_zip(self) -> None:
         """ run zzdir-mix on test0.zip  """
         # self.skipTest("todo")
         zipfile = "test0.zip"
@@ -1228,7 +1234,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' README\n', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertLess(len(run.output), 30)
-    def test_20531_zzdir_mix_test1_zip(self):
+    def test_20531_zzdir_mix_test1_zip(self) -> None:
         """ run zzdir-mix on test1.zip  """
         zipfile = "test1.zip"
         getfile = "test1.zip"
@@ -1240,7 +1246,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' README\n', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20532_zzdir_mix_test2_zip(self):
+    def test_20532_zzdir_mix_test2_zip(self) -> None:
         """ run zzdir-mix on test2.zip """
         zipfile = "test2.zip"
         getfile = "test2.zip"
@@ -1251,7 +1257,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file.99\n', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20533_zzdir_mix_test3_zip(self):
+    def test_20533_zzdir_mix_test3_zip(self) -> None:
         """ run zzdir-mix on test3.zip  """
         zipfile = "test3.zip"
         getfile = "test3.zip"
@@ -1262,7 +1268,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file.999\n', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20534_zzdir_mix_test4_zip(self):
+    def test_20534_zzdir_mix_test4_zip(self) -> None:
         """ run zzdir-mix on test4.zip """
         zipfile = "test4.zip"
         getfile = "test4.zip"
@@ -1273,7 +1279,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file9999.txt\n', run.output)
         self.assertNotIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20535_zzdir_mix_test5_zip(self):
+    def test_20535_zzdir_mix_test5_zip(self) -> None:
         """ run zzdir-mix on test5.zip """
         zipfile = "test5.zip"
         getfile = "test5.zip"
@@ -1283,7 +1289,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn('/subdir5/subdir6/', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20540_zzdir_zap_test0_zip(self):
+    def test_20540_zzdir_zap_test0_zip(self) -> None:
         """ run zzdir-zap on test0.zip  """
         zipfile = "test0.zip"
         getfile = "test0.zip"
@@ -1292,7 +1298,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' README\n', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertLess(len(run.output), 30)
-    def test_20541_zzdir_zap_test1_zip(self):
+    def test_20541_zzdir_zap_test1_zip(self) -> None:
         """ run zzdir-zap on test1.zip  """
         zipfile = "test1.zip"
         getfile = "test1.zip"
@@ -1304,7 +1310,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' README\n', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20542_zzdir_zap_test2_zip(self):
+    def test_20542_zzdir_zap_test2_zip(self) -> None:
         """ run zzdir-zap on test2.zip """
         zipfile = "test2.zip"
         getfile = "test2.zip"
@@ -1315,7 +1321,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file.99\n', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20543_zzdir_zap_test3_zip(self):
+    def test_20543_zzdir_zap_test3_zip(self) -> None:
         """ run zzdir-zap on test3.zip  """
         zipfile = "test3.zip"
         getfile = "test3.zip"
@@ -1326,7 +1332,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file.999\n', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20544_zzdir_zap_test4_zip(self):
+    def test_20544_zzdir_zap_test4_zip(self) -> None:
         """ run zzdir-zap on test4.zip """
         zipfile = "test4.zip"
         getfile = "test4.zip"
@@ -1337,7 +1343,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(' file9999.txt\n', run.output)
         self.assertNotIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20545_zzdir_zap_test5_zip(self):
+    def test_20545_zzdir_zap_test5_zip(self) -> None:
         """ run zzdir-zap on test5.zip """
         zipfile = "test5.zip"
         getfile = "test5.zip"
@@ -1347,7 +1353,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn('/subdir5/subdir6/', run.output)
         self.assertIn(' defl:N ', run.output)
         self.assertIn(' stored ', run.output)
-    def test_20595_zzextract_zap_test5_zip(self):
+    def test_20595_zzextract_zap_test5_zip(self) -> None:
         """ run zzextract-zap on test5.zip 
             => coughs up a SEGFAULT in zzip_dir_close() ?!?"""
         self.rm_testdir()
@@ -1361,7 +1367,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2017_5977 = "https://github.com/asarubbo/poc/blob/master"
     zip_CVE_2017_5977 = "00153-zziplib-invalidread-zzip_mem_entry_extra_block"
-    def test_59770_infozipdir_CVE_2017_5977(self):
+    def test_59770_infozipdir_CVE_2017_5977(self) -> None:
         """ run info-zip dir test0.zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -1383,7 +1389,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn('test:  mismatching "local" filename', run.errors)
         self.assertEqual(os.path.getsize(tmpdir + "/test"), 0)
         self.rm_testdir()
-    def test_59771_zzipdir_big_CVE_2017_5977(self):
+    def test_59771_zzipdir_big_CVE_2017_5977(self) -> None:
         """ run info-zip -l $(CVE_2017_5977).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5977
@@ -1403,7 +1409,7 @@ class ZZipTest(unittest.TestCase):
         self.assertLess(len(errors(run.errors)), 1)
         self.assertEqual(os.path.getsize(tmpdir + "/test"), 0)
         self.rm_testdir()
-    def test_59772_zzipdir_mem_CVE_2017_5977(self):
+    def test_59772_zzipdir_mem_CVE_2017_5977(self) -> None:
         """ run unzzip-mem -l $(CVE_2017_5977).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5977
@@ -1422,7 +1428,7 @@ class ZZipTest(unittest.TestCase):
         self.assertLess(len(run.output), 30)
         self.assertEqual(os.path.getsize(tmpdir + "/test"), 3)
         self.rm_testdir()
-    def test_59773_zzipdir_mix_CVE_2017_5977(self):
+    def test_59773_zzipdir_mix_CVE_2017_5977(self) -> None:
         """ run unzzip-mix -l $(CVE_2017_5977).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5977
@@ -1442,7 +1448,7 @@ class ZZipTest(unittest.TestCase):
         self.assertLess(len(errors(run.errors)), 1)
         self.assertEqual(os.path.getsize(tmpdir + "/test"), 0)
         self.rm_testdir()
-    def test_59774_zzipdir_zap_CVE_2017_5977(self):
+    def test_59774_zzipdir_zap_CVE_2017_5977(self) -> None:
         """ run unzzip -l $(CVE_2017_5977).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5977
@@ -1462,7 +1468,7 @@ class ZZipTest(unittest.TestCase):
         self.assertLess(len(errors(run.errors)), 1)
         self.assertEqual(os.path.getsize(tmpdir + "/test"), 3)  # TODO
         self.rm_testdir()
-    def test_59779(self):
+    def test_59779(self) -> None:
         """ check $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5977
@@ -1475,7 +1481,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2017_5978 = "https://github.com/asarubbo/poc/blob/master"
     zip_CVE_2017_5978 = "00156-zziplib-oobread-zzip_mem_entry_new"
-    def test_59780_infozipdir_CVE_2017_5978(self):
+    def test_59780_infozipdir_CVE_2017_5978(self) -> None:
         """ run info-zip dir test0.zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -1498,7 +1504,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn('attempt to seek before beginning of zipfile', run.errors)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_59781_zzipdir_big_CVE_2017_5978(self):
+    def test_59781_zzipdir_big_CVE_2017_5978(self) -> None:
         """ run info-zip -l $(CVE_2017_5978).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5978
@@ -1519,7 +1525,7 @@ class ZZipTest(unittest.TestCase):
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 0)
         self.rm_testdir()
-    def test_59782_zzipdir_mem_CVE_2017_5978(self):
+    def test_59782_zzipdir_mem_CVE_2017_5978(self) -> None:
         """ run unzzip-mem -l $(CVE_2017_5978).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5978
@@ -1543,7 +1549,7 @@ class ZZipTest(unittest.TestCase):
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 0)
         self.rm_testdir()
-    def test_59783_zzipdir_mix_CVE_2017_5978(self):
+    def test_59783_zzipdir_mix_CVE_2017_5978(self) -> None:
         """ run unzzip-mix -l $(CVE_2017_5978).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5978
@@ -1565,7 +1571,7 @@ class ZZipTest(unittest.TestCase):
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 0)
         self.rm_testdir()
-    def test_59784_zzipdir_zap_CVE_2017_5978(self):
+    def test_59784_zzipdir_zap_CVE_2017_5978(self) -> None:
         """ run unzzip -l $(CVE_2017_5978).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5978
@@ -1586,7 +1592,7 @@ class ZZipTest(unittest.TestCase):
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 0)
         self.rm_testdir()
-    def test_59789(self):
+    def test_59789(self) -> None:
         """ check $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5978
@@ -1599,7 +1605,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2017_5979 = "https://github.com/asarubbo/poc/blob/master"
     zip_CVE_2017_5979 = "00157-zziplib-nullptr-prescan_entry"
-    def test_59790_infozipdir_CVE_2017_5979(self):
+    def test_59790_infozipdir_CVE_2017_5979(self) -> None:
         """ run info-zip dir test0.zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -1621,7 +1627,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn('extracting: a', run.output)
         self.assertEqual(os.path.getsize(tmpdir + "/a"), 3)
         self.rm_testdir()
-    def test_59791_zzipdir_big_CVE_2017_5979(self):
+    def test_59791_zzipdir_big_CVE_2017_5979(self) -> None:
         """ run info-zip -l $(CVE_2017_5979).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5979
@@ -1641,7 +1647,7 @@ class ZZipTest(unittest.TestCase):
         self.assertLess(len(errors(run.errors)), 1)
         self.assertEqual(os.path.getsize(tmpdir + "/a"), 3)
         self.rm_testdir()
-    def test_59792_zzipdir_mem_CVE_2017_5979(self):
+    def test_59792_zzipdir_mem_CVE_2017_5979(self) -> None:
         """ run unzzip-mem -l $(CVE_2017_5979).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5979
@@ -1660,7 +1666,7 @@ class ZZipTest(unittest.TestCase):
         self.assertLess(len(run.output), 30)
         self.assertEqual(os.path.getsize(tmpdir + "/a"), 3)
         self.rm_testdir()
-    def test_59793_zzipdir_mix_CVE_2017_5979(self):
+    def test_59793_zzipdir_mix_CVE_2017_5979(self) -> None:
         """ run unzzip-mix -l $(CVE_2017_5979).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5979
@@ -1681,7 +1687,7 @@ class ZZipTest(unittest.TestCase):
         self.assertEqual(os.path.getsize(tmpdir + "/a"), 0)    # FIXME
         # self.assertEqual(os.path.getsize(tmpdir+"/a"), 3)  # FIXME
         self.rm_testdir()
-    def test_59794_zzipdir_zap_CVE_2017_5979(self):
+    def test_59794_zzipdir_zap_CVE_2017_5979(self) -> None:
         """ run unzzip -l $(CVE_2017_5979).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5979
@@ -1701,7 +1707,7 @@ class ZZipTest(unittest.TestCase):
         self.assertLess(len(errors(run.errors)), 20)
         self.assertEqual(os.path.getsize(tmpdir + "/a"), 3)
         self.rm_testdir()
-    def test_59799(self):
+    def test_59799(self) -> None:
         """ check $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5979
@@ -1714,7 +1720,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2017_5974 = "https://github.com/asarubbo/poc/blob/master"
     zip_CVE_2017_5974 = "00150-zziplib-heapoverflow-__zzip_get32"
-    def test_59740_infozipdir_CVE_2017_5974(self):
+    def test_59740_infozipdir_CVE_2017_5974(self) -> None:
         """ run info-zip dir test0.zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -1736,7 +1742,7 @@ class ZZipTest(unittest.TestCase):
         self.assertIn(" extracting: test", run.output)
         self.assertEqual(os.path.getsize(tmpdir + "/test"), 3)
         self.rm_testdir()
-    def test_59741_zzipdir_big_CVE_2017_5974(self):
+    def test_59741_zzipdir_big_CVE_2017_5974(self) -> None:
         """ run unzzip-big -l $(CVE_2017_5974).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5974
@@ -1756,7 +1762,7 @@ class ZZipTest(unittest.TestCase):
         self.assertLess(len(errors(run.errors)), 1)
         self.assertEqual(os.path.getsize(tmpdir + "/test"), 3)
         self.rm_testdir()
-    def test_59742_zzipdir_mem_CVE_2017_5974(self):
+    def test_59742_zzipdir_mem_CVE_2017_5974(self) -> None:
         """ run unzzip-mem -l $(CVE_2017_5974).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5974
@@ -1775,7 +1781,7 @@ class ZZipTest(unittest.TestCase):
         self.assertLess(len(run.output), 30)
         self.assertEqual(os.path.getsize(tmpdir + "/test"), 3)
         self.rm_testdir()
-    def test_59743_zzipdir_mix_CVE_2017_5974(self):
+    def test_59743_zzipdir_mix_CVE_2017_5974(self) -> None:
         """ run unzzip-mix -l $(CVE_2017_5974).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5974
@@ -1796,7 +1802,7 @@ class ZZipTest(unittest.TestCase):
         self.assertEqual(os.path.getsize(tmpdir + "/test"), 0)   # FIXME
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3) # FIXME
         self.rm_testdir()
-    def test_59744_zzipdir_zap_CVE_2017_5974(self):
+    def test_59744_zzipdir_zap_CVE_2017_5974(self) -> None:
         """ run unzzip -l $(CVE_2017_5974).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5974
@@ -1816,7 +1822,7 @@ class ZZipTest(unittest.TestCase):
         self.assertLess(len(errors(run.errors)), 1)
         self.assertEqual(os.path.getsize(tmpdir + "/test"), 3)
         self.rm_testdir()
-    def test_59749(self):
+    def test_59749(self) -> None:
         """ check $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5974
@@ -1829,7 +1835,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2017_5975 = "https://github.com/asarubbo/poc/blob/master"
     zip_CVE_2017_5975 = "00151-zziplib-heapoverflow-__zzip_get64"
-    def test_59750_infozipdir_CVE_2017_5975(self):
+    def test_59750_infozipdir_CVE_2017_5975(self) -> None:
         """ run info-zip dir test0.zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -1855,7 +1861,7 @@ class ZZipTest(unittest.TestCase):
         #self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_59751_zzipdir_big_CVE_2017_5975(self):
+    def test_59751_zzipdir_big_CVE_2017_5975(self) -> None:
         """ run info-zip -l $(CVE_2017_5975).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5975
@@ -1875,7 +1881,7 @@ class ZZipTest(unittest.TestCase):
         self.assertLess(len(errors(run.errors)), 1)
         self.assertEqual(os.path.getsize(tmpdir + "/test"), 0)  # TODO
         self.rm_testdir()
-    def test_59752_zzipdir_mem_CVE_2017_5975(self):
+    def test_59752_zzipdir_mem_CVE_2017_5975(self) -> None:
         """ run unzzip-mem -l $(CVE_2017_5975).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5975
@@ -1898,7 +1904,7 @@ class ZZipTest(unittest.TestCase):
             self.assertIn("no header in entry", run.errors)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_59753_zzipdir_mix_CVE_2017_5975(self):
+    def test_59753_zzipdir_mix_CVE_2017_5975(self) -> None:
         """ run unzzip-mix -l $(CVE_2017_5975).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5975
@@ -1919,7 +1925,7 @@ class ZZipTest(unittest.TestCase):
         self.assertErrorMessage(run.errors, errno.EILSEQ)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_59754_zzipdir_zap_CVE_2017_5975(self):
+    def test_59754_zzipdir_zap_CVE_2017_5975(self) -> None:
         """ run unzzip -l $(CVE_2017_5975).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5975
@@ -1940,7 +1946,7 @@ class ZZipTest(unittest.TestCase):
         self.assertTrue(greps(run.errors, "Zipfile corrupted"))
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_59759(self):
+    def test_59759(self) -> None:
         """ check $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5975
@@ -1953,7 +1959,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2017_5976 = "https://github.com/asarubbo/poc/blob/master"
     zip_CVE_2017_5976 = "00152-zziplib-heapoverflow-zzip_mem_entry_extra_block"
-    def test_59760_infozipdir_CVE_2017_5976(self):
+    def test_59760_infozipdir_CVE_2017_5976(self) -> None:
         """ run info-zip dir test0.zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -1979,7 +1985,7 @@ class ZZipTest(unittest.TestCase):
         self.assertEqual(os.path.getsize(tmpdir + "/test"), 3)
         # self.assertFalse(os.path.exists(tmpdir+"/test"))
         self.rm_testdir()
-    def test_59761_zzipdir_big_CVE_2017_5976(self):
+    def test_59761_zzipdir_big_CVE_2017_5976(self) -> None:
         """ run info-zip -l $(CVE_2017_5976).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5976
@@ -1999,7 +2005,7 @@ class ZZipTest(unittest.TestCase):
         self.assertLess(len(errors(run.errors)), 1)
         self.assertEqual(os.path.getsize(tmpdir + "/test"), 3)
         self.rm_testdir()
-    def test_59762_zzipdir_mem_CVE_2017_5976(self):
+    def test_59762_zzipdir_mem_CVE_2017_5976(self) -> None:
         """ run unzzip-mem -l $(CVE_2017_5976).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5976
@@ -2019,7 +2025,7 @@ class ZZipTest(unittest.TestCase):
         self.assertLess(len(errors(run.errors)), 30)  # TODO
         self.assertEqual(os.path.getsize(tmpdir + "/test"), 3)
         self.rm_testdir()
-    def test_59763_zzipdir_mix_CVE_2017_5976(self):
+    def test_59763_zzipdir_mix_CVE_2017_5976(self) -> None:
         """ run unzzip-mix -l $(CVE_2017_5976).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5976
@@ -2040,7 +2046,7 @@ class ZZipTest(unittest.TestCase):
         self.assertEqual(os.path.getsize(tmpdir + "/test"), 0)    # FIXME
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)  # FIXME
         self.rm_testdir()
-    def test_59764_zzipdir_zap_CVE_2017_5976(self):
+    def test_59764_zzipdir_zap_CVE_2017_5976(self) -> None:
         """ run unzzip -l $(CVE_2017_5976).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5976
@@ -2060,7 +2066,7 @@ class ZZipTest(unittest.TestCase):
         self.assertLess(len(errors(run.errors)), 30)
         self.assertEqual(os.path.getsize(tmpdir + "/test"), 3)
         self.rm_testdir()
-    def test_59769(self):
+    def test_59769(self) -> None:
         """ check $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5976
@@ -2073,7 +2079,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2017_5980 = "https://github.com/asarubbo/poc/blob/master"
     zip_CVE_2017_5980 = "00154-zziplib-nullptr-zzip_mem_entry_new"
-    def test_59800_infozipdir_CVE_2017_5980(self):
+    def test_59800_infozipdir_CVE_2017_5980(self) -> None:
         """ run info-zip dir test0.zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -2099,7 +2105,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_59801_zzipdir_big_CVE_2017_5980(self):
+    def test_59801_zzipdir_big_CVE_2017_5980(self) -> None:
         """ run info-zip -l $(CVE_2017_5980).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5980
@@ -2120,7 +2126,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_59802_zzipdir_mem_CVE_2017_5980(self):
+    def test_59802_zzipdir_mem_CVE_2017_5980(self) -> None:
         """ run unzzip-mem -l $(CVE_2017_5980).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5980
@@ -2141,7 +2147,7 @@ class ZZipTest(unittest.TestCase):
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.rm_testdir()
-    def test_59803_zzipdir_mix_CVE_2017_5980(self):
+    def test_59803_zzipdir_mix_CVE_2017_5980(self) -> None:
         """ run unzzip-mix -l $(CVE_2017_5980).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5980
@@ -2162,7 +2168,7 @@ class ZZipTest(unittest.TestCase):
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.rm_testdir()
-    def test_59804_zzipdir_zap_CVE_2017_5980(self):
+    def test_59804_zzipdir_zap_CVE_2017_5980(self) -> None:
         """ run unzzip -l $(CVE_2017_5980).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5980
@@ -2183,7 +2189,7 @@ class ZZipTest(unittest.TestCase):
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.rm_testdir()
-    def test_59809(self):
+    def test_59809(self) -> None:
         """ check $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5980
@@ -2196,7 +2202,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2017_5981 = "https://github.com/asarubbo/poc/blob/master"
     zip_CVE_2017_5981 = "00161-zziplib-assertionfailure-seeko_C"
-    def test_59810_infozipdir_CVE_2017_5981(self):
+    def test_59810_infozipdir_CVE_2017_5981(self) -> None:
         """ run info-zip dir test0.zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -2220,7 +2226,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_59811_zzipdir_big_CVE_2017_5981(self):
+    def test_59811_zzipdir_big_CVE_2017_5981(self) -> None:
         """ run info-zip -l $(CVE_2017_5981).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5981
@@ -2240,7 +2246,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_59812_zzipdir_mem_CVE_2017_5981(self):
+    def test_59812_zzipdir_mem_CVE_2017_5981(self) -> None:
         """ run unzzip-mem -l $(CVE_2017_5981).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5981
@@ -2260,7 +2266,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_59813_zzipdir_mix_CVE_2017_5981(self):
+    def test_59813_zzipdir_mix_CVE_2017_5981(self) -> None:
         """ run unzzip-mix -l $(CVE_2017_5981).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5981
@@ -2280,7 +2286,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_59814_zzipdir_zap_CVE_2017_5981(self):
+    def test_59814_zzipdir_zap_CVE_2017_5981(self) -> None:
         """ run unzzip-zap -l $(CVE_2017_5981).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5981
@@ -2301,7 +2307,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_59819(self):
+    def test_59819(self) -> None:
         """ check $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2017_5981
@@ -2314,7 +2320,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2018_10 = "https://github.com/ProbeFuzzer/poc/blob/master/zziplib"
     zip_CVE_2018_10 = "zziplib_0-13-67_zzdir_invalid-memory-access_main.zip"
-    def test_63010(self):
+    def test_63010(self) -> None:
         """ info unzip -l $(CVE).zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -2337,7 +2343,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_63011(self):
+    def test_63011(self) -> None:
         """ unzzip-big -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_10
@@ -2357,7 +2363,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_63012(self):
+    def test_63012(self) -> None:
         """ unzzip-mem -l $(CVE).zip """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_10
@@ -2377,7 +2383,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_63013(self):
+    def test_63013(self) -> None:
         """ unzzip-mix -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_10
@@ -2397,7 +2403,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_63014(self):
+    def test_63014(self) -> None:
         """ unzzip-zap -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_10
@@ -2418,7 +2424,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_63018(self):
+    def test_63018(self) -> None:
         """ zzdir on $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_10
@@ -2431,7 +2437,7 @@ class ZZipTest(unittest.TestCase):
         self.assertLess(len(run.output), 1)
         self.assertLess(len(errors(run.errors)), 80)
         self.assertErrorMessage(run.errors, errno.EILSEQ)
-    def test_63019(self):
+    def test_63019(self) -> None:
         """ check $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_10
@@ -2444,7 +2450,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2018_11 = "https://github.com/ProbeFuzzer/poc/blob/master/zziplib"
     zip_CVE_2018_11 = "zziplib_0-13-67_unzzip_infinite-loop_unzzip_cat_file.zip"
-    def test_63110(self):
+    def test_63110(self) -> None:
         """ info unzip -l $(CVE).zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -2467,7 +2473,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_63111(self):
+    def test_63111(self) -> None:
         """ unzzip-big -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_11
@@ -2487,7 +2493,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_63112(self):
+    def test_63112(self) -> None:
         """ unzzip-mem -l $(CVE).zip """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_11
@@ -2507,7 +2513,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_63113(self):
+    def test_63113(self) -> None:
         """ unzzip-mix -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_11
@@ -2527,7 +2533,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_63114(self):
+    def test_63114(self) -> None:
         """ unzzip-zap -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_11
@@ -2551,7 +2557,7 @@ class ZZipTest(unittest.TestCase):
         run = shell("cd {tmpdir} && ../{exe} -p {filename} ".format(**locals()),
                     returncodes=[0, 3])
         self.rm_testdir()
-    def test_63119(self):
+    def test_63119(self) -> None:
         """ check $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_11
@@ -2564,7 +2570,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2018_12 = "https://github.com/ProbeFuzzer/poc/blob/master/zziplib"
     zip_CVE_2018_12 = "zziplib_0-13-67_unzip-mem_buffer-access-with-incorrect-length-value_zzip_disk_fread.zip"
-    def test_63810(self):
+    def test_63810(self) -> None:
         """ info unzip -l $(CVE).zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -2587,7 +2593,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_63811(self):
+    def test_63811(self) -> None:
         """ unzzip-big -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_12
@@ -2607,7 +2613,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_63812(self):
+    def test_63812(self) -> None:
         """ unzzip-mem -l $(CVE).zip """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_12
@@ -2628,7 +2634,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_63813(self):
+    def test_63813(self) -> None:
         """ unzzip-mix -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_12
@@ -2648,7 +2654,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_63814(self):
+    def test_63814(self) -> None:
         """ unzzip-zap -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_12
@@ -2669,7 +2675,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_63819(self):
+    def test_63819(self) -> None:
         """ check $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_12
@@ -2682,7 +2688,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2018_14 = "https://github.com/ProbeFuzzer/poc/blob/master/zziplib"
     zip_CVE_2018_14 = "zziplib_0-13-67_zzdir_memory-alignment-errors___zzip_fetch_disk_trailer.zip"
-    def test_64840(self):
+    def test_64840(self) -> None:
         """ info unzip -l $(CVE).zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -2706,7 +2712,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_64841(self):
+    def test_64841(self) -> None:
         """ unzzip-big -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_14
@@ -2726,7 +2732,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_64842(self):
+    def test_64842(self) -> None:
         """ unzzip-mem -l $(CVE).zip """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_14
@@ -2745,7 +2751,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_64843(self):
+    def test_64843(self) -> None:
         """ unzzip-mix -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_14
@@ -2765,7 +2771,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_64844(self):
+    def test_64844(self) -> None:
         """ unzzip-zap -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_14
@@ -2786,7 +2792,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_64848(self):
+    def test_64848(self) -> None:
         """ zzdir $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_14
@@ -2800,7 +2806,7 @@ class ZZipTest(unittest.TestCase):
         self.assertLess(len(errors(run.errors)), 200)
         self.assertErrorMessage(run.errors, errno.EILSEQ)
         self.rm_testdir()
-    def test_64849(self):
+    def test_64849(self) -> None:
         """ check $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_14
@@ -2813,7 +2819,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2018_15 = "https://github.com/ProbeFuzzer/poc/blob/master/zziplib"
     zip_CVE_2018_15 = "zziplib_0-13-67_unzip-mem_memory-alignment-errors_zzip_disk_findfirst.zip"
-    def test_65400(self):
+    def test_65400(self) -> None:
         """ info unzip -l $(CVE).zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -2836,7 +2842,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65401(self):
+    def test_65401(self) -> None:
         """ unzzip-big -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_15
@@ -2856,7 +2862,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65402(self):
+    def test_65402(self) -> None:
         """ unzzip-mem -l $(CVE).zip """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_15
@@ -2876,7 +2882,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65403(self):
+    def test_65403(self) -> None:
         """ unzzip-mix -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_15
@@ -2896,7 +2902,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65404(self):
+    def test_65404(self) -> None:
         """ unzzip-zap -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_15
@@ -2917,7 +2923,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65409(self):
+    def test_65409(self) -> None:
         """ check $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_15
@@ -2930,7 +2936,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2018_16 = "https://github.com/ProbeFuzzer/poc/blob/master/zziplib"
     zip_CVE_2018_16 = "zziplib_0-13-67_unzzip_memory-aligment-errors___zzip_fetch_disk_trailer.zip"
-    def test_65410(self):
+    def test_65410(self) -> None:
         """ info unzip -l $(CVE).zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -2953,7 +2959,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65411(self):
+    def test_65411(self) -> None:
         """ unzzip-big -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_16
@@ -2973,7 +2979,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65412(self):
+    def test_65412(self) -> None:
         """ unzzip-mem -l $(CVE).zip """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_16
@@ -2993,7 +2999,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65413(self):
+    def test_65413(self) -> None:
         """ unzzip-mix -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_16
@@ -3013,7 +3019,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65414(self):
+    def test_65414(self) -> None:
         """ unzzip-zap -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_16
@@ -3039,7 +3045,7 @@ class ZZipTest(unittest.TestCase):
                     returncodes=[0, 3])
         self.assertTrue(greps(run.errors, "Zipfile corrupted"))
         self.rm_testdir()
-    def test_65419(self):
+    def test_65419(self) -> None:
         """ check $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_16
@@ -3052,7 +3058,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2018_17 = "https://github.com/ProbeFuzzer/poc/blob/master/zziplib"
     zip_CVE_2018_17 = "zziplib_0-13-67_unzip-mem_memory-alignment-errors_zzip_disk_findfirst_64.zip"
-    def test_65420(self):
+    def test_65420(self) -> None:
         """ info unzip -l $(CVE).zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -3075,7 +3081,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65421(self):
+    def test_65421(self) -> None:
         """ unzzip-big -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_17
@@ -3094,7 +3100,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65422(self):
+    def test_65422(self) -> None:
         """ unzzip-mem -l $(CVE).zip """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_17
@@ -3117,7 +3123,7 @@ class ZZipTest(unittest.TestCase):
         run = shell("cd {tmpdir} && ../{exe} -p {filename} ".format(**locals()),
                     returncodes=[0])
         # self.rm_testdir()
-    def test_65423(self):
+    def test_65423(self) -> None:
         """ unzzip-mix -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_17
@@ -3137,7 +3143,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65424(self):
+    def test_65424(self) -> None:
         """ unzzip-zap -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_17
@@ -3158,7 +3164,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65429(self):
+    def test_65429(self) -> None:
         """ check $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_17
@@ -3171,7 +3177,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2018_42 = "https://github.com/fantasy7082/image_test/blob/master"
     zip_CVE_2018_42 = "c006-unknown-add-main"
-    def test_65430(self):
+    def test_65430(self) -> None:
         """ info unzip -l $(CVE).zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -3196,7 +3202,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65431(self):
+    def test_65431(self) -> None:
         """ zzdir $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_42
@@ -3213,7 +3219,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2018_43 = "https://github.com/fantasy7082/image_test/blob/master"
     zip_CVE_2018_43 = "c008-main-unknown-de"
-    def test_65440(self):
+    def test_65440(self) -> None:
         """ info unzip -l $(CVE).zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -3242,7 +3248,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65441(self):
+    def test_65441(self) -> None:
         """ zzdir $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_43
@@ -3260,7 +3266,7 @@ class ZZipTest(unittest.TestCase):
     url_CVE_2018_27 = "https://github.com/ret2libc/---provided-by-email---"
     zip_CVE_2018_27 = "poc_bypass_fix2.zip"
     zip_CVE_2018_27_size = 56
-    def test_65450(self):
+    def test_65450(self) -> None:
         """ info unzip -l $(CVE).zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -3286,7 +3292,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65451(self):
+    def test_65451(self) -> None:
         """ unzzip-big -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_27
@@ -3308,7 +3314,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65452(self):
+    def test_65452(self) -> None:
         """ unzzip-mem -l $(CVE).zip """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_27
@@ -3334,7 +3340,7 @@ class ZZipTest(unittest.TestCase):
         run = shell("cd {tmpdir} && ../{exe} -p {filename} ".format(**locals()),
                     returncodes=[0])
         # self.rm_testdir()
-    def test_65453(self):
+    def test_65453(self) -> None:
         """ unzzip-mix -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_27
@@ -3357,7 +3363,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65454(self):
+    def test_65454(self) -> None:
         """ unzzip-zap -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_27
@@ -3381,7 +3387,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65459(self):
+    def test_65459(self) -> None:
         """ check $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_27
@@ -3397,7 +3403,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2018_41 = "https://github.com/fantasy7082/image_test/blob/master"
     zip_CVE_2018_41 = "c005-bus-zzip_parse_root_directory"  # CVE-2018-7726.
-    def test_65460(self):
+    def test_65460(self) -> None:
         """ info unzip -l $(CVE).zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -3421,7 +3427,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65461(self):
+    def test_65461(self) -> None:
         """ zzdir $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_41
@@ -3438,7 +3444,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2018_39 = "https://github.com/fantasy7082/image_test/blob/master"
     zip_CVE_2018_39 = "003-unknow-def-zip"
-    def test_65470(self):
+    def test_65470(self) -> None:
         """ info unzip -l $(CVE).zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -3465,7 +3471,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65471(self):
+    def test_65471(self) -> None:
         """ unzzip-big -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_39
@@ -3485,7 +3491,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65472(self):
+    def test_65472(self) -> None:
         """ unzzip-mem -l $(CVE).zip """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_39
@@ -3509,7 +3515,7 @@ class ZZipTest(unittest.TestCase):
         run = shell("cd {tmpdir} && ../{exe} -p {filename} ".format(**locals()),
                     returncodes=[0])
         # self.rm_testdir()
-    def test_65473(self):
+    def test_65473(self) -> None:
         """ unzzip-mix -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_39
@@ -3530,7 +3536,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65474(self):
+    def test_65474(self) -> None:
         """ unzzip-zap -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_39
@@ -3552,7 +3558,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65479(self):
+    def test_65479(self) -> None:
         """ check $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_39
@@ -3566,7 +3572,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2018_40 = "https://github.com/fantasy7082/image_test/blob/master"
     zip_CVE_2018_40 = "002-mem-leaks-zip"
-    def test_65480(self):
+    def test_65480(self) -> None:
         """ info unzip -l $(CVE).zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -3595,7 +3601,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertEqual(os.path.getsize(tmpdir+"/test"), 3)
         self.assertFalse(os.path.exists(tmpdir + "/test"))
         self.rm_testdir()
-    def test_65482(self):
+    def test_65482(self) -> None:
         """ unzzip-mem -l $(CVE).zip """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_40
@@ -3622,7 +3628,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2018_17828 = "https://github.com/gdraheim/zziplib/files/2415382"
     zip_CVE_2018_17828 = "evil.zip"
-    def test_65484(self):
+    def test_65484(self) -> None:
         """ extract file with "../" in the pathname [CVE-2018-17828] """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2018_17828
@@ -3646,7 +3652,7 @@ class ZZipTest(unittest.TestCase):
         self.assertTrue(os.path.exists(workdir + "/test/evil.conf"))
         self.rm_testdir()
 
-    def test_65485_list_verbose_compressed_with_directory(self):
+    def test_65485_list_verbose_compressed_with_directory(self) -> None:
         """ verbously list a zipfile containing directories """
         chdir = "chdir"
         if not exeext: chdir = "cd"
@@ -3672,7 +3678,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2020_04 = "https://github.com/gdraheim/zziplib/files/5340201"
     zip_CVE_2020_04 = "2020_10_OutagesPUReasons.zip"
-    def test_65570(self):
+    def test_65570(self) -> None:
         """ info unzip -l $(CVE).zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -3690,7 +3696,7 @@ class ZZipTest(unittest.TestCase):
         self.assertEqual(os.path.getsize(tmpdir + "/2020_10_OutagesPUReasons.csv"), 2590160)
         self.rm_testdir()
     @unittest.expectedFailure
-    def test_65571(self):
+    def test_65571(self) -> None:
         """ unzzip-big -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2020_04
@@ -3707,7 +3713,7 @@ class ZZipTest(unittest.TestCase):
         self.assertEqual(os.path.getsize(tmpdir + "/2020_10_OutagesPUReasons.csv"), 2590160)
         self.rm_testdir()
     @unittest.expectedFailure
-    def test_65572(self):
+    def test_65572(self) -> None:
         """ unzzip-mem -l $(CVE).zip """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2020_04
@@ -3730,7 +3736,7 @@ class ZZipTest(unittest.TestCase):
                     returncodes=[0])
         self.rm_testdir()
     @unittest.expectedFailure
-    def test_65573(self):
+    def test_65573(self) -> None:
         """ unzzip-mix -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2020_04
@@ -3748,7 +3754,7 @@ class ZZipTest(unittest.TestCase):
         self.assertEqual(os.path.getsize(tmpdir + "/2020_10_OutagesPUReasons.csv"), 2590160)
         self.rm_testdir()
     @unittest.expectedFailure
-    def test_65574(self):
+    def test_65574(self) -> None:
         """ unzzip-zap -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2020_04
@@ -3764,7 +3770,7 @@ class ZZipTest(unittest.TestCase):
                     returncodes=[0])
         self.assertEqual(os.path.getsize(tmpdir + "/2020_10_OutagesPUReasons.csv"), 2590160)
         self.rm_testdir()
-    def test_65579(self):
+    def test_65579(self) -> None:
         """ check $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2020_04
@@ -3778,7 +3784,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2019_69 = "https://github.com/gdraheim/zziplib/files/3001317"
     zip_CVE_2019_69 = "zip_poc.zip"
-    def test_65670(self):
+    def test_65670(self) -> None:
         """ info unzip -l $(CVE).zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -3795,7 +3801,7 @@ class ZZipTest(unittest.TestCase):
         run = shell("cd {tmpdir} && {exe} -o {filename}".format(**locals()),
                     returncodes=[3, 12])
         self.rm_testdir()
-    def test_65671(self):
+    def test_65671(self) -> None:
         """ unzzip-big -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2019_69
@@ -3810,7 +3816,7 @@ class ZZipTest(unittest.TestCase):
         run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
                     returncodes=[1])
         self.rm_testdir()
-    def test_65672(self):
+    def test_65672(self) -> None:
         """ unzzip-mem -l $(CVE).zip """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2019_69
@@ -3831,7 +3837,7 @@ class ZZipTest(unittest.TestCase):
         run = shell("cd {tmpdir} && ../{exe} -p {filename} ".format(**locals()),
                     returncodes=[0])
         self.rm_testdir()
-    def test_65673(self):
+    def test_65673(self) -> None:
         """ unzzip-mix -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2019_69
@@ -3849,7 +3855,7 @@ class ZZipTest(unittest.TestCase):
         # self.assertLess(len(run.output), 30)
         self.assertTrue(greps(run.errors, "Invalid or incomplete") or greps(run.errors, "Illegal byte sequence"))
         self.rm_testdir()
-    def test_65674(self):
+    def test_65674(self) -> None:
         """ unzzip-zap -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2019_69
@@ -3865,7 +3871,7 @@ class ZZipTest(unittest.TestCase):
                     returncodes=[3])
         self.assertTrue(greps(run.errors, "Zipfile corrupted"))
         self.rm_testdir()
-    def test_65679(self):
+    def test_65679(self) -> None:
         """ check $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2019_69
@@ -3879,7 +3885,7 @@ class ZZipTest(unittest.TestCase):
 
     url_CVE_2019_70 = "https://github.com/gdraheim/zziplib/files/3006594"
     zip_CVE_2019_70 = "POC.zip"
-    def test_65770(self):
+    def test_65770(self) -> None:
         """ info unzip -l $(CVE).zip  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
@@ -3898,7 +3904,7 @@ class ZZipTest(unittest.TestCase):
         self.assertEqual(os.path.getsize(tmpdir + "/POC2"), 135)
         self.assertEqual(os.path.getsize(tmpdir + "/POC3"), 303)
         self.rm_testdir()
-    def test_65771(self):
+    def test_65771(self) -> None:
         """ unzzip-big -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2019_70
@@ -3916,7 +3922,7 @@ class ZZipTest(unittest.TestCase):
         self.assertEqual(os.path.getsize(tmpdir + "/POC2"), 135)
         self.assertEqual(os.path.getsize(tmpdir + "/POC3"), 303)
         self.rm_testdir()
-    def test_65772(self):
+    def test_65772(self) -> None:
         """ unzzip-mem -l $(CVE).zip """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2019_70
@@ -3941,7 +3947,7 @@ class ZZipTest(unittest.TestCase):
                     returncodes=[0])
         self.rm_testdir()
     @unittest.expectedFailure
-    def test_65773(self):
+    def test_65773(self) -> None:
         """ unzzip-mix -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2019_70
@@ -3960,7 +3966,7 @@ class ZZipTest(unittest.TestCase):
         self.assertEqual(os.path.getsize(tmpdir + "/POC2"), 135)
         self.assertEqual(os.path.getsize(tmpdir + "/POC3"), 303)
         self.rm_testdir()
-    def test_65774(self):
+    def test_65774(self) -> None:
         """ unzzip-zap -l $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2019_70
@@ -3978,7 +3984,7 @@ class ZZipTest(unittest.TestCase):
         self.assertEqual(os.path.getsize(tmpdir + "/POC2"), 135)
         self.assertEqual(os.path.getsize(tmpdir + "/POC3"), 303)
         self.rm_testdir()
-    def test_65779(self):
+    def test_65779(self) -> None:
         """ check $(CVE).zip  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2019_70
@@ -3990,7 +3996,7 @@ class ZZipTest(unittest.TestCase):
         size = os.path.getsize(os.path.join(tmpdir, filename))
         self.assertEqual(size, 771)
 
-    def test_91000_zzshowme_check_sfx(self):
+    def test_91000_zzshowme_check_sfx(self) -> None:
         """ create an *.exe that can extract its own zip content """
         mkzip = self.bins("mkzip")
         exefile = "tmp.zzshowme" + exeext
@@ -4017,7 +4023,7 @@ class ZZipTest(unittest.TestCase):
         txt = open(txtfile).read()
         self.assertEqual(txt.split("\n"), run.output.split("\n"))
 
-    def test_99000_make_test1w_zip(self):
+    def test_99000_make_test1w_zip(self) -> None:
         """ create a test1w.zip using zzip/write functions. """
         exe = self.bins("zzip")
         run = shell("{exe} --version".format(**locals()))
@@ -4034,7 +4040,7 @@ class ZZipTest(unittest.TestCase):
         filename = os.path.join(tmpdir, "README")
         filetext = self.readme()
         self.mkfile(filename, filetext)
-        self.rm_zipfile()
+        self.rm_testzip()
         shell("../{exe} ../{zipfile} ??*.* README".format(**locals()), cwd=tmpdir)
         self.assertGreater(os.path.getsize(zipfile), 10)
 
