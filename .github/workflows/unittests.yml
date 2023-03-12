@@ -9,7 +9,7 @@ on:
 jobs:
   tests:
     name: 'make check tests'
-    runs-on: 'ubuntu-latest'
+    runs-on: 'ubuntu-20.04'
     steps:
     - name: checkout software
       uses: actions/checkout@v2
