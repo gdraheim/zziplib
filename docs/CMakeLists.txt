@@ -122,8 +122,8 @@ add_custom_command(OUTPUT htmlsite.tar
     COMMAND ${BASH} -c "cd site && ln -s zzip-index.html index.html"
     COMMAND ${BASH} -c "tar cf htmlsite.tar site/*.*"
     COMMAND ${BASH} -c "ls -l `pwd`/htmlsite.tar || true"
-    #  DEPENDS site.html zziplib.html zzipmmapped.html zzipfseeko.html
-    DEPENDS    site.html zziplib.xml  zzipmmapped.xml  zzipfseeko.xml
+    #  DEPENDS site/site.html zziplib.html zzipmmapped.html zzipfseeko.html
+    DEPENDS    site/site.html zziplib.xml  zzipmmapped.xml  zzipfseeko.xml
     VERBATIM)
 if(ZZIP_HTMLSITE)
 add_custom_target(htmlsite ALL DEPENDS htmlsite.tar COMMAND ${BASH} -c "ls -l htmlsite.tar")
@@ -205,7 +205,7 @@ add_custom_target(install-site
    COMMAND ${BASH} -c "cd ${outdir}/site && cp *.html        $DESTDIR${docdir}/"
    COMMAND ${BASH} -c "cd $DESTDIR${docdir} && ln -s zzip-index.html index.html"
    COMMAND ${BASH} -c "echo running install-site is deprecated - just enable cmake -DZZIP_HTMLSITE=ON >&2"
-   DEPENDS site.html zziplib.html zzipmmapped.html zzipfseeko.html
+   DEPENDS site/site.html zziplib.html zzipmmapped.html zzipfseeko.html
    VERBATIM)
 add_custom_target(install-htmpages
    COMMAND ${BASH} -c "mkdir -vp $DESTDIR${docdir}  >&2 || ls -ld $DESTDIR${docdir} >&2"
