@@ -200,7 +200,7 @@ add_custom_target(install-site
    COMMAND ${BASH} -c "cd ${topdir} && cp ChangeLog          $DESTDIR${docdir}/"
    COMMAND ${BASH} -c "cd ${topdir} && cp ${all_bins_FILES}  $DESTDIR${docdir}/"
    COMMAND ${BASH} -c "cd ${topdir} && cp ${all_SDLs_FILES}  $DESTDIR${docdir}/"
-   COMMAND ${BASH} -c "cd ${outdir}/site && cp *.html        $DESTDIR${docdir}/"
+   COMMAND ${BASH} -c "cd ${outdir}/site && cp *.html *.css  $DESTDIR${docdir}/"
    COMMAND ${BASH} -c "cd $DESTDIR${docdir} && ln -s zzip-index.html index.html"
    COMMAND ${BASH} -c "echo running install-site is deprecated - just enable cmake -DZZIP_HTMLSITE=ON >&2"
    DEPENDS site/site.html zziplib.html zzipmmapped.html zzipfseeko.html
