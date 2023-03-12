@@ -572,7 +572,51 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_224_ubuntu16_32bit_dockerfile(self) -> None:
+    def test_223_ubuntu20_cmake_build_dockerfile(self) -> None:
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
+        testname = self.testname()
+        testdir = self.testdir()
+        dockerfile = "testbuilds/ubuntu20-cm-build.dockerfile"
+        addhosts = self.local_addhosts(dockerfile)
+        savename = docname(dockerfile)
+        saveto = SAVETO
+        images = IMAGES
+        build = "build --build-arg=no_check=true" + self.nocache()
+        cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        sh____(cmd.format(**locals()))
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
+        cmd = "docker run -d --name {testname} {images}:{testname} sleep 600"
+        sh____(cmd.format(**locals()))
+        #:# container = self.ip_container(testname)
+        cmd = "docker exec {testname} ls -l /usr/local/bin"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} find /usr/local/include -type f"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} bash -c 'ls -l /usr/local/lib/libzz*'"
+        sh____(cmd.format(**locals()))
+        #
+        cmd = "docker exec {testname} bash -c 'test ! -d /usr/local/include/SDL_rwops_zzip'"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} dpkg -S /usr/lib/x86_64-linux-gnu/pkgconfig/zlib.pc"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} pkg-config --libs zlib"
+        zlib = output(cmd.format(**locals()))
+        self.assertEqual(zlib.strip(), "-lz")
+        #
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
+        cmd = "docker rmi {saveto}/{savename}:latest"
+        sx____(cmd.format(**locals()))
+        cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
+        sh____(cmd.format(**locals()))
+        cmd = "docker rmi {images}:{testname}"
+        sx____(cmd.format(**locals()))
+        self.rm_testdir()
+    def test_228_ubuntu16_32bit_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -925,6 +969,45 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
+    def test_323_ubuntu20_cmake_sdl2_dockerfile(self) -> None:
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
+        testname = self.testname()
+        testdir = self.testdir()
+        dockerfile = "testbuilds/ubuntu20-cm-sdl2.dockerfile"
+        addhosts = self.local_addhosts(dockerfile, "--universe")
+        savename = docname(dockerfile)
+        saveto = SAVETO
+        images = IMAGES
+        build = "build --build-arg=no_check=true" + self.nocache()
+        cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        sh____(cmd.format(**locals()))
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
+        cmd = "docker run -d --name {testname} {images}:{testname} sleep 600"
+        sh____(cmd.format(**locals()))
+        #:# container = self.ip_container(testname)
+        cmd = "docker exec {testname} ls -l /usr/local/bin"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} find /usr/local/include -type f"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} bash -c 'ls -l /usr/local/lib/libzz*'"
+        sh____(cmd.format(**locals()))
+        #
+        cmd = "docker exec {testname} bash -c 'test -d /usr/local/include/SDL_rwops_zzip'"
+        sh____(cmd.format(**locals()))
+        #
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
+        cmd = "docker rmi {saveto}/{savename}:latest"
+        sx____(cmd.format(**locals()))
+        cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
+        sh____(cmd.format(**locals()))
+        cmd = "docker rmi {images}:{testname}"
+        sx____(cmd.format(**locals()))
+        self.rm_testdir()
     def test_335_opensuse15_cmake_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
@@ -1041,69 +1124,6 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
-        self.rm_testdir()
-    def test_423_ubuntu20_azure_dockerfile(self) -> None:
-        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
-        self.rm_old()
-        self.rm_testdir()
-        testname = self.testname()
-        testdir = self.testdir()
-        dockerfile = "testbuilds/ubuntu20-azure.dockerfile"
-        addhosts = self.local_addhosts(dockerfile, "--universe")
-        savename = docname(dockerfile)
-        saveto = SAVETO
-        images = IMAGES
-        build = "build --build-arg=no_install=true" + self.nocache()
-        cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
-        sh____(cmd.format(**locals()))
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
-        cmd = "docker run -d --name {testname} {images}:{testname} sleep 600"
-        sh____(cmd.format(**locals()))
-        #:# container = self.ip_container(testname)
-        #
-        cmd = "docker exec {testname} find src -name *.xml"
-        sh____(cmd.format(**locals()))
-        #
-        if not KEEP:
-            cmd = "docker rm --force {testname}"
-            sx____(cmd.format(**locals()))
-        cmd = "docker rmi {saveto}/{savename}:latest"
-        sx____(cmd.format(**locals()))
-        cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
-        sh____(cmd.format(**locals()))
-        cmd = "docker rmi {images}:{testname}"
-        sx____(cmd.format(**locals()))
-        self.rm_testdir()
-    @unittest.expectedFailure
-    def test_424_ubuntu20_azure_dockerfile(self) -> None:
-        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
-        self.rm_old()
-        self.rm_testdir()
-        dockerfile = "testbuilds/ubuntu20-azure.dockerfile"  # reusing test_423
-        savename = docname(dockerfile)
-        saveto = SAVETO
-        images = IMAGES
-        testname = self.testname()
-        cmd = "docker rm --force {testname}"
-        sx____(cmd.format(**locals()))
-        cmd = "docker run -d --name {testname} {saveto}/{savename} sleep 60"
-        sh____(cmd.format(**locals()))
-        #:# container = self.ip_container(testname)
-        #
-        logg.error("\n\n\t Ubuntu ships 'unzip' that can not handle these CVE zip files .. creating core dumps\n\n")
-        cmd = "docker exec {testname} bash -c 'cd src/build/test && python3 ../../test/zziptests.py test_65430'"
-        sh____(cmd.format(**locals()))
-        cmd = "docker exec {testname} bash -c 'cd src/build/test && python3 ../../test/zziptests.py test_65440'"
-        sh____(cmd.format(**locals()))
-        cmd = "docker exec {testname} bash -c 'cd src/build/test && python3 ../../test/zziptests.py test_65480'"
-        sh____(cmd.format(**locals()))
-        cmd = "docker exec {testname} bash -c 'cd src/build/test && python3 ../../test/zziptests.py test_65485'"
-        sh____(cmd.format(**locals()))
-        #
-        if not KEEP:
-            cmd = "docker rm --force {testname}"
-            sx____(cmd.format(**locals()))
         self.rm_testdir()
     def test_435_opensuse15_ninja_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
