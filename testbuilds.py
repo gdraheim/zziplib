@@ -286,22 +286,22 @@ class ZZiplibBuildTest(unittest.TestCase):
     #
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
     #
-    def test_101(self):
+    def test_101_docker_mirror_ubuntu1(self):
         logg.info("\n  UBUNTU1 = '%s'", UBUNTU1)
         self.start_mirror(UBUNTU1)
-    def test_102(self):
+    def test_102_docker_mirror_ubuntu2(self):
         logg.info("\n  UBUNTU2 = '%s'", UBUNTU2)
         self.start_mirror(UBUNTU2)
-    def test_103(self):
+    def test_103_docker_mirror_ubuntu3(self):
         logg.info("\n  UBUNTU3 = '%s'", UBUNTU3)
         self.start_mirror(UBUNTU3, "--universe")
-    def test_105(self):
+    def test_105_docker_mirror_opensuse5(self):
         logg.info("\n  OPENSUSE5 = '%s'", OPENSUSE5)
         self.start_mirror(OPENSUSE5)
-    def test_107(self):
+    def test_107_docker_mirror_centos7(self):
         logg.info("\n  CENTOS7 = '%s'", CENTOS7)
         self.start_mirror(CENTOS7, "--epel")
-    def test_108(self):
+    def test_108_docker_mirror_centos7(self):
         logg.info("\n  CENTOS8 = '%s'", CENTOS8)
         self.start_mirror(CENTOS8)
     def test_207_centos7_automake_dockerfile(self):
