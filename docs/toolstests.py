@@ -341,6 +341,8 @@ if __name__ == "__main__":
     # main()
     import optparse
     _o = optparse.OptionParser("%prog [options] test_xxx")
+    _o.add_option("--failfast", action="store_true", default=False,
+                  help="Stop the test run on the first error or failure. [%default]")
     _o.add_option("--xmlresults", metavar="FILE", default=None,
                   help="capture results as a junit xml file [%default]")
     _o.add_option("-v", "--verbose", action="count", default=0,
@@ -372,6 +374,6 @@ if __name__ == "__main__":
         result = Runner(output=opt.xmlresults).run(suite)
     else:
         Runner = TextTestRunner
-        result = Runner(verbosity=opt.verbose).run(suite)
+        result = Runner(verbosity=opt.verbose, failfast=opt.failfast).run(suite)
     if not result.wasSuccessful():
         sys.exit(1)

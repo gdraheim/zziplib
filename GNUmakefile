@@ -56,7 +56,7 @@ am:
 tests:  ; $(PYTHON3) testbuilds.py -vv
 testbuilds: ; $(PYTHON3) testbuilds.py -vv --no-cache
 k_%: ; $(PYTHON3) testbuilds.py $@ -vv --no-cache --keep
-b_%: ; $(PYTHON3) testbuilds.py $@ -vv --no-cache
+b_%: ; $(PYTHON3) testbuilds.py $@ -vv --no-cache --failfast
 t_%: ;    cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py $@ -vv
 test_%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py $@ -vv
 
