@@ -88,7 +88,7 @@ install(FILES ${outdir}/zzipwrap.pc
 endif()
 
 install(FILES ${libzzipwrap_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/zzip )
-install(TARGETS libzzipwrap
+install(TARGETS libzzipwrap EXPORT zziplibTargets
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

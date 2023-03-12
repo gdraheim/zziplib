@@ -72,5 +72,5 @@ clean:
 	- find . -name Makefile | xargs --no-run-if-empty rm -r
 	- rm -r docs/zzipdoc/__pycache__
 	- rm -r docs/zzipdoc/*.pyc
-	- rm -f autom4te.cache
+	- rm -r autom4te.cache
 	- rm *~
