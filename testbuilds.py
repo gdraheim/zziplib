@@ -1859,21 +1859,23 @@ if __name__ == "__main__":
             testclass = globals()[classname]
             for method in sorted(dir(testclass)):
                 if "*" not in arg: arg += "*"
-                if arg.startswith("_"): arg = arg[1:]
+                if len(arg) > 2 and arg[1] == "_": 
+                    arg = "test" + arg[1:]
                 if fnmatch(method, arg):
                     suite.addTest(testclass(method))
     # select runner
-    if not logfile:
-        if xmlresults:
-            import xmlrunner
-            Runner = xmlrunner.XMLTestRunner
-            Runner(xmlresults).run(suite)
-        else:
-            Runner = unittest.TextTestRunner
-            Runner(verbosity=opt.verbose).run(suite)
+    xmlresults = None
+    if opt.xmlresults:
+        if os.path.exists(opt.xmlresults):
+            os.remove(opt.xmlresults)
+        xmlresults = open(opt.xmlresults, "wb")
+        logg.info("xml results into %s", opt.xmlresults)
+    if xmlresults:
+       import xmlrunner # type: ignore
+       Runner = xmlrunner.XMLTestRunner
+       result = Runner(xmlresults).run(suite)
     else:
-        Runner = unittest.TextTestRunner
-        if xmlresults:
-            import xmlrunner
-            Runner = xmlrunner.XMLTestRunner
-        Runner(logfile.stream, verbosity=opt.verbose).run(suite)
+       Runner = unittest.TextTestRunner
+       result = Runner(verbosity=opt.verbose).run(suite)
+    if not result.wasSuccessful():
+       sys.exit(1)
