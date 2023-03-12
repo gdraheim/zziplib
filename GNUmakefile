@@ -112,6 +112,12 @@ py2: ; $(MAKE) $(PY2).type $(PY2).pep8
 py1: ; $(MAKE) $(PY1).type $(PY1).pep8
 
 # extras ..............................
+auto:
+	ln -s old.configure.ac configure.ac
+	autoreconf
+	rm configure.ac
+
+
 -include GNUmakefile.win10
 -include docker_mirror.mk
 -include docs.mk

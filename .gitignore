@@ -16,3 +16,5 @@ tmp
 CMakeCache.txt
 CMakeFiles
 cmake_install.cmake
+configure
+configure.ac
