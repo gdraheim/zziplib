@@ -111,14 +111,12 @@ endif()
 string(REPLACE ";" " " all_bins_FILES "${bins_FILES}")
 string(REPLACE ";" " " all_SDLs_FILES "${SDLs_FILES}")
 add_custom_command(OUTPUT htmlsite.tar
-    COMMAND ${BASH} -c "ls -l ${CMAKE_CURRENT_BINARY_DIR}/site.html"
-    COMMAND ${BASH} -c "mkdir -vp site  >&2 || ls -ld site >&2"
+    COMMAND ${BASH} -c "ls -l ${CMAKE_CURRENT_BINARY_DIR}/site/site.html"
     COMMAND ${BASH} -c "cd ${outdir} && cp zziplib.html zzipmmapped.html zzipfseeko.html site/"
     COMMAND ${BASH} -c "cd ${srcdir} && cp README.* COPYING.* ${outdir}/site/"
     COMMAND ${BASH} -c "cd ${topdir} && cp ChangeLog          ${outdir}/site/"
     COMMAND ${BASH} -c "cd ${topdir} && cp ${all_bins_FILES}  ${outdir}/site/"
     COMMAND ${BASH} -c "cd ${topdir} && cp ${all_SDLs_FILES}  ${outdir}/site/"
-    COMMAND ${BASH} -c "cd site && cp ${outdir}/*.html ."
     COMMAND ${BASH} -c "cd site && ln -s zzip-index.html index.html"
     COMMAND ${BASH} -c "tar cf htmlsite.tar site/*.*"
     COMMAND ${BASH} -c "ls -l `pwd`/htmlsite.tar || true"
