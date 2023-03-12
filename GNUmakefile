@@ -43,6 +43,14 @@ install docs:
 un uninstalls:
 	@ case "$(PREFIX)" in */local) echo rm -rf "'$(PREFIX)'" ; rm -rf "$(PREFIX)" ;; *) echo skipped rm -rf "'$(PREFIX)'" ;; esac
 
+am:
+	- rm -v configure configure.ac
+	rm -rf $(BUILD); mkdir -v $(BUILD)
+	ln -sv old.configure configure
+	cd $(BUILD) && ../configure
+	cd $(BUILD) && $(MAKE) all
+	test -L configure && rm -v configure
+
 # testing
 
 tests:  ; $(PYTHON3) testbuilds.py -vv
@@ -113,9 +121,11 @@ py1: ; $(MAKE) $(PY1).type $(PY1).pep8
 
 # extras ..............................
 auto:
+	- rm -v configure configure.ac
 	ln -s old.configure.ac configure.ac
-	autoreconf
-	rm configure.ac
+	autoreconf -f
+	cp -p configure old.configure
+	rm -v configure configure.ac
 
 
 -include GNUmakefile.win10
