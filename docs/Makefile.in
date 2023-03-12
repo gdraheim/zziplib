@@ -786,7 +786,7 @@ site/site.html : body.htm changes.htm mksite.sh $(htm_md_FILES) $(htms_FILES)
 	srcs=`cd ${srcdir} && pwd`; cd ${outdir}/site || exit 1 \
 	; for i in *.md; do ${PYTHON} $${srcs}/tools/md2dbk.py $$i --htm > `basename $$i .md` ; done
 	srcs=`cd ${srcdir} && pwd`; cd ${outdir}/site || exit 1 \
-	$(SHELL) $${srcs}/mksite.sh $(mksite_sh_args) site.htm
+	; $(SHELL) $${srcs}/mksite.sh $(mksite_sh_args) site.htm
 
 changes.htm : $(top_srcdir)/ChangeLog Makefile 
 	echo "<pre>" > $@ ; cat $(top_srcdir)/ChangeLog \
