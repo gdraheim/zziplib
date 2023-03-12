@@ -1,4 +1,5 @@
 <p style="float:right"><img align="right" src="docs/dir-zzip-64.png" /></p>
+
 [![make check](https://github.com/gdraheim/zziplib/actions/workflows/makecheck.yml/badge.svg?event=push&branch=develop)](https://github.com/gdraheim/zziplib/actions/workflows/makecheck.yml)
 
 ... **please switch to 'cmake' based builds** ... 
