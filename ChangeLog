@@ -1,3 +1,10 @@
+2023-03-12  gdraheim@github
+    * Switched docs from .htm to .md format. The mksite to .html is retained.
+    * Some cmake patches were included. Specifically MacOS seems to be special.
+    * Automated builds changed from azure-pipelines to github/workflows
+    * Added typehints and pep8 check for the python parts of the tools and tests
+    * Can still update automake for now. Continues the testbuilds.py comparison.
+
 2021-01-04  gdraheim@github
     * The testbuilds were fixed to make cmake install and automake install the same
     * The cmake install did need patches for man3 installation on Unix
