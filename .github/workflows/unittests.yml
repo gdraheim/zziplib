@@ -1,4 +1,4 @@
-name: basic unit tests
+name: check tests
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   tests:
-    name: 'check tests'
+    name: 'make check tests'
     runs-on: 'ubuntu-latest'
     steps:
     - name: checkout software
