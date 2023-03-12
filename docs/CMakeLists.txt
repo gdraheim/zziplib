@@ -175,7 +175,7 @@ add_custom_command(OUTPUT htmpages.tar
 
 add_custom_target(manpages DEPENDS manpages.tar)
 add_custom_target(htmpages DEPENDS htmpages.tar)
-add_custom_target(doc DEPENDS zziplib.xml zzipmmapped.xml zzipfseeko.xml site.html)
+add_custom_target(doc DEPENDS zziplib.xml zzipmmapped.xml zzipfseeko.xml site/site.html)
 add_custom_target(docs DEPENDS doc manpages htmpages)
 add_custom_target(mans DEPENDS manpages)
 
