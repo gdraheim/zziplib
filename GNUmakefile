@@ -98,9 +98,18 @@ AUTOPEP8_ASDIFF= --diff
 	$(AUTOPEP8) $(AUTOPEP8_OPTIONS) $(@:.pep8=) $(AUTOPEP8_INPLACE)
 	git --no-pager diff $(@:.pep8=)
 
-type:  testbuilds.py.type test/zziptests.py.type docs/toolstests.py.type
-style: testbuilds.py.pep8 test/zziptests.py.pep8 docs/toolstests.py.pep8
-pep1:  testbuilds.py.pep1 test/zziptests.py.pep1 docs/toolstests.py.pep1
+PY1 = testbuilds.py
+PY2 = test/zziptests.py
+PY3 = docs/tools/md2dbk.py
+PY4 = docs/toolstests.py
+type:  ; $(MAKE) $(PY1).type $(PY2).type $(PY3).type $(PY4).type
+style: ; $(MAKE) $(PY1).pep8 $(PY2).pep8 $(PY3).pep8 $(PY4).pep8
+pep1:  ; $(MAKE) $(PY1).pep1 $(PY2).pep1 $(PY3).pep1 $(PY4).pep1
+
+py4: ; $(MAKE) $(PY4).type $(PY4).pep8
+py3: ; $(MAKE) $(PY3).type $(PY3).pep8
+py2: ; $(MAKE) $(PY2).type $(PY2).pep8
+py1: ; $(MAKE) $(PY1).type $(PY1).pep8
 
 # extras ..............................
 -include GNUmakefile.win10
