@@ -63,6 +63,9 @@ downloads:
 	- rm -rf test/tmp.download $(BUILD)/test/tmp.download
 	cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py --downloadonly -vv
 
+mans: testmanpages
+testmanpages: ; cd docs && $(MAKE) $@ BUILD=$(realpath $(BUILD))
+
 # release
 version:
 	oldv=`sed -e '/zziplib.VERSION/!d' -e 's:.*zziplib.VERSION."::' -e 's:".*::' CMakeLists.txt` \
