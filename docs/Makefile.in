@@ -321,7 +321,7 @@ htm_md_FILES = zzip-index.htm.md zzip-zip.htm.md zzip-file.htm.md zzip-sdl-rwops
             zzip-extio.htm.md zzip-xor.htm.md zzip-crypt.htm.md zzip-cryptoid.htm.md \
             zzip-api.htm.md  zzip-basics.htm.md zzip-extras.htm.md zzip-parse.htm.md \
             64on32.htm.md future.htm.md fseeko.htm.md mmapped.htm.md memdisk.htm.md \
-            configs.htm.md sfx-make.htm.md   developer.htm download.htm.md \
+            configs.htm.md sfx-make.htm.md   developer.htm.md download.htm.md \
             history.htm.md referentials.htm.md  faq.htm.md copying.htm.md notes.htm.md \
             functions.htm.md zip-php.htm.md
 
@@ -330,7 +330,7 @@ SDL_RWOPS = $(SDL)/SDL_rwops_zzcat.c \
             $(SDL)/SDL_rwops_zzip.c $(SDL)/SDL_rwops_zzip.h
 
 changelog = @top_srcdir@/ChangeLog
-EXTRA_DIST = make-doc.py $(doc_FILES) $(htm_FILES) $(SDL_RWOPS) \
+EXTRA_DIST = make-doc.py $(doc_FILES) $(htm_md_FILES) $(SDL_RWOPS) \
              make-doc.pl make-dbk.pl   mksite.sh mksite.pl body.htm \
              tools/dbk2man.py tools/dir2index.py \
              $(zzipdoc_FILES) sdocbook.css \
@@ -370,6 +370,7 @@ DOCBOOKDTD = -//OASIS/DTD Docbook V4.1.2//EN
 MANSERIES = a302c642-1888-11d7-86f6-ba4b52ef847d
 
 # ----------------------------------------------- mksite.sh for the main html
+outdir = ${builddir}
 mksite_sh_args = --VERSION=$(VERSION) --xml --src-dir=$(srcdir) --print
 all: all-am
 
@@ -777,13 +778,15 @@ install-omf : omf zziplib.xml zzipmmapped.xml zzipfseeko.xml
 	$(INSTALL_DATA) $(PACKAGE)-man.omf $(DESTDIR)$(pkgomfdir)/
 	- test ".$(DESTDIR)" != "." || scrollkeeper-update -v
 site/site.html : body.htm changes.htm mksite.sh $(htm_md_FILES) $(htms_FILES)
-        test -d ${outdir}/site || mkdir -p ${outdir}/site
+	test -d ${outdir}/site || mkdir -p ${outdir}/site
 	cp $(srcdir)/body.htm ${outdir}/site/site.htm
 	cp $(outdir)/changes.htm ${outdir}/site/changes.htm
 	cp -v ${srcdir}/*.md ${outdir}/site/
 	cp -v ${srcdir}/*.css ${outdir}/site/
-	cd ${outdir}/site; for i in *.md; do ${PYTHON} ${srcdir}/tools/md2dbk.py $$i --htm > `basename $$i .md` ; done
-	$(SHELL) $(srcdir)/mksite.sh $(mksite_sh_args) site.htm
+	srcs=`cd ${srcdir} && pwd`; cd ${outdir}/site || exit 1 \
+	; for i in *.md; do ${PYTHON} $${srcs}/tools/md2dbk.py $$i --htm > `basename $$i .md` ; done
+	srcs=`cd ${srcdir} && pwd`; cd ${outdir}/site || exit 1 \
+	$(SHELL) $${srcs}/mksite.sh $(mksite_sh_args) site.htm
 
 changes.htm : $(top_srcdir)/ChangeLog Makefile 
 	echo "<pre>" > $@ ; cat $(top_srcdir)/ChangeLog \
