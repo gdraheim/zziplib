@@ -936,7 +936,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
         testname = self.testname()
         testdir = self.testdir()
-        dockerfile = "testbuilds/ubuntu16-cm-sdl2.dockerfile"
+        dockerfile = "testbuilds/ubuntu18-cm-sdl2.dockerfile"
         addhosts = self.local_addhosts(dockerfile, "--universe")
         savename = docname(dockerfile)
         saveto = SAVETO

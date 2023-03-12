@@ -54,6 +54,7 @@ am:
 # testing
 
 tests:  ; $(PYTHON3) testbuilds.py -vv
+testss:  ; $(PYTHON3) testbuilds.py -vv --failfast
 testbuilds: ; $(PYTHON3) testbuilds.py -vv --no-cache
 k_%: ; $(PYTHON3) testbuilds.py $@ -vv --no-cache --keep
 b_%: ; $(PYTHON3) testbuilds.py $@ -vv --no-cache --failfast
