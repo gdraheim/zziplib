@@ -292,10 +292,10 @@ class ZZiplibBuildTest(unittest.TestCase):
     #
     def test_101_docker_mirror_ubuntu1(self) -> None:
         logg.info("\n  UBUNTU1 = '%s'", UBUNTU1)
-        self.start_mirror(UBUNTU1)
+        self.start_mirror(UBUNTU1, "--update")
     def test_102_docker_mirror_ubuntu2(self) -> None:
         logg.info("\n  UBUNTU2 = '%s'", UBUNTU2)
-        self.start_mirror(UBUNTU2)
+        self.start_mirror(UBUNTU2, "--update")
     def test_103_docker_mirror_ubuntu3(self) -> None:
         logg.info("\n  UBUNTU3 = '%s'", UBUNTU3)
         self.start_mirror(UBUNTU3, "--universe")
@@ -535,7 +535,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname = self.testname()
         testdir = self.testdir()
         dockerfile = "testbuilds/ubuntu18-cm-build.dockerfile"
-        addhosts = self.local_addhosts(dockerfile)
+        addhosts = self.local_addhosts(dockerfile, "--updates")
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
@@ -579,7 +579,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname = self.testname()
         testdir = self.testdir()
         dockerfile = "testbuilds/ubuntu20-cm-build.dockerfile"
-        addhosts = self.local_addhosts(dockerfile)
+        addhosts = self.local_addhosts(dockerfile, "--updates")
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
