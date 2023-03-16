@@ -4,7 +4,7 @@
 __copyright__ = "(C) 2023 Guido Draheim"
 __contact__ = "https://github.com/gdraheim/docker-mirror-packages-repo"
 __license__ = "CC0 Creative Commons Zero (Public Domain)"
-__version__ = "1.6.5107"
+__version__ = "1.7.5114"
 
 from collections import OrderedDict, namedtuple
 import os.path
@@ -29,15 +29,17 @@ UNIVERSE = False
 
 LEAP = "opensuse/leap"
 SUSE = "opensuse"
-OPENSUSE_VERSIONS = {"42.2": SUSE, "42.3": SUSE, "15.0": LEAP, "15.1": LEAP, "15.2": LEAP, "15.3": LEAP}
+OPENSUSE_VERSIONS = {"42.2": SUSE, "42.3": SUSE, "15.0": LEAP, "15.1": LEAP, "15.2": LEAP, "15.3": LEAP, "15.4": LEAP}
 UBUNTU_LTS = {"16": "16.04", "18": "18.04", "20": "20.04"}
 UBUNTU_VERSIONS = {"12.04": "precise", "14.04": "trusty", "16.04": "xenial", "17.10": "artful",
                    "18.04": "bionic", "18.10": "cosmic", "19.04": "disco", "19.10": "eoan",
-                   "20.04": "focal", "20.10": "groovy"}
+                   "20.04": "focal", "20.10": "groovy", "21.04": "hirsute", "21.10": "impish",
+                   "22.04": "jammpy", "22.10": "kinetic", "23.04": "lunatic"}
 CENTOS_VERSIONS = {"7.0": "7.0.1406", "7.1": "7.1.1503", "7.2": "7.2.1511", "7.3": "7.3.1611",
                    "7.4": "7.4.1708", "7.5": "7.5.1804", "7.6": "7.6.1810", "7.7": "7.7.1908",
                    "7.8": "7.8.2003", "7.9": "7.9.2009",
-                   "8.0": "8.0.1905", "8.1": "8.1.1911", "8.2": "8.2.2004", "8.3": "8.3.2011"}
+                   "8.0": "8.0.1905", "8.1": "8.1.1911", "8.2": "8.2.2004", "8.3": "8.3.2011",
+                   "8.4": "8.4.2105", "9.0": "9.0.20221001", "9.1": "9.1.20230222", }
 
 def decodes(text):
     if text is None: return None
@@ -637,6 +639,18 @@ class DockerMirrorPackagesRepo:
                 return found.group(1)
         return defaults
 
+def repo_scripts():
+    me = os.path.dirname(sys.argv[0])
+    dn = os.path.join(me, "scripts")
+    if os.path.isdir(dn): return dn
+    dn = os.path.join(me, "docker_mirror/scripts")
+    if os.path.isdir(dn): return dn
+    dn = os.path.join(me, "../docker_mirror/scripts")
+    if os.path.isdir(dn): return dn
+    dn = os.path.join(me, "../share/docker_mirror/scripts")
+    if os.path.isdir(dn): return dn
+    return "scripts"
+
 if __name__ == "__main__":
     from argparse import ArgumentParser
     _o = ArgumentParser(description="""starts local containers representing mirrors of package repo repositories 
@@ -662,37 +676,39 @@ if __name__ == "__main__":
     ADDEPEL = opt.epel  # centos epel-repo
     UPDATES = opt.updates
     UNIVERSE = opt.universe  # ubuntu universe repo
-    command = "detect"
+    command = opt.command or "detect"
     repo = DockerMirrorPackagesRepo()
     if not opt.image and opt.file:
         opt.image = repo.from_dockerfile(opt.file)
-    if opt.command in ["?", "help"]:
+    if command in ["?", "help"]:
         print(repo.helps())
-    elif opt.command in ["detect", "image"]:
+    elif command in ["detect", "image"]:
         print(repo.detect(opt.image))
-    elif opt.command in ["repo", "from"]:
+    elif command in ["repo", "from"]:
         print(repo.repo(opt.image))
-    elif opt.command in ["repos", "for"]:
+    elif command in ["repos", "for"]:
         print(repo.repos(opt.image))
-    elif opt.command in ["latest"]:
+    elif command in ["latest"]:
         print(repo.get_docker_latest_version(opt.image))
-    elif opt.command in ["epel"]:
+    elif command in ["epel"]:
         print(repo.epel(opt.image))
-    elif opt.command in ["facts"]:
+    elif command in ["facts"]:
         print(repo.facts(opt.image))
-    elif opt.command in ["start", "starts"]:
+    elif command in ["start", "starts"]:
         print(repo.starts(opt.image))
-    elif opt.command in ["stop", "stops"]:
+    elif command in ["stop", "stops"]:
         print(repo.stops(opt.image))
-    elif opt.command in ["show", "shows", "info", "infos"]:
+    elif command in ["show", "shows", "info", "infos"]:
         print(repo.infos(opt.image))
-    elif opt.command in ["addhost", "add-host", "addhosts", "add-hosts"]:
+    elif command in ["addhost", "add-host", "addhosts", "add-hosts"]:
         ADDHOSTS = True
         print(repo.infos(opt.image))
-    elif opt.command in ["inspect"]:
+    elif command in ["inspect"]:
         print(repo.inspects(opt.image))
-    elif opt.command in ["containers"]:
+    elif command in ["containers"]:
         print(repo.containers(opt.image))
+    elif command in ["scripts"]:
+        print(repo_scripts())
     else:
         print("unknown command", opt.command)
         sys.exit(1)
