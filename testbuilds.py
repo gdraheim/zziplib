@@ -47,6 +47,7 @@ NOCACHE = False
 
 MAINDIR = os.path.dirname(sys.argv[0]) or "."
 MIRROR = os.path.join(MAINDIR, "docker_mirror.py")
+LOCAL = 0
 
 def decodes(text: Union[bytes, str]) -> str:
     if text is None: return None
@@ -281,8 +282,12 @@ class ZZiplibBuildTest(unittest.TestCase):
         extras = extras or ""
         docker = DOCKER
         mirror = MIRROR
+        if LOCAL:
+            mirror += " --local"
         cmd = "{mirror} start {image} --add-hosts {extras}"
-        out = output(cmd.format(**locals()))
+        out, rc = output2(cmd.format(**locals()))
+        if LOCAL and rc:
+            raise SystemError("--local docker-mirror-packages-repo not found")
         return decodes(out).strip()
     def nocache(self) -> str:
         if FORCE or NOCACHE:
@@ -299,7 +304,13 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.start_mirror(UBUNTU2, "--update")
     def test_103_docker_mirror_ubuntu3(self) -> None:
         logg.info("\n  UBUNTU3 = '%s'", UBUNTU3)
-        self.start_mirror(UBUNTU3, "--universe")
+        if LOCAL:
+            self.start_mirror(UBUNTU3)
+        else:
+            self.start_mirror(UBUNTU3, "--universe")
+    def test_104_docker_mirror_ubuntu3(self) -> None:
+        logg.info("\n  UBUNTU4 = '%s'", UBUNTU4)
+        self.start_mirror(UBUNTU4, "--universe")
     def test_105_docker_mirror_opensuse5(self) -> None:
         logg.info("\n  OPENSUSE5 = '%s'", OPENSUSE5)
         self.start_mirror(OPENSUSE5)
@@ -536,7 +547,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname = self.testname()
         testdir = self.testdir()
         dockerfile = "testbuilds/ubuntu18-cm-build.dockerfile"
-        addhosts = self.local_addhosts(dockerfile, "--updates")
+        addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
@@ -580,7 +591,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname = self.testname()
         testdir = self.testdir()
         dockerfile = "testbuilds/ubuntu20-cm-build.dockerfile"
-        addhosts = self.local_addhosts(dockerfile, "--updates")
+        addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
@@ -624,7 +635,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname = self.testname()
         testdir = self.testdir()
         dockerfile = "testbuilds/ubuntu22-cm-build.dockerfile"
-        addhosts = self.local_addhosts(dockerfile, "--updates")
+        addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
@@ -982,6 +993,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname = self.testname()
         testdir = self.testdir()
         dockerfile = "testbuilds/ubuntu18-cm-sdl2.dockerfile"
+        if LOCAL: self.skipTest("no universe for ubuntu:18.04 in local tests")
         addhosts = self.local_addhosts(dockerfile, "--universe")
         savename = docname(dockerfile)
         saveto = SAVETO
@@ -1021,6 +1033,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname = self.testname()
         testdir = self.testdir()
         dockerfile = "testbuilds/ubuntu20-cm-sdl2.dockerfile"
+        if LOCAL: self.skipTest("no universe for ubuntu:20.04 in local tests")
         addhosts = self.local_addhosts(dockerfile, "--universe")
         savename = docname(dockerfile)
         saveto = SAVETO
@@ -1938,6 +1951,8 @@ if __name__ == "__main__":
                   help="use another docker execution engine [%default]")
     _o.add_option("-M", "--mirror", metavar="EXE", default=MIRROR,
                   help="use another docker_mirror.py script [%default]")
+    _o.add_option("-L", "--local", action="count", default=0,
+                  help="fail if not local docker mirror found [%default]")
     _o.add_option("-k", "--keep", action="count", default=0,
                   help="keep docker build container [%default]")
     _o.add_option("-f", "--force", action="count", default=0,
@@ -1956,6 +1971,7 @@ if __name__ == "__main__":
     _python = opt.python
     DOCKER = opt.docker
     MIRROR = opt.mirror
+    LOCAL = opt.local
     KEEP = opt.keep
     FORCE = opt.force
     NOCACHE = opt.no_cache
