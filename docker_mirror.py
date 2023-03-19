@@ -4,7 +4,7 @@
 __copyright__ = "(C) 2023 Guido Draheim"
 __contact__ = "https://github.com/gdraheim/docker-mirror-packages-repo"
 __license__ = "CC0 Creative Commons Zero (Public Domain)"
-__version__ = "1.7.5114"
+__version__ = "1.7.5117"
 
 from collections import OrderedDict, namedtuple
 import os.path
@@ -15,6 +15,8 @@ import logging
 import subprocess
 import tempfile
 import shutil
+import socket
+import time
 
 if sys.version[0] != '2':
     xrange = range
@@ -26,6 +28,8 @@ ADDHOSTS = False
 ADDEPEL = False
 UPDATES = False
 UNIVERSE = False
+
+MAXWAIT = 6
 
 LEAP = "opensuse/leap"
 SUSE = "opensuse"
@@ -39,7 +43,9 @@ CENTOS_VERSIONS = {"7.0": "7.0.1406", "7.1": "7.1.1503", "7.2": "7.2.1511", "7.3
                    "7.4": "7.4.1708", "7.5": "7.5.1804", "7.6": "7.6.1810", "7.7": "7.7.1908",
                    "7.8": "7.8.2003", "7.9": "7.9.2009",
                    "8.0": "8.0.1905", "8.1": "8.1.1911", "8.2": "8.2.2004", "8.3": "8.3.2011",
-                   "8.4": "8.4.2105", "9.0": "9.0.20221001", "9.1": "9.1.20230222", }
+                   "8.4": "8.4.2105"}
+ALMA_VERSIONS = {"9.1-20230222": "9.1", "9.1-20221201": "9.1", "9.1-20221117": "9.1",
+                 "9.0-20221001": "9.0", "9.0-20220901": "9.0", "9.0-20220706": "9.0", }
 
 def decodes(text):
     if text is None: return None
@@ -187,6 +193,8 @@ class DockerMirrorPackagesRepo:
         """ converts a shorthand version into the version string used on an image name. """
         if image.startswith("centos:"):
             return self.get_centos_latest(image)
+        if image.startswith("almalinux:"):
+            return self.get_centos_latest(image)
         if image.startswith("opensuse/leap:"):
             return self.get_opensuse_latest(image)
         if image.startswith("opensuse:"):
@@ -198,6 +206,9 @@ class DockerMirrorPackagesRepo:
         """ converts a shorthand version into the version string used on an image name. """
         if image.startswith("centos:"):
             version = image[len("centos:"):]
+            return self.get_centos_latest_version(version)
+        if image.startswith("almalinux:"):
+            version = image[len("almalinux:"):]
             return self.get_centos_latest_version(version)
         if image.startswith("opensuse/leap:"):
             version = image[len("opensuse/leap:"):]
@@ -215,6 +226,8 @@ class DockerMirrorPackagesRepo:
             'docker start centos-repo:x.y' before and extend the original to 
             'docker start --add-host mirror...:centos-repo centos:x.y'. """
         if image.startswith("centos:"):
+            return self.get_centos_docker_mirror(image)
+        if image.startswith("almalinux:"):
             return self.get_centos_docker_mirror(image)
         if image.startswith("opensuse/leap:"):
             return self.get_opensuse_docker_mirror(image)
@@ -234,13 +247,18 @@ class DockerMirrorPackagesRepo:
             if ADDEPEL:
                 if "centos" in image:
                     mirrors += self.get_epel_docker_mirrors(image)
+        if image.startswith("almalinux:"):
+            mirrors = self.get_centos_docker_mirrors(image)
+            if ADDEPEL:
+                if "alma" in image:
+                    mirrors += self.get_epel_docker_mirrors(image)
         if image.startswith("opensuse/leap:"):
             mirrors = self.get_opensuse_docker_mirrors(image)
         if image.startswith("opensuse:"):
             mirrors = self.get_opensuse_docker_mirrors(image)
         if image.startswith("ubuntu:"):
             mirrors = self.get_ubuntu_docker_mirrors(image)
-        logg.info(" %s -> %s", image, " ".join([mirror.cname for mirror in mirrors]))
+        logg.info("     mirrors for %s -> %s", image, " ".join([mirror.cname for mirror in mirrors]))
         return mirrors
     def get_ubuntu_latest(self, image, default=None):
         if image.startswith("ubuntu:"):
@@ -293,6 +311,12 @@ class DockerMirrorPackagesRepo:
             latest = self.get_centos_latest_version(version)
             if latest:
                 return "{distro}:{latest}".format(**locals())
+        if image.startswith("almalinux:"):
+            distro = "almalinux"
+            version = image[len("almalinux:"):]
+            latest = self.get_centos_latest_version(version)
+            if latest:
+                return "{distro}:{latest}".format(**locals())
         if default is not None:
             return default
         return image
@@ -309,19 +333,39 @@ class DockerMirrorPackagesRepo:
                     logg.debug("release %s (%s)", release, fullrelease)
                     if latest < fullrelease:
                         latest = fullrelease
+            for release in ALMA_VERSIONS:
+                if release.startswith(ver):
+                    # fullrelease = ALMA_VERSIONS[release]
+                    mainrelease = CENTOS_VERSIONS[release]
+                    logg.debug("release %s (%s)", release, mainrelease)
+                    if latest < mainrelease:
+                        latest = mainrelease
             if latest:
                 ver = latest
         if ver in CENTOS_VERSIONS:
             ver = CENTOS_VERSIONS[ver]
+        if version in ALMA_VERSIONS:
+            ver = ALMA_VERSIONS[version]
+        elif version in ALMA_VERSIONS.values():
+            ver = max([os for os in ALMA_VERSIONS if ALMA_VERSIONS[os] == version])
+        logg.debug("latest version %s for %s", ver, version)
         return ver or version
     def get_centos_docker_mirror(self, image):
         """ detects a local centos mirror or starts a local
             docker container with a centos repo mirror. It
             will return the setting for extrahosts"""
+        if ":" in image:
+            distro, ver = image.split(":", 1)
+        else:
+            distro, ver = "centos", image
         rmi = "localhost:5000/mirror-packages"
-        rep = "centos-repo"
+        rep = F"{distro}-repo"
         ver = self.get_centos_latest_version(onlyversion(image))
-        return self.docker_mirror(rmi, rep, ver, "mirrorlist.centos.org")
+        logg.debug("    mirror for %s (%s)", ver, image)
+        if "alma" in distro:
+            return self.docker_mirror(rmi, rep, ver, "mirrors.almalinux.org")
+        else:
+            return self.docker_mirror(rmi, rep, ver, "mirrorlist.centos.org")
     def get_centos_docker_mirrors(self, image):
         main = self.get_centos_docker_mirror(image)
         return [main]
@@ -400,6 +444,11 @@ class DockerMirrorPackagesRepo:
         version = self.get_centos_latest_version(ver)
         # cut the yymm date part from the centos release
         released = version.split(".")[-1]
+        # cut the yymm date part from the almalinux release
+        yymm = re.match("\\d+[.]\\d+-22(\\d\\d\\d\\d)\\d*", version)
+        if yymm:
+            released = yymm.group(1)
+        logg.debug("      detected %s -> epel %s", version, released)
         later = ""
         before = ""
         # and then check for actual images around
@@ -433,14 +482,14 @@ class DockerMirrorPackagesRepo:
         out, err, rc = output3(cmd.format(**locals()))
         if rc:
             logg.info("%s : %s", cmd, err)
-            logg.debug("no address for %s", name)
+            logg.debug("no addr for %s", name)
             return None
         values = json.loads(out)
         if not values or "NetworkSettings" not in values[0]:
             logg.critical(" docker inspect %s => %s ", name, values)
         addr = values[0]["NetworkSettings"]["IPAddress"]
         assert isinstance(addr, basestring)
-        logg.debug("address %s for %s", addr, name)
+        logg.debug("::::                %s -> %s", name, addr)
         return addr
     def start_containers(self, image):
         mirrors = self.get_docker_mirrors(image)
@@ -455,14 +504,14 @@ class DockerMirrorPackagesRepo:
         out, err, ok = output3(cmd.format(**locals()))
         image_found = json.loads(out)
         if not image_found:
-            logg.info("image not found: %s", image)
+            logg.info("    image not found: %s", image)
             return None
         cmd = "{docker} inspect {container}"
         out, err, rc = output3(cmd.format(**locals()))
         container_found = json.loads(out)
         if not rc and container_found:
             container_status = container_found[0]["State"]["Status"]
-            logg.info("::: %s -> %s", container, container_status)
+            logg.debug("::::                %s -> %s", container, container_status)
             latest_image_id = image_found[0]["Id"]
             container_image_id = container_found[0]["Image"]
             if latest_image_id != container_image_id or container_status not in ["running"]:
@@ -477,7 +526,7 @@ class DockerMirrorPackagesRepo:
             if rc:
                 logg.error("%s : %s", cmd, err)
         addr = self.ip_container(container)
-        logg.info("%s : %s", container, addr)
+        logg.info(" ---> %s : %s", container, addr)
         return addr
     def stop_containers(self, image):
         mirrors = self.get_docker_mirrors(image)
@@ -529,7 +578,7 @@ class DockerMirrorPackagesRepo:
         args = []
         for mirror in mirrors:
             name = mirror.cname
-            logg.info("name = %s (%s)", name, done)
+            logg.debug(" repo container %s   (%s)", name, done)
             if name in done:
                 addr = done[name]
                 if addr:
@@ -596,40 +645,80 @@ class DockerMirrorPackagesRepo:
         return json.dumps(data, indent=2)
     def starts(self, image=None):
         image = self.detect(image)
-        done = self.start_containers(image)
+        logg.debug("starts image = %s", image)
+        mirrors = self.start_containers(image)
+        if LOCAL:
+            notfound = [mirror for mirror, addr in mirrors.items() if addr is None]
+            if notfound:
+                logg.error("   no docker mirror image for %s" % (" ".join(notfound)))
+                sys.exit(1)
+        self.wait_mirrors(mirrors)
         if ADDHOSTS:
-            return " ".join(self.add_hosts(image, done))
+            return " ".join(self.add_hosts(image, mirrors))
         else:
-            return json.dumps(done, indent=2)
+            return json.dumps(mirrors, indent=2)
     def stops(self, image=None):
         image = self.detect(image)
-        done = self.stop_containers(image)
+        mirrors = self.stop_containers(image)
         if ADDHOSTS:
-            names = sorted(done.keys())
+            names = sorted(mirrors.keys())
             return " ".join(names)
         else:
-            return json.dumps(done, indent=2)
+            return json.dumps(mirrors, indent=2)
+    def wait_mirrors(self, hosts):
+        results = {}
+        for url, addr in hosts.items():
+            if not addr:
+                continue
+            results[url] = 0
+            if "alma" in url or "epel" in url:
+                logg.debug("wait %s:443 (%ss)", url, MAXWAIT)
+                for attempt in xrange(max(1, MAXWAIT)):
+                    try:
+                        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                        sock.settimeout(2)
+                        sock.connect((addr, 443))
+                        results[url] = 0
+                        break
+                    except ConnectionRefusedError as e:
+                        logg.info(" wait %s:443 = %s", url, e)
+                        results[url] += 1
+                        time.sleep(1)
+            else:
+                logg.debug("wait %s:80 (%ss)", url, MAXWAIT)
+                for attempt in xrange(max(1, MAXWAIT - 2)):
+                    try:
+                        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                        sock.settimeout(2)
+                        sock.connect((addr, 80))
+                        results[url] = 0
+                        break
+                    except ConnectionRefusedError as e:
+                        logg.info(" wait %s:80 = %s", url, e)
+                        results[url] += 1
+                        time.sleep(1)
+        return sum(results.values())
     def infos(self, image=None):
         image = self.detect(image)
-        done = self.info_containers(image)
+        mirrors = self.info_containers(image)
         if ADDHOSTS:
-            return " ".join(self.add_hosts(image, done))
+            return " ".join(self.add_hosts(image, mirrors))
         else:
-            return json.dumps(done, indent=2)
+            return json.dumps(mirrors, indent=2)
     def containers(self, image=None):
         image = self.detect(image)
-        done = self.get_containers(image)
+        mirrors = self.get_containers(image)
         if ADDHOSTS:
-            return " ".join(done)
+            return " ".join(mirrors)
         else:
-            return json.dumps(done, indent=2)
+            return json.dumps(mirrors, indent=2)
     def inspects(self, image=None):
         image = self.detect(image)
-        done = self.inspect_containers(image)
+        mirrors = self.inspect_containers(image)
         if ADDHOSTS:
-            return " ".join(self.add_hosts(image, done))
+            return " ".join(self.add_hosts(image, mirrors))
         else:
-            return json.dumps(done, indent=2)
+            return json.dumps(mirrors, indent=2)
     def from_dockerfile(self, dockerfile, defaults=None):
         if os.path.isdir(dockerfile):
             dockerfile = os.path.join(dockerfile, "Dockerfile")
@@ -667,6 +756,8 @@ if __name__ == "__main__":
                     help="addhosts using universe variant [%(default)s]")
     _o.add_argument("-f", "--file", metavar="DOCKERFILE", default=None,
                     help="default to image FROM the dockerfile [%(default)s]")
+    _o.add_argument("-l", "--local", "--localmirrors", action="count", default=0,
+                    help="fail if a local mirror was not found [%(default)s]")
     commands = ["help", "detect", "image", "repo", "info", "facts", "start", "stop"]
     _o.add_argument("command", nargs="?", default="detect", help="|".join(commands))
     _o.add_argument("image", nargs="?", default=None, help="defaults to image name of the local host system")
@@ -676,6 +767,7 @@ if __name__ == "__main__":
     ADDEPEL = opt.epel  # centos epel-repo
     UPDATES = opt.updates
     UNIVERSE = opt.universe  # ubuntu universe repo
+    LOCAL = opt.local
     command = opt.command or "detect"
     repo = DockerMirrorPackagesRepo()
     if not opt.image and opt.file:
