@@ -408,6 +408,50 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "docker rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
+    def test_209_almalinux9_automake_dockerfile(self) -> None:
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
+        testname = self.testname()
+        testdir = self.testdir()
+        dockerfile = "testbuilds/almalinux9-am-build.dockerfile"
+        addhosts = self.local_addhosts(dockerfile)
+        savename = docname(dockerfile)
+        saveto = SAVETO
+        images = IMAGES
+        build = "build --build-arg=no_check=true" + self.nocache()
+        cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        sh____(cmd.format(**locals()))
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
+        cmd = "docker run -d --name {testname} {images}:{testname} sleep 60"
+        sh____(cmd.format(**locals()))
+        #:# container = self.ip_container(testname)
+        cmd = "docker exec {testname} ls -l /usr/local/bin"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} find /usr/local/include -type f"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
+        sh____(cmd.format(**locals()))
+        #
+        cmd = "docker exec {testname} bash -c 'test ! -d /usr/local/include/SDL_rwops_zzip'"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} rpm -q --whatprovides /usr/lib64/pkgconfig/zlib.pc"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} pkg-config --libs zlib"
+        zlib = output(cmd.format(**locals()))
+        self.assertEqual(zlib.strip(), "-lz")
+        #
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
+        cmd = "docker rmi {saveto}/{savename}:latest"
+        sx____(cmd.format(**locals()))
+        cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
+        sh____(cmd.format(**locals()))
+        cmd = "docker rmi {images}:{testname}"
+        sx____(cmd.format(**locals()))
+        self.rm_testdir()
     def test_217_centos7_cmake_build_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
@@ -459,6 +503,50 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname = self.testname()
         testdir = self.testdir()
         dockerfile = "testbuilds/centos8-cm-build.dockerfile"
+        addhosts = self.local_addhosts(dockerfile)
+        savename = docname(dockerfile)
+        saveto = SAVETO
+        images = IMAGES
+        build = "build --build-arg=no_check=true" + self.nocache()
+        cmd = "docker {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        sh____(cmd.format(**locals()))
+        cmd = "docker rm --force {testname}"
+        sx____(cmd.format(**locals()))
+        cmd = "docker run -d --name {testname} {images}:{testname} sleep 60"
+        sh____(cmd.format(**locals()))
+        #:# container = self.ip_container(testname)
+        cmd = "docker exec {testname} ls -l /usr/local/bin"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} find /usr/local/include -type f"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
+        sh____(cmd.format(**locals()))
+        #
+        cmd = "docker exec {testname} bash -c 'test ! -d /usr/local/include/SDL_rwops_zzip'"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} rpm -q --whatprovides /usr/lib64/pkgconfig/zlib.pc"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname} pkg-config --libs zlib"
+        zlib = output(cmd.format(**locals()))
+        self.assertEqual(zlib.strip(), "-lz")
+        #
+        if not KEEP:
+            cmd = "docker rm --force {testname}"
+            sx____(cmd.format(**locals()))
+        cmd = "docker rmi {saveto}/{savename}:latest"
+        sx____(cmd.format(**locals()))
+        cmd = "docker tag {images}:{testname} {saveto}/{savename}:latest"
+        sh____(cmd.format(**locals()))
+        cmd = "docker rmi {images}:{testname}"
+        sx____(cmd.format(**locals()))
+        self.rm_testdir()
+    def test_219_almalinux9_cmake_build_dockerfile(self) -> None:
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
+        testname = self.testname()
+        testdir = self.testdir()
+        dockerfile = "testbuilds/almalinux9-cm-build.dockerfile"
         addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
         saveto = SAVETO
@@ -1504,6 +1592,79 @@ class ZZiplibBuildTest(unittest.TestCase):
         testdir = self.testdir()
         dockerfile1 = "testbuilds/centos8-am-build.dockerfile"  # make st_208
         dockerfile2 = "testbuilds/centos8-cm-build.dockerfile"  # make st_218
+        addhosts = self.local_addhosts(dockerfile1)
+        savename1 = docname(dockerfile1)
+        savename2 = docname(dockerfile2)
+        saveto = SAVETO
+        images = IMAGES
+        cmd = "docker rm --force {testname1}"
+        sx____(cmd.format(**locals()))
+        cmd = "docker rm --force {testname2}"
+        sx____(cmd.format(**locals()))
+        cmd = "docker run -d --name {testname1} {addhosts} {saveto}/{savename1} sleep 600"
+        sh____(cmd.format(**locals()))
+        cmd = "docker run -d --name {testname2} {addhosts} {saveto}/{savename2} sleep 600"
+        #
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname2} bash -c 'cd /usr/local && tar czvf /local.tgz .'"
+        sh____(cmd.format(**locals()))
+        cmd = "docker cp {testname2}:/local.tgz tmp.local.tgz"
+        sh____(cmd.format(**locals()))
+        cmd = "docker cp tmp.local.tgz {testname1}:/local.tgz"
+        sh____(cmd.format(**locals()))
+        cmd = "rm tmp.local.tgz"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname1} mkdir -p /new/local"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname1} bash -c 'cd /new/local && tar xzvf /local.tgz'"
+        sh____(cmd.format(**locals()))
+        #
+        item = "{}"
+        end = "\\;"
+        A = '"s:zzip-zlib-config:zlib:"'
+        B = '"s:=/usr/local/:=\\${prefix}/:"'
+        C1 = '"/^exec_prefix=/d"'
+        C2 = '"/^datarootdir=/d"'
+        C3 = '"/^datadir=/d"'
+        C4 = '"/^sysconfdir=/d"'
+        C5 = '"/^bindir=/d"'
+        G = '"/ generated by configure /d"'
+        cmd = "docker exec {testname1} bash -c 'find /usr/local -name *.pc -exec sed -i -e {A} -e {B} -e {C1} -e {C2} -e {C3} -e {C4} -e {C5} -e {G} {item} {end}'"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname1} bash -c 'find /usr/local -name zzip-zlib-config.pc -exec rm -v {item} {end}'"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname1} bash -c 'find /usr/local -name *.la -exec rm -v {item} {end}'"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname1} bash -c 'find /new/local -name *-0.so -exec rm -v {item} {end}'"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname1} bash -c 'find /new/local -name *.cmake -exec rm -v {item} {end}'"
+        sh____(cmd.format(**locals()))
+        cmd = "docker exec {testname1} bash -c 'rmdir /new/local/share/zziplib'"  # if empty
+        sx____(cmd.format(**locals()))
+        cmd = "docker exec {testname1} diff -uw /usr/local/include/zzip/_config.h /new/local/include/zzip/_config.h"
+        sx____(cmd.format(**locals()))
+        cmd = "docker exec {testname1} diff -urw --no-dereference /usr/local /new/local --exclude _config.h"
+        sx____(cmd.format(**locals()))
+        out = output(cmd.format(**locals()))
+        if "---" in out or "Only" in out:
+            logg.warning("out>>\n%s", out)
+        self.assertFalse(greps(out, "---"))
+        self.assertFalse(greps(out, "Only"))
+        #
+        cmd = "docker rm --force {testname1}"
+        sx____(cmd.format(**locals()))
+        cmd = "docker rm --force {testname2}"
+        sx____(cmd.format(**locals()))
+        self.rm_testdir()
+    def test_919_centos8_am_cm_dockerfile(self) -> None:
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
+        testname1 = self.testname() + "_am"
+        testname2 = self.testname() + "_cm"
+        testdir = self.testdir()
+        dockerfile1 = "testbuilds/almalinux9-am-build.dockerfile"  # make st_209
+        dockerfile2 = "testbuilds/almalinux9-cm-build.dockerfile"  # make st_219
         addhosts = self.local_addhosts(dockerfile1)
         savename1 = docname(dockerfile1)
         savename2 = docname(dockerfile2)
