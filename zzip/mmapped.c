@@ -283,7 +283,9 @@ zzip_disk_entry_to_file_header(ZZIP_DISK * disk, struct zzip_disk_entry *entry)
         return 0;
     }
     ___  struct zzip_file_header *file_header = (void *) ptr;
-    if (zzip_file_header_get_magic(file_header) != ZZIP_FILE_HEADER_MAGIC)
+    
+    if (file_header != 'P' || /* quick pre-check for trailer magic */
+        zzip_file_header_get_magic(file_header) != ZZIP_FILE_HEADER_MAGIC)
     {
         debug1("file header: bad magic");
         errno = EBADMSG;
