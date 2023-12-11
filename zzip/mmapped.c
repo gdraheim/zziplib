@@ -664,14 +664,14 @@ zzip_disk_entry_fopen(ZZIP_DISK * disk, ZZIP_DISK_ENTRY * entry)
     off_t offset = zzip_file_header_to_data(header);
     if (csize == 0xFFFFu) {
         struct zzip_extra_zip64* zip64 =
-           zzip_file_header_to_extras(header);
+         (struct zzip_extra_zip64*)zzip_file_header_to_extras(header);
         if (ZZIP_EXTRA_ZIP64_CHECK(zip64)) {
             csize = zzip_extra_zip64_csize(zip64);
         }
     }
     if (offset == 0xFFFFu) {
         struct zzip_extra_zip64* zip64 =
-           zzip_file_header_to_extras(header);
+           (struct zzip_extra_zip64*)zzip_file_header_to_extras(header);
         if (ZZIP_EXTRA_ZIP64_CHECK(zip64)) {
             offset = zzip_extra_zip64_offset(zip64);
         }
