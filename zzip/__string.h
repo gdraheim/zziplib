@@ -39,7 +39,7 @@ _zzip_strndup(char const *p, size_t maxlen)
 {
     if (p == NULL)
     {
-       return p;
+       return (char *)p;
     } else 
     {
         size_t len = _zzip_strnlen(p, maxlen);
