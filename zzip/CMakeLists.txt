@@ -30,7 +30,7 @@ option(ZZIP_LIBTOOL "Ensure binary compatibility with libtool" OFF)
 option(ZZIP_PKGCONFIG "Generate pkg-config files for linking" OFF)
 endif()
 
-if(ZZIP_LIBTOOL OR ZZIP_PKGCONFIG)
+if((CMAKE_BUILD_TYPE STREQUAL "Release") AND (ZZIP_LIBTOOL OR ZZIP_PKGCONFIG))
 option(ZZIP_LIBLATEST "Ensure libname.lib links to libname-REL.lib" ON)
 else()
 option(ZZIP_LIBLATEST "Ensure libname.lib links to libname-REL.lib" OFF)
