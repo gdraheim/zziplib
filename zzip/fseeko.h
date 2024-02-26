@@ -147,7 +147,6 @@ struct zzip_entry /* : struct zzip_disk_entry */
 #endif
 
 #ifdef __cplusplus
-extern "C" {
 }
 #endif
 #endif
