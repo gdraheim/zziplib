@@ -738,8 +738,14 @@ zzip_dir_fdopen_ext_io(int fd, zzip_error_t * errcode_p,
         *errcode_p = rv;
     return dir;
   error:
-    if (dir)
+    if (dir) {
+        /*
+         * in case of error, fd will be closed by caller,
+         * don't take the fd ownership, otherwise fd will be closed twice
+         */
+        dir->fd = -1;
         zzip_dir_free(dir);
+    }
     if (errcode_p)
         *errcode_p = rv;
     return NULL;
