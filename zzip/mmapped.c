@@ -276,7 +276,8 @@ struct zzip_file_header *
 zzip_disk_entry_to_file_header(ZZIP_DISK * disk, struct zzip_disk_entry *entry)
 {
     zzip_byte_t *const ptr = disk->buffer + zzip_disk_entry_fileoffset(entry);
-    if (disk->buffer > ptr || ptr >= disk->endbuf)
+    zzip_byte_t *const end = ptr + sizeof(struct zzip_file_header);
+    if (disk->buffer > ptr || end >= disk->endbuf || end <= NULL)
     {
         debug2("file header: offset out of bounds (0x%llx)", (long long unsigned)(disk->buffer));
         errno = EBADMSG;
