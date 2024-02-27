@@ -139,18 +139,21 @@ add_custom_command(OUTPUT zziplib.xml
     DEPENDS libzzip
     BYPRODUCTS zziplib.html
     VERBATIM)
+add_custom_target(zziplib_xml DEPENDS zziplib.xml) # prevent race codition
 add_custom_command(OUTPUT zzipmmapped.xml
     COMMAND ${PY} ${srcdir}/makedocs.py ${zzip_sources} ${docinfo} --onlymainheader=zzip/mmapped.h --output=zzipmmapped
     COMMAND ${MV} zzipmmapped.docbook zzipmmapped.xml
     DEPENDS libzzipmmapped
     BYPRODUCTS zzipmmapped.html
     VERBATIM)
+add_custom_target(zzipmmapped_xml DEPENDS zzipmmapped.xml) # prevent race codition
 add_custom_command(OUTPUT zzipfseeko.xml
     COMMAND ${PY} ${srcdir}/makedocs.py ${zzip_sources} ${docinfo} --onlymainheader=zzip/fseeko.h --output=zzipfseeko
     COMMAND ${MV} zzipfseeko.docbook zzipfseeko.xml
     DEPENDS libzzipfseeko
     BYPRODUCTS zzipfseeko.html
     VERBATIM)
+add_custom_target(zzipfseeko_xml DEPENDS zzipfseeko.xml) # prevent race codition
 add_custom_command(OUTPUT manpages.tar
     COMMAND ${BASH} -c "test -d man3 && rm -rf man3; mkdir man3"
     COMMAND ${PY} ${srcdir}/tools/dbk2man.py -o man3 man zziplib.xml
@@ -160,7 +163,7 @@ add_custom_command(OUTPUT manpages.tar
     COMMAND ${BASH} -c "chmod 664 man3/*.3"
     COMMAND ${BASH} -c "tar cf manpages.tar man3"
     COMMAND ${BASH} -c "ls -l `pwd`/manpages.tar >&2 || true"
-    DEPENDS zziplib.xml zzipmmapped.xml zzipfseeko.xml
+    DEPENDS zziplib_xml zzipmmapped_xml zzipfseeko_xml
     VERBATIM)
 add_custom_command(OUTPUT htmpages.tar
     COMMAND ${BASH} -c "test -d html && rm -rf html; mkdir html"
@@ -170,12 +173,12 @@ add_custom_command(OUTPUT htmpages.tar
     COMMAND ${PY} ${srcdir}/tools/dir2index.py -o html html
     COMMAND ${BASH} -c "tar cf htmpages.tar html/*.*"
     COMMAND ${BASH} -c "ls -l `pwd`/htmpages.tar || true"
-    DEPENDS zziplib.xml zzipmmapped.xml zzipfseeko.xml
+    DEPENDS zziplib_xml zzipmmapped_xml zzipfseeko_xml
     VERBATIM)
 
 add_custom_target(manpages DEPENDS manpages.tar)
 add_custom_target(htmpages DEPENDS htmpages.tar)
-add_custom_target(doc DEPENDS zziplib.xml zzipmmapped.xml zzipfseeko.xml site/site.html)
+add_custom_target(doc DEPENDS zziplib_xml zzipmmapped_xml zzipfseeko_xml site)
 add_custom_target(docs DEPENDS doc manpages htmpages)
 add_custom_target(mans DEPENDS manpages)
 
