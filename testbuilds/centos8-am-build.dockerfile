@@ -1,4 +1,4 @@
-FROM centos:8.5.2111
+FROM centos:8.3.2011
 ARG no_check=false
 ARG no_install=false
 
