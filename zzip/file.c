@@ -668,9 +668,9 @@ zzip_freopen(zzip_char_t* filename, zzip_char_t* mode, ZZIP_FILE* stream)
     for (; *mode; mode++) {
         switch (*mode) {
             /* clang-format off */
-	case '0': case '1': case '2': case '3': case '4':
-	case '5': case '6': case '7': case '8': case '9':
-	    continue; /* ignore if not attached to other info */
+        case '0': case '1': case '2': case '3': case '4':
+        case '5': case '6': case '7': case '8': case '9':
+            continue; /* ignore if not attached to other info */
         case 'r': o_flags |= mode[1] == '+' ? O_RDWR : O_RDONLY; break;
         case 'w': o_flags |= mode[1] == '+' ? O_RDWR : O_WRONLY;
                   o_flags |= O_TRUNC; break;
@@ -681,15 +681,15 @@ zzip_freopen(zzip_char_t* filename, zzip_char_t* mode, ZZIP_FILE* stream)
         case 'x': o_flags |= O_EXCL; break;
         case 's': o_flags |= O_SYNC; break;
         case 'n': o_flags |= O_NONBLOCK; break;
-	case 'o': o_modes &=~ 07;
+        case 'o': o_modes &=~ 07;
                   o_modes |= ((mode[1] - '0')) & 07; continue;
-	case 'g': o_modes &=~ 070;
+        case 'g': o_modes &=~ 070;
                   o_modes |= ((mode[1] - '0') << 3) & 070; continue;
-	case 'u': o_modes &=~ 0700;
+        case 'u': o_modes &=~ 0700;
                   o_modes |= ((mode[1] - '0') << 6) & 0700; continue;
-	case 'q': o_modes |= ZZIP_FACTORY; break;
-	case 'z': /* compression level */
-	    continue; /* currently ignored, just for write mode */
+        case 'q': o_modes |= ZZIP_FACTORY; break;
+        case 'z': /* compression level */
+           continue; /* currently ignored, just for write mode */
             /* clang-format on */
         }
     }

@@ -45,10 +45,10 @@
 #define debug3(msg, arg1, arg2) do { fprintf(stderr, "DEBUG: %s : " msg "\n", __func__, arg1, arg2); } while(0)
 #define debug4(msg, arg1, arg2, arg3) do { fprintf(stderr, "DEBUG: %s : " msg "\n", __func__, arg1, arg2, arg3); } while(0)
 #else
-#define debug1(msg) 
-#define debug2(msg, arg1) 
-#define debug3(msg, arg1, arg2) 
-#define debug4(msg, arg1, arg2, arg3) 
+#define debug1(msg)
+#define debug2(msg, arg1)
+#define debug3(msg, arg1, arg2)
+#define debug4(msg, arg1, arg2, arg3)
 #endif
 /* clang-format on */
 
