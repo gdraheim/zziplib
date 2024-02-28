@@ -1,3 +1,10 @@
+2024-02-28  gdraheim@github
+    * fixed last cmake bug - parallel builds can lead to race condition
+    * abolished centos8 testbuilds and prepared ubuntu24
+    * integrated some github patches
+    * prepare autoformat with clang-format (not yet enforced)
+    * release 0.13.73
+
 2023-03-12  gdraheim@github
     * Switched docs from .htm to .md format. The mksite to .html is retained.
     * Some cmake patches were included. Specifically MacOS seems to be special.
