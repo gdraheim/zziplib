@@ -7,7 +7,7 @@
 
 #include <zzip/conf.h>
 
-#if   defined ZZIP_HAVE_STRING_H
+#if defined ZZIP_HAVE_STRING_H
 #include <string.h>
 #elif defined ZZIP_HAVE_STRINGS_H
 #include <strings.h>
@@ -20,13 +20,12 @@
 
 /* if your system does not have strnlen: */
 static size_t
-_zzip_strnlen(const char *p, size_t maxlen)
+_zzip_strnlen(const char* p, size_t maxlen)
 {
-    const char * stop = (char *)memchr(p, '\0', maxlen);
-    return stop ? (size_t)(stop - p) : maxlen;
+    const char* stop = (char*) memchr(p, '\0', maxlen);
+    return stop ? (size_t) (stop - p) : maxlen;
 }
 #endif
-
 
 #if defined ZZIP_HAVE_STRNDUP || defined strndup
 #define _zzip_strndup strndup
@@ -34,16 +33,15 @@ _zzip_strnlen(const char *p, size_t maxlen)
 #include <stdlib.h>
 
 /* if your system does not have strndup: */
-zzip__new__ static char *
-_zzip_strndup(char const *p, size_t maxlen)
+zzip__new__ static char*
+_zzip_strndup(char const* p, size_t maxlen)
 {
-    if (p == NULL)
-    {
-       return (char *)p;
-    } else 
-    {
+    if (p == NULL) {
+        return (char*) p;
+    }
+    else {
         size_t len = _zzip_strnlen(p, maxlen);
-        char* r = (char *)malloc(len + 1);
+        char*  r   = (char*) malloc(len + 1);
         if (r == NULL)
             return NULL; /* errno = ENOMEM */
         r[len] = '\0';
@@ -58,14 +56,13 @@ _zzip_strndup(char const *p, size_t maxlen)
 
 /* if your system does not have strcasecmp: */
 static int
-_zzip_strcasecmp(char *__zzip_restrict a, char *_zzip_restrict b)
+_zzip_strcasecmp(char* __zzip_restrict a, char* _zzip_restrict b)
 {
     if (! a)
         return (b) ? 1 : 0;
     if (! b)
         return -1;
-    while (1)
-    {
+    while (1) {
         int v = tolower(*a) - tolower(*b);
         if (v)
             return v;

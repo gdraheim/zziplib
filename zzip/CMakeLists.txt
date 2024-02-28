@@ -165,7 +165,6 @@ set(libzzip_HDRS
     fetch.h
     stdint.h
     zzip32.h
-    autoconf.h
     ${outdir}/_config.h)
 
 set(libzzip_INCS

@@ -11,7 +11,6 @@
  * Copyright (c) Guido Draheim, use under copyleft (LGPL,MPL)
  */
 
-
 #include <zzip/types.h>
 
 #ifdef _ZZIP_DISK_FILE_STRUCT
@@ -22,24 +21,23 @@
 extern "C" {
 #endif
 
-typedef struct zzip_disk_file  ZZIP_DISK_FILE;
-typedef struct zzip_disk       ZZIP_DISK;
+typedef struct zzip_disk_file ZZIP_DISK_FILE;
+typedef struct zzip_disk      ZZIP_DISK;
 /*  def struct zzip_disk_entry ZZIP_DISK_ENTRY; */
 
 /* we expose this structure so third party applications can augment
  * on them. The mmapped zip access usually just needs the two pointers
  * specifying the mmapped area, wherever you have that from.
  */
-struct zzip_disk
-{
+struct zzip_disk {
     zzip_byte_t* buffer; /* start of mmapped area, the base of all seekvals */
     zzip_byte_t* endbuf; /* end of mmapped area, i.e. buffer + buflen */
-    void* reserved;    /* - for later extensions (might be renamed) */
-    void* user;        /* - free for applications (use this!) */
-    long  flags;       /* bit 0: findfile searches case-insensitive */
-    long  mapped;      /* used for mmap() wrappers of zzip/__mmap.h */
-    long  unused;      /* - for later extensions (might be renamed) */
-    long  code;        /* - free for applications (use this!) */
+    void*        reserved; /* - for later extensions (might be renamed) */
+    void*        user; /* - free for applications (use this!) */
+    long         flags; /* bit 0: findfile searches case-insensitive */
+    long         mapped; /* used for mmap() wrappers of zzip/__mmap.h */
+    long         unused; /* - for later extensions (might be renamed) */
+    long         code; /* - free for applications (use this!) */
 };
 
 /* fnmatch search shall be case insensitive */
@@ -66,12 +64,11 @@ zzip_disk_munmap(ZZIP_DISK* disk);
 zzip_disk_extern zzip__new__ ZZIP_DISK*
 zzip_disk_open(char* filename);
 
-zzip_disk_extern zzip__new__ ZZIP_DISK *
-zzip_disk_buffer(void *buffer, size_t buflen);
+zzip_disk_extern zzip__new__ ZZIP_DISK*
+zzip_disk_buffer(void* buffer, size_t buflen);
 
 zzip_disk_extern int
 zzip_disk_close(ZZIP_DISK* disk);
-
 
 zzip_disk_extern ZZIP_DISK_ENTRY*
 zzip_disk_findfirst(ZZIP_DISK* disk);
@@ -89,40 +86,35 @@ zzip_disk_extern zzip_byte_t*
 zzip_disk_entry_to_data(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry);
 
 zzip_disk_extern ZZIP_DISK_ENTRY*
-zzip_disk_findfile(ZZIP_DISK* disk,
-		   char* filename, ZZIP_DISK_ENTRY* after,
-		   zzip_strcmp_fn_t compare);
+zzip_disk_findfile(ZZIP_DISK* disk, char* filename, ZZIP_DISK_ENTRY* after,
+                   zzip_strcmp_fn_t compare);
 zzip_disk_extern ZZIP_DISK_ENTRY*
-zzip_disk_findmatch(ZZIP_DISK* disk,
-		    char* filespec, ZZIP_DISK_ENTRY* after,
-		    zzip_fnmatch_fn_t compare, int flags);
-
+zzip_disk_findmatch(ZZIP_DISK* disk, char* filespec, ZZIP_DISK_ENTRY* after,
+                    zzip_fnmatch_fn_t compare, int flags);
 
 zzip_disk_extern zzip__new__ ZZIP_DISK_FILE*
-zzip_disk_entry_fopen (ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry);
+zzip_disk_entry_fopen(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry);
 
 zzip_disk_extern zzip__new__ ZZIP_DISK_FILE*
-zzip_disk_fopen (ZZIP_DISK* disk, char* filename);
+zzip_disk_fopen(ZZIP_DISK* disk, char* filename);
 
 zzip_disk_extern _zzip_size_t
-zzip_disk_fread (void* ptr, _zzip_size_t size, _zzip_size_t nmemb,
-		 ZZIP_DISK_FILE* file);
+zzip_disk_fread(void* ptr, _zzip_size_t size, _zzip_size_t nmemb, ZZIP_DISK_FILE* file);
 zzip_disk_extern int
-zzip_disk_fclose (ZZIP_DISK_FILE* file);
+zzip_disk_fclose(ZZIP_DISK_FILE* file);
 int
-zzip_disk_feof (ZZIP_DISK_FILE* file);
+zzip_disk_feof(ZZIP_DISK_FILE* file);
 
 #ifdef _ZZIP_DISK_FILE_STRUCT
 /**
  * typedef struct zzip_disk_file ZZIP_DISK_FILE;
  */
-struct zzip_disk_file
-{
-    zzip_byte_t* buffer;               /* fopen disk->buffer */
-    zzip_byte_t* endbuf;               /* fopen disk->endbuf */
-    zzip_size_t avail;                 /* memorized for checks on EOF */
-    z_stream zlib;                     /* for inflated blocks */
-    zzip_byte_t* stored;               /* for stored blocks */
+struct zzip_disk_file {
+    zzip_byte_t* buffer; /* fopen disk->buffer */
+    zzip_byte_t* endbuf; /* fopen disk->endbuf */
+    zzip_size_t  avail; /* memorized for checks on EOF */
+    z_stream     zlib; /* for inflated blocks */
+    zzip_byte_t* stored; /* for stored blocks */
 };
 #endif
 
@@ -130,4 +122,3 @@ struct zzip_disk_file
 }
 #endif
 #endif
-

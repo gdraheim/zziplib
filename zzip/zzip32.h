@@ -25,19 +25,19 @@ extern "C" {
  * Scanning files in zip archive.
  * Implemented in zzip/dir.c
  */
-_zzip_export
-long zzip_telldir32(ZZIP_DIR * dir);
-_zzip_export
-void zzip_seekdir32(ZZIP_DIR * dir, long offset);
+_zzip_export long
+zzip_telldir32(ZZIP_DIR* dir);
+_zzip_export void
+zzip_seekdir32(ZZIP_DIR* dir, long offset);
 
 /*
  *  seek and tell functions.
  *  Implemented in zzip/file.c
  */
-_zzip_export
-long      zzip_seek32(ZZIP_FILE * fp, long offset, int whence);
-_zzip_export
-long      zzip_tell32(ZZIP_FILE * fp);
+_zzip_export long
+zzip_seek32(ZZIP_FILE* fp, long offset, int whence);
+_zzip_export long
+zzip_tell32(ZZIP_FILE* fp);
 
 #ifdef __cplusplus
 }
