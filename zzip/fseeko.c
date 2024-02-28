@@ -382,7 +382,7 @@ zzip_entry_findfirst(FILE* disk)
                 continue;
 
             if (! (0 <= root && root < disksize)) {
-                debug3("bogus rootseek value %lli (disksize %lli)", /* .. /
+                debug3("bogus rootseek value %lli (disksize %lli)", /* .. */
                (long long)root, (long long)disksize);
                 errno = EBADMSG;
                 goto error2;
