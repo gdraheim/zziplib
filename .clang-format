@@ -5,12 +5,12 @@ AlignConsecutiveDeclarations: true
 AlignConsecutiveAssignments: true
 AlignConsecutiveMacros: true
 AlignAfterOpenBracket: true
-AllowShortBlocksOnASingleLine: true
+AllowShortBlocksOnASingleLine: Always
 BreakBeforeBraces: Stroustrup
 # BraceBreakingStyle: Stroustrup
 # PenaltyReturnTypeOnItsOwnLine: 0
-AlwaysBreakAfterDefinitionReturnType: true
-# BreakAfterReturnType: ExceptShortType
+AlwaysBreakAfterDefinitionReturnType: TopLevel
+AlwaysBreakAfterReturnType: TopLevel
 SpaceAfterLogicalNot: true
 SpaceAfterCStyleCast: true
 # SpaceAroundPointerQualifiers: Both
