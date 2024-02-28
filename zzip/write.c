@@ -475,8 +475,3 @@ zzip_sync(void)
 }
 #endif
 
-/* 
- * Local variables:
- * c-file-style: "stroustrup"
- * End:
- */

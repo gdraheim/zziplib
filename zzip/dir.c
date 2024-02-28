@@ -326,8 +326,3 @@ zzip_closedir(ZZIP_DIR * dir)
     }
 }
 
-/* 
- * Local variables:
- * c-file-style: "stroustrup"
- * End:
- */

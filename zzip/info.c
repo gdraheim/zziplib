@@ -144,8 +144,3 @@ zzip_realfd(ZZIP_FILE * fp)
     return fp->fd;
 }
 
-/*
- * Local variables:
- * c-file-style: "stroustrup"
- * End:
- */

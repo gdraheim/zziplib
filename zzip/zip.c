@@ -99,7 +99,7 @@ _zzip_inline static char *__zzip_aligned4(char *p);
 _zzip_inline static void
 __fixup_rootseek(zzip_off_t offset_of_trailer, struct _disk_trailer *trailer)
 {
-    if (_disk_trailer_rootseek(trailer) >
+    if (_disk_trailer_rootseek(trailer) > /* .. */
         offset_of_trailer - _disk_trailer_rootsize(trailer) &&
         offset_of_trailer > _disk_trailer_rootsize(trailer))
     {
@@ -895,8 +895,3 @@ zzip_dir_read(ZZIP_DIR * dir, ZZIP_DIRENT * d)
     return 1;
 }
 
-/*
- * Local variables:
- * c-file-style: "stroustrup"
- * End:
- */

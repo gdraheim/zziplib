@@ -1206,8 +1206,3 @@ zzip_seek32(ZZIP_FILE * fp, long offset, int whence)
     }
 }
 
-/*
- * Local variables:
- * c-file-style: "stroustrup"
- * End:
- */

@@ -82,8 +82,3 @@ zzip_init_io(zzip_plugin_io_handlers_t io, int flags)
     return 0;
 }
 
-/* 
- * Local variables:
- * c-file-style: "stroustrup"
- * End:
- */

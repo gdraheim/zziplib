@@ -156,8 +156,3 @@ zzip_errno(int errcode)
     }
 }
 
-/* 
- * Local variables:
- * c-file-style: "stroustrup"
- * End:
- */

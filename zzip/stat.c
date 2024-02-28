@@ -124,8 +124,3 @@ zzip_fstat(ZZIP_FILE * file, ZZIP_STAT * zs)
     }
 }
 
-/* 
- * Local variables:
- * c-file-style: "stroustrup"
- * End:
- */

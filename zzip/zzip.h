@@ -267,8 +267,3 @@ ZZIP_DIR *  zzip_dir_open_ext_io(zzip_char_t* filename,
 
 #endif /* _ZZIPLIB_H */
 
-/* 
- * Local variables:
- * c-file-style: "stroustrup"
- * End:
- */
