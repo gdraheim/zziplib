@@ -1,0 +1,25 @@
+name: py types
+
+on:
+  push:
+    branches: [ develop, master ]
+  pull_request:
+    branches: [ develop, master ]
+  workflow_dispatch:
+
+jobs:
+  clang-format:
+    name: clang format check
+    runs-on: 'ubuntu-latest'
+    steps:
+    - name: checkout software
+      uses: actions/checkout@v3
+      with:
+        path: software
+    - name: run clang-format check
+      uses: jidicula/clang-format-action@v4.11.0
+      with:
+        clang-format-version: '15'
+        check-path: software/zzip
+      continue-on-error: true
+
