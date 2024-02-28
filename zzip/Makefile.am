@@ -36,7 +36,6 @@ libzzip_la_headers = \
 	fetch.h \
 	format.h \
         info.h \
-	autoconf.h \
 	types.h \
 	conf.h \
 	_config.h \
