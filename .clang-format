@@ -12,7 +12,7 @@ BreakBeforeBraces: Stroustrup
 AlwaysBreakAfterDefinitionReturnType: true
 # BreakAfterReturnType: ExceptShortType
 SpaceAfterLogicalNot: true
-# SpaceAfterCStyleCast: true
+SpaceAfterCStyleCast: true
 # SpaceAroundPointerQualifiers: Both
 SpaceBeforeAssignmentOperators: true
 UseTab: Never
