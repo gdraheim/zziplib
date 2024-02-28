@@ -1,4 +1,4 @@
-name: py types
+name: clang format
 
 on:
   push:
