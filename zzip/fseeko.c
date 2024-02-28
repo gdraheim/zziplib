@@ -383,12 +383,11 @@ zzip_entry_findfirst(FILE* disk)
 
             if (! (0 <= root && root < disksize)) {
                 debug3("bogus rootseek value %lli (disksize %lli)", /* .. */
-               (long long)root, (long long)disksize);
+                       (long long) root, (long long) disksize);
                 errno = EBADMSG;
                 goto error2;
             }
-            if (fseeko(disk, root, SEEK_SET) == -1)
-            {
+            if (fseeko(disk, root, SEEK_SET) == -1) {
                 debug2("next seeko %s", strerror(errno));
                 goto error2; /* EBADF */
             }
