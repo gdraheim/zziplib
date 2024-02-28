@@ -6,6 +6,7 @@
 
 /* perhaps want to show on syslog(3) ?? */
 
+/* clang-format off */
 #ifdef DEBUG
 #include <stdio.h>
 #define MSG1(X1) ZZIP_FOR1 { \
@@ -35,6 +36,7 @@
 #define MSG5(X1,X2,X3,X4,X5) {}
 #define MSG6(X1,X2,X3,X4,X5,X6) {}
 #endif
+/* clang-format on */
 
 #define DBG1(X1)                     MSG1("DEBUG: " X1) 
 #define DBG2(X1,X2)                  MSG2("DEBUG: " X1,X2) 
