@@ -79,11 +79,11 @@ zzip_entry_feof(ZZIP_ENTRY_FILE* file);
 struct zzip_entry : public struct zzip_disk_entry {
     char* _zzip_restrict tail;
     zzip_off_t           tailalloc; /* the allocated size of tail */
-    FILE*                diskfile; /* a file reference */
-    zzip_off_t           disksize; /* the size of the file */
-    zzip_off_t           headseek; /* the offset within the file */
+    FILE*                diskfile;  /* a file reference */
+    zzip_off_t           disksize;  /* the size of the file */
+    zzip_off_t           headseek;  /* the offset within the file */
     zzip_off_t           zz_usize;
-    zzip_off_t           zz_csize; /* items scanned from header */
+    zzip_off_t           zz_csize;  /* items scanned from header */
     zzip_off_t           zz_offset; /* or zip64 extension block */
     int                  zz_diskstart;
 };
@@ -94,11 +94,11 @@ struct zzip_entry /* : struct zzip_disk_entry */
     struct zzip_disk_entry head;
     char* _zzip_restrict   tail;
     zzip_off_t             tailalloc; /* the allocated size of tail */
-    FILE*                  diskfile; /* a file reference */
-    zzip_off_t             disksize; /* the size of the file */
-    zzip_off_t             headseek; /* the offset within the file */
+    FILE*                  diskfile;  /* a file reference */
+    zzip_off_t             disksize;  /* the size of the file */
+    zzip_off_t             headseek;  /* the offset within the file */
     zzip_off_t             zz_usize;
-    zzip_off_t             zz_csize; /* items scanned from header */
+    zzip_off_t             zz_csize;  /* items scanned from header */
     zzip_off_t             zz_offset; /* or zip64 extension block */
     int                    zz_diskstart;
 };

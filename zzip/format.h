@@ -60,14 +60,14 @@ typedef struct zzip_dostime zzip_dostime_t;
 struct zzip_file_header {
 #define ZZIP_FILE_HEADER_MAGIC           0x04034b50
 #define ZZIP_FILE_HEADER_CHECKMAGIC(__p) ZZIP_CHECKMAGIC(__p, 'P', 'K', '\3', '\4')
-    zzip_byte_t    z_magic[4]; /* local file header signature (0x04034b50) */
-    zzip_version_t z_extract; /* version needed to extract */
-    zzip_byte_t    z_flags[2]; /* general purpose bit flag */
-    zzip_byte_t    z_compr[2]; /* compression method */
-    zzip_dostime_t z_dostime; /* last mod file time (dos format) */
-    zzip_byte_t    z_crc32[4]; /* crc-32 */
-    zzip_byte_t    z_csize[4]; /* compressed size */
-    zzip_byte_t    z_usize[4]; /* uncompressed size */
+    zzip_byte_t    z_magic[4];  /* local file header signature (0x04034b50) */
+    zzip_version_t z_extract;   /* version needed to extract */
+    zzip_byte_t    z_flags[2];  /* general purpose bit flag */
+    zzip_byte_t    z_compr[2];  /* compression method */
+    zzip_dostime_t z_dostime;   /* last mod file time (dos format) */
+    zzip_byte_t    z_crc32[4];  /* crc-32 */
+    zzip_byte_t    z_csize[4];  /* compressed size */
+    zzip_byte_t    z_usize[4];  /* uncompressed size */
     zzip_byte_t    z_namlen[2]; /* filename length (null if stdin) */
     zzip_byte_t    z_extras[2]; /* extra field length */
     /* followed by filename (of variable size) */
@@ -101,22 +101,22 @@ struct zzip_file_trailer {
 struct zzip_disk_entry {
 #define ZZIP_DISK_ENTRY_MAGIC           0x02014b50
 #define ZZIP_DISK_ENTRY_CHECKMAGIC(__p) ZZIP_CHECKMAGIC(__p, 'P', 'K', '\1', '\2')
-    zzip_byte_t    z_magic[4]; /* central file header signature (0x02014b50) */
-    zzip_version_t z_encoder; /* version made by */
-    zzip_version_t z_extract; /* version need to extract */
-    zzip_byte_t    z_flags[2]; /* general purpose bit flag */
-    zzip_byte_t    z_compr[2]; /* compression method */
-    zzip_dostime_t z_dostime; /* last mod file time&date (dos format) */
-    zzip_byte_t    z_crc32[4]; /* crc-32 */
-    zzip_byte_t    z_csize[4]; /* compressed size */
-    zzip_byte_t    z_usize[4]; /* uncompressed size */
-    zzip_byte_t    z_namlen[2]; /* filename length (null if stdin) */
-    zzip_byte_t    z_extras[2]; /* extra field length */
-    zzip_byte_t    z_comment[2]; /* file comment length */
+    zzip_byte_t    z_magic[4];     /* central file header signature (0x02014b50) */
+    zzip_version_t z_encoder;      /* version made by */
+    zzip_version_t z_extract;      /* version need to extract */
+    zzip_byte_t    z_flags[2];     /* general purpose bit flag */
+    zzip_byte_t    z_compr[2];     /* compression method */
+    zzip_dostime_t z_dostime;      /* last mod file time&date (dos format) */
+    zzip_byte_t    z_crc32[4];     /* crc-32 */
+    zzip_byte_t    z_csize[4];     /* compressed size */
+    zzip_byte_t    z_usize[4];     /* uncompressed size */
+    zzip_byte_t    z_namlen[2];    /* filename length (null if stdin) */
+    zzip_byte_t    z_extras[2];    /* extra field length */
+    zzip_byte_t    z_comment[2];   /* file comment length */
     zzip_byte_t    z_diskstart[2]; /* disk number of start (if spanning zip over multiple disks) */
-    zzip_byte_t    z_filetype[2]; /* internal file attributes, bit0 = ascii */
-    zzip_byte_t    z_filemode[4]; /* extrnal file attributes, eg. msdos attrib byte */
-    zzip_byte_t    z_offset[4]; /* relative offset of local file header, seekval if singledisk */
+    zzip_byte_t    z_filetype[2];  /* internal file attributes, bit0 = ascii */
+    zzip_byte_t    z_filemode[4];  /* extrnal file attributes, eg. msdos attrib byte */
+    zzip_byte_t    z_offset[4];    /* relative offset of local file header, seekval if singledisk */
     /* followed by filename (of variable size) */
     /* followed by extra field (of variable size) */
     /* followed by file comment (of variable size) */
@@ -149,21 +149,21 @@ struct zzip_root_dirent { /* the old name of the structure above */
 struct zzip_disk_trailer {
 #define ZZIP_DISK_TRAILER_MAGIC           0x06054b50
 #define ZZIP_DISK_TRAILER_CHECKMAGIC(__p) ZZIP_CHECKMAGIC(__p, 'P', 'K', '\5', '\6')
-    zzip_byte_t z_magic[4]; /* end of central dir signature (0x06054b50) */
-    zzip_byte_t z_disk[2]; /* number of this disk */
-    zzip_byte_t z_finaldisk[2]; /* number of the disk with the start of the central dir */
-    zzip_byte_t z_entries[2]; /* total number of entries in the central dir on this disk */
+    zzip_byte_t z_magic[4];        /* end of central dir signature (0x06054b50) */
+    zzip_byte_t z_disk[2];         /* number of this disk */
+    zzip_byte_t z_finaldisk[2];    /* number of the disk with the start of the central dir */
+    zzip_byte_t z_entries[2];      /* total number of entries in the central dir on this disk */
     zzip_byte_t z_finalentries[2]; /* total number of entries in the central dir */
-    zzip_byte_t z_rootsize[4]; /* size of the central directory */
-    zzip_byte_t z_rootseek[4]; /* offset of start of central directory with respect to *
-                                * the starting disk number */
-    zzip_byte_t z_comment[2]; /* zipfile comment length */
+    zzip_byte_t z_rootsize[4];     /* size of the central directory */
+    zzip_byte_t z_rootseek[4];     /* offset of start of central directory with respect to *
+                                    * the starting disk number */
+    zzip_byte_t z_comment[2];      /* zipfile comment length */
     /* followed by zipfile comment (of variable size) */
 } ZZIP_GNUC_PACKED;
 #define zzip_disk_trailer_headerlength (4U + 2U + 2U + 2U + 2U + 4U + 4U + 2U)
 
 /* extra field should be type + size + data + type + size + data ... */
-struct zzip_extra_block { /* fetch.h macros do not need this struct */
+struct zzip_extra_block {      /* fetch.h macros do not need this struct */
     zzip_byte_t z_datatype[2]; /* as input type - a mere <char*> is okay */
     zzip_byte_t z_datasize[2]; /* being returned by xx_to_extras usually */
 } ZZIP_GNUC_PACKED;
@@ -173,11 +173,11 @@ struct zzip_extra_block { /* fetch.h macros do not need this struct */
 struct zzip_extra_zip64 {
 #define ZZIP_EXTRA_ZIP64_MAGIC      0x0001
 #define ZZIP_EXTRA_ZIP64_CHECK(__p) ZZIP_CHECK(__p, '\0', '\1')
-    zzip_byte_t z_datatype[2]; /* extras signature 0x0001 */
-    zzip_byte_t z_datasize[2]; /* structure length 0x0010 */
-    zzip_byte_t z_usize[8]; /* original size */
-    zzip_byte_t z_csize[8]; /* compressed size */
-    zzip_byte_t z_offset[8]; /* offset from file header */
+    zzip_byte_t z_datatype[2];  /* extras signature 0x0001 */
+    zzip_byte_t z_datasize[2];  /* structure length 0x0010 */
+    zzip_byte_t z_usize[8];     /* original size */
+    zzip_byte_t z_csize[8];     /* compressed size */
+    zzip_byte_t z_offset[8];    /* offset from file header */
     zzip_byte_t z_diskstart[4]; /* disk where the file starts */
 } ZZIP_GNUC_PACKED;
 
@@ -185,7 +185,7 @@ struct zzip_extra_zip64 {
 struct zzip_disk64_locator {
 #define ZZIP_DISK64_LOCATOR_MAGIC           0x07064b50
 #define ZZIP_DISK64_LOCATOR_CHECKMAGIC(__p) ZZIP_CHECKMAGIC(__p, 'P', 'K', '\6', '\7')
-    zzip_byte_t z_magic[4]; /* end of central dir signature (0x06054b50) */
+    zzip_byte_t z_magic[4];    /* end of central dir signature (0x06054b50) */
     zzip_byte_t z_rootdisk[4]; /* number of disk with the zip64 directory */
     zzip_byte_t z_rootseek[8]; /* relative offset of the zip64 directory */
     zzip_byte_t z_numdisks[4]; /* total numer of disks */
@@ -196,17 +196,17 @@ struct zzip_disk64_locator {
 struct zzip_disk64_trailer {
 #define ZZIP_DISK64_TRAILER_MAGIC           0x06064b50
 #define ZZIP_DISK64_TRAILER_CHECKMAGIC(__p) ZZIP_CHECKMAGIC(__p, 'P', 'K', '\6', '\6')
-    zzip_byte_t    z_magic[4]; /* end of central dir signature (0x06054b50) */
-    zzip_byte_t    z_size[8]; /* size of this central directory record */
-    zzip_version_t z_encoder; /* version made by */
-    zzip_version_t z_extract; /* version need to extract */
-    zzip_byte_t    z_disk[4]; /* number of this disk */
-    zzip_byte_t    z_finaldisk[4]; /* number of the disk with the start of the central dir */
-    zzip_byte_t    z_entries[8]; /* total number of entries in the central dir on this disk */
+    zzip_byte_t    z_magic[4];        /* end of central dir signature (0x06054b50) */
+    zzip_byte_t    z_size[8];         /* size of this central directory record */
+    zzip_version_t z_encoder;         /* version made by */
+    zzip_version_t z_extract;         /* version need to extract */
+    zzip_byte_t    z_disk[4];         /* number of this disk */
+    zzip_byte_t    z_finaldisk[4];    /* number of the disk with the start of the central dir */
+    zzip_byte_t    z_entries[8];      /* total number of entries in the central dir on this disk */
     zzip_byte_t    z_finalentries[8]; /* total number of entries in the central dir */
-    zzip_byte_t    z_rootsize[8]; /* size of the central directory */
-    zzip_byte_t    z_rootseek[8]; /* offset of start of central directory with respect to *
-                                   * the starting disk number */
+    zzip_byte_t    z_rootsize[8];     /* size of the central directory */
+    zzip_byte_t    z_rootseek[8];     /* offset of start of central directory with respect to *
+                                       * the starting disk number */
     /* followed by zip64 extensible data sector (of variable size) */
 } ZZIP_GNUC_PACKED;
 #define zzip_disk64_trailer_headerlength (4U + 8U + 2U + 2U + 4U + 4U + 8U + 8U + 8U + 8U)

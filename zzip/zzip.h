@@ -24,7 +24,7 @@ extern "C" {
 #define ZZIP_ERROR -4096
 
 typedef enum {
-    ZZIP_NO_ERROR        = 0, /* no error, may be used if user sets it. */
+    ZZIP_NO_ERROR        = 0,               /* no error, may be used if user sets it. */
     ZZIP_OUTOFMEM        = ZZIP_ERROR - 20, /* out of memory */
     ZZIP_DIR_OPEN        = ZZIP_ERROR - 21, /* failed to open zipfile, see errno for details */
     ZZIP_DIR_STAT        = ZZIP_ERROR - 22, /* failed to fstat zipfile, see errno for details */
@@ -44,7 +44,7 @@ typedef enum {
  * zzip_open flags.
  */
 #define ZZIP_CASEINSENSITIVE O_APPEND /* do not use anymore. use CASLESS */
-#define ZZIP_IGNOREPATH      O_TRUNC /* do not use anymore. use NOPATHS */
+#define ZZIP_IGNOREPATH      O_TRUNC  /* do not use anymore. use NOPATHS */
 #define ZZIP_EXTRAFLAGS      (ZZIP_CASEINSENSITIVE | ZZIP_IGNOREPATH)
 
 /* zzip_open_ext_io o_modes flags : new style. use these from now on! */
@@ -79,7 +79,7 @@ struct zzip_dirent {
     int   d_compr; /* compression method */
     int   d_csize; /* compressed size */
     int   st_size; /* file size / decompressed size */
-    char* d_name; /* file name / strdupped name */
+    char* d_name;  /* file name / strdupped name */
 };
 
 /*

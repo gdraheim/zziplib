@@ -308,7 +308,7 @@ zzip_file_open(ZZIP_DIR* dir, zzip_char_t* name, int o_mode)
                 break;
             hdr = (struct zzip_dir_hdr*) ((char*) hdr + hdr->d_reclen);
         } /*filename_strcmp */
-    } /*forever */
+    }     /*forever */
     dir->errcode = ZZIP_ENOENT;
     return NULL;
 error:
@@ -409,8 +409,8 @@ zzip_file_read(ZZIP_FILE* fp, void* buf, zzip_size_t len)
      * and read the file position of `this' handle.
      */
     if (dir->currentfp != fp) {
-        if (zzip_file_saveoffset(dir->currentfp) < 0
-            || fp->io->fd.seeks(dir->fd, fp->offset, SEEK_SET) < 0) {
+        if (zzip_file_saveoffset(dir->currentfp) < 0 ||
+            fp->io->fd.seeks(dir->fd, fp->offset, SEEK_SET) < 0) {
             dir->errcode = ZZIP_DIR_SEEK;
             return -1;
         }
@@ -868,8 +868,8 @@ try_zzip:
         if (stream && stream->dir && stream->dir->realname) {
             zzip_size_t len = strlen(stream->dir->realname);
 
-            if (! memcmp(filename, stream->dir->realname, len) && filename[len] == '/'
-                && filename[len + 1]) {
+            if (! memcmp(filename, stream->dir->realname, len) && filename[len] == '/' &&
+                filename[len + 1]) {
                 ZZIP_FILE* fp = zzip_file_open(stream->dir, filename + len + 1, o_modes);
                 if (! fp) {
                     errno = zzip_errno(stream->dir->errcode);
@@ -931,7 +931,7 @@ try_zzip:
 /* DLL compatibility layer - so that 32bit code can link with this lib too */
 
 #undef zzip_open_shared_io /* zzip_open_shared_io64 */
-#undef zzip_open_ext_io /* zzip_open_ext_io64 */
+#undef zzip_open_ext_io    /* zzip_open_ext_io64 */
 #undef zzip_opendir_ext_io /* zzip_opendir_ext_io64 */
 
 ZZIP_FILE*
@@ -1113,8 +1113,8 @@ zzip_seek(ZZIP_FILE* fp, zzip_off_t offset, int whence)
      * and read the file position of `this' handle.
      */
     if (dir->currentfp != fp) {
-        if (zzip_file_saveoffset(dir->currentfp) < 0
-            || fp->io->fd.seeks(dir->fd, fp->offset, SEEK_SET) < 0) {
+        if (zzip_file_saveoffset(dir->currentfp) < 0 ||
+            fp->io->fd.seeks(dir->fd, fp->offset, SEEK_SET) < 0) {
             dir->errcode = ZZIP_DIR_SEEK;
             return -1;
         }

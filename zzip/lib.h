@@ -25,13 +25,13 @@ extern "C" {
  * this structure cannot be wildly enlarged... (see zzip-zip.c)
  */
 struct zzip_dir_hdr {
-    uint32_t d_usize; /* uncompressed size */
-    uint32_t d_csize; /* compressed size */
-    uint32_t d_crc32; /* the adler32-checksum */
-    uint32_t d_off; /* offset of file in zipfile */
-    uint16_t d_reclen; /* next dir_hdr structure offset */
-    uint16_t d_namlen; /* explicit namelen of d_name */
-    uint8_t  d_compr; /* the compression type, 0 = store, 8 = inflate */
+    uint32_t d_usize;   /* uncompressed size */
+    uint32_t d_csize;   /* compressed size */
+    uint32_t d_crc32;   /* the adler32-checksum */
+    uint32_t d_off;     /* offset of file in zipfile */
+    uint16_t d_reclen;  /* next dir_hdr structure offset */
+    uint16_t d_namlen;  /* explicit namelen of d_name */
+    uint8_t  d_compr;   /* the compression type, 0 = store, 8 = inflate */
     char     d_name[1]; /* the actual name of the entry, may contain DIRSEPs */
 };
 #define _ZZIP_DIRENT_HAVE_D_NAMLEN
@@ -50,14 +50,14 @@ struct zzip_dir {
         struct zzip_file* volatile fp;
         char* volatile buf32k;
     } cache;
-    struct zzip_dir_hdr* hdr0; /* zfi; */
-    struct zzip_dir_hdr* hdr; /* zdp; directory pointer, for dirent stuff */
+    struct zzip_dir_hdr* hdr0;      /* zfi; */
+    struct zzip_dir_hdr* hdr;       /* zdp; directory pointer, for dirent stuff */
     struct zzip_file*    currentfp; /* last fp used... */
     struct zzip_dirent   dirent;
     void*                realdir; /* e.g. DIR* from posix dirent.h */
     char*                realname;
     zzip_strings_t*      fileext; /* list of fileext to test for */
-    zzip_plugin_io_t     io; /* vtable for io routines */
+    zzip_plugin_io_t     io;      /* vtable for io routines */
 };
 
 #define ZZIP_32K 32768

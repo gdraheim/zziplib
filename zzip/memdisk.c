@@ -211,8 +211,8 @@ zzip_mem_entry_new(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry)
     /*
      * If zz_data+zz_csize exceeds the size of the file, bail out
      */
-    if ((item->zz_data + item->zz_csize) < disk->buffer
-        || (item->zz_data + item->zz_csize) >= disk->endbuf) {
+    if ((item->zz_data + item->zz_csize) < disk->buffer ||
+        (item->zz_data + item->zz_csize) >= disk->endbuf) {
         goto error;
     }
     /*
@@ -321,8 +321,8 @@ zzip_mem_entry_find_extra_block(ZZIP_MEM_ENTRY* entry, short datatype, zzip_size
              */
             while (ext + zzip_extra_block_headerlength + blocksize <= ext_end) {
                 if (datatype == zzip_extra_block_get_datatype(ext)) {
-                    if (blocksize
-                        <= zzip_extra_block_get_datasize(ext) + zzip_extra_block_headerlength) {
+                    if (blocksize <=
+                        zzip_extra_block_get_datasize(ext) + zzip_extra_block_headerlength) {
                         return ((ZZIP_EXTRA_BLOCK*) ext);
                     }
                 }
@@ -568,11 +568,11 @@ zzip_disk_entry_get_mktime(ZZIP_DISK_ENTRY* entry)
     uint16_t  dostime = ZZIP_GET16(entry->z_dostime.time);
     uint16_t  dosdate = ZZIP_GET16(entry->z_dostime.date);
     struct tm date;
-    date.tm_sec  = (dostime) &0x1F; /* bits 0..4 */
+    date.tm_sec  = (dostime) &0x1F;       /* bits 0..4 */
     date.tm_min  = (dostime >> 5) & 0x3F; /* bits 5..10 */
-    date.tm_hour = (dostime >> 11); /* bits 11..15 */
-    date.tm_mday = (dosdate) &0x1F; /* bits 16..20 */
-    date.tm_mon  = (dosdate >> 5) & 0xF; /* bits 21..24 */
-    date.tm_year = (dosdate >> 9) + 80; /* bits 25..31 */
-    return mktime(&date); /* well, unix has that function... */
+    date.tm_hour = (dostime >> 11);       /* bits 11..15 */
+    date.tm_mday = (dosdate) &0x1F;       /* bits 16..20 */
+    date.tm_mon  = (dosdate >> 5) & 0xF;  /* bits 21..24 */
+    date.tm_year = (dosdate >> 9) + 80;   /* bits 25..31 */
+    return mktime(&date);                 /* well, unix has that function... */
 }

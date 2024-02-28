@@ -421,7 +421,7 @@ zzip_entry_findfirst(FILE* disk)
             goto error2;
         }
         mapoffs -= pagesize / 2; /* mapsize += pagesize/2; */
-        mapsize = pagesize; /* if (mapsize > pagesize) ... */
+        mapsize = pagesize;      /* if (mapsize > pagesize) ... */
         if (disksize - mapoffs > 64 * 1024)
             break;
     }
@@ -609,13 +609,13 @@ zzip_entry_findmatch(FILE* disk, char* filespec, ZZIP_ENTRY* _zzip_restrict entr
  */
 struct zzip_entry_file /* : zzip_file_header */
 {
-    struct zzip_file_header header; /* fopen detected header */
-    ZZIP_ENTRY*             entry; /* fopen entry */
-    zzip_off_t              data; /* for stored blocks */
-    zzip_size_t             avail; /* memorized for checks on EOF */
-    zzip_size_t             compressed; /* compressed flag and datasize */
-    zzip_size_t             dataoff; /* offset from data start */
-    z_stream                zlib; /* for inflated blocks */
+    struct zzip_file_header header;           /* fopen detected header */
+    ZZIP_ENTRY*             entry;            /* fopen entry */
+    zzip_off_t              data;             /* for stored blocks */
+    zzip_size_t             avail;            /* memorized for checks on EOF */
+    zzip_size_t             compressed;       /* compressed flag and datasize */
+    zzip_size_t             dataoff;          /* offset from data start */
+    z_stream                zlib;             /* for inflated blocks */
     unsigned char           buffer[PAGESIZE]; /* work buffer for inflate algorithm */
 };
 
@@ -686,8 +686,8 @@ zzip_entry_fopen(ZZIP_ENTRY* entry, int takeover)
     file->dataoff += file->zlib.avail_in;
     ____;
 
-    if (! zzip_file_header_data_deflated(&file->header)
-        || inflateInit2(&file->zlib, -MAX_WBITS) != Z_OK) {
+    if (! zzip_file_header_data_deflated(&file->header) ||
+        inflateInit2(&file->zlib, -MAX_WBITS) != Z_OK) {
         debug1("decompress failed");
         errno = EBADMSG;
         goto error2;

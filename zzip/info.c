@@ -62,8 +62,8 @@ zzip_dirfd(ZZIP_DIR* dir)
 }
 
 #define LENGTH(x) (sizeof(x) / sizeof(*x))
-static const char* comprlevel[] = { "stored", "shrunk", "redu:1", "redu:2", "redu:3", "redu:4",
-                                    "impl:N", "toknze", "defl:N", "defl:B", "impl:B" };
+static const char* comprlevel[] = {"stored", "shrunk", "redu:1", "redu:2", "redu:3", "redu:4",
+                                   "impl:N", "toknze", "defl:N", "defl:B", "impl:B"};
 
 /** compr name.
  * This function returns the static const string of the known compression methods,

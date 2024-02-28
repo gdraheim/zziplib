@@ -148,8 +148,8 @@ zzip_dir_creat_ext_io(zzip_char_t* name, int o_mode, zzip_strings_t* ext, zzip_p
         ___ zzip_strings_t* exx = ext;
         int                 exx_len;
         for (; *exx; exx++) {
-            if ((exx_len = strlen(*exx) + 1) <= name_len
-                && ! memcmp(dir->realname + (name_len - exx_len), *exx, exx_len))
+            if ((exx_len = strlen(*exx) + 1) <= name_len &&
+                ! memcmp(dir->realname + (name_len - exx_len), *exx, exx_len))
                 break; /* keep unmodified */
             exx++;
             if (*exx)

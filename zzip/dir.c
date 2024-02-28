@@ -68,7 +68,7 @@ zzip_rewinddir(ZZIP_DIR* dir)
 static int
 real_readdir(ZZIP_DIR* dir)
 {
-    struct stat    st = { 0 };
+    struct stat    st = {0};
     char           filename[PATH_MAX];
     struct dirent* dirent = _zzip_readdir(dir->realdir);
 

@@ -19,21 +19,21 @@ static struct errlistentry {
     int         code;
     const char* mesg;
 } errlist[] = {
-    { ZZIP_NO_ERROR, "No error" },
-    { ZZIP_OUTOFMEM, "could not get temporary memory for internal structures" },
-    { ZZIP_DIR_OPEN, "Failed to open zip-file %s" },
-    { ZZIP_DIR_STAT, "Failed to fstat zip-file %s" },
-    { ZZIP_DIR_SEEK, "Failed to lseek zip-file %s" },
-    { ZZIP_DIR_READ, "Failed to read zip-file %s" },
-    { ZZIP_DIR_TOO_SHORT, "zip-file %s too short" },
-    { ZZIP_DIR_EDH_MISSING, "zip-file central directory not found" },
-    { ZZIP_DIRSIZE, "Directory size too big..." },
-    { ZZIP_ENOENT, "No such file found in zip-file %s" },
-    { ZZIP_UNSUPP_COMPR, "Unsupported compression format" },
-    { ZZIP_CORRUPTED, "Zipfile corrupted" },
-    { ZZIP_UNDEF, "Some undefined error occurred" },
-    { ZZIP_DIR_LARGEFILE, "Directory is largefile variant" },
-    { 0, 0 },
+    {ZZIP_NO_ERROR, "No error"},
+    {ZZIP_OUTOFMEM, "could not get temporary memory for internal structures"},
+    {ZZIP_DIR_OPEN, "Failed to open zip-file %s"},
+    {ZZIP_DIR_STAT, "Failed to fstat zip-file %s"},
+    {ZZIP_DIR_SEEK, "Failed to lseek zip-file %s"},
+    {ZZIP_DIR_READ, "Failed to read zip-file %s"},
+    {ZZIP_DIR_TOO_SHORT, "zip-file %s too short"},
+    {ZZIP_DIR_EDH_MISSING, "zip-file central directory not found"},
+    {ZZIP_DIRSIZE, "Directory size too big..."},
+    {ZZIP_ENOENT, "No such file found in zip-file %s"},
+    {ZZIP_UNSUPP_COMPR, "Unsupported compression format"},
+    {ZZIP_CORRUPTED, "Zipfile corrupted"},
+    {ZZIP_UNDEF, "Some undefined error occurred"},
+    {ZZIP_DIR_LARGEFILE, "Directory is largefile variant"},
+    {0, 0},
 };
 
 #define errlistSIZE (sizeof(errlist) / sizeof(*errlist))
@@ -86,41 +86,41 @@ static struct errnolistentry {
     int code;
     int e_no;
 } errnolist[] = {
-    { Z_STREAM_ERROR, EPIPE },
-    { Z_DATA_ERROR, ESPIPE },
-    { Z_MEM_ERROR, ENOMEM },
-    { Z_BUF_ERROR, EMFILE },
-    { Z_VERSION_ERROR, ENOEXEC },
+    {Z_STREAM_ERROR, EPIPE},
+    {Z_DATA_ERROR, ESPIPE},
+    {Z_MEM_ERROR, ENOMEM},
+    {Z_BUF_ERROR, EMFILE},
+    {Z_VERSION_ERROR, ENOEXEC},
 
-    { ZZIP_DIR_OPEN, ENOTDIR },
-    { ZZIP_DIR_STAT, EREMOTE },
-    { ZZIP_DIR_SEEK, ESPIPE },
+    {ZZIP_DIR_OPEN, ENOTDIR},
+    {ZZIP_DIR_STAT, EREMOTE},
+    {ZZIP_DIR_SEEK, ESPIPE},
 #ifdef ESTRPIPE
-    { ZZIP_DIR_READ, ESTRPIPE },
+    {ZZIP_DIR_READ, ESTRPIPE},
 #else
-    { ZZIP_DIR_READ, EPIPE },
+    {ZZIP_DIR_READ, EPIPE},
 #endif
-    { ZZIP_DIR_TOO_SHORT, ENOEXEC },
+    {ZZIP_DIR_TOO_SHORT, ENOEXEC},
 #ifdef ENOMEDIUM
-    { ZZIP_DIR_EDH_MISSING, ENOMEDIUM },
+    {ZZIP_DIR_EDH_MISSING, ENOMEDIUM},
 #else
-    { ZZIP_DIR_EDH_MISSING, EIO },
+    {ZZIP_DIR_EDH_MISSING, EIO},
 #endif
-    { ZZIP_DIRSIZE, EFBIG },
-    { ZZIP_OUTOFMEM, ENOMEM },
-    { ZZIP_ENOENT, ENOENT },
+    {ZZIP_DIRSIZE, EFBIG},
+    {ZZIP_OUTOFMEM, ENOMEM},
+    {ZZIP_ENOENT, ENOENT},
 #ifdef EPFNOSUPPORT
-    { ZZIP_UNSUPP_COMPR, EPFNOSUPPORT },
+    {ZZIP_UNSUPP_COMPR, EPFNOSUPPORT},
 #else
-    { ZZIP_UNSUPP_COMPR, EACCES },
+    {ZZIP_UNSUPP_COMPR, EACCES},
 #endif
 #ifdef EILSEQ
-    { ZZIP_CORRUPTED, EILSEQ },
+    {ZZIP_CORRUPTED, EILSEQ},
 #else
-    { ZZIP_CORRUPTED, ELOOP },
+    {ZZIP_CORRUPTED, ELOOP},
 #endif
-    { ZZIP_UNDEF, EINVAL },
-    { 0, 0 },
+    {ZZIP_UNDEF, EINVAL},
+    {0, 0},
 };
 
 /**

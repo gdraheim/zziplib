@@ -63,19 +63,19 @@ zzip_disk(ZZIP_MEM_DISK* dir)
 /* zzip_mem_entry <is similar to> zzip_disk_entry */
 struct _zzip_mem_entry {
     struct _zzip_mem_entry* zz_next;
-    char*                   zz_name; /* zero-terminated (from "filename") */
-    zzip_byte_t*            zz_data; /* compressed content start (mmap addr) */
-    int                     zz_flags; /* (from "z_flags") */
-    int                     zz_compr; /* (from "z_compr") */
-    long                    zz_mktime; /* (from "z_dostime") */
-    long                    zz_crc32; /* (from "z_crc32") */
-    zzip_off_t              zz_csize; /* (from "z_csize")  overridden by zip64 */
-    zzip_off_t              zz_usize; /* (from "z_usize")  overridden by zip64 */
-    zzip_off_t              zz_offset; /* (from "z_offset") overridden by zip64 */
+    char*                   zz_name;      /* zero-terminated (from "filename") */
+    zzip_byte_t*            zz_data;      /* compressed content start (mmap addr) */
+    int                     zz_flags;     /* (from "z_flags") */
+    int                     zz_compr;     /* (from "z_compr") */
+    long                    zz_mktime;    /* (from "z_dostime") */
+    long                    zz_crc32;     /* (from "z_crc32") */
+    zzip_off_t              zz_csize;     /* (from "z_csize")  overridden by zip64 */
+    zzip_off_t              zz_usize;     /* (from "z_usize")  overridden by zip64 */
+    zzip_off_t              zz_offset;    /* (from "z_offset") overridden by zip64 */
     int                     zz_diskstart; /* (from "z_diskstart") rridden by zip64 */
-    int                     zz_filetype; /* (from "z_filetype") */
-    char*                   zz_comment; /* zero-terminated (from "comment") */
-    ZZIP_EXTRA_BLOCK*       zz_ext[3]; /* terminated by null in z_datatype */
+    int                     zz_filetype;  /* (from "z_filetype") */
+    char*                   zz_comment;   /* zero-terminated (from "comment") */
+    ZZIP_EXTRA_BLOCK*       zz_ext[3];    /* terminated by null in z_datatype */
     zzip_size_t             zz_extlen[3]; /* the extra blocks are NOT converted */
 };
 

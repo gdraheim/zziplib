@@ -34,7 +34,7 @@ typedef unsigned char zzip_byte_t; // especially zlib decoding data
 
 typedef _zzip_off64_t zzip_off64_t;
 typedef _zzip_off_t   zzip_off_t;
-typedef _zzip_size_t  zzip_size_t; /* Some error here? */
+typedef _zzip_size_t  zzip_size_t;  /* Some error here? */
 typedef _zzip_ssize_t zzip_ssize_t; /* See notes above! */
 
 /* in <zzip/format.h> */

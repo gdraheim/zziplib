@@ -30,14 +30,14 @@ typedef struct zzip_disk      ZZIP_DISK;
  * specifying the mmapped area, wherever you have that from.
  */
 struct zzip_disk {
-    zzip_byte_t* buffer; /* start of mmapped area, the base of all seekvals */
-    zzip_byte_t* endbuf; /* end of mmapped area, i.e. buffer + buflen */
+    zzip_byte_t* buffer;   /* start of mmapped area, the base of all seekvals */
+    zzip_byte_t* endbuf;   /* end of mmapped area, i.e. buffer + buflen */
     void*        reserved; /* - for later extensions (might be renamed) */
-    void*        user; /* - free for applications (use this!) */
-    long         flags; /* bit 0: findfile searches case-insensitive */
-    long         mapped; /* used for mmap() wrappers of zzip/__mmap.h */
-    long         unused; /* - for later extensions (might be renamed) */
-    long         code; /* - free for applications (use this!) */
+    void*        user;     /* - free for applications (use this!) */
+    long         flags;    /* bit 0: findfile searches case-insensitive */
+    long         mapped;   /* used for mmap() wrappers of zzip/__mmap.h */
+    long         unused;   /* - for later extensions (might be renamed) */
+    long         code;     /* - free for applications (use this!) */
 };
 
 /* fnmatch search shall be case insensitive */
@@ -112,8 +112,8 @@ zzip_disk_feof(ZZIP_DISK_FILE* file);
 struct zzip_disk_file {
     zzip_byte_t* buffer; /* fopen disk->buffer */
     zzip_byte_t* endbuf; /* fopen disk->endbuf */
-    zzip_size_t  avail; /* memorized for checks on EOF */
-    z_stream     zlib; /* for inflated blocks */
+    zzip_size_t  avail;  /* memorized for checks on EOF */
+    z_stream     zlib;   /* for inflated blocks */
     zzip_byte_t* stored; /* for stored blocks */
 };
 #endif

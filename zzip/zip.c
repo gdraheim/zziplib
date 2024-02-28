@@ -98,8 +98,8 @@ _zzip_inline static void
 __fixup_rootseek(zzip_off_t offset_of_trailer, struct _disk_trailer* trailer)
 {
     if (_disk_trailer_rootseek(trailer) > /* .. */
-            offset_of_trailer - _disk_trailer_rootsize(trailer)
-        && offset_of_trailer > _disk_trailer_rootsize(trailer)) {
+            offset_of_trailer - _disk_trailer_rootsize(trailer) &&
+        offset_of_trailer > _disk_trailer_rootsize(trailer)) {
         register zzip_off_t offset;
         offset = offset_of_trailer - _disk_trailer_rootsize(trailer);
         _disk_trailer_set_rootseek(trailer, offset);
@@ -205,7 +205,7 @@ __zzip_fetch_disk_trailer(int fd, zzip_off_t filesize, struct _disk_trailer* _zz
     }
 
     offset = filesize; /* a.k.a. old offset */
-    while (1) /* outer loop */
+    while (1)          /* outer loop */
     {
         register unsigned char* mapped;
 
@@ -281,7 +281,7 @@ __zzip_fetch_disk_trailer(int fd, zzip_off_t filesize, struct _disk_trailer* _zz
             if (io->fd.read(fd, buf, (zzip_size_t) maplen) < maplen) {
                 return (ZZIP_DIR_READ);
             }
-            mapped = (unsigned char*) buf; /* success */
+            mapped = (unsigned char*) buf;                      /* success */
             HINT5("offs=$%lx len=%li filesize=%li pagesize=%i", /* .. */
                   (long) offset, (long) maplen, (long) filesize, ZZIP_BUFSIZ);
         }
@@ -291,8 +291,8 @@ __zzip_fetch_disk_trailer(int fd, zzip_off_t filesize, struct _disk_trailer* _zz
             register unsigned char* tail;
             for (tail = end - 1; (tail >= mapped); tail--) {
                 if ((*tail == 'P') && /* quick pre-check for trailer magic */
-                    end - tail >= __sizeof(struct zzip_disk_trailer) - 2
-                    && zzip_disk_trailer_check_magic(tail)) {
+                    end - tail >= __sizeof(struct zzip_disk_trailer) - 2 &&
+                    zzip_disk_trailer_check_magic(tail)) {
 #ifndef ZZIP_DISK64_TRAILER
                     /* if the file-comment is not present, it happens
                        that the z_comment field often isn't either */
@@ -320,15 +320,15 @@ __zzip_fetch_disk_trailer(int fd, zzip_off_t filesize, struct _disk_trailer* _zz
                      * "extract data from files archived in a single zip file."
                      * So the file offsets must be within the current ZIP archive!
                      */
-                    if (trailer->zz_rootseek >= filesize
-                        || (trailer->zz_rootseek + trailer->zz_rootsize) >= filesize)
+                    if (trailer->zz_rootseek >= filesize ||
+                        (trailer->zz_rootseek + trailer->zz_rootsize) >= filesize)
                         return (ZZIP_CORRUPTED);
                     {
                         return (0);
                     }
                 }
-                else if ((*tail == 'P') && end - tail >= __sizeof(struct zzip_disk64_trailer) - 2
-                         && zzip_disk64_trailer_check_magic(tail)) {
+                else if ((*tail == 'P') && end - tail >= __sizeof(struct zzip_disk64_trailer) - 2 &&
+                         zzip_disk64_trailer_check_magic(tail)) {
 #ifndef ZZIP_DISK64_TRAILER
                     return (ZZIP_DIR_LARGEFILE);
 #else
@@ -344,8 +344,8 @@ __zzip_fetch_disk_trailer(int fd, zzip_off_t filesize, struct _disk_trailer* _zz
                      * "extract data from files archived in a single zip file."
                      * So the file offsets must be within the current ZIP archive!
                      */
-                    if (trailer->zz_rootseek >= filesize
-                        || (trailer->zz_rootseek + trailer->zz_rootsize) >= filesize)
+                    if (trailer->zz_rootseek >= filesize ||
+                        (trailer->zz_rootseek + trailer->zz_rootsize) >= filesize)
                         return (ZZIP_CORRUPTED);
                     {
                         return (0);
@@ -507,8 +507,8 @@ __zzip_parse_root_directory(int fd, struct _disk_trailer* trailer, struct zzip_d
         if (hdr->d_compr > _255)
             hdr->d_compr = 255;
 
-        if ((zzip_off64_t) (zz_offset + sizeof(*d) + u_namlen) > zz_rootsize
-            || (zzip_off64_t) (zz_offset + sizeof(*d) + u_namlen) < 0) {
+        if ((zzip_off64_t) (zz_offset + sizeof(*d) + u_namlen) > zz_rootsize ||
+            (zzip_off64_t) (zz_offset + sizeof(*d) + u_namlen) < 0) {
             FAIL4("%li's name stretches beyond root directory (O:%li N:%li)", /* .. */
                   (long) entries, (long) (zz_offset), (long) (u_namlen));
             break;
@@ -583,12 +583,12 @@ __zzip_parse_root_directory(int fd, struct _disk_trailer* trailer, struct zzip_d
 static zzip_strings_t*
 zzip_get_default_ext(void)
 {
-    static zzip_strings_t ext[] = { ".zip", ".ZIP", /* common extension */
+    static zzip_strings_t ext[] = {".zip", ".ZIP", /* common extension */
 #ifdef ZZIP_USE_ZIPLIKES
-                                    ".pk3", ".PK3", /* ID Software's Quake3 zipfiles */
-                                    ".jar", ".JAR", /* Java zipfiles */
+                                   ".pk3", ".PK3", /* ID Software's Quake3 zipfiles */
+                                   ".jar", ".JAR", /* Java zipfiles */
 #endif
-                                    0 };
+                                   0};
 
     return ext;
 }

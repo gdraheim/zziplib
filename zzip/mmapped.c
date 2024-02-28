@@ -411,7 +411,7 @@ zzip_disk_findfirst(ZZIP_DISK* disk)
     }
     ___ zzip_byte_t* p = disk->endbuf - sizeof(struct zzip_disk_trailer);
     for (; p >= disk->buffer; p--) {
-        zzip_byte_t* root; /* (struct zzip_disk_entry*) */
+        zzip_byte_t* root;     /* (struct zzip_disk_entry*) */
         zzip_size_t  rootsize; /* Size of root central directory */
 
         if (zzip_disk_trailer_check_magic(p)) {
@@ -487,17 +487,17 @@ zzip_disk_findnext(ZZIP_DISK* disk, struct zzip_disk_entry* entry)
         errno = EINVAL;
         return 0;
     }
-    if ((zzip_byte_t*) entry < disk->buffer || /* .. */
+    if ((zzip_byte_t*) entry < disk->buffer ||                 /* .. */
         (zzip_byte_t*) entry > disk->endbuf - sizeof(entry) || /* .. */
-        ! zzip_disk_entry_check_magic(entry) || /* .. */
+        ! zzip_disk_entry_check_magic(entry) ||                /* .. */
         zzip_disk_entry_sizeto_end(entry) > 64 * 1024) {
         errno = EBADMSG;
         return 0;
     }
     entry = zzip_disk_entry_to_next_entry(entry);
     if ((zzip_byte_t*) entry > disk->endbuf - sizeof(entry) || /* .. */
-        ! zzip_disk_entry_check_magic(entry) || /* .. */
-        zzip_disk_entry_sizeto_end(entry) > 64 * 1024 || /* .. */
+        ! zzip_disk_entry_check_magic(entry) ||                /* .. */
+        zzip_disk_entry_sizeto_end(entry) > 64 * 1024 ||       /* .. */
         zzip_disk_entry_skipto_end(entry) + sizeof(entry) > disk->endbuf) {
         errno = ENOENT;
         return 0;
@@ -522,8 +522,8 @@ struct zzip_disk_entry*
 zzip_disk_findfile(ZZIP_DISK* disk, char* filename, struct zzip_disk_entry* after,
                    zzip_strcmp_fn_t compare)
 {
-    struct zzip_disk_entry* entry
-        = (! after ? zzip_disk_findfirst(disk) : zzip_disk_findnext(disk, after));
+    struct zzip_disk_entry* entry =
+        (! after ? zzip_disk_findfirst(disk) : zzip_disk_findnext(disk, after));
     if (! compare)
         compare = (zzip_strcmp_fn_t) ((disk->flags & ZZIP_DISK_FLAGS_MATCH_NOCASE) ? /* .. */
                                           (_zzip_strcasecmp)
@@ -564,8 +564,8 @@ struct zzip_disk_entry*
 zzip_disk_findmatch(ZZIP_DISK* disk, char* filespec, struct zzip_disk_entry* after,
                     zzip_fnmatch_fn_t compare, int flags)
 {
-    struct zzip_disk_entry* entry
-        = (! after ? zzip_disk_findfirst(disk) : zzip_disk_findnext(disk, after));
+    struct zzip_disk_entry* entry =
+        (! after ? zzip_disk_findfirst(disk) : zzip_disk_findnext(disk, after));
     if (! compare) {
         compare = (zzip_fnmatch_fn_t) _zzip_fnmatch;
         if (disk->flags & ZZIP_DISK_FLAGS_MATCH_NOCASE)
@@ -625,19 +625,18 @@ zzip_disk_entry_fopen(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry)
     }
 
     ___ /* a ZIP64 extended block may follow. */
-        size_t csize
-        = zzip_file_header_csize(header);
-    off_t offset = zzip_file_header_to_data(header);
+        size_t csize  = zzip_file_header_csize(header);
+    off_t      offset = zzip_file_header_to_data(header);
     if (csize == 0xFFFFu) {
-        struct zzip_extra_zip64* zip64
-            = (struct zzip_extra_zip64*) zzip_file_header_to_extras(header);
+        struct zzip_extra_zip64* zip64 =
+            (struct zzip_extra_zip64*) zzip_file_header_to_extras(header);
         if (ZZIP_EXTRA_ZIP64_CHECK(zip64)) {
             csize = zzip_extra_zip64_csize(zip64);
         }
     }
     if (offset == 0xFFFFu) {
-        struct zzip_extra_zip64* zip64
-            = (struct zzip_extra_zip64*) zzip_file_header_to_extras(header);
+        struct zzip_extra_zip64* zip64 =
+            (struct zzip_extra_zip64*) zzip_file_header_to_extras(header);
         if (ZZIP_EXTRA_ZIP64_CHECK(zip64)) {
             offset = zzip_extra_zip64_offset(zip64);
         }

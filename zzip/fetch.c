@@ -25,7 +25,7 @@ __zzip_get32(unsigned char* s)
     return __ZZIP_GET32(s);
 #else
     return ((uint32_t) s[3] << 24) | ((uint32_t) s[2] << 16) /* .. */
-        | ((uint32_t) s[1] << 8) | ((uint32_t) s[0]);
+           | ((uint32_t) s[1] << 8) | ((uint32_t) s[0]);
 #endif
 }
 
@@ -61,10 +61,10 @@ __zzip_get64(unsigned char* s)
     v |= s[0]; return v;
     /* clang-format on */
 #else
-    return ((uint64_t) s[7] << 56) | ((uint64_t) s[6] << 48) /* .. */
-        | ((uint64_t) s[5] << 40) | ((uint64_t) s[4] << 32) /* .. */
-        | ((uint64_t) s[3] << 24) | ((uint64_t) s[2] << 16) /* .. */
-        | ((uint64_t) s[1] << 8) | ((uint64_t) s[0]);
+    return ((uint64_t) s[7] << 56) | ((uint64_t) s[6] << 48)   /* .. */
+           | ((uint64_t) s[5] << 40) | ((uint64_t) s[4] << 32) /* .. */
+           | ((uint64_t) s[3] << 24) | ((uint64_t) s[2] << 16) /* .. */
+           | ((uint64_t) s[1] << 8) | ((uint64_t) s[0]);
 #endif
 }
 

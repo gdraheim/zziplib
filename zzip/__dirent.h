@@ -58,10 +58,10 @@
 #include <io.h>
 
 struct dirent {
-    long           d_ino; /* Always zero. */
+    long           d_ino;    /* Always zero. */
     unsigned short d_reclen; /* Always zero. */
     unsigned short d_namlen; /* Length of name in d_name. */
-    char*          d_name; /* File name. */
+    char*          d_name;   /* File name. */
     /* NOTE: The name in the dirent structure points to the name in the
      *       finddata_t structure in the DIR. */
 };
@@ -158,8 +158,8 @@ win32_opendir(const char* szPath)
 
     /* Allocate enough space to store DIR structure and the complete *
        directory path given. */
-    nd = (DIR*) calloc(1,
-                       sizeof(DIR) + strlen(szPath) + strlen(win32_SLASH) + strlen(win32_SUFFIX));
+    nd =
+        (DIR*) calloc(1, sizeof(DIR) + strlen(szPath) + strlen(win32_SLASH) + strlen(win32_SUFFIX));
 
     if (! nd) {
         /* Error, out of memory. */
@@ -171,8 +171,8 @@ win32_opendir(const char* szPath)
     strcpy(nd->dd_name, szPath);
 
     /* Add on a slash if the path does not end with one. */
-    if (nd->dd_name[0] != '\0' && nd->dd_name[strlen(nd->dd_name) - 1] != '/'
-        && nd->dd_name[strlen(nd->dd_name) - 1] != '\\') {
+    if (nd->dd_name[0] != '\0' && nd->dd_name[strlen(nd->dd_name) - 1] != '/' &&
+        nd->dd_name[strlen(nd->dd_name) - 1] != '\\') {
         strcat(nd->dd_name, win32_SLASH);
     }
 

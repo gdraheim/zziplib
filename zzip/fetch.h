@@ -32,8 +32,8 @@ __zzip_set64(zzip_byte_t* s, uint64_t v);
 
 /* just in case that you use a non-configure-d setup (e.g. MSVC) */
 #ifndef ZZIP_HAVE_ALIGNED_ACCESS_REQUIRED
-#if defined __mips__ || defined __sparc__ || defined __powerpc__ || defined __arm__                \
-    || defined                                                              __ia64__
+#if defined __mips__ || defined __sparc__ || defined __powerpc__ || defined __arm__ ||             \
+    defined                                                                 __ia64__
 #define ZZIP_HAVE_ALIGNED_ACCESS_REQUIRED 11
 #endif
 #endif
@@ -141,8 +141,8 @@ __zzip_set64(zzip_byte_t* s, uint64_t v);
 #define zzip_disk_entry_get_offset(__p)         ZZIP_GET32((__p)->z_offset)
 #define zzip_disk_entry_set_offset(__p, __x)    ZZIP_SET32((__p)->z_offset, (__x))
 #define zzip_disk_entry_sizeof_tails(__p)                                                          \
-    (zzip_disk_entry_get_namlen(__p) + zzip_disk_entry_get_extras(__p)                             \
-     + zzip_disk_entry_get_comment(__p))
+    (zzip_disk_entry_get_namlen(__p) + zzip_disk_entry_get_extras(__p) +                           \
+     zzip_disk_entry_get_comment(__p))
 #define zzip_disk_entry_check_magic(__p) ZZIP_DISK_ENTRY_CHECKMAGIC((__p))
 
 /* zzip_disk_trailer - the zip archive entry point */
@@ -329,31 +329,31 @@ __zzip_set64(zzip_byte_t* s, uint64_t v);
 
 #define zzip_file_header_data_not_deflated(__p) (zzip_file_header_data_stored(__p))
 #define zzip_file_header_data_std_deflated(__p)                                                    \
-    (zzip_file_header_data_deflated(__p)                                                           \
-     && zzip_file_header_data_comprlevel(__p) == ZZIP_DEFLATED_STD_COMPR)
+    (zzip_file_header_data_deflated(__p) &&                                                        \
+     zzip_file_header_data_comprlevel(__p) == ZZIP_DEFLATED_STD_COMPR)
 #define zzip_file_header_data_max_deflated(__p)                                                    \
-    (zzip_file_header_data_deflated(__p)                                                           \
-     && zzip_file_header_data_comprlevel(__p) == ZZIP_DEFLATED_MAX_COMPR)
+    (zzip_file_header_data_deflated(__p) &&                                                        \
+     zzip_file_header_data_comprlevel(__p) == ZZIP_DEFLATED_MAX_COMPR)
 #define zzip_file_header_data_low_deflated(__p)                                                    \
-    (zzip_file_header_data_deflated(__p)                                                           \
-     && zzip_file_header_data_comprlevel(__p) == ZZIP_DEFLATED_LOW_COMPR)
+    (zzip_file_header_data_deflated(__p) &&                                                        \
+     zzip_file_header_data_comprlevel(__p) == ZZIP_DEFLATED_LOW_COMPR)
 #define zzip_file_header_data_min_deflated(__p)                                                    \
-    (zzip_file_header_data_deflated(__p)                                                           \
-     && zzip_file_header_data_comprlevel(__p) == ZZIP_DEFLATED_MIN_COMPR)
+    (zzip_file_header_data_deflated(__p) &&                                                        \
+     zzip_file_header_data_comprlevel(__p) == ZZIP_DEFLATED_MIN_COMPR)
 
 #define zzip_disk_entry_data_not_deflated(__p) (zzip_disk_entry_data_stored(__p))
 #define zzip_disk_entry_data_std_deflated(__p)                                                     \
-    (zzip_disk_entry_data_deflated(__p)                                                            \
-     && zzip_disk_entry_data_comprlevel(__p) == ZZIP_DEFLATED_STD_COMPR)
+    (zzip_disk_entry_data_deflated(__p) &&                                                         \
+     zzip_disk_entry_data_comprlevel(__p) == ZZIP_DEFLATED_STD_COMPR)
 #define zzip_disk_entry_data_max_deflated(__p)                                                     \
-    (zzip_disk_entry_data_deflated(__p)                                                            \
-     && zzip_disk_entry_data_comprlevel(__p) == ZZIP_DEFLATED_MAX_COMPR)
+    (zzip_disk_entry_data_deflated(__p) &&                                                         \
+     zzip_disk_entry_data_comprlevel(__p) == ZZIP_DEFLATED_MAX_COMPR)
 #define zzip_disk_entry_data_low_deflated(__p)                                                     \
-    (zzip_disk_entry_data_deflated(__p)                                                            \
-     && zzip_disk_entry_data_comprlevel(__p) == ZZIP_DEFLATED_LOW_COMPR)
+    (zzip_disk_entry_data_deflated(__p) &&                                                         \
+     zzip_disk_entry_data_comprlevel(__p) == ZZIP_DEFLATED_LOW_COMPR)
 #define zzip_disk_entry_data_min_deflated(__p)                                                     \
-    (zzip_disk_entry_data_deflated(__p)                                                            \
-     && zzip_disk_entry_data_comprlevel(__p) == ZZIP_DEFLATED_MIN_COMPR)
+    (zzip_disk_entry_data_deflated(__p) &&                                                         \
+     zzip_disk_entry_data_comprlevel(__p) == ZZIP_DEFLATED_MIN_COMPR)
 
 #ifdef __cplusplus
 }
