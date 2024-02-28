@@ -87,12 +87,15 @@ struct zzip_dirent
 /*
  * Getting error strings 
  * zzip/err.c
+ * - zzip_strerror: error in _opendir */
+ * - zzip_strerror_fo: error in other functions
+ * - zzip_errno: error mapped to errno.h defines
  */
-_zzip_export    /* error in _opendir : */
+_zzip_export    
 zzip_char_t* 	zzip_strerror(int errcode); 
-_zzip_export    /* error in other functions : */
+_zzip_export    
 zzip_char_t* 	zzip_strerror_of(ZZIP_DIR * dir); 
-_zzip_export    /* error mapped to errno.h defines : */
+_zzip_export    
 int    	 	zzip_errno(int errcode); 
 
 
