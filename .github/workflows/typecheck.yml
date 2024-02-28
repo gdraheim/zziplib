@@ -1,4 +1,4 @@
-name: typehints check
+name: py types
 
 on:
   push:
