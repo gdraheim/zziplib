@@ -3,6 +3,7 @@
 [![make check](https://github.com/gdraheim/zziplib/actions/workflows/makecheck.yml/badge.svg?event=push&branch=develop)](https://github.com/gdraheim/zziplib/actions/workflows/makecheck.yml)
 [![py style](https://github.com/gdraheim/zziplib/actions/workflows/stylecheck.yml/badge.svg?event=push&branch=develop)](https://github.com/gdraheim/zziplib/actions/workflows/stylecheck.yml)
 [![py types](https://github.com/gdraheim/zziplib/actions/workflows/typecheck.yml/badge.svg?event=push&branch=develop)](https://github.com/gdraheim/zziplib/actions/workflows/typecheck.yml)
+[![py types](https://github.com/gdraheim/zziplib/actions/workflows/clangformat.yml/badge.svg?event=push&branch=develop)](https://github.com/gdraheim/zziplib/actions/workflows/clangformat.yml)
 
 ... **please switch to 'cmake' based builds** ... 
 
