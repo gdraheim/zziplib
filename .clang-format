@@ -1,6 +1,5 @@
 IndentWidth: 4
 ColumnLimit: 100
-BasedOnStyle: WebKit
 AlignConsecutiveDeclarations: true
 AlignConsecutiveAssignments: true
 AlignConsecutiveMacros: true
@@ -16,7 +15,7 @@ SpaceAfterCStyleCast: true
 # SpaceAroundPointerQualifiers: Both
 SpaceBeforeAssignmentOperators: true
 UseTab: Never
-# PointerAlignment: Right
+PointerAlignment: Left
 IncludeBlocks: Preserve
 IncludeCategories:
   - Regex: '^(<|")(zzip/conf[.]h)'
