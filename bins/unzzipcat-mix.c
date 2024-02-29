@@ -103,11 +103,13 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	             if (extract) out = create_fopen(name, "wb", 1);
 	             if (! out) {
 	                 if (errno != EISDIR) done = EXIT_ERRORS;
+	                 free(mix_name);
 	                 continue;
 	             }
 		     fprintf(stderr, "%s %s -> %s\n", zip_name, name, mix_name);
 		     /* 'test1.zip' 'README' -> 'test1/README' */
 		     unzzip_cat_file (disk, mix_name, out);
+                     free(mix_name);
 		     if (extract) fclose(out);
 		     break; /* match loop */
 	        }
