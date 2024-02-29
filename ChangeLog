@@ -1,3 +1,6 @@
+2024-02-29  gdraheim@github
+    * disabled local file header offset64
+
 2024-02-28  gdraheim@github
     * fixed last cmake bug - parallel builds can lead to race condition
     * abolished centos8 testbuilds and prepared ubuntu24

@@ -286,6 +286,7 @@ __zzip_set64(zzip_byte_t* s, uint64_t v);
 #define zzip_disk_trailer_to_endoffile(__p)                                                        \
     ((void*) (zzip_disk_trailer_to_comment(__p) + zzip_disk_trailer_comment(__p)))
 
+#define zzip_use_file_header_zip64_offset 0
 #define zzip_extra_zip64_csize(__p)     ((zzip_size_t) zzip_extra_zip64_get_csize(__p))
 #define zzip_extra_zip64_usize(__p)     ((zzip_size_t) zzip_extra_zip64_get_usize(__p))
 #define zzip_extra_zip64_offset(__p)    ((zzip_off_t) zzip_extra_zip64_get_offset(__p))
