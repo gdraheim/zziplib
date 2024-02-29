@@ -273,7 +273,7 @@ zzip_disk_entry_to_file_header(ZZIP_DISK* disk, struct zzip_disk_entry* entry)
 {
     zzip_byte_t* const ptr = disk->buffer + zzip_disk_entry_fileoffset(entry);
     zzip_byte_t* const end = ptr + sizeof(struct zzip_file_header);
-    if (disk->buffer > ptr || end >= disk->endbuf || (void*)end <= NULL) {
+    if (disk->buffer > ptr || end >= disk->endbuf || (void*) end <= NULL) {
         debug2("file header: offset out of bounds (0x%llx)", (long long unsigned) (disk->buffer));
         errno = EBADMSG;
         return 0;
@@ -625,8 +625,8 @@ zzip_disk_entry_fopen(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry)
     }
 
     ___ /* a ZIP64 extended block may follow. */
-        size_t csize  = zzip_file_header_csize(header);
-    zzip_byte_t*  start = zzip_file_header_to_data(header);
+        size_t   csize = zzip_file_header_csize(header);
+    zzip_byte_t* start = zzip_file_header_to_data(header);
     if (csize == 0xFFFFu) {
         struct zzip_extra_zip64* zip64 =
             (struct zzip_extra_zip64*) zzip_file_header_to_extras(header);
@@ -635,24 +635,27 @@ zzip_disk_entry_fopen(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry)
         }
     }
 
-    if (((unsigned long)start) & 0xFFFFu == 0xFFFFu) {
-        /* actually the ZIP64 rootseek in the central directory should have updated the 
+    if (((unsigned long) start) & 0xFFFFu == 0xFFFFu) {
+        /* actually the ZIP64 rootseek in the central directory should have updated the
            header start with the data portion to follow right behind it. The usage of
            this field in a local file header is wrong on a number of levels. Specifically
            that the zip64 extended field value points to yet another header but it is
-           actually used to point to the actual data portion instead. */
+           actually used to point to the actual data portion instead. Disabled by default. */
         struct zzip_extra_zip64* zip64 =
             (struct zzip_extra_zip64*) zzip_file_header_to_extras(header);
         if (ZZIP_EXTRA_ZIP64_CHECK(zip64)) {
-            zzip_off64_t offset = zzip_extra_zip64_offset(zip64); /* offset of local header record */
+            zzip_off64_t offset =
+                zzip_extra_zip64_offset(zip64); /* offset of local header record */
             if (offset && zzip_use_file_header_zip64_offset) {
-               start = disk->buffer + offset; /* but points directly to the data portion */
-               if (disk->buffer > start || start+csize >= disk->endbuf) {
-                    debug2("file start: offset out of bounds (0x%llx)", (long long unsigned) (offset));
+                start = disk->buffer + offset; /* but points directly to the data portion */
+                if (disk->buffer > start || start + csize >= disk->endbuf) {
+                    debug2("file start: offset out of bounds (0x%llx)",
+                           (long long unsigned) (offset));
                     errno = EBADMSG;
                     return 0;
                 }
-            } else {
+            }
+            else {
                 debug1("file start: no zip64 local offset");
                 errno = EBADMSG;
                 return 0;
