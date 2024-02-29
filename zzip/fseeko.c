@@ -46,10 +46,6 @@
 #include <strings.h>
 #endif
 
-#if defined ZZIP_HAVE_STDINT_H
-#include <stdint.h>
-#endif
-
 #if __STDC_VERSION__ + 0 > 199900L
 #define ___
 #define ____
