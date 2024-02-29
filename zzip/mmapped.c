@@ -440,6 +440,11 @@ zzip_disk_findfirst(ZZIP_DISK* disk)
                 errno = EFBIG;
                 return 0;
             }
+            if ((zzip_byte_t*)(trailer + 1) >= disk->endbuf) {
+                DBG1("incomplete ZIP64 trailer"); /* ZIP64 trailer is bigger */
+                errno = EFBIG;
+                return 0;
+            }
             zzip_size_t rootseek = zzip_disk64_trailer_get_rootseek(trailer);
             rootsize             = zzip_disk64_trailer_get_rootsize(trailer);
             DBG2("disk64 rootseek at %lli", (long long) rootseek);
