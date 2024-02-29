@@ -16,6 +16,17 @@ option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 option(ZZIP_INSTALL_BINS "Install the bins/ exanple programs" ON)
 option(ZZIP_INSTALL_ACLOCAL "Install zziplib.m4 aclocal helper" ON)
 
+if(FORTIFY)
+   add_definitions(
+     -U_FORTIFY_SOURCE 
+     -fsanitize=address 
+     -g
+   )
+   add_link_options(
+     -fsanitize=address
+   )
+endif()
+
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
 # pkg_search_module ( ZZIP zzip )

@@ -22,6 +22,7 @@ option(ZZIPSDL "Build zzcatsdl (includable example code)" ON)
 option(ZZIPBINS "Build bins/unzzip (unzip-like executables)" ON)
 option(ZZIPTEST "Build test/zzipself (self-extract example)" ON)
 option(ZZIPDOCS "Build docs/manpages (and website content)" ON)
+option(FORTIFY "Add gcc address sanitzer" OFF)
 
 add_subdirectory(zzip)
 

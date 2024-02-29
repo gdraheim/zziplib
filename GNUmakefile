@@ -25,6 +25,7 @@ build:
 
 new: ; rm -rf $(BUILD); $(MAKE) build
 static: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-DBUILD_SHARED_LIBS=OFF
+fortify: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-DFORTIFY=ON
 
 ninja: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-GNinja
 nmake: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-GNmake

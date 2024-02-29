@@ -14,6 +14,17 @@ option(BUILD_TESTS "Build test programs" OFF)
 option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 option(ZZIP_TESTCVE "Run old CVE in zziptests.py testsuite" ON)
 
+if(FORTIFY)
+   add_definitions(
+     -U_FORTIFY_SOURCE 
+     -fsanitize=address 
+     -g
+   )
+   add_link_options(
+     -fsanitize=address
+   )
+endif()
+
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
 # pkg_search_module ( ZZIP zzip )
