@@ -3995,6 +3995,20 @@ class ZZipTest(unittest.TestCase):
         shell("ls -l {tmpdir}/{filename}".format(**locals()))
         size = os.path.getsize(os.path.join(tmpdir, filename))
         self.assertEqual(size, 771)
+    url_BUG_143 = "https://github.com/gdraheim/zziplib/files/9757091"
+    zip_BUG_143 = "zip.c_347_44-in-__zzip_fetch_disk_trailer.zip"
+    def test_70143(self) ->None:
+        """ check github issue #143 - requires `make fortify`"""
+        tmpdir = self.testdir()
+        filename = self.zip_BUG_143
+        file_url = self.url_BUG_143
+        if not download_raw(file_url, filename, tmpdir):
+            self.skipTest("no zip_BUG_143 available: " + filename)
+        if not os.path.isfile(os.path.join(tmpdir, filename)): self.skipTest("missing " + filename)
+        exe = self.bins("zzdir")
+        run = shell("{exe} {tmpdir}/{filename} ".format(**locals()),
+                    returncodes=[0])
+        #
 
     def test_91000_zzshowme_check_sfx(self) -> None:
         """ create an *.exe that can extract its own zip content """
