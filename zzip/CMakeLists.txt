@@ -134,6 +134,7 @@ if(FORTIFY)
      -fsanitize=address
    )
 endif()
+## add_definitions(-DDEBUG)
 
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
