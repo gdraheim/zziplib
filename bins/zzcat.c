@@ -61,6 +61,8 @@ main (int argc, char ** argv)
 
             if (n == -1) 
                 perror (argv[argn]);
+
+            zzip_close(fp);
         }
     }
     
