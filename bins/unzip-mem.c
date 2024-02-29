@@ -416,6 +416,7 @@ main (int argc, char ** argv)
 	}
     }
 
+    zzip_mem_disk_close(disk);
     return status;
 } 
 
