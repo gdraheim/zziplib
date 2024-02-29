@@ -106,8 +106,6 @@ endif()
 
 configure_file ( ${CMAKE_CURRENT_SOURCE_DIR}/_config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/_config.h )
 
-# Zlib library needed
-find_package ( ZLIB REQUIRED )
 
 if(UNIX)
 CHECK_C_COMPILER_FLAG(C "-Warray-bounds" HAS_WARRAY_BOUNDS)
@@ -125,6 +123,20 @@ CHECK_C_COMPILER_FLAG(C "-Warray-bounds" HAS_WARRAY_BOUNDS)
     )
   endif()
 endif()
+
+if(FORTIFY)
+   add_definitions(
+     -U_FORTIFY_SOURCE 
+     -fsanitize=address 
+     -g
+   )
+   add_link_options(
+     -fsanitize=address
+   )
+endif()
+
+# Zlib library needed
+find_package ( ZLIB REQUIRED )
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ${BUILD_SHARED_LIBS})
 add_definitions ( -DHAVE_CONFIG_H )
