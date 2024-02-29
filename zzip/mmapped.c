@@ -440,7 +440,7 @@ zzip_disk_findfirst(ZZIP_DISK* disk)
                 errno = EFBIG;
                 return 0;
             }
-            if ((zzip_byte_t*)(trailer + 1) >= disk->endbuf) {
+            if ((zzip_byte_t*) (trailer + 1) >= disk->endbuf) {
                 DBG1("incomplete ZIP64 trailer"); /* ZIP64 trailer is bigger */
                 errno = EFBIG;
                 return 0;

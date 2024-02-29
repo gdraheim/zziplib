@@ -141,7 +141,7 @@ zzip_mem_disk_load(ZZIP_MEM_DISK* dir, ZZIP_DISK* disk)
     }
     if (dir->list)
         zzip_mem_disk_unload(dir);
-    dir->disk = disk;
+    dir->disk                         = disk;
     ___ long                    count = 0;
     ___ struct zzip_disk_entry* entry = zzip_disk_findfirst(disk);
     if (! entry)

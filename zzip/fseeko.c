@@ -406,7 +406,8 @@ zzip_entry_findfirst(FILE* disk)
                 }
                 return entry;
                 ____;
-            } else if (zzip_disk64_trailer_check_magic(entry)) {
+            }
+            else if (zzip_disk64_trailer_check_magic(entry)) {
                 debug1("found zip64 trailer (supported incomplete)");
                 free(buffer);
                 buffer          = NULL;
@@ -421,8 +422,9 @@ zzip_entry_findfirst(FILE* disk)
                 }
                 return entry;
                 ____;
-            } else {
-                debug2("entry_check magic failed %lx", (long)ZZIP_GETMAGIC(entry));
+            }
+            else {
+                debug2("entry_check magic failed %lx", (long) ZZIP_GETMAGIC(entry));
             }
         }
         ____;
