@@ -3702,7 +3702,6 @@ class ZZipTest(unittest.TestCase):
                     returncodes=[0])
         self.assertEqual(os.path.getsize(tmpdir + "/2020_10_OutagesPUReasons.csv"), 2590160)
         self.rm_testdir()
-    @unittest.expectedFailure
     def test_65571(self) -> None:
         """ unzzip-big -l $(CVE).zip  """
         tmpdir = self.testdir()
