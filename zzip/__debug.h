@@ -6,6 +6,10 @@
 
 /* perhaps want to show on syslog(3) ?? */
 
+#ifdef NDEBUG
+#undef DEBUG
+#endif
+
 /* clang-format off */
 #ifdef DEBUG
 #include <stdio.h>
