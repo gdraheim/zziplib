@@ -356,8 +356,8 @@ zzip_entry_findfirst(FILE* disk)
                 }
                 if (zzip_disk64_locator_check_magic(p)) {
                     struct zzip_disk64_locator* locator = (struct zzip_disk64_locator*) p;
-                    debug1("found zip64 disk locator (not supported)");
-                    /* seek = zzip_disk64_locator_rootseek(locator); */
+                    debug1("found zip64 disk locator (support incomplete)");
+                    root = zzip_disk64_locator_rootseek(locator);
                 }
             }
             else if (zzip_disk64_trailer_check_magic(p)) {
@@ -406,6 +406,23 @@ zzip_entry_findfirst(FILE* disk)
                 }
                 return entry;
                 ____;
+            } else if (zzip_disk64_trailer_check_magic(entry)) {
+                debug1("found zip64 trailer (supported incomplete)");
+                free(buffer);
+                buffer          = NULL;
+                entry->headseek = root;
+                entry->diskfile = disk;
+                entry->disksize = disksize;
+                ___ int err     = prescan_entry(entry);
+                if (err) {
+                    debug2("prescan %s", strerror(err));
+                    errno = err;
+                    goto error2;
+                }
+                return entry;
+                ____;
+            } else {
+                debug2("entry_check magic failed %lx", (long)ZZIP_GETMAGIC(entry));
             }
         }
         ____;

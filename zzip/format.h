@@ -46,6 +46,11 @@ typedef struct zzip_dostime zzip_dostime_t;
 #endif
 
 /* clang-format off */
+#define ZZIP_GETMAGIC(__p) \
+    ( (((zzip_byte_t*)(__p))[0]<<24) | \
+      (((zzip_byte_t*)(__p))[1]<<16) | \
+      (((zzip_byte_t*)(__p))[2]<<8) | \
+      (((zzip_byte_t*)(__p))[3]) )
 #define ZZIP_CHECKMAGIC(__p,__A,__B,__C,__D) \
     ( (((zzip_byte_t*)(__p))[0]==(__A)) && \
       (((zzip_byte_t*)(__p))[1]==(__B)) && \
