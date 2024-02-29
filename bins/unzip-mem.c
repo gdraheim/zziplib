@@ -167,7 +167,6 @@ static const char* comprlevel[] = {
 zzip_off_t sum_usize = 0;
 zzip_off_t sum_csize = 0;
 zzip_off_t sum_files = 0;
-#define L (long)
 
 static void zzip_mem_entry_direntry_start (void)
 {
@@ -194,15 +193,23 @@ static void zzip_mem_entry_direntry_done (void)
 	sum_usize /= 1024; sum_csize /= 1024; }
     if (option_verbose) goto verbose;
     printf(" --------                   ----\n");
-    printf(" %8li%c           %8li %s\n", L sum_usize, exp, L sum_files,
+    printf(" %8li%c           %8li %s\n", /* .. */
+           (long) sum_usize, exp, /* .. */
+           (long) sum_files, /* .. */
 	   sum_files == 1 ? "file" : "files");
     return;
  verbose:
+    ___ long percentage;
+
+    percentage = sum_usize ? ((long) (100 - (sum_csize*100/sum_usize))) : 0;
     printf("--------  ------  ------- -----                           ----\n");
     printf("%8li%c       %8li%c %3li%%                     %8li %s\n",
-	   L sum_usize, exp, L sum_csize, exp, 
-	   L (100 - (sum_csize*100/sum_usize)), L sum_files, 
-	   sum_files == 1 ? "file" : "files");
+	   (long) sum_usize, exp, /* .. */
+	   (long) sum_csize, exp, /* .. */
+	   (long) percentage, /* .. */
+	   (long) sum_files, /* .. */
+	   "files" /* sum_files == 1 ? "file" : "files" */);
+    ____;
 }
 
 static void zzip_mem_entry_direntry(ZZIP_MEM_ENTRY* entry)
@@ -233,14 +240,19 @@ static void zzip_mem_entry_direntry(ZZIP_MEM_ENTRY* entry)
     if (option_verbose) {
 	long percentage;
 
-	percentage = usize ? (L (100 - (csize*100/usize))) : 0;	/* 0% if file size is 0 */
+	percentage = usize ? ((long) (100 - (csize*100/usize))) : 0;	/* 0% if file size is 0 */
 	printf("%8li%c %s %8li%c%3li%%  %s  %8lx  %s %s\n", 
-	       L usize, exp, comprlevel[compr], L csize, exp, 
-	       percentage,
-	       _zzip_ctime(&mtime), crc32, name, comment);
+	       (long) usize, exp, /* .. */
+	       comprlevel[compr], /* .. */
+	       (long) csize, exp, /* .. */
+	       percentage, /* .. */
+	       _zzip_ctime(&mtime), crc32, /* .. */
+	       name, comment);
     } else {
 	printf(" %8li%c %s   %s %s\n", 
-	       L usize, exp, _zzip_ctime(&mtime), name, comment);
+	       (long) usize, exp, /* .. */
+	        _zzip_ctime(&mtime), /* .. */
+	        name, comment);
     }    
 }
 
