@@ -1,4 +1,4 @@
-#! /usr/bin/gmake -f
+#! /usr/bin/gmake -fp
 
 # the 'all' target is included from the 'configure'd Makefile
 
@@ -25,7 +25,7 @@ build:
 
 new: ; rm -rf $(BUILD); $(MAKE) build
 static: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-DBUILD_SHARED_LIBS=OFF
-fortify: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-DFORTIFY=ON
+fortify: ; rm -rf $(BUILD) && $(MAKE) build "OPTIONS=-DFORTIFY=ON -DCMAKE_BUILD_TYPE=Debug"
 
 ninja: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-GNinja
 nmake: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-GNmake
@@ -61,6 +61,7 @@ k_%: ; $(PYTHON3) testbuilds.py $@ -vv --no-cache --keep
 b_%: ; $(PYTHON3) testbuilds.py $@ -vv --no-cache --failfast --local
 t_%: ;    cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py $@ -vv
 test_%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py $@ -vv
+est_%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py t$@ -vv --keep
 
 b: ; grep "def test_" testbuilds.py | sed -e "s/ *def test_/make b_/" -e "s/(self).*//"
 t: ; grep "def test_" test/zziptests.py | sed -e "s/ *def test_/make t_/" -e "s/(self).*//"
