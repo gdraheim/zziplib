@@ -100,6 +100,8 @@ main (int argc, char ** argv)
 
             if (n == -1) 
                 perror (argv[n]);
+
+            zzip_close(fp);
         }
     }
     
