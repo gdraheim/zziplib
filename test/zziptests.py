@@ -40,6 +40,7 @@ bindir = os.path.join("..", "bins")
 downloaddir = "tmp.download"
 downloadonly = False
 nodownloads = False
+KEEP = False
 
 def yesno(text: str) -> bool:
     if not text: return False
@@ -290,13 +291,19 @@ class ZZipTest(unittest.TestCase):
         testname = testname or self.caller_testname()
         newdir = "tmp." + testname
         if os.path.isdir(newdir):
-            shutil.rmtree(newdir)
+            if KEEP:
+                logg.info("KEEP %s", newdir)
+            else:
+                shutil.rmtree(newdir)
         return newdir
     def rm_testzip(self, testname: Optional[str] = None) -> bool:
         testname = testname or self.caller_testname()
         zipname = testname + ".zip"
         if os.path.exists(zipname):
-            os.remove(zipname)
+            if KEEP:
+                logg.info("KEEP %s", zipname)
+            else:
+                os.remove(zipname)
         return True
     ################################################################
     def test_1000_make_test0_zip(self) -> None:
@@ -4095,6 +4102,8 @@ if __name__ == "__main__":
                   help="name or path to unzip.exe to unpack *.zip [%default]")
     _o.add_option("-E", "--exeext", metavar="EXT", default=exeext,
                   help="the executable extension (automake $(EXEEXT)) [%default]")
+    _o.add_option("-K", "--keep", action="store_true", default=KEEP,
+                  help="Keep test data around. [%default]")
     _o.add_option("--failfast", action="store_true", default=False,
                   help="Stop the test run on the first error or failure. [%default]")
     _o.add_option("--xmlresults", metavar="FILE", default=None,
@@ -4111,6 +4120,7 @@ if __name__ == "__main__":
     topsrcdir = opt.topsrcdir
     bindir = opt.bindir
     testdatdir = opt.testdatadir
+    KEEP = opt.keep
     if opt.mkzip.endswith("-NOTFOUND"):
         logg.error("  no infozip 'zip' found, expect failing tests (given -Z %s)", opt.mkzip)
     else:
