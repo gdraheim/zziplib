@@ -6,13 +6,12 @@ include ( FindPkgConfig )
 
 # options ########################################################
 option(BUILD_SHARED_LIBS "Build a shared library" ON)
-option(BUILD_STATIC_LIBS "Build the static library" OFF)
 option(BUILD_TESTS "Build test programs" OFF)
 option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 option(ZZIP_HTMLSITE "Generate site html pages from docs" OFF)
 option(ZZIP_HTMPAGES "Generate html manpages from sources" OFF)
 
-if(UNIX)
+if(UNIX OR MINGW)
 option(ZZIP_MANPAGES "Generate man3 manpages from sources" ON)
 else()
 option(ZZIP_MANPAGES "Generate man3 manpages from sources" OFF)
@@ -49,6 +48,13 @@ set(htm_FILES zzip-index.htm zzip-zip.htm zzip-file.htm zzip-sdl-rwops.htm
             configs.htm sfx-make.htm   developer.htm download.htm
             history.htm referentials.htm  faq.htm copying.htm notes.htm
             functions.htm zip-php.htm)
+set(htm_md_FILES zzip-index.htm.md zzip-zip.htm.md zzip-file.htm.md zzip-sdl-rwops.htm.md
+            zzip-extio.htm.md zzip-xor.htm.md zzip-crypt.htm.md zzip-cryptoid.htm.md
+            zzip-api.htm.md zzip-basics.htm.md zzip-extras.htm.md zzip-parse.htm.md
+            64on32.htm.md future.htm.md fseeko.htm.md mmapped.htm.md memdisk.htm.md
+            configs.htm.md sfx-make.htm.md developer.htm.md download.htm.md
+            history.htm.md referentials.htm.md faq.htm.md copying.htm.md notes.htm.md
+            functions.htm.md zip-php.htm.md)
 set(bins_FILES ${bins}/zzdir.c ${bins}/zzcat.c ${bins}/zzobfuscated.c ${bins}/zziptest.c ${bins}/zzxordir.c ${bins}/zzxorcat.c ${bins}/zzxorcopy.c )
 set(SDLs_FILES ${SDLs}/SDL_rwops_zzcat.c ${SDLs}/SDL_rwops_zzip.c ${SDLs}/SDL_rwops_zzip.h )
 set(zzipdoc_FILES makedocs.py          zzipdoc/__init__.py
@@ -70,14 +76,18 @@ add_custom_command(OUTPUT changes.htm
     DEPENDS ${topdir}/ChangeLog
     VERBATIM)
 
-set(mksite_sh_args --VERSION=${PROJECT_VERSION} --xml --src-dir=${srcdir} --print)
-add_custom_command(OUTPUT site.html
-    COMMAND ${CP} ${srcdir}/body.htm site.htm
-    COMMAND ${BASH} ${srcdir}/mksite.sh ${mksite_sh_args} site.htm
-    COMMAND ${BASH} -c "for i in *.html; do sed -i -e s:${srcdir}:../../docs: $i; done; true"
-    DEPENDS ${htm_FILES} changes.htm
+add_custom_command(OUTPUT site/site.html
+    COMMAND ${BASH} -c "test -d ${outdir}/site || mkdir -p ${outdir}/site"
+    COMMAND ${CP} ${srcdir}/body.htm ${outdir}/site/site.htm
+    COMMAND ${CP} ${outdir}/changes.htm ${outdir}/site/changes.htm
+    # COMMAND ${CP} "${htm_FILES}" ${outdir}/site/
+    COMMAND ${BASH} -c "cp -v ${srcdir}/*.md ${outdir}/site/"
+    COMMAND ${BASH} -c "cp -v ${srcdir}/*.css ${outdir}/site/"
+    COMMAND ${BASH} -c "cd ${outdir}/site; for i in *.md; do ${PYTHON} ${srcdir}/tools/md2dbk.py $i --htm > `basename $i .md`; done"
+    COMMAND ${BASH} -c "cd ${outdir}/site && ${BASH} ${srcdir}/mksite.sh --VERSION=${PROJECT_VERSION} --xml --print site.htm"
+    DEPENDS ${htm_md_FILES} changes.htm ${srcdir}/tools/md2dbk.py
     VERBATIM)
-add_custom_target(site DEPENDS site.html)
+add_custom_target(site DEPENDS site/site.html)
 
 add_custom_command(OUTPUT zzip.xml
     COMMAND ${PY} ${srcdir}/zzipdoc/htm2dbk.py ${htm_FILES} zziplib.xml -o ${outdir}/zzip.xml
@@ -98,6 +108,29 @@ add_custom_command(OUTPUT zzip.pdf
 add_custom_target(pdf DEPENDS zzip.pdf)
 endif()
 
+string(REPLACE ";" " " all_bins_FILES "${bins_FILES}")
+string(REPLACE ";" " " all_SDLs_FILES "${SDLs_FILES}")
+add_custom_command(OUTPUT htmlsite.tar
+    COMMAND ${BASH} -c "ls -l ${CMAKE_CURRENT_BINARY_DIR}/site/site.html"
+    COMMAND ${BASH} -c "cd ${outdir} && cp zziplib.html zzipmmapped.html zzipfseeko.html site/"
+    COMMAND ${BASH} -c "cd ${srcdir} && cp README.* COPYING.* ${outdir}/site/"
+    COMMAND ${BASH} -c "cd ${topdir} && cp ChangeLog          ${outdir}/site/"
+    COMMAND ${BASH} -c "cd ${topdir} && cp ${all_bins_FILES}  ${outdir}/site/"
+    COMMAND ${BASH} -c "cd ${topdir} && cp ${all_SDLs_FILES}  ${outdir}/site/"
+    COMMAND ${BASH} -c "cd site && ln -s zzip-index.html index.html"
+    COMMAND ${BASH} -c "tar cf htmlsite.tar site/*.*"
+    COMMAND ${BASH} -c "ls -l `pwd`/htmlsite.tar || true"
+    #  DEPENDS site/site.html zziplib.html zzipmmapped.html zzipfseeko.html
+    DEPENDS    site/site.html zziplib.xml  zzipmmapped.xml  zzipfseeko.xml
+    VERBATIM)
+if(ZZIP_HTMLSITE)
+add_custom_target(htmlsite ALL DEPENDS htmlsite.tar COMMAND ${BASH} -c "ls -l htmlsite.tar")
+else()
+add_custom_target(htmlsite DEPENDS htmlsite.tar COMMAND ${BASH} -c "ls -l htmlsite.tar")
+endif()
+
+####
+
 set(docinfo --package=zziplib --version=${PROJECT_VERSION})
 file(GLOB zzip_sources "${topdir}/zzip/*.c")
 add_custom_command(OUTPUT zziplib.xml
@@ -106,43 +139,46 @@ add_custom_command(OUTPUT zziplib.xml
     DEPENDS libzzip
     BYPRODUCTS zziplib.html
     VERBATIM)
+add_custom_target(zziplib_xml DEPENDS zziplib.xml) # prevent race codition
 add_custom_command(OUTPUT zzipmmapped.xml
     COMMAND ${PY} ${srcdir}/makedocs.py ${zzip_sources} ${docinfo} --onlymainheader=zzip/mmapped.h --output=zzipmmapped
     COMMAND ${MV} zzipmmapped.docbook zzipmmapped.xml
     DEPENDS libzzipmmapped
     BYPRODUCTS zzipmmapped.html
     VERBATIM)
+add_custom_target(zzipmmapped_xml DEPENDS zzipmmapped.xml) # prevent race codition
 add_custom_command(OUTPUT zzipfseeko.xml
     COMMAND ${PY} ${srcdir}/makedocs.py ${zzip_sources} ${docinfo} --onlymainheader=zzip/fseeko.h --output=zzipfseeko
     COMMAND ${MV} zzipfseeko.docbook zzipfseeko.xml
     DEPENDS libzzipfseeko
     BYPRODUCTS zzipfseeko.html
     VERBATIM)
+add_custom_target(zzipfseeko_xml DEPENDS zzipfseeko.xml) # prevent race codition
 add_custom_command(OUTPUT manpages.tar
     COMMAND ${BASH} -c "test -d man3 && rm -rf man3; mkdir man3"
-    COMMAND ${PY} ${srcdir}/dbk2man.py -o man3 man zziplib.xml
-    COMMAND ${PY} ${srcdir}/dbk2man.py -o man3 man zzipmmapped.xml
-    COMMAND ${PY} ${srcdir}/dbk2man.py -o man3 man zzipfseeko.xml
+    COMMAND ${PY} ${srcdir}/tools/dbk2man.py -o man3 man zziplib.xml
+    COMMAND ${PY} ${srcdir}/tools/dbk2man.py -o man3 man zzipmmapped.xml
+    COMMAND ${PY} ${srcdir}/tools/dbk2man.py -o man3 man zzipfseeko.xml
     COMMAND ${BASH} -c "test -d man3/man3 && mv man3 man3_; test -d man3_/man3 && mv man3_/man3 .; rm -rf man3_"
     COMMAND ${BASH} -c "chmod 664 man3/*.3"
     COMMAND ${BASH} -c "tar cf manpages.tar man3"
     COMMAND ${BASH} -c "ls -l `pwd`/manpages.tar >&2 || true"
-    DEPENDS zziplib.xml zzipmmapped.xml zzipfseeko.xml
+    DEPENDS zziplib_xml zzipmmapped_xml zzipfseeko_xml
     VERBATIM)
 add_custom_command(OUTPUT htmpages.tar
     COMMAND ${BASH} -c "test -d html && rm -rf html; mkdir html"
-    COMMAND ${PY} ${srcdir}/dbk2man.py -o html html zziplib.xml
-    COMMAND ${PY} ${srcdir}/dbk2man.py -o html html zzipmmapped.xml
-    COMMAND ${PY} ${srcdir}/dbk2man.py -o html html zzipfseeko.xml
-    COMMAND ${PY} ${srcdir}/dir2index.py -o html html
+    COMMAND ${PY} ${srcdir}/tools/dbk2man.py -o html html zziplib.xml
+    COMMAND ${PY} ${srcdir}/tools/dbk2man.py -o html html zzipmmapped.xml
+    COMMAND ${PY} ${srcdir}/tools/dbk2man.py -o html html zzipfseeko.xml
+    COMMAND ${PY} ${srcdir}/tools/dir2index.py -o html html
     COMMAND ${BASH} -c "tar cf htmpages.tar html/*.*"
     COMMAND ${BASH} -c "ls -l `pwd`/htmpages.tar || true"
-    DEPENDS zziplib.xml zzipmmapped.xml zzipfseeko.xml
+    DEPENDS zziplib_xml zzipmmapped_xml zzipfseeko_xml
     VERBATIM)
 
 add_custom_target(manpages DEPENDS manpages.tar)
 add_custom_target(htmpages DEPENDS htmpages.tar)
-add_custom_target(doc DEPENDS zziplib.xml zzipmmapped.xml zzipfseeko.xml site.html)
+add_custom_target(doc DEPENDS zziplib_xml zzipmmapped_xml zzipfseeko_xml site)
 add_custom_target(docs DEPENDS doc manpages htmpages)
 add_custom_target(mans DEPENDS manpages)
 
@@ -159,31 +195,41 @@ endif()
 
 # install ########################################################
 
-string(REPLACE ";" " " all_bins_FILES "${bins_FILES}")
-string(REPLACE ";" " " all_SDLs_FILES "${SDLs_FILES}")
 add_custom_target(install-site
-   COMMAND ${BASH} -c "ls -l ${CMAKE_CURRENT_BINARY_DIR}/site.html"
+   COMMAND ${BASH} -c "ls -l ${CMAKE_CURRENT_BINARY_DIR}/site/site.html"
    COMMAND ${BASH} -c "mkdir -vp $DESTDIR${docdir}  >&2 || ls -ld $DESTDIR${docdir} >&2"
    COMMAND ${BASH} -c "cd ${outdir} && cp zziplib.html zzipmmapped.html zzipfseeko.html $DESTDIR${docdir}/"
    COMMAND ${BASH} -c "cd ${srcdir} && cp README.* COPYING.* $DESTDIR${docdir}/"
    COMMAND ${BASH} -c "cd ${topdir} && cp ChangeLog          $DESTDIR${docdir}/"
    COMMAND ${BASH} -c "cd ${topdir} && cp ${all_bins_FILES}  $DESTDIR${docdir}/"
    COMMAND ${BASH} -c "cd ${topdir} && cp ${all_SDLs_FILES}  $DESTDIR${docdir}/"
-   COMMAND ${BASH} -c "cd $DESTDIR${docdir} && cp ${outdir}/*.html ."
+   COMMAND ${BASH} -c "cd ${outdir}/site && cp *.html *.css  $DESTDIR${docdir}/"
    COMMAND ${BASH} -c "cd $DESTDIR${docdir} && ln -s zzip-index.html index.html"
-   DEPENDS site.html zziplib.html zzipmmapped.html zzipfseeko.html
+   COMMAND ${BASH} -c "echo running install-site is deprecated - just enable cmake -DZZIP_HTMLSITE=ON >&2"
+   DEPENDS site/site.html zziplib.html zzipmmapped.html zzipfseeko.html
    VERBATIM)
 add_custom_target(install-htmpages
    COMMAND ${BASH} -c "mkdir -vp $DESTDIR${docdir}  >&2 || ls -ld $DESTDIR${docdir} >&2"
    COMMAND ${BASH} -c "cp -r ${outdir}/html $DESTDIR${docdir}/"
    COMMAND ${BASH} -c "cd $DESTDIR${docdir} && mv html man"
+   COMMAND ${BASH} -c "echo running install-htmpages is deprecated - just enable cmake -DZZIP_HTMPAGES=ON >&2"
    DEPENDS htmpages.tar
    VERBATIM)
 add_custom_target(install-manpages
    COMMAND ${BASH} -c "mkdir -vp $DESTDIR${mandir}  >&2 || ls -ld $DESTDIR${mandir} >&2"
    COMMAND ${BASH} -c "cp -r ${outdir}/man3 $DESTDIR${mandir}/"
+   COMMAND ${BASH} -c "echo running install-manpages is deprecated - just enable cmake -DZZIP_MANPAGES=ON >&2"
    DEPENDS manpages.tar
    VERBATIM)
+add_custom_target(install-docs DEPENDS install-manpages install-htmpages install-site)
+add_custom_target(install-mans DEPENDS install-manpages)
+add_custom_target(install-man DEPENDS install-manpages)
+add_custom_target(install-htm DEPENDS install-htmpages)
+
+if(ZZIP_HTMLSITE)
+   install(CODE "message(STATUS \"Installing: html site to ${docdir}\")")
+   install(DIRECTORY ${outdir}/site/ DESTINATION ${docdir} MESSAGE_NEVER)
+endif()
 if(ZZIP_HTMPAGES)
    install(CODE "message(STATUS \"Installing: html pages to ${docdir}/man\")")
    install(DIRECTORY ${outdir}/html/ DESTINATION ${docdir}/man MESSAGE_NEVER)
@@ -192,10 +238,6 @@ if(ZZIP_MANPAGES)
    install(CODE "message(STATUS \"Installing: man3 pages to ${mandir}/man3\")")
    install(DIRECTORY ${outdir}/man3/ DESTINATION ${mandir}/man3 MESSAGE_NEVER)
 endif()
-add_custom_target(install-docs DEPENDS install-manpages install-htmpages install-site)
-add_custom_target(install-mans DEPENDS install-manpages)
-add_custom_target(install-man DEPENDS install-manpages)
-add_custom_target(install-htm DEPENDS install-htmpages)
 
 # messages #######################################################
 

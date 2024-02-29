@@ -1,5 +1,5 @@
 /*
- * Author: 
+ * Author:
  *     Guido Draheim <guidod@gmx.de>
  *
  * Copyright (c) Guido Draheim, use under copyleft
@@ -37,20 +37,21 @@ extern "C" {
 #define ZZIP_PLUGIN_IO_SYS 1
 
 struct zzip_plugin_io { /* use "zzip_plugin_io_handlers" in applications !! */
-    int          (*open)(zzip_char_t* name, int flags, ...);
-    int          (*close)(int fd);
+    int (*open)(zzip_char_t* name, int flags, ...);
+    int (*close)(int fd);
     zzip_ssize_t (*read)(int fd, void* buf, zzip_size_t len);
-    zzip_off_t   (*seeks)(int fd, zzip_off_t offset, int whence);
-    zzip_off_t   (*filesize)(int fd);
-    long         sys;
-    long         type;
+    zzip_off_t (*seeks)(int fd, zzip_off_t offset, int whence);
+    zzip_off_t (*filesize)(int fd);
+    long sys;
+    long type;
     zzip_ssize_t (*write)(int fd, _zzip_const void* buf, zzip_size_t len);
 };
 
-typedef union _zzip_plugin_io
-{
+typedef union _zzip_plugin_io {
     struct zzip_plugin_io fd;
-    struct { void* padding[8]; } ptr;
+    struct {
+        void* padding[8];
+    } ptr;
 } zzip_plugin_io_handlers;
 
 #define _zzip_plugin_io_handlers zzip_plugin_io_handlers
@@ -62,9 +63,9 @@ typedef union _zzip_plugin_io
 typedef zzip_plugin_io_handlers* zzip_plugin_io_handlers_t;
 
 #ifdef ZZIP_LARGEFILE_RENAME
-#define zzip_filesize        zzip_filesize64
-#define zzip_get_default_io  zzip_get_default_io64
-#define zzip_init_io         zzip_init_io64
+#define zzip_filesize       zzip_filesize64
+#define zzip_get_default_io zzip_get_default_io64
+#define zzip_init_io        zzip_init_io64
 #endif
 
 _zzip_export zzip_off_t
@@ -73,7 +74,8 @@ zzip_filesize(int fd);
 /* get the default file I/O functions.
  *  This functions returns a pointer to an internal static structure.
  */
-_zzip_export zzip_plugin_io_t zzip_get_default_io(void);
+_zzip_export zzip_plugin_io_t
+zzip_get_default_io(void);
 
 /*
  * Initializes a zzip_plugin_io_t to the zziplib default io.
@@ -81,11 +83,11 @@ _zzip_export zzip_plugin_io_t zzip_get_default_io(void);
  * all zzip functions that can receive a zzip_plugin_io_t can
  * handle a zero pointer in that place and default to posix io.
  */
-_zzip_export
-int zzip_init_io(zzip_plugin_io_handlers_t io, int flags);
+_zzip_export int
+zzip_init_io(zzip_plugin_io_handlers_t io, int flags);
 
 /* zzip_init_io flags : */
-# define ZZIP_IO_USE_MMAP 1
+#define ZZIP_IO_USE_MMAP 1
 
 #ifdef __cplusplus
 }

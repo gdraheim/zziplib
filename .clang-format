@@ -1,0 +1,40 @@
+IndentWidth: 4
+ColumnLimit: 100
+AlignConsecutiveDeclarations: true
+AlignConsecutiveAssignments: true
+AlignConsecutiveMacros: true
+AlignAfterOpenBracket: true
+AllowShortBlocksOnASingleLine: Always
+BreakBeforeBraces: Stroustrup
+# BraceBreakingStyle: Stroustrup
+# PenaltyReturnTypeOnItsOwnLine: 0
+AlwaysBreakAfterDefinitionReturnType: TopLevel
+AlwaysBreakAfterReturnType: TopLevel
+SpaceAfterLogicalNot: true
+SpaceAfterCStyleCast: true
+# SpaceAroundPointerQualifiers: Both
+SpaceBeforeAssignmentOperators: true
+UseTab: Never
+PointerAlignment: Left
+IncludeBlocks: Preserve
+IncludeCategories:
+  - Regex: '^(<|")(zzip/conf[.]h)'
+    Priority: 2
+  - Regex: '^(<|")(zzip/types[.]h)'
+    Priority: 3
+  - Regex: '^(<|")(zzip/zzip[.]h)'
+    Priority: 4
+  - Regex: '^(<|")(zzip/lib[.]h)'
+    Priority: 5
+  - Regex: '^(<|")(zzip/write[.]h)'
+    Priority: 6
+  - Regex: '^(<|")(zzip/file[.]h)'
+    Priority: 8
+  - Regex: '^(<|")(zlib[.]h)'
+    Priority: 10
+  - Regex: '^(<|")(zzip/format[.]h)'
+    Priority: 11
+  - Regex: '^(<|")(zzip/mmapped[.]h)'
+    Priority: 12
+  - Regex: '^(<|")(zzip/[a-z][^.]*[.]h)'
+    Priority: 22

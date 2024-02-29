@@ -11,3 +11,10 @@ __pycache__
 docs/man3
 docs/html
 Makefile
+tmp.*
+tmp
+CMakeCache.txt
+CMakeFiles
+cmake_install.cmake
+configure
+configure.ac

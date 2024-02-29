@@ -1,7 +1,4 @@
-#! /usr/bin/python
-# -*- coding: utf-8 -*-
-# @creator (C) 2003 Guido U. Draheim
-# @license http://creativecommons.org/licenses/by-nc-sa/2.0/de/
+#! /usr/bin/env python3
 
 from zzipdoc.match import Match
 

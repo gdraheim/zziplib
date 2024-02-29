@@ -11,15 +11,16 @@ include ( CheckTypeSize )
 include ( TestBigEndian )
 include ( GNUInstallDirs )
 include ( JoinPaths )
+include ( CheckVerboseSymlink )
+include ( CheckCCompilerFlag )
 
 # options ###########################################################
 option(BUILD_SHARED_LIBS "Build a shared library" ON)
-option(BUILD_STATIC_LIBS "Build the static library" OFF)
 option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 option(ZZIPMMAPPED "Build libzzipmmapped (not fully portable)" ON)
 option(ZZIPFSEEKO "Build libzzipfseeko (based on posix.1 api)" ON)
 
-if(UNIX)
+if(UNIX OR MINGW)
 option(ZZIP_COMPAT "Build compatibility with old libzzip releases" ON)
 option(ZZIP_LIBTOOL "Ensure binary compatibility with libtool" ON)
 option(ZZIP_PKGCONFIG "Generate pkg-config files for linking" ON)
@@ -27,6 +28,12 @@ else()
 option(ZZIP_COMPAT "Build compatibility with old libzzip releases" OFF)
 option(ZZIP_LIBTOOL "Ensure binary compatibility with libtool" OFF)
 option(ZZIP_PKGCONFIG "Generate pkg-config files for linking" OFF)
+endif()
+
+if((CMAKE_BUILD_TYPE STREQUAL "Release") AND (ZZIP_LIBTOOL OR ZZIP_PKGCONFIG))
+option(ZZIP_LIBLATEST "Ensure libname.lib links to libname-REL.lib" ON)
+else()
+option(ZZIP_LIBLATEST "Ensure libname.lib links to libname-REL.lib" OFF)
 endif()
 
 # used in zzip/_config.h
@@ -103,6 +110,7 @@ configure_file ( ${CMAKE_CURRENT_SOURCE_DIR}/_config.h.cmake ${CMAKE_CURRENT_BIN
 find_package ( ZLIB REQUIRED )
 
 if(UNIX)
+CHECK_C_COMPILER_FLAG(C "-Warray-bounds" HAS_WARRAY_BOUNDS)
     add_definitions(
         -Wpointer-arith
         -Wsign-compare
@@ -110,11 +118,15 @@ if(UNIX)
         # -Wdeclaration-after-statement
         -Werror-implicit-function-declaration
         -Wstrict-aliasing
+    )
+  if(HAS_WARRAY_BOUNDS)
+    add_definitions(
         -Warray-bounds
     )
+  endif()
 endif()
 
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ${BUILD_SHARED_LIBS})
 add_definitions ( -DHAVE_CONFIG_H )
 
 set(RELNUM "${PROJECT_VERSION_MAJOR}")
@@ -153,7 +165,6 @@ set(libzzip_HDRS
     fetch.h
     stdint.h
     zzip32.h
-    autoconf.h
     ${outdir}/_config.h)
 
 set(libzzip_INCS
@@ -164,6 +175,7 @@ set(libzzip_INCS
     __hints.h
     __mkdir.h
     __mmap.h
+    __param.h
     __string.h)
 
 set(libzzipfseeko_SRCS fseeko.c fetch.c)
@@ -175,18 +187,22 @@ set(libzzipmmapped_HDRS mmapped.h memdisk.h)
 
 add_library(libzzip ${libzzip_SRCS} )
 target_link_libraries(libzzip ZLIB::ZLIB )
-target_include_directories (libzzip PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
+target_include_directories (libzzip 
+   PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} 
+   PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 if(ZZIPFSEEKO)
 add_library(libzzipfseeko ${libzzipfseeko_SRCS} )
 target_link_libraries(libzzipfseeko ZLIB::ZLIB )
-target_include_directories (libzzipfseeko PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
+target_include_directories (libzzipfseeko 
+   PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 endif()
 
 if(ZZIPMMAPPED)
 add_library(libzzipmmapped ${libzzipmmapped_SRCS} )
 target_link_libraries(libzzipmmapped ZLIB::ZLIB )
-target_include_directories (libzzipmmapped PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
+target_include_directories (libzzipmmapped 
+   PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 endif()
 
 set_target_properties(libzzip PROPERTIES OUTPUT_NAME "zzip" RELEASE_POSTFIX "-${RELNUM}")
@@ -255,14 +271,14 @@ install(FILES ${outdir}/zziplib.pc ${outdir}/zzipmmapped.pc ${outdir}/zzipfseeko
 endif()
 
 install(FILES ${libzzip_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/zzip )
-install(TARGETS libzzip 
+install(TARGETS libzzip EXPORT zziplibTargets
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 if(ZZIPFSEEKO)
 install(FILES ${libzzipfseeko_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/zzip )
-install(TARGETS libzzipfseeko 
+install(TARGETS libzzipfseeko EXPORT zziplibTargets
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
@@ -270,125 +286,137 @@ endif()
 
 if(ZZIPMMAPPED)
 install(FILES ${libzzipmmapped_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/zzip )
-install(TARGETS libzzipmmapped
+install(TARGETS libzzipmmapped EXPORT zziplibTargets
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
 
+install(EXPORT zziplibTargets
+    NAMESPACE zziplib::
+    DESTINATION share/zziplib
+)
+
+file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/zziplib-config.cmake.in"
+[[include(CMakeFindDependencyMacro)
+find_dependency(ZLIB)
+file(GLOB TARGET_FILES "${CMAKE_CURRENT_LIST_DIR}/*Targets.cmake")
+foreach (TARGET_FILE ${TARGET_FILES})
+    include("${TARGET_FILE}")
+endforeach()
+]])
+configure_file("${CMAKE_CURRENT_BINARY_DIR}/zziplib-config.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/zziplib-config.cmake" @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/zziplib-config.cmake DESTINATION share/zziplib)
+
 if(ZZIP_COMPAT OR ZZIP_LIBTOOL)
-  if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
-    execute_process(COMMAND bash -c "ln --help"
-        OUTPUT_VARIABLE ln_verbose_help
-        ERROR_QUIET
-    )
-    string(FIND "${ln_verbose_help}" "verbose" ln_verbose_found)
-    if(${ln_verbose_found} STREQUAL "-1")
-        set(ln_svf "ln -sf")
-    else()
-        set(ln_svf "ln -svf")
-    endif()
-    message(STATUS "Can symlink libraries with: ${ln_svf}")
+  if(BUILD_SHARED_LIBS AND CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
+    set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
+    set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
+    get_target_property(libname libzzip OUTPUT_NAME)
+    get_target_property(librelease libzzip RELEASE_POSTFIX)
+    add_custom_target(libzzip_links ALL
+        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:libzzip> ${lib}${libname}${librelease}${dll}.10
+        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:libzzip> ${lib}${libname}${librelease}${dll}.11
+        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:libzzip> ${lib}${libname}${librelease}${dll}.12
+        )
+    install(FILES
+      ${outdir}/${lib}${libname}${librelease}${dll}.10
+      ${outdir}/${lib}${libname}${librelease}${dll}.11
+      ${outdir}/${lib}${libname}${librelease}${dll}.12
+      DESTINATION ${CMAKE_INSTALL_LIBDIR})
   endif()
 endif()
 
 if(ZZIP_COMPAT)
-  install(FILES ${outdir}/compat/zzip.h ${outdir}/compat/zziplib.h ${outdir}/compat/zzip-io.h 
+  install(FILES ${outdir}/compat/zzip.h ${outdir}/compat/zziplib.h ${outdir}/compat/zzip-io.h
           DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-  if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
-    set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
-    set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
-    set(libdir ${CMAKE_INSTALL_FULL_LIBDIR})
-    get_target_property(libname libzzip OUTPUT_NAME)
-    get_target_property(librelease libzzip RELEASE_POSTFIX)
-    get_target_property(libversion libzzip VERSION)
-    install(CODE "execute_process(COMMAND bash -c \"set -e
-        cd $DESTDIR/${libdir}
-        if [ -f ${lib}${libname}${librelease}.${libversion}${dll} ]; then
-          # Fix for APPLE where dylib goes in the end
-          ln -s ${lib}${libname}${librelease}.${libversion}${dll} ${lib}${libname}${librelease}${dll}.${libversion}
-        fi
-        [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
-        echo -n .. Installing: `pwd`
-        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}
-        echo -n .. Installing: `pwd`
-        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.10
-        echo -n .. Installing: `pwd`
-        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.11
-        echo -n .. Installing: `pwd`
-        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
-        \")")
-  endif()
 endif()
 
 if(ZZIP_LIBTOOL)
-  if(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
+  if(BUILD_SHARED_LIBS AND CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
     set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
     set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
-    set(libdir ${CMAKE_INSTALL_FULL_LIBDIR})
-    get_target_property(libname libzzip OUTPUT_NAME)
-    get_target_property(librelease libzzip RELEASE_POSTFIX)
-    get_target_property(libversion libzzip VERSION)
-    install(CODE "execute_process(COMMAND bash -c \"set -e
-        cd $DESTDIR/${libdir}
-        if [ -f ${lib}${libname}${librelease}.${libversion}${dll} ]; then
-          # Fix for APPLE where dylib goes in the end
-          ln -s ${lib}${libname}${librelease}.${libversion}${dll} ${lib}${libname}${librelease}${dll}.${libversion}
-        fi
-        [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
-        echo -n .. Installing: `pwd`
-        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
-        echo -n .. Installing: `pwd`
-        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.10
-        echo -n .. Installing: `pwd`
-        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.11
-        echo -n .. Installing: `pwd`
-        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
-        \")")
     if(ZZIPFSEEKO)
     get_target_property(libname libzzipfseeko OUTPUT_NAME)
     get_target_property(librelease libzzipfseeko RELEASE_POSTFIX)
-    get_target_property(libversion libzzipfseeko VERSION)
-    install(CODE "execute_process(COMMAND bash -c \"set -e
-        cd $DESTDIR/${libdir}
-        if [ -f ${lib}${libname}${librelease}.${libversion}${dll} ]; then
-          # Fix for APPLE where dylib goes in the end
-          ln -s ${lib}${libname}${librelease}.${libversion}${dll} ${lib}${libname}${librelease}${dll}.${libversion}
-        fi
-        [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
-        echo -n .. Installing: `pwd`
-        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
-        echo -n .. Installing: `pwd`
-        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.10
-        echo -n .. Installing: `pwd`
-        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.11
-        echo -n .. Installing: `pwd`
-        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
-        \")")
+    add_custom_target(libzzipfseeko_links ALL
+        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:libzzipfseeko> ${lib}${libname}${librelease}${dll}.10
+        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:libzzipfseeko> ${lib}${libname}${librelease}${dll}.11
+        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:libzzipfseeko> ${lib}${libname}${librelease}${dll}.12
+        )
+    install(FILES
+        ${outdir}/${lib}${libname}${librelease}${dll}.10
+        ${outdir}/${lib}${libname}${librelease}${dll}.11
+        ${outdir}/${lib}${libname}${librelease}${dll}.12
+        DESTINATION ${CMAKE_INSTALL_LIBDIR})
     endif(ZZIPFSEEKO)
     if(ZZIPMMAPPED)
     get_target_property(libname libzzipmmapped OUTPUT_NAME)
     get_target_property(librelease libzzipmmapped RELEASE_POSTFIX)
-    get_target_property(libversion libzzipmmapped VERSION)
-    install(CODE "execute_process(COMMAND bash -c \"set -e
-        cd $DESTDIR/${libdir}
-        if [ -f ${lib}${libname}${librelease}.${libversion}${dll} ]; then
-          # Fix for APPLE where dylib goes in the end
-          ln -s ${lib}${libname}${librelease}.${libversion}${dll} ${lib}${libname}${librelease}${dll}.${libversion}
-        fi
-        [ -f ${lib}${libname}${librelease}${dll}.${libversion} ] || exit 0
-        echo -n .. Installing: `pwd`
-        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${dll}
-        echo -n .. Installing: `pwd`
-        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.10
-        echo -n .. Installing: `pwd`
-        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.11
-        echo -n .. Installing: `pwd`
-        ${ln_svf} ${lib}${libname}${librelease}${dll}.${libversion} ${lib}${libname}${librelease}${dll}.12
-        \")")
+    add_custom_target(libzzipmmaped_links ALL
+        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:libzzipmmapped> ${lib}${libname}${librelease}${dll}.10
+        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:libzzipmmapped> ${lib}${libname}${librelease}${dll}.11
+        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:libzzipmmapped> ${lib}${libname}${librelease}${dll}.12
+        )
+    install(FILES
+        ${outdir}/${lib}${libname}${librelease}${dll}.10
+        ${outdir}/${lib}${libname}${librelease}${dll}.11
+        ${outdir}/${lib}${libname}${librelease}${dll}.12
+        DESTINATION ${CMAKE_INSTALL_LIBDIR})
     endif(ZZIPMMAPPED)
   endif(CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
 endif(ZZIP_LIBTOOL)
+
+if(ZZIP_LIBLATEST)
+  if(BUILD_SHARED_LIBS)
+    set(lib ${CMAKE_SHARED_LIBRARY_PREFIX})
+    set(dll ${CMAKE_SHARED_LIBRARY_SUFFIX})
+  else()
+    set(lib ${CMAKE_STATIC_LIBRARY_PREFIX})
+    set(dll ${CMAKE_STATIC_LIBRARY_SUFFIX})
+  endif()
+    get_target_property(libname libzzip OUTPUT_NAME)
+    get_target_property(librelease libzzip RELEASE_POSTFIX)
+    set(libzzip_target "${lib}${libname}${dll}")
+    add_custom_command(OUTPUT ${libzzip_target} 
+        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:libzzip> ${libzzip_target}
+        )
+    add_custom_target(libzzip_latest ALL
+        DEPENDS ${libzzip_target}
+        )
+    install(FILES
+        ${outdir}/${lib}${libname}${dll}
+        DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    if(ZZIPFSEEKO)
+    get_target_property(libname libzzipfseeko OUTPUT_NAME)
+    get_target_property(librelease libzzipfseeko RELEASE_POSTFIX)
+    set(libzzipfseeko_target "${lib}${libname}${dll}")
+    add_custom_command(OUTPUT ${libzzipfseeko_target} 
+        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:libzzipfseeko> ${libzzipfseeko_target}
+        )
+    add_custom_target(libzzipfseeko_latest ALL
+        DEPENDS ${libzzipfseeko_target}
+        )
+    install(FILES
+        ${outdir}/${lib}${libname}${dll}
+        DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    endif(ZZIPFSEEKO)
+    if(ZZIPMMAPPED)
+    get_target_property(libname libzzipmmapped OUTPUT_NAME)
+    get_target_property(librelease libzzipmmapped RELEASE_POSTFIX)
+    set(libzzipmmapped_target "${lib}${libname}${dll}")
+    add_custom_command(OUTPUT ${libzzipmmapped_target} 
+        COMMAND ${CMAKE_COMMAND} -E create_symlink $<TARGET_FILE_NAME:libzzipmmapped> ${libzzipmmapped_target}
+        )
+    add_custom_target(libzzipmmaped_latest ALL
+        DEPENDS ${libzzipmmapped_target}
+        )
+    install(FILES
+        ${outdir}/${lib}${libname}${dll}
+        DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    endif(ZZIPMMAPPED)
+endif(ZZIP_LIBLATEST)
+
 
 ## messages ##############################################
 
