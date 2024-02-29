@@ -235,8 +235,10 @@ zzip_disk_close(ZZIP_DISK* disk)
         return 0;
     if (disk->mapped != -1)
         return zzip_disk_munmap(disk);
-    if (disk->flags & ZZIP_DISK_FLAGS_OWNED_BUFFER)
+    if (disk->buffer && disk->flags & ZZIP_DISK_FLAGS_OWNED_BUFFER) {
         free(disk->buffer);
+        disk->buffer = NULL;
+    }
     free(disk);
     return 0;
 }

@@ -141,6 +141,7 @@ zzip_mem_disk_load(ZZIP_MEM_DISK* dir, ZZIP_DISK* disk)
     }
     if (dir->list)
         zzip_mem_disk_unload(dir);
+    dir->disk = disk;
     ___ long                    count = 0;
     ___ struct zzip_disk_entry* entry = zzip_disk_findfirst(disk);
     if (! entry)
@@ -161,7 +162,6 @@ zzip_mem_disk_load(ZZIP_MEM_DISK* dir, ZZIP_DISK* disk)
         count++;
     }
     ____;
-    dir->disk = disk;
     return count;
     ____;
 error:
@@ -386,6 +386,7 @@ zzip_mem_disk_close(ZZIP_MEM_DISK* _zzip_restrict dir)
     if (dir) {
         zzip_mem_disk_unload(dir);
         zzip_disk_close(dir->disk);
+        dir->disk = 0;
         free(dir);
     }
 }
