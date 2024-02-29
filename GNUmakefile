@@ -87,16 +87,17 @@ version:
 	; git diff -U0
 
 # format ..............................
+CLANG_FORMAT=clang-format
+format ff: ; $(CLANG_FORMAT) -i zzip/*.h zzip/*.c
+
 FORMATDIR=../zziplib-format
-format:
+formatdir:
 	rm -rf $(FORMATDIR); mkdir $(FORMATDIR)
-	for i in zzip/*.h; do clang-format "$$i" > "$(FORMATDIR)/$$(basename $$i)"; done
-	for i in zzip/*.c; do clang-format "$$i" > "$(FORMATDIR)/$$(basename $$i)"; done
+	for i in zzip/*.h; do $(CLANG_FORMAT) "$$i" > "$(FORMATDIR)/$$(basename $$i)"; done
+	for i in zzip/*.c; do $(CLANG_FORMAT) "$$i" > "$(FORMATDIR)/$$(basename $$i)"; done
 	diff -qs zzip $(FORMATDIR) -x "*.am" -x "*.in" -x "*.wpj" -x "*.cmake" -x "*.sed" -x "*.txt"
-diff:
-	diff -U0 zzip $(FORMATDIR) -x "*.am" -x "*.in" -x "*.wpj" -x "*.cmake" -x "*.sed" -x "*.txt"
-dif:
-	diff -u zzip $(FORMATDIR) -x "*.am" -x "*.in" -x "*.wpj" -x "*.cmake" -x "*.sed" -x "*.txt"
+diff: ; diff -U0 zzip $(FORMATDIR) -x "*.am" -x "*.in" -x "*.wpj" -x "*.cmake" -x "*.sed" -x "*.txt"
+dif:  ; diff -u zzip $(FORMATDIR) -x "*.am" -x "*.in" -x "*.wpj" -x "*.cmake" -x "*.sed" -x "*.txt"
 
 # style ...............................
 mypy:
