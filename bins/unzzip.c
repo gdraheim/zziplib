@@ -10,7 +10,7 @@
 #include <zzip/__string.h>
 #include <zzip/__mkdir.h>
 #include <zzip/__debug.h>
-#include <zzip/file.h>
+#include <zzip/__param.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

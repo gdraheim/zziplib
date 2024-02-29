@@ -175,6 +175,7 @@ set(libzzip_INCS
     __hints.h
     __mkdir.h
     __mmap.h
+    __param.h
     __string.h)
 
 set(libzzipfseeko_SRCS fseeko.c fetch.c)
@@ -186,18 +187,22 @@ set(libzzipmmapped_HDRS mmapped.h memdisk.h)
 
 add_library(libzzip ${libzzip_SRCS} )
 target_link_libraries(libzzip ZLIB::ZLIB )
-target_include_directories (libzzip PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} PUBLIC $<INSTALL_INTERFACE:include/zzip>)
+target_include_directories (libzzip 
+   PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} 
+   PUBLIC $<INSTALL_INTERFACE:include/zzip>)
 
 if(ZZIPFSEEKO)
 add_library(libzzipfseeko ${libzzipfseeko_SRCS} )
 target_link_libraries(libzzipfseeko ZLIB::ZLIB )
-target_include_directories (libzzipfseeko PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
+target_include_directories (libzzipfseeko 
+   PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 endif()
 
 if(ZZIPMMAPPED)
 add_library(libzzipmmapped ${libzzipmmapped_SRCS} )
 target_link_libraries(libzzipmmapped ZLIB::ZLIB )
-target_include_directories (libzzipmmapped PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
+target_include_directories (libzzipmmapped 
+   PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 endif()
 
 set_target_properties(libzzip PROPERTIES OUTPUT_NAME "zzip" RELEASE_POSTFIX "-${RELNUM}")

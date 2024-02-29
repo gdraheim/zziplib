@@ -37,17 +37,8 @@
 #endif
 #endif
 
-#ifdef ZZIP_HAVE_SYS_PARAM_H
-#include <sys/param.h> /* PATH_MAX */
-#endif
+#include <zzip/__param.h>
 
-#ifndef PATH_MAX
-#ifdef MAX_PATH /* windows */
-#define PATH_MAX MAX_PATH
-#else
-#define PATH_MAX 512
-#endif
-#endif
 /*
  * ZZIP_FILE structure... currently no need to unionize, since structure needed
  * for inflate is superset of structure needed for unstore.
