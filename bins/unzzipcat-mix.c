@@ -28,9 +28,22 @@
 extern int exitcode(int);
 extern FILE* create_fopen(char*, char*, int);
 
+static char* strdup_mixname(char* zip_name, char* name)
+{
+     int zip_name_len = strlen(zip_name);
+     int name_len = strlen(name);
+     char* mix_name = malloc(zip_name_len + 2 + name_len);
+     if (zip_name_len > 4 && !strcmp(zip_name+zip_name_len-4, ".zip"))
+             zip_name_len -= 4;
+     memcpy(mix_name, zip_name, zip_name_len);
+     mix_name[zip_name_len] = '/';
+     strcpy(mix_name + zip_name_len + 1, name);
+     return mix_name;
+}
+
 static void unzzip_cat_file(ZZIP_DIR* disk, char* name, FILE* out)
 {
-    ZZIP_FILE* file = zzip_fopen(name, "rb");
+    ZZIP_FILE* file = zzip_fopen(name, "rb!");
     if (file) 
     {
 	char buffer[1024]; int len;
@@ -55,7 +68,8 @@ static int unzzip_cat (int argc, char ** argv, int extract)
         return EXIT_OK; /* better provide an archive argument */
     }
     
-    disk = zzip_opendir (argv[1]);
+    char* zip_name = argv[1];
+    disk = zzip_opendir (zip_name);
     if (! disk) {
         DBG3("opendir failed [%i] %s", errno, strerror(errno));
 	perror(argv[1]);
@@ -69,15 +83,20 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	{
 	    char* name = entry->d_name;
 	    FILE* out = stdout;
-	    if (extract) out = create_fopen(name, "wb", 1);
+	    if (extract) {
+	        out = create_fopen(name, "wb", 1);
+	        DBG3("extract to '%s' -> %p", name, out);
+	    }
 	    if (! out) {
 	        if (errno != EISDIR) done = EXIT_ERRORS;
 	        continue;
 	    }
-	    unzzip_cat_file (disk, name, out);
+            char* mix_name = strdup_mixname(zip_name, name);
+	    unzzip_cat_file (disk, mix_name, out);
+	    free (mix_name);
 	    if (extract) fclose(out);
 	}
-	DBG2("readdir done %s", strerror(errno));
+	DBG2("readdir (%s)", strerror(errno));
     }
     else
     {   /* list only the matching entries - in order of zip directory */
@@ -91,15 +110,7 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 		    _zzip_FNM_NOESCAPE|_zzip_FNM_PATHNAME|_zzip_FNM_PERIOD))
 	        {
 	             FILE* out = stdout;
-	             char* zip_name = argv[1];
-	             int zip_name_len = strlen(zip_name);
-	             int name_len = strlen(name);
-	             char* mix_name = malloc(zip_name_len + 2 + name_len);
-	             if (zip_name_len > 4 && !strcmp(zip_name+zip_name_len-4, ".zip"))
-	                 zip_name_len -= 4;
-	             memcpy(mix_name, zip_name, zip_name_len);
-	             mix_name[zip_name_len] = '/';
-	             strcpy(mix_name + zip_name_len + 1, name);
+	             char* mix_name = strdup_mixname(zip_name, name);
 	             if (extract) out = create_fopen(name, "wb", 1);
 	             if (! out) {
 	                 if (errno != EISDIR) done = EXIT_ERRORS;
