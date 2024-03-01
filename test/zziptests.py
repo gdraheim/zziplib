@@ -3952,7 +3952,6 @@ class ZZipTest(unittest.TestCase):
         run = shell("cd {tmpdir} && ../{exe} -p {filename} ".format(**locals()),
                     returncodes=[0])
         self.rm_testdir()
-    # @unittest.expectedFailure
     def test_65773(self) -> None:
         """ unzzip-mix -l $(CVE).zip  """
         tmpdir = self.testdir()
