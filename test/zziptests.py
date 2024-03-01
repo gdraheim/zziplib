@@ -3744,7 +3744,6 @@ class ZZipTest(unittest.TestCase):
         run = shell("cd {tmpdir} && ../{exe} -p {filename} ".format(**locals()),
                     returncodes=[0])
         self.rm_testdir()
-    @unittest.expectedFailure
     def test_65573(self) -> None:
         """ unzzip-mix -l $(CVE).zip = ZIP64 support with contained file size > 2G  """
         tmpdir = self.testdir()
@@ -3763,7 +3762,6 @@ class ZZipTest(unittest.TestCase):
         self.assertTrue(os.path.exists(tmpdir + "/2020_10_OutagesPUReasons.csv"))
         self.assertEqual(os.path.getsize(tmpdir + "/2020_10_OutagesPUReasons.csv"), 2590160)
         self.rm_testdir()
-    @unittest.expectedFailure
     def test_65574(self) -> None:
         """ unzzip-zap -l $(CVE).zip = ZIP64 support with contained file size > 2G """
         tmpdir = self.testdir()
