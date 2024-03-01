@@ -3720,7 +3720,6 @@ class ZZipTest(unittest.TestCase):
         self.assertTrue(os.path.exists(tmpdir + "/2020_10_OutagesPUReasons.csv"))
         self.assertEqual(os.path.getsize(tmpdir + "/2020_10_OutagesPUReasons.csv"), 2590160)
         self.rm_testdir()
-    @unittest.expectedFailure
     def test_65572(self) -> None:
         """ unzzip-mem -l $(CVE).zip = ZIP64 support with contained file size > 2G """
         tmpdir = self.testdir()
@@ -3732,8 +3731,6 @@ class ZZipTest(unittest.TestCase):
         exe = self.bins("unzzip-mem")
         run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
                     returncodes=[0])
-        self.assertLess(len(run.output), 1)
-        # self.assertEqual(len(errors(run.errors)), 1)
         #
         run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
                     returncodes=[0])
