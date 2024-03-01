@@ -56,9 +56,11 @@ typedef struct zzip_dostime zzip_dostime_t;
       (((zzip_byte_t*)(__p))[1]==(__B)) && \
       (((zzip_byte_t*)(__p))[2]==(__C)) && \
       (((zzip_byte_t*)(__p))[3]==(__D)) )
-#define ZZIP_CHECK(__p,__A,__B) \
-    ( (((zzip_byte_t*)(__p))[0]==(__A)) && \
-      (((zzip_byte_t*)(__p))[1]==(__B)) )
+#define ZZIP_CHECKEXTRA(__p,__N) \
+      ( ZZIP_GETEXTRA(__p) == (__N))
+#define ZZIP_GETEXTRA(__p) \
+    ( (((zzip_byte_t*)(__p))[1]<<8) | \
+      (((zzip_byte_t*)(__p))[0]) )
 /* clang-format on */
 
 /* A. Local file header */
@@ -177,7 +179,7 @@ struct zzip_extra_block {      /* fetch.h macros do not need this struct */
 /* Zip64 extras block */
 struct zzip_extra_zip64 {
 #define ZZIP_EXTRA_ZIP64_MAGIC      0x0001
-#define ZZIP_EXTRA_ZIP64_CHECK(__p) ZZIP_CHECK(__p, '\0', '\1')
+#define ZZIP_EXTRA_ZIP64_CHECK(__p) ZZIP_CHECKEXTRA(__p, ZZIP_EXTRA_ZIP64_MAGIC)
     zzip_byte_t z_datatype[2];  /* extras signature 0x0001 */
     zzip_byte_t z_datasize[2];  /* structure length 0x0010 */
     zzip_byte_t z_usize[8];     /* original size */
