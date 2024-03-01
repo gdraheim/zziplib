@@ -489,10 +489,14 @@ zzip_file_read(ZZIP_FILE* fp, void* buf, zzip_size_t len)
 zzip_ssize_t
 zzip_read(ZZIP_FILE* fp, void* buf, zzip_size_t len)
 {
+    DBG2("zzip_read %p", fp);
     if (! fp)
         return 0;
     if (! fp->dir) {
-        return fp->io->fd.read(fp->fd, buf, len);
+        register zzip_ssize_t w;
+        w = fp->io->fd.read(fp->fd, buf, len);
+        DBG4("fd.read %p &%i .. %li", fp, fp->fd, w);
+        return w;
     } /* stat fd */
     else {
         register zzip_ssize_t v;
@@ -501,6 +505,7 @@ zzip_read(ZZIP_FILE* fp, void* buf, zzip_size_t len)
         if (v == -1) {
             errno = zzip_errno(fp->dir->errcode);
         }
+        DBG3("file.read %p .. %li", fp, v);
         return v;
     }
 }
@@ -678,7 +683,12 @@ zzip_freopen(zzip_char_t* filename, zzip_char_t* mode, ZZIP_FILE* stream)
         case 'f': o_flags |= O_NOCTTY; break;
         case 'i': o_modes |= ZZIP_CASELESS; break;
         case '*': o_modes |= ZZIP_NOPATHS; break;
-        case 'x': o_flags |= O_EXCL; break;
+        case '?': o_modes |= ZZIP_PREFERZIP; break;
+        case '!': o_modes |= ZZIP_ONLYZIP; break;
+#ifdef O_CLOEXEC
+        case 'e': o_flags |= O_CLOEXEC; break; /* like glibc */
+#endif
+        case 'x': o_flags |= O_EXCL; break; /* like glibc */
         case 's': o_flags |= O_SYNC; break;
         case 'n': o_flags |= O_NONBLOCK; break;
         case 'o': o_modes &=~ 07;
