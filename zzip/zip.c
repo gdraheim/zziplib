@@ -506,7 +506,6 @@ __zzip_parse_root_directory(int fd, struct _disk_trailer* trailer, struct zzip_d
         hdr->d_compr = zzip_disk_entry_get_compr(d);
         if (hdr->d_compr > _255)
             hdr->d_compr = 255;
-        
 
         if ((zzip_off64_t) (zz_offset + sizeof(*d) + u_namlen) > zz_rootsize ||
             (zzip_off64_t) (zz_offset + sizeof(*d) + u_namlen) < 0) {
@@ -531,7 +530,8 @@ __zzip_parse_root_directory(int fd, struct _disk_trailer* trailer, struct zzip_d
             zzip_byte_t* extras_ptr;
             if (fd_map) {
                 zzip_byte_t* extras_ptr = fd_map + zz_fd_gap + zz_extras;
-            } else {
+            }
+            else {
                 extras_ptr = malloc(u_extras);
                 io->fd.read(fd, extras_ptr, u_extras);
             }
@@ -540,11 +540,12 @@ __zzip_parse_root_directory(int fd, struct _disk_trailer* trailer, struct zzip_d
                 WARN1("ZIP64 support incomplete");
                 hdr->d_csize = zzip_extra_zip64_csize(zip64);
                 hdr->d_usize = zzip_extra_zip64_usize(zip64);
-                hdr->d_off = zzip_extra_zip64_offset(zip64);
-            } else {
+                hdr->d_off   = zzip_extra_zip64_offset(zip64);
+            }
+            else {
                 DBG2("unknown extras block %04x", ZZIP_GETEXTRA(extras_ptr));
             }
-            if (!fd_map) {
+            if (! fd_map) {
                 free(extras_ptr);
             }
         }
