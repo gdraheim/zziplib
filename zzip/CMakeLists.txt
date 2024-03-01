@@ -133,8 +133,8 @@ if(FORTIFY)
    add_link_options(
      -fsanitize=address
    )
+   set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
 endif()
-## add_definitions(-DDEBUG)
 
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
