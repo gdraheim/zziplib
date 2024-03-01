@@ -273,7 +273,21 @@ zzip_disk_entry_to_data(ZZIP_DISK* disk, struct zzip_disk_entry* entry)
 struct zzip_file_header*
 zzip_disk_entry_to_file_header(ZZIP_DISK* disk, struct zzip_disk_entry* entry)
 {
-    zzip_byte_t* const ptr = disk->buffer + zzip_disk_entry_fileoffset(entry);
+    zzip_off64_t offset = zzip_disk_entry_fileoffset(entry);
+    if ((offset & 0xFFFFu) == 0xFFFFu) {
+        zzip_byte_t* extras_ptr = zzip_disk_entry_to_extras(entry);
+        if (ZZIP_EXTRA_ZIP64_CHECK(extras_ptr)) {
+            struct zzip_extra_zip64* zip64 = (struct zzip_extra_zip64*) extras_ptr;
+            WARN1("ZIP64 support incomplete");
+            offset = zzip_extra_zip64_offset(zip64);
+        }
+        else {
+            WARN1("ZIP64 extra not found");
+            errno = EBADMSG;
+            return 0;
+        }
+    }
+    zzip_byte_t* const ptr = disk->buffer + offset;
     zzip_byte_t* const end = ptr + sizeof(struct zzip_file_header);
     if (disk->buffer > ptr || end >= disk->endbuf || (void*) end <= NULL) {
         debug2("file header: offset out of bounds (0x%llx)", (long long unsigned) (disk->buffer));
@@ -634,7 +648,8 @@ zzip_disk_entry_fopen(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry)
     ___ /* a ZIP64 extended block may follow. */
         size_t   csize = zzip_file_header_csize(header);
     zzip_byte_t* start = zzip_file_header_to_data(header);
-    if (csize == 0xFFFFu) {
+    if ((csize & 0xFFFFu) == 0xFFFFu) {
+        DBG1("need zip64 extras");
         struct zzip_extra_zip64* zip64 =
             (struct zzip_extra_zip64*) zzip_file_header_to_extras(header);
         if (ZZIP_EXTRA_ZIP64_CHECK(zip64)) {

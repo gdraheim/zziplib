@@ -208,11 +208,28 @@ zzip_mem_entry_new(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry)
     item->zz_diskstart = zzip_disk_entry_get_diskstart(entry);
     item->zz_filetype  = zzip_disk_entry_get_filetype(entry);
 
+    if ((item->zz_csize & 0xFFFFu) == 0xFFFFu) {
+        zzip_byte_t* _zzip_restrict extras_ptr = zzip_disk_entry_to_extras(entry);
+        if (ZZIP_EXTRA_ZIP64_CHECK(extras_ptr)) {
+            struct zzip_extra_zip64* zip64 = (struct zzip_extra_zip64*) extras_ptr;
+            debug1("ZIP64 support incomplete");
+            item->zz_csize     = zzip_extra_zip64_csize(zip64);
+            item->zz_usize     = zzip_extra_zip64_usize(zip64);
+            item->zz_offset    = zzip_extra_zip64_offset(zip64);
+            item->zz_diskstart = zzip_extra_zip64_diskstart(zip64);
+        }
+        else {
+            debug2("unknown extras block %04x", ZZIP_GETEXTRA(extras_ptr));
+        }
+    }
+    debug2("csize = $%lx", (long) item->zz_csize);
+
     /*
      * If zz_data+zz_csize exceeds the size of the file, bail out
      */
     if ((item->zz_data + item->zz_csize) < disk->buffer ||
         (item->zz_data + item->zz_csize) >= disk->endbuf) {
+        debug2("csize %li not in mmapped buffer", (long) item->zz_csize);
         goto error;
     }
     /*
@@ -260,17 +277,6 @@ zzip_mem_entry_new(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry)
                 item->zz_extlen[2] = ext2_len;
                 memcpy(mem, ext2_ptr, ext2_len);
             }
-        }
-    }
-    {
-        /* override sizes/offsets with zip64 values for largefile support */
-        struct zzip_extra_zip64* block = (struct zzip_extra_zip64*) zzip_mem_entry_find_extra_block(
-            item, ZZIP_EXTRA_ZIP64_MAGIC, sizeof(struct zzip_extra_zip64));
-        if (block) {
-            item->zz_usize     = zzip_extra_zip64_usize(block);
-            item->zz_csize     = zzip_extra_zip64_csize(block);
-            item->zz_offset    = zzip_extra_zip64_offset(block);
-            item->zz_diskstart = zzip_extra_zip64_diskstart(block);
         }
     }
     /* NOTE:
