@@ -204,7 +204,7 @@ zzip_file_open(ZZIP_DIR* dir, zzip_char_t* name, int o_mode)
         if (o_mode & ZZIP_NOPATHS)
             hdr_name = filename_basename(hdr_name);
 
-        HINT4("name='%s', compr=%d, size=%d\n", hdr->d_name, hdr->d_compr, hdr->d_usize);
+        HINT4(" name='%s', compr=%d, size=%d\n", hdr->d_name, hdr->d_compr, hdr->d_usize);
 
         if (! filename_strcmp(hdr_name, name)) {
             switch (hdr->d_compr) {
@@ -216,6 +216,7 @@ zzip_file_open(ZZIP_DIR* dir, zzip_char_t* name, int o_mode)
                 goto error;
             }
             }
+            HINT2("found '%s' in zip file", name);
 
             if (dir->cache.locked == NULL)
                 dir->cache.locked = &self;
@@ -262,12 +263,16 @@ zzip_file_open(ZZIP_DIR* dir, zzip_char_t* name, int o_mode)
 
             fp->offset     = hdr->d_off;
             dir->currentfp = fp;
+            if (hdr->d_off == 0xFFFFu || hdr->d_off == 0xFFFFFFFFu) {
+                WARN1("ZIP64 not supported from non-zip64 parsed directory");
+                err = ZZIP_DIR_LARGEFILE;
+                goto error;
+            }
 
             if (dir->io->fd.seeks(dir->fd, hdr->d_off, SEEK_SET) < 0) {
                 err = ZZIP_DIR_SEEK;
                 goto error;
             }
-
             {
                 /* skip local header - should test tons of other info,
                  * but trust that those are correct */
