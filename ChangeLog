@@ -1,5 +1,10 @@
 2024-02-29  gdraheim@github
     * disabled local file header offset64
+    * allowed to 'make fortify' for extended debugging
+    * fixed all memleak bugs from address sanitizer
+    * fixed ZIP64 bugs - but the support is still incomplete
+    * fixed remaining failures as they were recorded in testsuite
+    * release 0.13.74
 
 2024-02-28  gdraheim@github
     * fixed last cmake bug - parallel builds can lead to race condition
