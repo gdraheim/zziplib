@@ -3686,7 +3686,7 @@ class ZZipTest(unittest.TestCase):
     url_CVE_2020_04 = "https://github.com/gdraheim/zziplib/files/5340201"
     zip_CVE_2020_04 = "2020_10_OutagesPUReasons.zip"
     def test_65570(self) -> None:
-        """ info unzip -l $(CVE).zip  """
+        """ info unzip -l $(CVE).zip = ZIP64 support with contained file size > 2G  """
         if unzip_skip: self.skipTest("skip tests using infozip 'unzip'")
         tmpdir = self.testdir()
         filename = self.zip_CVE_2020_04
@@ -3700,10 +3700,11 @@ class ZZipTest(unittest.TestCase):
         #
         run = shell("cd {tmpdir} && {exe} -o {filename}".format(**locals()),
                     returncodes=[0])
+        self.assertTrue(os.path.exists(tmpdir + "/2020_10_OutagesPUReasons.csv"))
         self.assertEqual(os.path.getsize(tmpdir + "/2020_10_OutagesPUReasons.csv"), 2590160)
         self.rm_testdir()
     def test_65571(self) -> None:
-        """ unzzip-big -l $(CVE).zip  """
+        """ unzzip-big -l $(CVE).zip = ZIP64 support with contained file size > 2G  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2020_04
         file_url = self.url_CVE_2020_04
@@ -3716,11 +3717,12 @@ class ZZipTest(unittest.TestCase):
         #
         run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
                     returncodes=[0])
+        self.assertTrue(os.path.exists(tmpdir + "/2020_10_OutagesPUReasons.csv"))
         self.assertEqual(os.path.getsize(tmpdir + "/2020_10_OutagesPUReasons.csv"), 2590160)
         self.rm_testdir()
     @unittest.expectedFailure
     def test_65572(self) -> None:
-        """ unzzip-mem -l $(CVE).zip """
+        """ unzzip-mem -l $(CVE).zip = ZIP64 support with contained file size > 2G """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2020_04
         file_url = self.url_CVE_2020_04
@@ -3736,6 +3738,7 @@ class ZZipTest(unittest.TestCase):
         run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
                     returncodes=[0])
         self.assertLess(len(run.output), 1)
+        self.assertTrue(os.path.exists(tmpdir + "/2020_10_OutagesPUReasons.csv"))
         self.assertEqual(os.path.getsize(tmpdir + "/2020_10_OutagesPUReasons.csv"), 2590160)
         #
         run = shell("cd {tmpdir} && ../{exe} -p {filename} ".format(**locals()),
@@ -3743,7 +3746,7 @@ class ZZipTest(unittest.TestCase):
         self.rm_testdir()
     @unittest.expectedFailure
     def test_65573(self) -> None:
-        """ unzzip-mix -l $(CVE).zip  """
+        """ unzzip-mix -l $(CVE).zip = ZIP64 support with contained file size > 2G  """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2020_04
         file_url = self.url_CVE_2020_04
@@ -3757,11 +3760,12 @@ class ZZipTest(unittest.TestCase):
         run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
                     returncodes=[0, 2])
         self.assertLess(len(run.output), 30)
+        self.assertTrue(os.path.exists(tmpdir + "/2020_10_OutagesPUReasons.csv"))
         self.assertEqual(os.path.getsize(tmpdir + "/2020_10_OutagesPUReasons.csv"), 2590160)
         self.rm_testdir()
     @unittest.expectedFailure
     def test_65574(self) -> None:
-        """ unzzip-zap -l $(CVE).zip  """
+        """ unzzip-zap -l $(CVE).zip = ZIP64 support with contained file size > 2G """
         tmpdir = self.testdir()
         filename = self.zip_CVE_2020_04
         file_url = self.url_CVE_2020_04
@@ -3774,6 +3778,7 @@ class ZZipTest(unittest.TestCase):
         #
         run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
                     returncodes=[0])
+        self.assertTrue(os.path.exists(tmpdir + "/2020_10_OutagesPUReasons.csv"))
         self.assertEqual(os.path.getsize(tmpdir + "/2020_10_OutagesPUReasons.csv"), 2590160)
         self.rm_testdir()
     def test_65579(self) -> None:
@@ -3952,7 +3957,7 @@ class ZZipTest(unittest.TestCase):
         run = shell("cd {tmpdir} && ../{exe} -p {filename} ".format(**locals()),
                     returncodes=[0])
         self.rm_testdir()
-    @unittest.expectedFailure
+    # @unittest.expectedFailure
     def test_65773(self) -> None:
         """ unzzip-mix -l $(CVE).zip  """
         tmpdir = self.testdir()
@@ -3964,6 +3969,9 @@ class ZZipTest(unittest.TestCase):
         exe = self.bins("unzzip-mix")
         run = shell("{exe} -l {tmpdir}/{filename} ".format(**locals()),
                     returncodes=[0])
+        self.assertFalse(os.path.exists((tmpdir + "/POC1")))
+        self.assertFalse(os.path.exists((tmpdir + "/POC2")))
+        self.assertFalse(os.path.exists((tmpdir + "/POC3")))
         #
         run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
                     returncodes=[0, 2])
