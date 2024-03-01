@@ -40,6 +40,8 @@ static void unzzip_cat_file(ZZIP_DIR* disk, char* name, FILE* out)
 	}
 	
 	zzip_file_close (file);
+    } else {
+        DBG3("'%s' file not found [%s]", name, disk->realname);
     }
 }
 
@@ -69,7 +71,10 @@ static int unzzip_cat (int argc, char ** argv, int extract)
 	{
 	    char* name = entry.d_name;
 	    FILE* out = stdout;
-	    if (extract) out = create_fopen(name, "wb", 1);
+	    if (extract) {
+	        out = create_fopen(name, "wb", 1);
+	        DBG3("extract '%s' to new file %p", name, out);
+	    }
 	    if (! out) {
 		DBG3("fopen' %s : %s", name, strerror(errno));
 	        if (errno != EISDIR) done = EXIT_ERRORS;
