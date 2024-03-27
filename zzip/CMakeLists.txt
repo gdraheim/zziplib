@@ -307,7 +307,7 @@ endif()
 
 install(EXPORT zziplibTargets
     NAMESPACE zziplib::
-    DESTINATION share/zziplib
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/zziplib
 )
 
 file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/zziplib-config.cmake.in"
@@ -319,7 +319,7 @@ foreach (TARGET_FILE ${TARGET_FILES})
 endforeach()
 ]])
 configure_file("${CMAKE_CURRENT_BINARY_DIR}/zziplib-config.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/zziplib-config.cmake" @ONLY)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/zziplib-config.cmake DESTINATION share/zziplib)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/zziplib-config.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/zziplib)
 
 if(ZZIP_COMPAT OR ZZIP_LIBTOOL)
   if(BUILD_SHARED_LIBS AND CMAKE_SHARED_LIBRARY_SONAME_C_FLAG)
