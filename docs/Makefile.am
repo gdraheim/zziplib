@@ -27,8 +27,8 @@ SDL_RWOPS = $(SDL)/SDL_rwops_zzcat.c \
             $(SDL)/SDL_rwops_zzip.c $(SDL)/SDL_rwops_zzip.h
 changelog = @top_srcdir@/ChangeLog
 
-EXTRA_DIST = make-doc.py $(doc_FILES) $(htm_md_FILES) $(SDL_RWOPS) \
-             make-doc.pl make-dbk.pl   mksite.sh mksite.pl body.htm \
+EXTRA_DIST = $(doc_FILES) $(htm_md_FILES) $(SDL_RWOPS) \
+             make-dbk.pl   mksite.sh mksite.pl body.htm \
              tools/dbk2man.py tools/dir2index.py \
              $(zzipdoc_FILES) sdocbook.css \
              zziplib-manpages.dbk zziplib-master.dbk \
