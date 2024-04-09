@@ -5,6 +5,7 @@
 
 __author__ = "Guido U. Draheim"
 
+from typing import Optional, List, Iterator
 import logging
 import os.path
 import re
@@ -12,33 +13,33 @@ import xml.etree.ElementTree as ET
 
 logg = logging.getLogger("dir2index")
 
-def esc(text):
+def esc(text: str) -> str:
     text = text.replace(".", "\\&.")
     text = text.replace("-", "\\-")
     return text
-def unescape(text):
+def unescape(text: str) -> str:
     text = text.replace('&lt;', '<')
     text = text.replace('&gt;', '>')
     text = text.replace('&quot;', '"')
     text = text.replace('&amp;', '&')
     return text
-def htm(text):
+def htm(text: str) -> str:
     text = text.replace('&', '&amp;')
     text = text.replace('<', '&lt;')
     text = text.replace('>', '&gt;')
     text = text.replace('"', '&quot;')
     return text
-def splitname(filename):
+def splitname(filename: str) -> str:
     base = os.path.basename(filename)
     name, ext = os.path.splitext(base)
     if name.endswith(".3"): name = name[:-2]
     return name
 
-def parse_html(filename):
+def parse_html(filename: str) -> ET.Element:
     tree = ET.parse(filename)
     return tree.getroot()
 
-def zzip_sorted(filenames):
+def zzip_sorted(filenames: List[str]) -> Iterator[str]:
     for name in filenames:
         if "zziplib" in name:
             yield name
@@ -46,7 +47,7 @@ def zzip_sorted(filenames):
         if "zziplib" not in name:
             yield name
 
-def dir2(man, dirs, into):
+def dir2(man: str, dirs: List[str], into: str) -> None:
     text = "<html><body>" + "\n"
     file2name = {}
     file2text = {}
@@ -94,7 +95,7 @@ def dir2(man, dirs, into):
     text += "</body></html>" + "\n"
     writefile("%s/index.html" % into, text)
 
-def writefile(filename, manpagetext):
+def writefile(filename: str, manpagetext: str) -> None:
     dirname = os.path.dirname(filename)
     if not os.path.isdir(dirname):
         logg.debug("mkdir %s", dirname)
