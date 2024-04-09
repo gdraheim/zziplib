@@ -7,6 +7,7 @@
 
 __author__ = "Guido U. Draheim"
 
+from typing import Optional, List, Dict, Union, Iterator
 import logging
 import os.path
 import re
@@ -15,61 +16,69 @@ import xml.etree.ElementTree as ET
 
 logg = logging.getLogger("dbk2man")
 
-def decodes(text):
-    if not text: return text
+def decodes(text: Union[bytes, str]) -> str:
+    if not text: 
+        return ""
     try:
-        return text.decode("utf-8")
+        return text.decode("utf-8") # type: ignore[union-attr]
     except:
         try:
-            return text.decode("latin-1")
+            return text.decode("latin-1") # type: ignore[union-attr]
         except:
             return str(text)
 
-def esc(text):
+def esc(text: str) -> str:
     text = decodes(text)
     text = text.replace(".", "\\&.")
     text = text.replace("-", "\\-")
     return text
-def unescape(text):
+def unescape(text: str) -> str:
     text = decodes(text)
     text = text.replace('&lt;', '<')
     text = text.replace('&gt;', '>')
     text = text.replace('&quot;', '"')
     text = text.replace('&amp;', '&')
     return text
-def htm(text):
+def htm(text: str) -> str:
     text = decodes(text)
     text = text.replace('&', '&amp;')
     text = text.replace('<', '&lt;')
     text = text.replace('>', '&gt;')
     text = text.replace('"', '&quot;')
     return text
-def mailhref(text):
+def mailhref(text: str) -> str:
     return re.sub("<([^<>]*@[^<>]*)>", 
         lambda x: '&lt;<a href="mailto:%s">%s</a>&gt;' % (x.group(1), x.group(1)), 
         text)
 
+def textof(elem: ET.Element, defaults: str = "") -> str:
+    try:
+        return elem.text or defaults
+    except:
+        return ""
+
+
 OverviewEntry = collections.namedtuple("OverviewEntry", ["manpage", "manvolnum", "refpurpose"])
 
-def parse_docbook(filename):
+def parse_docbook(filename: str) -> ET.Element:
     tree = ET.parse(filename)
     return tree.getroot()
 
-def dbk2(man, filenames, subdirectory = "."):
+def dbk2(man: str, filenames: List[str], subdirectory: str = ".") -> None:
     for filename in filenames:
         root = parse_docbook(filename)
         overview = docbook2(man, root, subdirectory)
         overview2(man, overview, subdirectory, filename)
 
-def docbook2(man, root, subdirectory = "."):
+def docbook2(man: str, root: ET.Element, subdirectory: str = ".") -> Dict[str, OverviewEntry]:
     if root.tag != "reference":
         logg.warning("no <reference> found, not a docbook file?")
         logg.warning("found <%s> instead", root.tag)
-    overview = {}
+    overview: Dict[str, OverviewEntry] = {}
     title = ""
     for refentry in root:
         if refentry.tag == 'title':
-            title = refentry.text
+            title = textof(refentry)
             continue
         if refentry.tag != 'refentry':
             logg.warning("no <refentry> list found, not a docbook file?")
@@ -80,20 +89,20 @@ def docbook2(man, root, subdirectory = "."):
             overview[filename] = overviewentry
     return overview
 
-def refentryinfo2(man, refentry, title):
+def refentryinfo2(man: str, refentry: ET.Element, title: str) -> str:
     date, productname, manvolnum, refentrytitle = "", "", "", ""
     section = refentry.find("refentryinfo")
     if section is not None:
         found = section.find("date")
-        if found is not None: date = found.text
+        if found is not None: date = textof(found)
         found = section.find("productname")
-        if found is not None: productname = found.text
+        if found is not None: productname = textof(found)
     section = refentry.find("refmeta")
     if section is not None:
         found = section.find("refentrytitle")
-        if found is not None: refentrytitle = found.text
+        if found is not None: refentrytitle = textof(found)
         found = section.find("manvolnum")
-        if found is not None: manvolnum = found.text
+        if found is not None: manvolnum = textof(found)
     if man:
         header = []
         if refentrytitle:
@@ -125,20 +134,20 @@ def refentryinfo2(man, refentry, title):
         text += "\n" + '<meta name="date" content="%s" />' % htm(date)
         return text + "\n</head><body>\n"
 
-def refentrytitle2(man, refentry, title = ""):
+def refentrytitle2(man: str, refentry: ET.Element, title: str = "") -> str:
     refentrytitle = ""
     section = refentry.find("refmeta")
     if section is not None:
         found = section.find("refentrytitle")
-        if found is not None: refentrytitle = found.text
+        if found is not None: refentrytitle = textof(found)
     refentries = [ refentrytitle ]
     refpurpose = ""
     section = refentry.find("refnamediv")
     if section is not None:
         found = section.find("refpurpose")
-        if found is not None: refpurpose = found.text
+        if found is not None: refpurpose = textof(found)
         for found in section.findall("refname"):
-             refname = found.text
+             refname = textof(found)
              if refname not in refentries:
                  refentries.append(refname)
     if not refentrytitle:
@@ -158,7 +167,7 @@ def refentrytitle2(man, refentry, title = ""):
         text += "</p>"
         return text + "\n"
 
-def refsynopsisdiv2(man, refentry, title = ""):
+def refsynopsisdiv2(man: str, refentry: ET.Element, title: str = "") -> str:
     refsynopsisdiv = refentry.find("refsynopsisdiv")
     if refsynopsisdiv is None:
         logg.warning("no <resynopsisdiv> found")
@@ -168,14 +177,14 @@ def refsynopsisdiv2(man, refentry, title = ""):
     else:
         return refsynopsisdiv2htm(refsynopsisdiv, title)
 
-def refsynopsisdiv2man(refsynopsisdiv, title = ""):
+def refsynopsisdiv2man(refsynopsisdiv: ET.Element, title: str = "") -> str:
     text = '.SH "SYNOPSIS"' + "\n"
     text += ".sp\n"
     text += ".nf\n"
     for funcsynopsis in refsynopsisdiv.findall("funcsynopsis"):
         funcsynopsisinfo = ""
         found = funcsynopsis.find("funcsynopsisinfo")
-        if found is not None: funcsynopsisinfo = found.text
+        if found is not None: funcsynopsisinfo = textof(found)
         if funcsynopsisinfo:
             for info in funcsynopsisinfo.split("\n"):
                 text += '.B "%s"' % esc(info)
@@ -186,8 +195,7 @@ def refsynopsisdiv2man(refsynopsisdiv, title = ""):
             logg.debug("\n%s", ET.tostring(funcsynopsis))
         funcs = 0
         for funcprototype in funcsynopsis.findall("funcprototype"):
-            item = ET.tostring(funcprototype)
-            item = decodes(item)
+            item = decodes(ET.tostring(funcprototype))
             item = item.replace("<funcprototype>","")
             item = item.replace("</funcprototype>","")
             if False:
@@ -213,13 +221,13 @@ def refsynopsisdiv2man(refsynopsisdiv, title = ""):
         text += ".sp" + "\n"
     return text
 
-def refsynopsisdiv2htm(refsynopsisdiv, title = ""):
+def refsynopsisdiv2htm(refsynopsisdiv: ET.Element, title: str = "") -> str:
     text = '<h3>Synopsis</h3>' + "\n"
     text += '<pre>' + "\n"
     for funcsynopsis in refsynopsisdiv.findall("funcsynopsis"):
         funcsynopsisinfo = ""
         found = funcsynopsis.find("funcsynopsisinfo")
-        if found is not None: funcsynopsisinfo = found.text
+        if found is not None: funcsynopsisinfo = textof(found)
         if funcsynopsisinfo:
             for info in funcsynopsisinfo.split("\n"):
                 text += '<b>%s</b>' % htm(info)
@@ -230,8 +238,7 @@ def refsynopsisdiv2htm(refsynopsisdiv, title = ""):
             logg.debug("\n%s", ET.tostring(funcsynopsis))
         funcs = 0
         for funcprototype in funcsynopsis.findall("funcprototype"):
-            item = ET.tostring(funcprototype)
-            item = decodes(item)
+            item = decodes(ET.tostring(funcprototype))
             item = item.replace("<funcprototype>","")
             item = item.replace("</funcprototype>","")
             item = item.replace("<funcdef>","")
@@ -247,7 +254,7 @@ def refsynopsisdiv2htm(refsynopsisdiv, title = ""):
         text += "</pre>" + "\n"
     return text
 
-def refsections2(man, refentry, title = ""):
+def refsections2(man: str, refentry: ET.Element, title: str = "") -> str:
     text = ""
     for refsect in refentry.findall("refsect1"):
         if man:
@@ -258,11 +265,11 @@ def refsections2(man, refentry, title = ""):
     return text
 
 
-def refsect2man(refsect, title = ""):
+def refsect2man(refsect: ET.Element, title: str = "") -> str:
     text = ""
     head = refsect.find("title")
     if head is not None:
-       text += '.SH "%s"' % (esc(head.text.upper()))
+       text += '.SH "%s"' % (esc(textof(head).upper()))
        text += "\n"
     for para in list(refsect):
         if para.tag == 'title':
@@ -279,11 +286,11 @@ def refsect2man(refsect, title = ""):
         logg.warning("unknown para <%s>", para.tag)
     return text
 
-def refsect2htm(refsect, title = ""):
+def refsect2htm(refsect: ET.Element, title: str = "") -> str:
     text = ""
     head = refsect.find("title")
     if head is not None:
-       text += '<h3>%s</h3>' % htm(head.text)
+       text += '<h3>%s</h3>' % htm(textof(head))
        text += "\n"
     for para in list(refsect):
         if para.tag == 'title':
@@ -302,9 +309,8 @@ def refsect2htm(refsect, title = ""):
         logg.warning("unknown para <%s>", para.tag)
     return text
 
-def para2man(para):
-   item = unescape(ET.tostring(para))
-   item = decodes(item)
+def para2man(para: ET.Element) -> str:
+   item = unescape(decodes(ET.tostring(para)))
    item = item.replace("\n", " ")
    item = item.replace("  ", " ")
    item = item.replace("  ", " ")
@@ -320,9 +326,8 @@ def para2man(para):
    item = item.replace("</literal>", "\\fP")
    return item
 
-def para2htm(para):
-   item = unescape(ET.tostring(para))
-   item = decodes(item)
+def para2htm(para: ET.Element) -> str:
+   item = unescape(decodes(ET.tostring(para)))
    item = item.replace("\n", " ")
    item = item.replace("  ", " ")
    item = item.replace("  ", " ")
@@ -339,7 +344,7 @@ def para2htm(para):
    item = mailhref(item)
    return item
 
-def styleinfo2(man):
+def styleinfo2(man: str) -> str:
     if man:
         styles = []
         styles += [ ".ie \\n(.g .ds Aq \\(aq" ]
@@ -350,13 +355,13 @@ def styleinfo2(man):
     else:
         return ""
 
-def refends2(man):
+def refends2(man: str) -> str:
     if man:
         return ""
     else:
         return "</body></html>" + "\n"
 
-def refentry2(man, refentry, subdirectory = ".", title = ""):
+def refentry2(man: str, refentry: ET.Element, subdirectory: str = ".", title: str = "") -> Dict[str, OverviewEntry]:
     if refentry.tag != "refentry":
         logg.warning("no <refentry> found, not a docbook file?")
         logg.warning("found <%s> instead", refentry.tag)
@@ -374,9 +379,9 @@ def refentry2(man, refentry, subdirectory = ".", title = ""):
     section = refentry.find("refmeta")
     if section is not None:
         found = section.find("refentrytitle")
-        if found is not None: refentrytitle = found.text
+        if found is not None: refentrytitle = textof(found)
         found = section.find("manvolnum")
-        if found is not None: manvolnum = found.text
+        if found is not None: manvolnum = textof(found)
     #
     refpurpose = ""
     section = refentry.find("refnamediv")
@@ -385,11 +390,11 @@ def refentry2(man, refentry, subdirectory = ".", title = ""):
         if not refentrytitle: raise Exception("not even a refentrytitle")
         manpages = [ refentrytitle ]
     else:
-        manpages = [ refname.text for refname in section.findall("refname") ]
+        manpages = [ textof(refname) for refname in section.findall("refname") ]
         found = section.find("refpurpose")
-        if found is not None: refpurpose = found.text
+        if found is not None: refpurpose = textof(found)
     #
-    overview = {}
+    overview: Dict[str, OverviewEntry] = {}
     if man:
         written = 0
         for manpage in manpages:
@@ -417,16 +422,16 @@ def refentry2(man, refentry, subdirectory = ".", title = ""):
     #
     return overview
 
-def splitname(filename):
+def splitname(filename: str) -> str:
     base = os.path.basename(filename)
     name, ext = os.path.splitext(base)
     return name
 
-def overview2(man, overview, subdirectory, docbook_filename):
+def overview2(man: str, overview: Dict[str, OverviewEntry], subdirectory: str, docbook_filename: str) -> None:
     if not man:
         overview2htm(overview, subdirectory, docbook_filename)
 
-def overview2htm(overview, subdirectory, docbook_filename):
+def overview2htm(overview: Dict[str, OverviewEntry], subdirectory: str, docbook_filename: str) -> None:
     basename = splitname(docbook_filename)
     text = "<html><head><title>%s %s</title>\n" % (htm(basename), htm("overview"))
     text += "</head><body>\n"
@@ -440,9 +445,9 @@ def overview2htm(overview, subdirectory, docbook_filename):
     text += "</ul>\n"
     text += "</body></html>\n"
     filename = "%s/%s.%s" % (subdirectory, basename, "html")
-    writefile(filename, text)
+    writefile(docbook_filename, text)
 
-def writefile(filename, manpagetext):
+def writefile(filename: str, manpagetext: str) -> None:
     dirname = os.path.dirname(filename)
     if not os.path.isdir(dirname):
         logg.debug("mkdir %s", dirname)
