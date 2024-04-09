@@ -1,27 +1,33 @@
 #! /usr/bin/env python3
 
 from __future__ import print_function
-
+from typing import Optional, List
 from zzipdoc.match import Match
 from zzipdoc.htm2dbk import *
+from zzipdoc.options import DocOptions
+from zzipdoc.functionprototype import FunctionPrototype
+from zzipdoc.htmldoctypes import RefDocPart
 
 class FunctionListReference:
     """ Creating a docbook-style <reference> list of <refentry> parts
     that will each be translated into a unix manual page in a second step """
-    def __init__(self, o = None):
-        self.o = o
+    o: DocOptions
+    pages: List["FunctionListRefEntry"]
+    entry: Optional["FunctionListRefEntry"]
+    def __init__(self, o: Optional[DocOptions] = None) -> None:
+        self.o = o if o else DocOptions()
         self.pages = []
         self.entry = None
-    def cut(self):
+    def cut(self) -> None:
         if not self.entry: return
         self.pages += [ self.entry ]
         self.entry = None
-    def add(self, entry):
-        name = entry.get_name()
-        description = entry.body_xml_text(name)
+    def add(self, entry: RefDocPart) -> None:
+        refname = entry.get_name()
+        description = entry.body_xml_text(refname)
         funcsynopsis = entry.head_xml_text()
         if not funcsynopsis:
-            print("no funcsynopsis for " + name)
+            print("no funcsynopsis for " + (refname or "?"))
             return
         if self.entry is None:
             self.entry = FunctionListRefEntry(entry, self.o)
@@ -29,16 +35,19 @@ class FunctionListReference:
             self.entry.refpurpose = entry.get_title()
             self.entry.refentrytitle = entry.get_name()
             # self.entry.refname = entry.get_name()
-        self.entry.funcsynopsis_list += [ funcsynopsis ]
-        self.entry.description_list += [ description ]
-        self.entry.refname_list += [ name ]
+        if funcsynopsis:
+            self.entry.funcsynopsis_list += [ funcsynopsis ]
+        if description:
+            self.entry.description_list += [ description ]
+        if refname:
+            self.entry.refname_list += [ refname ]
         if entry.list_seealso():
             for item in entry.list_seealso():
                 if item not in self.entry.seealso_list:
                     self.entry.seealso_list += [ item ]
-    def get_title(self):
+    def get_title(self) -> str:
         return self.o.package+" Function List"
-    def xml_text(self):
+    def xml_text(self) -> str:
         T = "<reference><title>"+self.get_title()+"</title>\n"
         for item in self.pages:
             text = item.refentry_text()
@@ -46,7 +55,7 @@ class FunctionListReference:
             T += self.sane(text)
         T += "</reference>\n"
         return T
-    def sane(self, text):
+    def sane(self, text: str) -> str:
         return (html2docbook(text)
                 .replace("<link>","<function>")
                 .replace("</link>","</function>")
@@ -61,13 +70,39 @@ class FunctionListReference:
 
     
 class FunctionListRefEntry:
-    def __init__(self, func, o):
+    refhint: Optional[str]
+    refentry: Optional[str]
+    refentry_date: Optional[str]
+    refentry_productname: Optional[str]
+    refentry_title: Optional[str]
+    refentryinfo: Optional[str]
+    manvolnum: str
+    refentrytitle: Optional[str]
+    refmeta: Optional[str]
+    refpurpose: Optional[str]
+    refname: Optional[str]
+    refname_list: List[str]
+    refnamediv: Optional[str]
+    mainheader: Optional[str]
+    includes: Optional[str]
+    funcsynopsisinfo: Optional[str]
+    funcsynopsis: Optional[str]
+    funcsynopsis_list: List[str]
+    description: Optional[str]
+    description_list: List[str]
+    seealso: Optional[str]
+    seealso_list: List[str]
+    authors: Optional[str]
+    authors_list: List[str]
+    copyright: Optional[str]
+    copyright_list: List[str]
+    def __init__(self, func: RefDocPart, o: DocOptions) -> None:
         """ initialize the fields needed for a man page entry - the fields are
            named after the docbook-markup that encloses (!!) the text we store
            the entries like X.refhint = "hello" will be printed therefore as
            <refhint>hello</refhint>. Names with underscores are only used as
            temporaries but they are memorized, perhaps for later usage. """
-        self.name = func.get_name()
+        self.name = func.get_name() or "_"
         self.refhint = "\n<!--========= "+self.name+" (3) ============-->\n"
         self.refentry = None
         self.refentry_date = o.version.strip()        #! //refentryinfo/date
@@ -99,15 +134,17 @@ class FunctionListRefEntry:
             for item in func.list_seealso():
                 self.seealso_list += [ item ]
         self.file_authors = None
-        if  func.get_authors():
-            self.file_authors = func.get_authors()
+        authors = func.get_authors()
+        if authors:
+            self.file_authors = authors
             self.authors_list += [ self.file_authors ]
         self.file_copyright = None
-        if  func.get_copyright():
-            self.file_copyright = func.get_copyright()
+        copyright = func.get_copyright()
+        if copyright:
+            self.file_copyright = copyright
             self.copyright_list += [ self.file_copyright ]
     #fu
-    def refentryinfo_text(self):
+    def refentryinfo_text(self) -> str:
         """ the manvol formatter wants to render a footer line and header line
             on each manpage and such info is set in <refentryinfo> """
         if self.refentryinfo:
@@ -123,7 +160,7 @@ class FunctionListRefEntry:
             "\n <date>"+self.refentry_date+"</date>"+ 
             "\n <productname>"+self.refentry_productname+"</productname>")
         return ""
-    def refmeta_text(self):
+    def refmeta_text(self) -> str:
         """ the manvol formatter needs to know the filename of the manpage to
             be made up and these parts are set in <refmeta> actually """
         if self.refmeta:
@@ -137,7 +174,7 @@ class FunctionListRefEntry:
                 "\n <refentrytitle>"+self.name+"</refentrytitle>"+
                 "\n <manvolnum>"+self.manvolnum+"</manvolnum>")
         return ""
-    def refnamediv_text(self):
+    def refnamediv_text(self) -> str:
         """ the manvol formatter prints a header line with a <refpurpose> line
             and <refname>'d functions that are described later. For each of
             the <refname>s listed here, a mangpage is generated, and for each
@@ -154,7 +191,7 @@ class FunctionListRefEntry:
             T += "\n <refpurpose>"+self.refpurpose+" </refpurpose>"
             return T
         return ""
-    def funcsynopsisdiv_text(self):
+    def funcsynopsisdiv_text(self) -> str:
         """ refsynopsisdiv shall be between the manvol mangemaent information
             and the reference page description blocks """
         T=""
@@ -175,7 +212,7 @@ class FunctionListRefEntry:
             T += "\n</funcsynopsis>\n"
         #fi
         return T
-    def description_text(self):
+    def description_text(self) -> str:
         """ the description section on a manpage is the main part. Here
             it is generated from the per-function comment area. """
         if self.description:
@@ -187,7 +224,7 @@ class FunctionListRefEntry:
                 T += description
             if T.strip() != "": return T
         return "<para>(missing description)</para>"
-    def authors_text(self):
+    def authors_text(self) -> str:
         """ part of the footer sections on a manpage and a description of
             original authors. We prever an itimizedlist to let the manvol
             show a nice vertical aligment of authors of this ref item """
@@ -206,7 +243,7 @@ class FunctionListRefEntry:
         if self.authors:
             return self.authors
         return ""
-    def copyright_text(self):
+    def copyright_text(self) -> str:
         """ the copyright section is almost last on a manpage and purely
             optional. We list the part of the per-file copyright info """
         if self.copyright:
@@ -215,10 +252,10 @@ class FunctionListRefEntry:
         if self.copyright_list:
             T = ""
             for copyright in self.copyright_list:
-                if not copyright: continue
-                return copyright # !!!
+                if copyright:
+                    return copyright # !!!
         return ""
-    def seealso_text(self):
+    def seealso_text(self) -> str:
         """ the last section on a manpage is called 'SEE ALSO' usually and
             contains a comma-separated list of references. Some manpage
             viewers can parse these and convert them into hyperlinks """
@@ -232,12 +269,12 @@ class FunctionListRefEntry:
                 T += seealso
             if T: return T
         return ""
-    def refentry_text(self, id=None):
+    def refentry_text(self, ref: Optional[str]=None) -> str:
         """ combine fields into a proper docbook refentry """
-        if id is None:
-            id = self.refentry
-        if id:
-            T = '<refentry id="'+id+'">'
+        if ref is None:
+            ref = self.refentry
+        if ref:
+            T = '<refentry id="'+ref+'">'
         else:
             T = '<refentry>' # this is an error
            

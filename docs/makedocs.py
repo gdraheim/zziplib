@@ -1,4 +1,5 @@
 #! /usr/bin/python3
+from typing import Optional, List, Dict
 
 import sys
 from zzipdoc.match import *
@@ -11,104 +12,123 @@ from zzipdoc.commentmarkup import *
 from zzipdoc.functionlisthtmlpage import *
 from zzipdoc.functionlistreference import *
 from zzipdoc.dbk2htm import *
+from zzipdoc.htmldoctypes import *
 from zzipdoc.htmldocument import *
 from zzipdoc.docbookdocument import *
 
-def _src_to_xml(text):
+def _src_to_xml(text: str) -> str:
     return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-def _email_to_xml(text):
+def _email_to_xml(text: str) -> str:
     return text & Match("<([^<>]*@[^<>]*)>") >> "&lt;\\1&gt;"
 
 class PerFileEntry:
-    def __init__(self, header, comment):
+    textfileheader: TextFileHeader
+    comment: CommentMarkupTextFileHeader
+    def __init__(self, header: TextFileHeader, comment: CommentMarkupTextFileHeader) -> None:
         self.textfileheader = header
         self.filecomment = comment
 class PerFile:
-    def __init__(self):
+    textfileheaders: List[TextFileHeader]
+    filecomments: List[CommentMarkupTextFileHeader]
+    entries: List[PerFileEntry]
+    def __init__(self) -> None:
         self.textfileheaders = []
         self.filecomments = []
         self.entries = []
-    def add(self, textfileheader, filecomment):
+    def add(self, textfileheader: TextFileHeader, filecomment: CommentMarkupTextFileHeader) -> None:
         self.textfileheaders += [ textfileheader ]
         self.filecomments += [ filecomment ]
         self.entries += [ PerFileEntry(textfileheader, filecomment) ]
-    def where_filename(self, filename):
+    def where_filename(self, filename: str) -> Optional[PerFileEntry]:
         for entry in self.entries:
             if entry.textfileheader.get_filename() == filename:
                 return entry
         return None
-    def print_list_mainheader(self):
-        for t_fileheader in self.headers:
+    def print_list_mainheader(self) -> None:
+        for t_fileheader in self.textfileheaders:
             print(t_fileheader.get_filename(), t_fileheader.src_mainheader())
         
 class PerFunctionEntry:
-    def __init__(self, header, comment, prototype):
+    header: FunctionHeader
+    comment: CommentMarkupFunctionHeader
+    prototype: FunctionPrototype
+    def __init__(self, header: FunctionHeader, comment: CommentMarkupFunctionHeader, prototype: FunctionPrototype) -> None:
         self.header = header
         self.comment = comment
         self.prototype = prototype
-    def get_name(self):
+    def get_name(self) -> Optional[str]:
         return self.prototype.get_name()
-    def get_titleline(self):
+    def get_titleline(self) -> str:
         return self.header.get_titleline()
-    def get_head(self):
+    def get_head(self) -> FunctionPrototype:
         return self.prototype
-    def get_body(self):
+    def get_body(self) -> CommentMarkupFunctionHeader:
         return self.comment
 class PerFunction:
-    def __init__(self):
+    headers: List[FunctionHeader]
+    comments: List[CommentMarkup]
+    prototypes: List[FunctionPrototype]
+    entries: List[PerFunctionEntry]
+    def __init__(self) -> None:
         self.headers = []
         self.comments = []
         self.prototypes = []
         self.entries = []
-    def add(self, functionheader, functioncomment, functionprototype):
+    def add(self, functionheader: FunctionHeader, functioncomment: CommentMarkupFunctionHeader, functionprototype: FunctionPrototype) -> None:
         self.headers += [ functionheader ]
-        self.comments += [ functionprototype ]
+        self.comments += [ functioncomment ]
         self.prototypes += [ functionprototype ]
         self.entries += [ PerFunctionEntry(functionheader, functioncomment,
                                            functionprototype) ]
-    def print_list_titleline(self):
+    def print_list_titleline(self) -> None:
         for funcheader in self.headers:
             print(funcheader.get_filename(), "[=>]", funcheader.get_titleline())
-    def print_list_name(self):
+    def print_list_name(self) -> None:
         for funcheader in self.prototypes:
             print(funcheader.get_filename(), "[>>]", funcheader.get_name())
 
 class PerFunctionFamilyEntry:
-    def __init__(self, leader):
+    leader: PerFunctionEntry
+    functions: List[PerFunctionEntry]
+    def __init__(self, leader: PerFunctionEntry) -> None:
         self.leader = leader
         self.functions = []
-    def contains(self, func):
+    def contains(self, func: PerFunctionEntry) -> bool:
         for item in self.functions:
             if item == func: return True
         return False
-    def add(self, func):
+    def add(self, func: PerFunctionEntry) -> None:
         if not self.contains(func):
             self.functions += [ func ]
-    def get_name(self):
+    def get_name(self) -> Optional[str]:
         if self.leader is None: return None
         return self.leader.get_name()
 class PerFunctionFamily:
-    def __init__(self):
+    functions: List[PerFunctionEntry]
+    families: List[PerFunctionFamilyEntry]
+    retarget: Dict[str, str]
+    entries: List[PerFunctionFamilyEntry]
+    def __init__(self) -> None:
         self.functions = []
         self.families = []
         self.retarget = {}
         self.entries = []
-    def add_PerFunction(self, per_list):
+    def add_PerFunction(self, per_list: PerFunction) -> None:
         for item in per_list.entries:
-            add_PerFunctionEntry(item)
-    def add_PerFunctionEntry(self, item):
+            self.add_PerFunctionEntry(item)
+    def add_PerFunctionEntry(self, item: PerFunctionEntry) -> None:
         self.functions += [ item ]
-    def get_function(self, name):
+    def get_function(self, name: str) -> Optional[PerFunctionEntry]:
         for item in self.functions:
             if item.get_name() == name:
                 return item
         return None
-    def get_entry(self, name):
+    def get_entry(self, name: str) -> Optional[PerFunctionFamilyEntry]:
         for item in self.entries:
             if item.get_name() == name:
                 return item
         return None
-    def fill_families(self):
+    def fill_families(self) -> None:
         name_list = {}
         for func in self.functions:
             name = func.get_name()
@@ -116,10 +136,12 @@ class PerFunctionFamily:
         for func in self.functions:
             name = func.get_name()
             line = func.get_titleline()
+            if not name or not line:
+                continue
             is_retarget = Match("=>\s*(\w+)")
             if line & is_retarget:
-                into = is_retarget[1]
-                self.retarget[name] = is_retarget[1]
+                retarget = is_retarget[1]
+                self.retarget[name] = retarget
         lead_list = []
         for name in self.retarget:
             into = self.retarget[name]
@@ -134,93 +156,97 @@ class PerFunctionFamily:
                 lead_list += [ into ]
         for func in self.functions:
             name = func.get_name()
+            if not name:
+                continue
             if name not in lead_list and name not in self.retarget:
                 lead_list += [ name ]
         for name in lead_list:
-            func = self.get_function(name)
-            if func is not None:
-                entry = PerFunctionFamilyEntry(func)
-                entry.add(func) # the first
-                self.entries += [ entry ]
+            func1 = self.get_function(name)
+            if func1 is not None:
+                entry1 = PerFunctionFamilyEntry(func1)
+                entry1.add(func1) # the first
+                self.entries += [ entry1 ]
             else:
                 print("head function '"+name+" has no entry")
         for func in self.functions:
             name = func.get_name()
             if name in self.retarget:
-                into = self.retarget[name]
-                entry = self.get_entry(into)
-                if entry is not None:
-                    entry.add(func) # will not add duplicates
+                into2 = self.retarget[name]
+                entry2 = self.get_entry(into2)
+                if entry2 is not None:
+                    entry2.add(func) # will not add duplicates
                 else:
                     print("into function '"+name+" has no entry")
-    def print_list_name(self):
+    def print_list_name(self) -> None:
         for family in self.entries:
             name = family.get_name()
             print(name, ":", end = " ")
             for item in family.functions:
                 print(item.get_name(), ",", end = " ")
             print("")
-class HtmlManualPageAdapter:
-    def __init__(self, entry):
+class HtmlManualPageAdapter(RefDocPart):
+    entry: PerFunctionEntry
+    def __init__(self, entry: PerFunctionEntry) -> None:
         """ usually takes a PerFunctionEntry """
         self.entry = entry
-    def get_name(self):
+    def get_name(self) -> Optional[str]:
         return self.entry.get_name()
-    def _head(self):
+    def _head(self) -> FunctionPrototype:
         return self.entry.get_head()
-    def _body(self):
+    def _body(self) -> CommentMarkupFunctionHeader:
         return self.entry.get_body()
-    def head_xml_text(self):
+    def head_xml_text(self) -> Optional[str]:
         return self._head().xml_text()
-    def body_xml_text(self, name):
+    def body_xml_text(self, name: Optional[str]) -> Optional[str]:
         return self._body().xml_text(name)
-    def head_get_prespec(self):
+    def head_get_prespec(self) -> Optional[str]:
         return self._head().get_prespec()
-    def head_get_namespec(self):
+    def head_get_namespec(self) -> Optional[str]:
         return self._head().get_namespec()
-    def head_get_callspec(self):
+    def head_get_callspec(self) -> Optional[str]:
         return self._head().get_callspec()
-    def get_title(self):
+    def get_title(self) -> Optional[str]:
         return self._body().header.get_title()
-    def get_filename(self):
+    def get_filename(self) -> Optional[str]:
         return self._body().header.get_filename()
-    def src_mainheader(self):
-        return self._body().header.parent.textfile.src_mainheader()
-    def get_mainheader(self):
-        return _src_to_xml(self.src_mainheader())
-class RefEntryManualPageAdapter:
-    def __init__(self, entry, per_file = None):
+    def src_mainheader(self) -> Optional[str]:
+        return self._body().header.src_mainheader() 
+    def get_mainheader(self) -> Optional[str]:
+        return _src_to_xml(self.src_mainheader() or "")
+class RefEntryManualPageAdapter(RefDocPart):
+    entry: PerFunctionEntry
+    per_file: Optional[PerFile]
+    def __init__(self, entry: PerFunctionEntry, per_file: Optional[PerFile] = None) -> None:
         """ usually takes a PerFunctionEntry """
         self.entry = entry
         self.per_file = per_file
-    def get_name(self):
+    def get_name(self) -> Optional[str]:
         return self.entry.get_name()
-    def _head(self):
+    def _head(self) -> FunctionPrototype:
         return self.entry.get_head()
-    def _body(self):
+    def _body(self) -> CommentMarkupFunctionHeader:
         return self.entry.get_body()
-    def _textfile(self):
-        return self._body().header.parent.textfile
-    def head_xml_text(self):
+    def head_xml_text(self) -> Optional[str]:
         return self._head().xml_text()
-    def body_xml_text(self, name):
+    def body_xml_text(self, name: Optional[str]) -> Optional[str]:
         return self._body().xml_text(name)
-    def get_title(self):
+    def get_title(self) -> Optional[str]:
         return self._body().header.get_title()
-    def get_filename(self):
+    def get_filename(self) -> Optional[str]:
         return self._body().header.get_filename()
-    def src_mainheader(self):
-        return self._textfile().src_mainheader()
-    def get_mainheader(self):
-        return _src_to_xml(self.src_mainheader())
-    def get_includes(self):
+    def src_mainheader(self) -> Optional[str]:
+        return self._body().header.src_mainheader()
+    def get_mainheader(self) -> str:
+        return _src_to_xml(self.src_mainheader() or "")
+    def get_includes(self) -> str:
         return ""
-    def list_seealso(self):
+    def list_seealso(self) -> List[str]:
         return self._body().header.get_alsolist()
-    def get_authors(self):
+    def get_authors(self) -> Optional[str]:
         comment = None
-        if self.per_file:
-            entry = self.per_file.where_filename(self.get_filename())
+        filename = self.get_filename()
+        if self.per_file and filename:
+            entry = self.per_file.where_filename(filename)
             if entry:
                 comment = entry.filecomment.xml_text()
         if comment:
@@ -228,10 +254,11 @@ class RefEntryManualPageAdapter:
                           r"((?:.(?!</para>))*.)</para>")
             if comment & check: return _email_to_xml(check[1])
         return None
-    def get_copyright(self):
+    def get_copyright(self) -> Optional[str]:
         comment = None
-        if self.per_file:
-            entry = self.per_file.where_filename(self.get_filename())
+        filename = self.get_filename()
+        if self.per_file and filename:
+            entry = self.per_file.where_filename(filename)
             if entry:
                 comment = entry.filecomment.xml_text()
         if comment:
@@ -240,7 +267,7 @@ class RefEntryManualPageAdapter:
             if comment & check: return _email_to_xml(check[0])
         return None
 
-def makedocs(filenames, o):
+def makedocs(filenames: List[str], o: DocOptions) -> None:
     textfiles = []
     for filename in filenames:
         textfile = TextFile(filename)
@@ -250,12 +277,12 @@ def makedocs(filenames, o):
     for textfile in textfiles:
         textfileheader = TextFileHeader(textfile)
         textfileheader.parse()
-        filecomment = CommentMarkup(textfileheader)
+        filecomment = CommentMarkupTextFileHeader(textfileheader)
         filecomment.parse()
         per_file.add(textfileheader, filecomment)
     funcheaders = []
-    for textfile in per_file.textfileheaders:
-        funcheader = FunctionHeaderList(textfile)
+    for textfileheader in per_file.textfileheaders:
+        funcheader = FunctionHeaderList(textfileheader)
         funcheader.parse()
         funcheaders += [ funcheader ]
     per_function = PerFunction()
@@ -263,7 +290,7 @@ def makedocs(filenames, o):
         for child in funcheader.get_children():
             funcprototype = FunctionPrototype(child)
             funcprototype.parse()
-            funccomment = CommentMarkup(child)
+            funccomment = CommentMarkupFunctionHeader(child)
             funccomment.parse()
             per_function.add(child, funccomment, funcprototype)
     per_family = PerFunctionFamily()
@@ -277,30 +304,32 @@ def makedocs(filenames, o):
     # per_family.print_list_name()
     #
     html = FunctionListHtmlPage(o)
-    for item in per_family.entries:
-        for func in item.functions:
-            func_adapter = HtmlManualPageAdapter(func)
+    for entry in per_family.entries:
+        for func in entry.functions:
+            html_adapter = HtmlManualPageAdapter(func)
+            src_mainheader = html_adapter.src_mainheader() or ""
             if o.onlymainheader and not (Match("<"+o.onlymainheader+">")
-                                         & func_adapter.src_mainheader()):
+                                         & src_mainheader):
                     continue
-            html.add(func_adapter)
+            html.add(html_adapter)
         html.cut()
     html.cut()
-    class _Html_:
-        def __init__(self, html):
+    class HtmlPage(HtmlDocPart):
+        def __init__(self, html: FunctionListHtmlPage) -> None:
             self.html = html
-        def html_text(self):
+        def html_text(self) -> str:
             return section2html(paramdef2html(self.html.xml_text()))
-        def get_title(self):
+        def get_title(self) -> str:
             return self.html.get_title()
-    HtmlDocument(o).add(_Html_(html)).save(o.output+o.suffix)
+    HtmlDocument(o).add(HtmlPage(html)).save(o.output+o.suffix)
     #
     man3 = FunctionListReference(o)
-    for item in per_family.entries:
-        for func in item.functions:
+    for entry in per_family.entries:
+        for func in entry.functions:
             func_adapter = RefEntryManualPageAdapter(func, per_file)
+            src_mainheader = func_adapter.src_mainheader() or ""
             if o.onlymainheader and not (Match("<"+o.onlymainheader+">")
-                                         & func_adapter.src_mainheader()):
+                                         & src_mainheader):
                     continue
             man3.add(func_adapter)
         man3.cut()
@@ -310,7 +339,7 @@ def makedocs(filenames, o):
         
 if __name__ == "__main__":
     filenames = []
-    o = Options()
+    o = DocOptions()
     o.package = "ZZipLib"
     o.program = sys.argv[0]
     o.html = "html"

@@ -1,6 +1,9 @@
+from typing import Optional, List, Union
 from zzipdoc.match import Match
+from zzipdoc.textfileheader import TextFileHeader
+from zzipdoc.functionheader import FunctionHeader
 
-def markup_link_syntax(text):
+def markup_link_syntax(text: str) -> str:
     """ markup the link-syntax ` => somewhere ` in the text block """
     return (text
             & Match(r"(?m)(^|\s)\=\>\"([^\"]*)\"")
@@ -12,27 +15,28 @@ def markup_link_syntax(text):
             & Match(r"(?m)(^|\s)\=\>\s([^\s\,\.\!\?]+)")
             >> r"\1<link>\2</link>")
 
+class CommentMarkupSource:
+    def get_comment(self) -> Optional[str]:
+        return None
+    def get_filename(self) -> Optional[str]:
+        return None
+    
+
 class CommentMarkup:
     """ using a structure having a '.comment' item - it does pick it up
     and enhances its text with new markups so that they can be represented
     in xml. Use self.xml_text() to get markup text (knows 'this function') """
-    def __init__(self, header = None):
-        self.header = header
+    text: Optional[str]
+    src: CommentMarkupSource
+    def __init__(self, src: CommentMarkupSource) -> None:
+        self.src = src
         self.text = None     # xml'text
-    def get_filename(self):
-        if self.header is None:
-            return None
-        return self.header.get_filename()
-    def parse(self, header = None):
-        if header is not None:
-            self.header = header
-        if self.header is None:
-            return False
-        comment = self.header.comment
-        try:
-            comment = self.header.get_otherlines()
-        except Exception as e:
-            pass
+    def get_filename(self) -> Optional[str]:
+        return self.src.get_filename()
+    def parse(self, src: Optional[CommentMarkupSource] = None) -> bool:
+        if src is not None:
+            self.src = src
+        comment = self.src.get_comment() or ""
         mode = ""
         text = ""
         for line in comment.split("\n"):
@@ -63,23 +67,40 @@ class CommentMarkup:
                      & Match(r"(?s)<para>\s*</para><para>") >> "<para>"
                      & Match(r"(?s)<screen>\s*</screen>") >> "")
         return True
-    def markup_screen_line(self, line):
+    def markup_screen_line(self, line: str) -> str:
         return self.markup_line(line.replace("&","&amp;")
                                 .replace("<","&lt;")
                                 .replace(">","&gt;"))
-    def markup_para_line(self, line):
+    def markup_para_line(self, line: str) -> str:
         return markup_link_syntax(self.markup_line(line))
-    def markup_line(self, line):
+    def markup_line(self, line: str) -> str:
         return (line
                 .replace("<c>","<code>")
                 .replace("</c>","</code>"))
-    def xml_text(self, functionname = None):
+    def xml_text(self, functionname: Optional[str] = None) -> Optional[str]:
         if self.text is None:
             if not self.parse(): return None
+            assert self.text is not None
         text = self.text
         if functionname is not None:
-            def function(text): return "<function>"+text+"</function> function"
+            def function(text: str) -> str: return "<function>"+text+"</function> function"
             text = (text
                     .replace("this function", "the "+function(functionname))
                     .replace("This function", "The "+function(functionname)))
         return text
+
+class CommentMarkupFunctionHeader(CommentMarkup):
+    def __init__(self, header: FunctionHeader) -> None:
+        self.header = header
+    def get_comment(self) -> Optional[str]:
+        return self.header.get_otherlines()
+    def get_filename(self) -> Optional[str]:
+        return self.header.get_filename()
+
+class CommentMarkupTextFileHeader(CommentMarkup):
+    def __init__(self, header: TextFileHeader) -> None:
+        self.header = header
+    def get_comment(self) -> Optional[str]:
+        return self.header.comment
+    def get_filename(self) -> Optional[str]:
+        return self.header.get_filename()

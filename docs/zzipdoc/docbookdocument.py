@@ -1,6 +1,9 @@
 #! /usr/bin/env python3
 
+from typing import Optional, List, Any
 from zzipdoc.match import Match
+from zzipdoc.options import DocOptions
+from zzipdoc.functionlistreference import FunctionListReference
 
 class DocbookDocument:
     """ binds some xml content page with additional markup - in this
@@ -10,49 +13,55 @@ class DocbookDocument:
     docbook_dtd = (
         ' PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"'+"\n"+
         '       "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"')
-    def __init__(self, o, filename = None):
+    o: DocOptions
+    rootnode: str
+    filename: Optional[str]
+    title: str
+    text: List[FunctionListReference]
+    def __init__(self, o: DocOptions, filename: Optional[str] = None):
         self.o = o
         self.rootnode = "reference"
         self.filename = filename
         self.title = ""
         self.text = []
-    def add(self, text):
+    def add(self, text: FunctionListReference) -> "DocbookDocument":
         """ add some content """
         self.text += [ text ]
         return self
-    def get_title(self):
-        if self.title: return title
+    def get_title(self) -> Optional[str]:
+        if self.title: return self.title
         try:   return self.text[0].get_title()
         except Exception as e: pass
         return self.title
-    def _xml_doctype(self, rootnode):
+    def _xml_doctype(self, rootnode: str) -> str:
         return "<!DOCTYPE "+rootnode+self.docbook_dtd+">"
-    def _xml_text(self, xml):
+    def _xml_text(self, xml: FunctionListReference) -> str:
         """ accepts adapter objects with .xml_text() """
         try:   return xml.xml_text()
-        except Exception as e: print("DocbookDocument/text " + e); pass
+        except Exception as e: print("DocbookDocument/text " + str(e)); pass
         return str(xml)
-    def _fetch_rootnode(self, text):
+    def _fetch_rootnode(self, text: str) -> str:
         fetch = Match(r"^[^<>]*<(\w+)\b")
         if text & fetch: return fetch[1]
         return self.rootnode
-    def _filename(self, filename):
+    def _filename(self, filename: Optional[str]) -> str:
         if filename is not None:
             self.filename = filename
         filename = self.filename
+        assert filename is not None
         if not filename & Match(r"\.\w+$"):
             ext = self.o.docbook
             if not ext: ext = "docbook"
             filename += "."+ext
-        return filename
-    def save(self, filename = None):
+        return filename or ""
+    def save(self, filename: Optional[str] = None) -> bool:
         filename = self._filename(filename)
         print("writing '"+filename+"'")
         if len(self.text) > 1:
-            self.save_all(filename)
+            return self.save_all(filename)
         else:
-            self.save_text(filename, self.text[0])
-    def save_text(self, filename, text):
+            return self.save_text(filename, self.text[0])
+    def save_text(self, filename: str, text: FunctionListReference) -> bool:
         try:
             fd = open(filename, "w")
             xml_text = self._xml_text(text)
@@ -65,7 +74,7 @@ class DocbookDocument:
         except IOError as e:
             print("could not open '"+filename+"'file" + str(e))
             return False
-    def save_all(self, filename):
+    def save_all(self, filename: str) -> bool:
         assert len(self.text) > 1
         try:
             fd = open(filename, "w")
@@ -85,8 +94,8 @@ class DocbookDocument:
             else:
                 print("<"+self.rootnode+'>', file=fd)
             for text in self.text:
-                text = self._xml_text(text)
-                print(text)
+                part = self._xml_text(text)
+                print(part, file=fd)
             print("</"+self.rootnode+">", file=fd)
             fd.close()
             return True

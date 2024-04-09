@@ -6,6 +6,7 @@ The mapping of markups and links is far from perfect. But all we
 want is the docbook-to-pdf converter and similar technology being
 present in the world of docbook-to-anything converters. """
 
+from typing import Iterable
 from datetime import date
 from zzipdoc.match import Match
 import sys
@@ -100,15 +101,15 @@ class htm2dbk_conversion_base:
         m()(r"</li>") >> "</para></listitem>\n",
         ]
 class htm2dbk_conversion(htm2dbk_conversion_base):
-    def __init__(self):
+    def __init__(self) -> None:
         self.version = "" # str(date.today)
         self.filename = "."
-    def convert(self,text): # $text
+    def convert(self,text: str) -> str: # $text
         txt = text.replace("<!--VERSION-->", self.version)
         for conv in self.regexlist:
             txt &= conv
         return txt.replace("--filename--", self.filename)
-    def convert2(self,text): # $text
+    def convert2(self,text: str) -> str: # $text
         txt = text.replace("<!--VERSION-->", self.version)
         for conv in self.regexlist:
             txt &= conv
@@ -124,10 +125,10 @@ class htm2dbk_document(htm2dbk_conversion):
     book_start = '<book><chapter><title>Documentation</title>'+"\n"
     book_end_chapters = '</chapter>'+"\n"
     book_end = '</book>'+"\n"
-    def __init__(self):
+    def __init__(self) -> None:
         htm2dbk_conversion.__init__(self)
         self.text = self.doctype + self.book_start
-    def add(self,text):
+    def add(self,text: str) -> None:
         if self.text & m()("<reference"):
             self.text += self.book_end_chapters ; self.book_end_chapters = ""
         self.text += self.convert(text).replace(
@@ -135,10 +136,10 @@ class htm2dbk_document(htm2dbk_conversion):
             m()("<link>([^<>]*)</link>") >> "<function>\\1</function>") & (
             m()("(?s)(<refentryinfo>\s*)<sect1info>" +
                 "(<date>[^<>]*</date>)</sect1info>") >> "\\1\\2")
-    def value(self):
+    def value(self) -> str:
         return self.text + self.book_end_chapters + self.book_end
 
-def htm2dbk_files(args):
+def htm2dbk_files(args: Iterable[str]) -> str:
     doc = htm2dbk_document()
     for filename in args:
         try:
@@ -150,7 +151,7 @@ def htm2dbk_files(args):
             print("can not open "+filename, file=sys.stderr)
     return doc.value()
 
-def html2docbook(text):
+def html2docbook(text: str) -> str:
     """ the C comment may contain html markup - simulate with docbook tags """
     return htm2dbk_conversion().convert2(text)
 
