@@ -89,16 +89,18 @@ class CommentMarkup:
                     .replace("This function", "The "+function(functionname)))
         return text
 
-class CommentMarkupFunctionHeader(CommentMarkup):
+class CommentMarkupFunctionHeader(CommentMarkup, CommentMarkupSource):
     def __init__(self, header: FunctionHeader) -> None:
+        CommentMarkup.__init__(self, self)
         self.header = header
     def get_comment(self) -> Optional[str]:
         return self.header.get_otherlines()
     def get_filename(self) -> Optional[str]:
         return self.header.get_filename()
 
-class CommentMarkupTextFileHeader(CommentMarkup):
+class CommentMarkupTextFileHeader(CommentMarkup, CommentMarkupSource):
     def __init__(self, header: TextFileHeader) -> None:
+        CommentMarkup.__init__(self, self)
         self.header = header
     def get_comment(self) -> Optional[str]:
         return self.header.comment

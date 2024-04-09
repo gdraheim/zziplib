@@ -1,11 +1,27 @@
 #! /usr/bin/env python3
-from typing import Optional, Union, Iterator, Callable, Any
+from typing import Optional, Union, Iterator, Callable, Any, AnyStr, Generic, TypeVar
 import re
 
 try:
     basestring # type: ignore[used-before-def]
 except NameError:
     basestring = str
+
+try:
+    Pattern = re.Pattern # introduced in Python3.7
+except AttributeError:
+    T = TypeVar('T')
+    class Pattern(Generic[T]):  # type: ignore[no-redef]
+        pattern: T
+        pass
+
+try:
+    Match = re.Match # introduced in Python3.7
+except AttributeError:
+    T = TypeVar('T')
+    class Match(Generic[T]):  # type: ignore[no-redef]
+        pattern: T
+        pass
 
 # ---------------------------------------------------------- Regex Match()
 # beware, stupid python interprets backslashes in replace-parts only partially!
@@ -56,8 +72,8 @@ class Match:
     """ A Match is actually a mix of a Python Pattern and MatchObject """
     pattern: Optional[str]
     replaced: int
-    regex: re.Pattern[str]
-    found: Optional[re.Match[str]]
+    regex: Pattern[str]
+    found: Optional[Match[str]]
     def __init__(self, pattern: Optional[str] = None, flags: Optional[str] = None) -> None:
         """ flags is a string: 'i' for case-insensitive etc.; it is just
         short for a regex prefix: Match('foo','i') == Match('(?i)foo') """
@@ -93,7 +109,7 @@ class Match:
     def group(self, index: int) -> str:
         assert self.found is not None
         return self.found.group(index)
-    def finditer(self, string: str) -> Iterator[re.Match[str]]:
+    def finditer(self, string: str) -> Iterator[Match[str]]:
         return self.regex.finditer(string)
 
 if __name__ == "__main__":

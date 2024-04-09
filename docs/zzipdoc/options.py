@@ -44,7 +44,7 @@ class DocOptions:
     def set(self, name: str, value: str) -> None:
         if name in ["package"]:
             self.package = value
-        elif name in ["vesion"]:
+        elif name in ["version"]:
             self.version = value
         elif name in ["program"]:
             self.program = value
