@@ -7,19 +7,19 @@ try:
 except NameError:
     basestring = str
 
+T = TypeVar('T')
+
 try:
-    Pattern = re.Pattern # introduced in Python3.7
+    RegexPattern = re.Pattern # introduced in Python3.7
 except AttributeError:
-    T = TypeVar('T')
-    class Pattern(Generic[T]):  # type: ignore[no-redef]
+    class RegexPattern(Generic[T]):  # type: ignore[no-redef]
         pattern: T
         pass
 
 try:
-    Match = re.Match # introduced in Python3.7
+    RegexMatch = re.Match # introduced in Python3.7
 except AttributeError:
-    T = TypeVar('T')
-    class Match(Generic[T]):  # type: ignore[no-redef]
+    class RegexMatch(Generic[T]):  # type: ignore[no-redef]
         pattern: T
         pass
 
@@ -72,8 +72,8 @@ class Match:
     """ A Match is actually a mix of a Python Pattern and MatchObject """
     pattern: Optional[str]
     replaced: int
-    regex: Pattern[str]
-    found: Optional[Match[str]]
+    regex: RegexPattern[str]
+    found: Optional[RegexMatch[str]]
     def __init__(self, pattern: Optional[str] = None, flags: Optional[str] = None) -> None:
         """ flags is a string: 'i' for case-insensitive etc.; it is just
         short for a regex prefix: Match('foo','i') == Match('(?i)foo') """
@@ -109,7 +109,7 @@ class Match:
     def group(self, index: int) -> str:
         assert self.found is not None
         return self.found.group(index)
-    def finditer(self, string: str) -> Iterator[Match[str]]:
+    def finditer(self, string: str) -> Iterator[RegexMatch[str]]:
         return self.regex.finditer(string)
 
 if __name__ == "__main__":
