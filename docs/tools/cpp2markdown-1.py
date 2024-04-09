@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 
+from typing import Optional, Iterator, Tuple
 import pygments.lexers.compiled as lexer
 import optparse
 import re
@@ -24,7 +25,7 @@ FunctionPrototype = "FunctionPrototype"
 # token list is more global flagging the role
 # of each token for the manual generation.
 class CppToMarkdown:
-    def __init__(self):
+    def __init__(self) -> None:
         self.alldefinitions = 0
         self.internaldefs = ["static"]
         self.filecomment_done = ""
@@ -34,7 +35,7 @@ class CppToMarkdown:
         self.comment_text = ""
         self.function_text = ""
         self.nesting = 0
-    def split_copyright(self, text):
+    def split_copyright(self, text: str) -> Tuple[str, str]:
         # there are two modes - the copyright starts in the first line
         # and the source description follows or the other way round.
         lines = text.split("\n")
@@ -81,7 +82,7 @@ class CppToMarkdown:
         logg.debug("@ COPYRIGHT\n %s", copyright)
         logg.debug("@ INTROTEXT\n %s", introtext)
         return "\n".join(copyright), "\n".join(introtext)
-    def commentblock(self, text):
+    def commentblock(self, text: str) -> str:
         prefix = re.compile(r"(?s)^\s*[/][*]+([^\n]*)(?=\n)")
         suffix = re.compile(r"(?s)\n [*][/]\s*")
         empty = re.compile(r"(?s)\n [*][ \t]*(?=\n)")
@@ -97,12 +98,12 @@ class CppToMarkdown:
         text = lines3.sub("\n         ", text)
         text = lines4.sub("\n     ", text)
         return text
-    def functionblock(self, text):
+    def functionblock(self, text: str) -> str:
         empty = re.compile(r"(?s)\n[ \t]*(?=\n)")
         text = "    " + text.replace("\n", "\n    ")
         text = empty.sub("", text) 
         return text
-    def functionname(self, text):
+    def functionname(self, text: str) -> str:
         check1 = re.compile(r"^[^()=]*(\b\w+)\s*[(=]")
         found = check1.match(text)
         if found:
@@ -112,11 +113,11 @@ class CppToMarkdown:
         if found:
             return found.group(1)
         return ""
-    def run(self, filename):
+    def run(self, filename: str) -> None:
         filetext = open(filename).read()
         for line in self.process(filetext, filename):
             print(line)
-    def process(self, filetext, filename=""):
+    def process(self, filetext: str, filename: str ="") -> Iterator[str]:
         section_ruler = "-----------------------------------------"
         copyright = ""
         for token, text in self.parse(filetext):
@@ -148,7 +149,7 @@ class CppToMarkdown:
             yield section_ruler
             yield "### COPYRIGHT"
             yield self.commentblock(copyright)            
-    def isexported_function(self):
+    def isexported_function(self) -> bool:
         function = self.function_text.strip().replace("\n"," ")
         logg.debug("@ --------------------------------------") 
         logg.debug("@ ALLDEFINITIONS %s", self.alldefinitions)
@@ -174,7 +175,7 @@ class CppToMarkdown:
         logg.debug("@ NO ** COMMENT %s", self.function_text.strip())
         defs = self.function_text
         return False
-    def parse(self, filetext):
+    def parse(self, filetext: str) -> Iterator[Tuple[str, str]]:
         c = lexer.CLexer()
         for token, text in c.get_tokens(filetext):
             logg.debug("|| %s %s", token, text.replace("\n", "\n |"))
