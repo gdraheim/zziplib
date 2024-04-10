@@ -127,6 +127,9 @@ Note that the `testbuilds.py` are currently comparing `make am` builds with cmak
 * update the short description on github
 * consider making a github release with the latest news
 
+Currently there is a problem with the testzip downloads during "make check" on Github
+`You have exceeded a secondary rate limit. Please wait a few minutes before you try again.`
+
 ## TODO
 
 * there should be a coverage value for the cxx code
