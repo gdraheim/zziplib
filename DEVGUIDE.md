@@ -70,6 +70,7 @@ For ubuntu you can check the latest Github workflows under
 
 * `make type`
 * `make style`
+* `make format` # if clang-format available
 
 ## compiling targets
 
@@ -100,6 +101,9 @@ directory to the development host inside.
 
 * `make version`
 * `make build`
+* consider running alternative cmake variants like ninja and nmake
+
+Note that the `testbuilds.py` are currently comparing `make am` builds with cmake ones
 
 ## RELEASE PROCESS
 
@@ -113,7 +117,7 @@ directory to the development host inside.
 * `make build`
 * `make docs` # includes `make mans`
 * `make auto` # update automake variant
-* `make am`   # remake with autotools
+* `make am`   # remake with obsolete autotools
 * consider running alternative cmake variants like ninja and nmake
 * `git push` # if necessary
 * wait for github workflows to be okay
@@ -121,7 +125,7 @@ directory to the development host inside.
 * `git tag -F tmp.changes.txt v1.x` to the version in zziplib.spec
 * `git push --tags`
 * update the short description on github
-* consider making a release with the latest news
+* consider making a github release with the latest news
 
 ## TODO
 
