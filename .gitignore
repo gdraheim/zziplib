@@ -18,3 +18,4 @@ CMakeFiles
 cmake_install.cmake
 configure
 configure.ac
+.vscode/settings.json
