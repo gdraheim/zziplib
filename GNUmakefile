@@ -23,13 +23,23 @@ build:
 	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/rules.ninja || echo 'DONE (cd $(BUILD) && $(NINJA) all) - please run (cd $(BUILD) && $(NINJA) check) now'
 	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/build.ninja || echo 'DONE (cd $(BUILD) && $(NINJA) all) - please run (cd $(BUILD) && $(NINJA) check) now'
 
-new: ; rm -rf $(BUILD); $(MAKE) build
 static: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-DBUILD_SHARED_LIBS=OFF
 fortify: ; rm -rf $(BUILD) && $(MAKE) build "OPTIONS=-DFORTIFY=ON -DCMAKE_BUILD_TYPE=Debug"
+cm new: ; rm -rf $(BUILD); $(MAKE) build "OPTIONS=-DCOVERAGE=ON -DCMAKE_BUILD_TYPE=Debug"
 
 ninja: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-GNinja
 nmake: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-GNmake
 cmake: ; rm -rf $(BUILD) && $(MAKE) build "OPTIONS=-DZZIP_MANPAGES=OFF -DZZIP_INSTALL_BINS=OFF -DZZIP_TESTCVE=OFF"
+
+cov coverage: libzzip.gcov libzzipmmapped.gcov libzzipfseeko.gcov
+	@ for i in $?; do : \
+	; cat $(BUILD)/zzip/$${i//.gcov/.so.gcov} | wc -l | sed -e "s|^|$(BUILD)/zzip/$${i//.gcov/.so.gcov}: |" -e "s/$$/ lines/" \
+	; tail -1 $(BUILD)/zzip/$$i.txt | sed -e "s|^|$(BUILD)/zzip/$$i.txt: |" \
+	; done
+	@ grep "def test" test/zziptests.py | wc -l | sed -e "s|^|test/zziptests.py: |" -e "s/$$/ test cases/" 
+libzzip.gcov libzzipmmapped.gcov libzzipfseeko.gcov:
+	cd $(BUILD)/zzip && $(MAKE) $@
+	tail -1 $(BUILD)/zzip/$@.txt
 
 # targets defined in cmakefile.txt
 check checks site install-site manpages htmpages:

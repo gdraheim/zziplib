@@ -13,6 +13,7 @@ include ( GNUInstallDirs )
 include ( JoinPaths )
 include ( CheckVerboseSymlink )
 include ( CheckCCompilerFlag )
+include ( CodeCoverage )
 
 # options ###########################################################
 option(BUILD_SHARED_LIBS "Build a shared library" ON)
@@ -29,6 +30,7 @@ option(ZZIP_COMPAT "Build compatibility with old libzzip releases" OFF)
 option(ZZIP_LIBTOOL "Ensure binary compatibility with libtool" OFF)
 option(ZZIP_PKGCONFIG "Generate pkg-config files for linking" OFF)
 endif()
+option(COVERAGE "Code coverage" OFF)
 
 if((CMAKE_BUILD_TYPE STREQUAL "Release") AND (ZZIP_LIBTOOL OR ZZIP_PKGCONFIG))
 option(ZZIP_LIBLATEST "Ensure libname.lib links to libname-REL.lib" ON)
@@ -136,6 +138,10 @@ if(FORTIFY)
    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
 endif()
 
+if(COVERAGE)
+append_coverage_compiler_flags()
+endif()
+
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
 
@@ -203,12 +209,24 @@ target_link_libraries(libzzip ZLIB::ZLIB )
 target_include_directories (libzzip 
    PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR} 
    PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+add_custom_command(OUTPUT libzzip.so.gcov
+    COMMAND ${BASH} -c "(cd CMakeFiles/libzzip.dir && ls *.c.o) | xargs -rt gcov -o CMakeFiles/libzzip.dir | tee libzzip.gcov.txt"
+    COMMAND ${BASH} -c "{ for i in *.gcov; do case $i in lib*) continue ;; esac ; echo +++ zzip/$i; cat $i; mv $i libzzip.$i >&2; done; } > libzzip.so.gcov"
+    BYPRODUCTS libzzip.gcov.txt
+    VERBATIM)
+add_custom_target(libzzip.gcov DEPENDS libzzip.so.gcov)
 
 if(ZZIPFSEEKO)
 add_library(libzzipfseeko ${libzzipfseeko_SRCS} )
 target_link_libraries(libzzipfseeko ZLIB::ZLIB )
 target_include_directories (libzzipfseeko 
    PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
+add_custom_command(OUTPUT libzzipfseeko.so.gcov
+    COMMAND ${BASH} -c "(cd CMakeFiles/libzzipfseeko.dir && ls *.c.o) | xargs -rt gcov -o CMakeFiles/libzzipfseeko.dir | tee libzzipfseeko.gcov.txt"
+    COMMAND ${BASH} -c "{ for i in *.gcov; do case $i in lib*) continue ;; esac ; echo +++ zzip/$i; cat $i; mv $i libzzipfseeko.$i >&2; done; } > libzzipfseeko.so.gcov"
+    BYPRODUCTS libzzipfseeko.gcov.txt
+    VERBATIM)
+add_custom_target(libzzipfseeko.gcov DEPENDS libzzipfseeko.so.gcov)
 endif()
 
 if(ZZIPMMAPPED)
@@ -216,6 +234,12 @@ add_library(libzzipmmapped ${libzzipmmapped_SRCS} )
 target_link_libraries(libzzipmmapped ZLIB::ZLIB )
 target_include_directories (libzzipmmapped 
    PRIVATE ${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
+add_custom_command(OUTPUT libzzipmmapped.so.gcov
+    COMMAND ${BASH} -c "(cd CMakeFiles/libzzipmmapped.dir && ls *.c.o) | xargs -rt gcov -o CMakeFiles/libzzipmmapped.dir | tee libzzipmmapped.gcov.txt"
+    COMMAND ${BASH} -c "{ for i in *.gcov; do case $i in lib*) continue ;; esac ; echo +++ zzip/$i; cat $i; mv $i libzzipmmapped.$i >&2; done; } > libzzipmmapped.so.gcov"
+    BYPRODUCTS libzzipmmapped.gcov.txt
+    VERBATIM)
+add_custom_target(libzzipmmapped.gcov DEPENDS libzzipmmapped.so.gcov)
 endif()
 
 set_target_properties(libzzip PROPERTIES OUTPUT_NAME "zzip" RELEASE_POSTFIX "-${RELNUM}")

@@ -1,3 +1,16 @@
+2024-04-16
+   * add -DCOVERAGE=ON cmake option
+   * allow for 'make coverage' summary
+   * run 'make new check coverage' to see the result
+
+2024-04-10
+   * add DEVGUIDE.md and prep release process
+
+2024-04-09
+    * change zzipdoc to python3 typehints
+    * allow for make types check on python
+    * remove unused make-doc.py make-doc.pl
+
 2024-02-29  gdraheim@github
     * disabled local file header offset64
     * allowed to 'make fortify' for extended debugging

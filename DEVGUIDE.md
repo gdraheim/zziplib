@@ -119,6 +119,8 @@ Note that the `testbuilds.py` are currently comparing `make am` builds with cmak
 * `make auto` # update automake variant
 * `make am`   # remake with obsolete autotools
 * consider running alternative cmake variants like ninja and nmake
+* `make new check coverage` 
+* update README.md with the result from coverage
 * `git push` # if necessary
 * wait for github workflows to be okay
 * prepare a tmp.changes.txt 
