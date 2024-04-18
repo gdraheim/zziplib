@@ -110,15 +110,17 @@ Note that the `testbuilds.py` are currently comparing `make am` builds with cmak
 * `make type`   # python mypy
 * `make style`  # python style
 * `make format` # cxx style
+* `make fortify` # build with address-sanitizer
 * `make check`
 * `make version` # or `make version FOR=tomorrow`
 * `make install` 
 * `make uninstalls`
-* `make build`
+* `make build` # default build
 * `make docs` # includes `make mans`
 * `make auto` # update automake variant
 * `make am`   # remake with obsolete autotools
 * consider running alternative cmake variants like ninja and nmake
+* `make testbuilds` # run some different build variants automatically
 * `make new check coverage` 
 * update README.md with the result from coverage
 * `git push` # if necessary
