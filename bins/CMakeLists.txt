@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.1)
-project(zzipbins VERSION "0.13.72" LANGUAGES C)
+project(zzipbins VERSION "0.13.74" LANGUAGES C)
 
 if(NOT CMAKE_BUILD_TYPE) 
     set(CMAKE_BUILD_TYPE Release)
