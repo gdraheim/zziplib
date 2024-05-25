@@ -40,6 +40,7 @@ VAR,[VAR="no, unknown"
 for ac_arg dnl
 in "-pedantic % -fno-writable-strings -Wwrite-strings" dnl   GCC
    "-pedantic % -fconst-strings -Wwrite-strings" dnl newer  GCC
+   "-Wall     %                       -Wwrite-strings" dnl   GCC4.1+
    "-v -Xc    % -xstrconst" dnl Solaris C - strings go into readonly segment
    "+w1 -Aa   % +ESlit"      dnl HP-UX C - strings go into readonly segment
    "-w0 -std1 % -readonly_strings" dnl Digital Unix - again readonly segment
