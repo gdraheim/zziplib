@@ -146,5 +146,4 @@ Currently there is a problem with the testzip downloads during "make check" on G
 
 ## TODO
 
-* there should be a coverage value for the cxx code
 * there is a longer wishlist in `TODO` - it should be cleaned up
