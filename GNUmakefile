@@ -88,7 +88,8 @@ mans: testmanpages
 testmanpages: ; cd docs && $(MAKE) $@ BUILD=$(realpath $(BUILD))
 
 # release .............................
-version:
+version: ; $(MAKE) nextversion
+nextversion:
 	oldv=`sed -e '/zziplib.VERSION/!d' -e 's:.*zziplib.VERSION."::' -e 's:".*::' CMakeLists.txt` \
 	; oldr=`echo $$oldv | sed -e 's:.*[.]::'` ; newr=`expr $$oldr + 1` \
 	; newv=`echo $$oldv | sed -e "s:[.]$$oldr\$$:.$$newr:"` \
@@ -96,7 +97,9 @@ version:
 	; sed -i -e "s:$$oldv:$$newv:" zziplib.spec testbuilds.py \
 	; sed -i -e "s:$$oldv:$$newv:" */CMakeLists.txt \
 	; sed -i -e "s:$$oldv:$$newv:" CMakeLists.txt \
-	; git diff -U0
+	; git --no-pager diff -U0
+checkversion versions:
+	@ git --no-pager diff -U0
 
 # format ..............................
 CLANG_FORMAT=clang-format

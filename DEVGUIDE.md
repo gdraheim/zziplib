@@ -110,10 +110,10 @@ Note that the `testbuilds.py` are currently comparing `make am` builds with cmak
 Remember that zziplib is a base package in many Linux distros. It is helpful to check
 if they have some patch that should be integrated. Here are some links:
 
-https://launchpad.net/ubuntu/+source/zziplib
-https://software.opensuse.org/package/zziplib
-https://archlinux.org/packages/extra/x86_64/zziplib/
-https://git.almalinux.org/rpms/zziplib
+* https://launchpad.net/ubuntu/+source/zziplib
+* https://software.opensuse.org/package/zziplib
+* https://archlinux.org/packages/extra/x86_64/zziplib/
+* https://git.almalinux.org/rpms/zziplib
 
 ### steps
 * `make type`   # python mypy
@@ -121,7 +121,8 @@ https://git.almalinux.org/rpms/zziplib
 * `make format` # cxx style
 * `make fortify` # build with address-sanitizer
 * `make check`
-* `make version` # or `make version FOR=tomorrow`
+* update version in CMakeLists.txt # it is scanned by 'make version'
+* `make version` # it does NOT follow `make version FOR=tomorrow`
 * `make install` 
 * `make uninstalls`
 * `make build` # default build
