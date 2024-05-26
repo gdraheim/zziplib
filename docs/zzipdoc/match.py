@@ -7,18 +7,23 @@ try:
 except NameError:
     basestring = str
 
+# The specific re.Types were introduced in Python3.7
+# However generics were only introduced in Python3.9
+
 T = TypeVar('T')
 
 try:
-    RegexPattern = re.Pattern # introduced in Python3.7
-except AttributeError:
+    RegexPattern = re.Pattern
+    _testPattern: Optional[RegexPattern[str]] = None
+except (AttributeError, TypeError):
     class RegexPattern(Generic[T]):  # type: ignore[no-redef]
         pattern: T
         pass
 
 try:
-    RegexMatch = re.Match # introduced in Python3.7
-except AttributeError:
+    RegexMatch = re.Match
+    _testMatch: Optional[RegexMatch[str]] = None
+except (AttributeError, TypeError):
     class RegexMatch(Generic[T]):  # type: ignore[no-redef]
         pattern: T
         pass
