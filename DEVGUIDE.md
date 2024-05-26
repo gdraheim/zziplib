@@ -121,8 +121,7 @@ if they have some patch that should be integrated. Here are some links:
 * `make format` # cxx style
 * `make fortify` # build with address-sanitizer
 * `make check`
-* update version in CMakeLists.txt # it is scanned by 'make version'
-* `make version` # it does NOT follow `make version FOR=tomorrow`
+* `make version` # aka 'make nextversion' !!!
 * `make install` 
 * `make uninstalls`
 * `make build` # default build
