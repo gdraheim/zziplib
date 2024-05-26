@@ -8,6 +8,7 @@ CMAKE=cmake
 NINJA=ninja
 PREFIX=$$HOME/local
 PYTHON3=python3
+MINPYTHON=3.8
 
 .PHONY: build docs bins test tests testbuilds
 
@@ -120,7 +121,7 @@ mypy:
 	zypper install -y python3-click python3-pathspec
 
 MYPY = mypy
-MYPY_STRICT = --strict --show-error-codes --show-error-context --no-warn-unused-ignores --python-version 3.6 --implicit-reexport
+MYPY_STRICT = --strict --show-error-codes --show-error-context --no-warn-unused-ignores --python-version $(MINPYTHON) --implicit-reexport
 AUTOPEP8=autopep8
 AUTOPEP8_INPLACE= --in-place
 AUTOPEP8_ASDIFF= --diff
