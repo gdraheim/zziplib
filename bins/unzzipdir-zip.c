@@ -54,6 +54,15 @@ static int exitcode(int e)
     return EXIT_ERRORS;
 }
 
+#define BASENAME(x) (strchr((x), '/') ? strrchr((x), '/')+1 : (x))
+
+static int unzzip_version()
+{
+	printf ("%s version %s %s\n", BASENAME(__FILE__), ZZIP_PACKAGE_NAME, ZZIP_PACKAGE_VERSION);
+    return EXIT_OK;
+}
+
+
 static int 
 unzzip_list (int argc, char ** argv, int verbose)
 {
@@ -63,8 +72,7 @@ unzzip_list (int argc, char ** argv, int verbose)
     
     if (argc == 1)
     {
-        printf (__FILE__ " version " ZZIP_PACKAGE_NAME " " ZZIP_PACKAGE_VERSION "\n");
-        return EXIT_OK; /* better provide an archive argument */
+        return unzzip_version(); /* better provide an archive argument */
     }
     
     disk = zzip_dir_open (argv[1], &error);

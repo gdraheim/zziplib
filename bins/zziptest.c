@@ -40,6 +40,20 @@
 #define I_(_T,_L,_R) _L _R
 #endif
 
+#define BASENAME(x) (strchr((x), '/') ? strrchr((x), '/')+1 : (x))
+
+static int unzzip_version(void)
+{
+	printf ("%s version %s %s\n", BASENAME(__FILE__), ZZIP_PACKAGE_NAME, ZZIP_PACKAGE_VERSION);
+    return 0;
+}
+
+static int unzzip_help(void)
+{
+    printf ("zziptest [testfile]\n - selftest defaults to 'test.zip'");
+    return 0;
+}
+
 int main(int argc, char ** argv)
 {
     ZZIP_DIR * dir;
@@ -51,11 +65,9 @@ int main(int argc, char ** argv)
     if (argc > 1 && argv[1] != NULL)
     {
 	if (! strcmp (argv[1], "--help")) {
-	    printf ("zziptest [testfile]\n - selftest defaults to 'test.zip'");
-	    return 0;
+	    return unzzip_help();
 	}else if (! strcmp (argv[1], "--version")) {
-	    printf (__FILE__ " version " ZZIP_PACKAGE_NAME " " ZZIP_PACKAGE_VERSION "\n");
-	    return 0;
+	    return unzzip_version();
 	}else if (! strcmp (argv[1], "--quick")) {
 	    quick = 1;
 	    name = argv[2];

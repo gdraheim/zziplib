@@ -26,9 +26,11 @@ static const char usage[] =
     "  -l            list names in archive (short format)\n"
 };
 
+#define BASENAME(x) (strchr((x), '/') ? strrchr((x), '/')+1 : (x))
+
 static int unzzip_version(void)
 {
-    printf (__FILE__ " version " ZZIP_PACKAGE_NAME " " ZZIP_PACKAGE_VERSION "\n");
+	printf ("%s version %s %s\n", BASENAME(__FILE__), ZZIP_PACKAGE_NAME, ZZIP_PACKAGE_VERSION);
     return 0;
 }
 

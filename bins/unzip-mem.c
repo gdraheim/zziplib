@@ -320,6 +320,20 @@ static void zzip_mem_entry_makeall(ZZIP_MEM_DISK* disk)
 	zzip_mem_entry_make (disk, entry);
 }
 
+#define BASENAME(x) (strchr((x), '/') ? strrchr((x), '/')+1 : (x))
+
+static int unzzip_version()
+{
+	printf ("%s version %s %s\n", BASENAME(__FILE__), ZZIP_PACKAGE_NAME, ZZIP_PACKAGE_VERSION);
+    return 0;
+}
+
+static int unzzip_help() 
+{
+    printf (usage);
+	return 0;
+}
+
 int 
 main (int argc, char ** argv)
 {
@@ -327,13 +341,11 @@ main (int argc, char ** argv)
     ZZIP_MEM_DISK* disk;
     if (argc <= 1 || ! strcmp (argv[1], "--help"))
     {
-	printf (usage);
-	return 0;
+	    return unzzip_help();
     }
     if (! strcmp (argv[1], "--version"))
     {
-	printf (__FILE__ " version " ZZIP_PACKAGE_NAME " " ZZIP_PACKAGE_VERSION "\n");
-	return 0;
+	    return unzzip_version();
     }
 
     for (argn=1; argn < argc; argn++) {
@@ -364,8 +376,7 @@ main (int argc, char ** argv)
     }
 
     if (! archname) {
-	printf (usage);
-	return 0;
+	    return unzzip_help();
     } else archive = argv[archname];
 
     disk = zzip_mem_disk_open (argv[archname]);

@@ -32,6 +32,20 @@ static const char usage[] =
     "   with the same xor-value will result in the original file data. \n"
 };
 
+#define BASENAME(x) (strchr((x), '/') ? strrchr((x), '/')+1 : (x))
+
+static int unzzip_version(void)
+{
+	printf ("%s version %s %s\n", BASENAME(__FILE__), ZZIP_PACKAGE_NAME, ZZIP_PACKAGE_VERSION);
+    return 0;
+}
+
+static int unzzip_help(void)
+{
+    printf (usage);
+    return 0;
+}
+
 static int xor_value;
 
 static _ssize_t xor_read (FILE* f, void* p, _size_t l)
@@ -49,13 +63,11 @@ main (int argc, char ** argv)
 
     if (argc <= 1 || ! strcmp (argv[1], "--help"))
     {
-        printf (usage);
-        return 0;
+        return unzzip_help();
     }
     if (! strcmp (argv[1], "--version"))
     {
-	printf (__FILE__ " version " ZZIP_PACKAGE_NAME " " ZZIP_PACKAGE_VERSION "\n");
-	return 0;
+	    return unzzip_version();
     }
     
     for (argn=1; argn < argc; argn++)

@@ -42,6 +42,20 @@ static void zzip_cat_file(FILE* disk, char* name, FILE* out)
     }
 }
 
+#define BASENAME(x) (strchr((x), '/') ? strrchr((x), '/')+1 : (x))
+
+static int unzzip_version()
+{
+	printf ("%s version %s %s\n", BASENAME(__FILE__), ZZIP_PACKAGE_NAME, ZZIP_PACKAGE_VERSION);
+        return 0;
+}
+
+static int unzzip_help()
+{
+	printf (usage);
+	return 0;
+}
+
 int 
 main (int argc, char ** argv)
 {
@@ -50,13 +64,11 @@ main (int argc, char ** argv)
 
     if (argc <= 1 || ! strcmp (argv[1], "--help"))
     {
-        printf (usage);
-	return 0;
+        return unzzip_help();
     }
     if (! strcmp (argv[1], "--version"))
     {
-	printf (__FILE__ " version " ZZIP_PACKAGE_NAME " " ZZIP_PACKAGE_VERSION "\n");
-	return 0;
+	return unzzip_version();
     }
 
     disk = fopen (argv[1], "r");
