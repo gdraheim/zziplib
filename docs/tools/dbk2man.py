@@ -444,7 +444,7 @@ def overview2htm(overview: Dict[str, OverviewEntry], subdirectory: str, docbook_
         text += "\n"
     text += "</ul>\n"
     text += "</body></html>\n"
-    filename = "%s/%s.%s" % (subdirectory, basename, "html")
+    docbook_filename = "%s/%s.%s" % (subdirectory, basename, "html")
     writefile(docbook_filename, text)
 
 def writefile(filename: str, manpagetext: str) -> None:
