@@ -1949,8 +1949,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname1} bash -c 'find /new/local -name *.cmake -exec rm -v {item} {end}'"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname1} bash -c 'rmdir /new/local/share/zziplib'"  # if empty
-        sx____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname1} bash -c 'find /new/local -name cmake -prune -exec rmdir -v {item}/zziplib {item} {end}'"
+        sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname1} diff -uw /usr/local/include/zzip/_config.h /new/local/include/zzip/_config.h"
         sx____(cmd.format(**locals()))
         cmd = "{docker} exec {testname1} diff -urw --no-dereference /usr/local /new/local --exclude _config.h"
@@ -2023,8 +2023,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname1} bash -c 'find /new/local -name *.cmake -exec rm -v {item} {end}'"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname1} bash -c 'rmdir /new/local/share/zziplib'"  # if empty
-        sx____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname1} bash -c 'find /new/local -name cmake -prune -exec rmdir -v {item}/zziplib {item} {end}'"
+        sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname1} diff -uw /usr/local/include/zzip/_config.h /new/local/include/zzip/_config.h"
         sx____(cmd.format(**locals()))
         cmd = "{docker} exec {testname1} diff -urw --no-dereference /usr/local /new/local --exclude _config.h"
@@ -2097,8 +2097,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname1} bash -c 'find /new/local -name *.cmake -exec rm -v {item} {end}'"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname1} bash -c 'rmdir /new/local/share/zziplib'"  # if empty
-        sx____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname1} bash -c 'find /new/local -name cmake -prune -exec rmdir -v {item}/zziplib {item} {end}'"
+        sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname1} diff -uw /usr/local/include/zzip/_config.h /new/local/include/zzip/_config.h"
         sx____(cmd.format(**locals()))
         cmd = "{docker} exec {testname1} diff -urw --no-dereference /usr/local /new/local --exclude _config.h"
@@ -2171,8 +2171,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname1} bash -c 'find /new/local -name *.cmake -exec rm -v {item} {end}'"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname1} bash -c 'rmdir /new/local/share/zziplib'"  # if empty
-        sx____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname1} bash -c 'find /new/local -name cmake -prune -exec rmdir -v {item}/zziplib {item} {end}'"
+        sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname1} diff -uw /usr/local/include/zzip/_config.h /new/local/include/zzip/_config.h"
         sx____(cmd.format(**locals()))
         cmd = "{docker} exec {testname1} diff -urw --no-dereference /usr/local /new/local --exclude _config.h"
