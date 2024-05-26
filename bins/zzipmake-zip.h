@@ -5,5 +5,5 @@
  *      This file is used as an example to clarify zzip api usage.
  */
 
-extern int rezzip_make(int argc, char** argv);
-
+extern int
+rezzip_make(int argc, char** argv);

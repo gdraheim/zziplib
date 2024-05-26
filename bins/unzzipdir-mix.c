@@ -6,13 +6,11 @@
  */
 
 #include <zzip/lib.h>
-#include <zzip/__debug.h>
-#include <zzip/__fnmatch.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "unzzipdir-zip.h"
-#include "unzzip-states.h"
+#include <zzip/__debug.h>
+#include <zzip/__fnmatch.h>
 
 #ifdef ZZIP_HAVE_UNISTD_H
 #include <unistd.h>
@@ -21,125 +19,115 @@
 #include <io.h>
 #endif
 
-static const char* comprlevel[] = {
-    "stored",   "shrunk",   "redu:1",   "redu:2",   "redu:3",   "redu:4",
-    "impl:N",   "toknze",   "defl:N",   "defl:B",   "impl:B" };
+/* common code */
+#include "unzzip-states.h"
+#include "unzzipdir-zip.h"
 
-static int exitcode(int e)
+static const char* comprlevel[] = /* .. */
+    {"stored", "shrunk", "redu:1", "redu:2", "redu:3", "redu:4",
+     "impl:N", "toknze", "defl:N", "defl:B", "impl:B"};
+
+static int
+exitcode(int e)
 {
-    switch (e)
-    {
-        case ZZIP_NO_ERROR:
-            return EXIT_OK;
-        case ZZIP_OUTOFMEM: /* out of memory */
-            return EXIT_ENOMEM;
-        case ZZIP_DIR_OPEN: /* failed to open zipfile, see errno for details */
-            return EXIT_ZIP_NOT_FOUND;
-        case ZZIP_DIR_STAT: /* failed to fstat zipfile, see errno for details */
-        case ZZIP_DIR_SEEK: /* failed to lseek zipfile, see errno for details */
-        case ZZIP_DIR_READ: /* failed to read zipfile, see errno for details */
-        case ZZIP_DIR_TOO_SHORT:
-        case ZZIP_DIR_EDH_MISSING:
-            return EXIT_FILEFORMAT;
-        case ZZIP_DIRSIZE:
-            return EXIT_EARLY_END_OF_FILE;
-        case ZZIP_ENOENT:
-            return EXIT_FILE_NOT_FOUND;
-        case ZZIP_UNSUPP_COMPR:
-            return EXIT_UNSUPPORTED_COMPRESSION;
-        case ZZIP_CORRUPTED:
-        case ZZIP_UNDEF:
-        case ZZIP_DIR_LARGEFILE:
-            return EXIT_FILEFORMAT;
+    switch (e) {
+    case ZZIP_NO_ERROR:
+        return EXIT_OK;
+    case ZZIP_OUTOFMEM: /* out of memory */
+        return EXIT_ENOMEM;
+    case ZZIP_DIR_OPEN: /* failed to open zipfile, see errno for details */
+        return EXIT_ZIP_NOT_FOUND;
+    case ZZIP_DIR_STAT: /* failed to fstat zipfile, see errno for details */
+    case ZZIP_DIR_SEEK: /* failed to lseek zipfile, see errno for details */
+    case ZZIP_DIR_READ: /* failed to read zipfile, see errno for details */
+    case ZZIP_DIR_TOO_SHORT:
+    case ZZIP_DIR_EDH_MISSING:
+        return EXIT_FILEFORMAT;
+    case ZZIP_DIRSIZE:
+        return EXIT_EARLY_END_OF_FILE;
+    case ZZIP_ENOENT:
+        return EXIT_FILE_NOT_FOUND;
+    case ZZIP_UNSUPP_COMPR:
+        return EXIT_UNSUPPORTED_COMPRESSION;
+    case ZZIP_CORRUPTED:
+    case ZZIP_UNDEF:
+    case ZZIP_DIR_LARGEFILE:
+        return EXIT_FILEFORMAT;
     }
     return EXIT_ERRORS;
 }
 
-static int 
-unzzip_list (int argc, char ** argv, int verbose)
+static int
+unzzip_list(int argc, char** argv, int verbose)
 {
-    int argn;
+    int       argn;
     ZZIP_DIR* disk;
 
-    if (argc == 1)
-    {
-        printf (__FILE__ " version " ZZIP_PACKAGE_NAME " " ZZIP_PACKAGE_VERSION "\n");
+    if (argc == 1) {
+        printf(__FILE__ " version " ZZIP_PACKAGE_NAME " " ZZIP_PACKAGE_VERSION "\n");
         return EXIT_OK; /* better provide an archive argument */
     }
-    
-    disk = zzip_opendir (argv[1]);
+
+    disk = zzip_opendir(argv[1]);
     if (! disk) {
-        DBG3("opendir failed [%i] %s", errno, strerror(errno));    
-	perror(argv[1]);
-	return exitcode(errno);
+        DBG3("opendir failed [%i] %s", errno, strerror(errno));
+        perror(argv[1]);
+        return exitcode(errno);
     }
 
-    if (argc == 2)
-    {  /* list all */
-	ZZIP_DIRENT* entry = 0;
-	while((entry = zzip_readdir(disk)))
-	{
-	    char* name = entry->d_name;
-	    long long usize = entry->st_size;
-	    if (!verbose)
-	    {
-        	printf ("%22lli %s\n", usize, name);
-	    } else
-	    {
-		long long csize = entry->d_csize;
-		unsigned compr = entry->d_compr;
-		const char* defl = (compr < sizeof(comprlevel)) ? comprlevel[compr] : "(redu)";
-        	printf ("%lli/%lli %s %s\n", usize, csize, defl, name);
-	    }
-	}
-	DBG2("readdir done %s", strerror(errno));
+    if (argc == 2) { /* list all */
+        ZZIP_DIRENT* entry = 0;
+        while ((entry = zzip_readdir(disk))) {
+            char*     name  = entry->d_name;
+            long long usize = entry->st_size;
+            if (! verbose) {
+                printf("%22lli %s\n", usize, name);
+            }
+            else {
+                long long   csize = entry->d_csize;
+                unsigned    compr = entry->d_compr;
+                const char* defl  = (compr < sizeof(comprlevel)) ? comprlevel[compr] : "(redu)";
+                printf("%lli/%lli %s %s\n", usize, csize, defl, name);
+            }
+        }
+        DBG2("readdir done %s", strerror(errno));
     }
-    else
-    {   /* list only the matching entries - in order of zip directory */
-	ZZIP_DIRENT* entry = 0;
-	while((entry = zzip_readdir(disk)))
-	{
-	    char* name = entry->d_name;
-	    for (argn=1; argn < argc; argn++)
-	    {
-		if (! _zzip_fnmatch (argv[argn], name, 
-		      _zzip_FNM_NOESCAPE|_zzip_FNM_PATHNAME|_zzip_FNM_PERIOD))
-		{
-		    long long usize = entry->st_size;
-		    if (!verbose)
-		    {
-	        	printf ("%22lli %s\n", usize, name);
-		    } else
-		    {
-			long long csize = entry->d_csize;
-			unsigned compr = entry->d_compr;
-			const char* defl = (compr < sizeof(comprlevel)) ? comprlevel[compr] : "(redu)";
-			printf ("%lli/%lli %s %s\n", usize, csize, defl, name);
-		    }
-		    break; /* match loop */
-		}
-	    }
-	}
-	DBG2("readdir done %s", strerror(errno));
+    else { /* list only the matching entries - in order of zip directory */
+        ZZIP_DIRENT* entry = 0;
+        while ((entry = zzip_readdir(disk))) {
+            char* name = entry->d_name;
+            for (argn = 1; argn < argc; argn++) {
+                if (! _zzip_fnmatch(argv[argn], name,
+                                    _zzip_FNM_NOESCAPE | _zzip_FNM_PATHNAME | _zzip_FNM_PERIOD)) {
+                    long long usize = entry->st_size;
+                    if (! verbose) {
+                        printf("%22lli %s\n", usize, name);
+                    }
+                    else {
+                        long long   csize = entry->d_csize;
+                        unsigned    compr = entry->d_compr;
+                        const char* defl =
+                            (compr < sizeof(comprlevel)) ? comprlevel[compr] : "(redu)";
+                        printf("%lli/%lli %s %s\n", usize, csize, defl, name);
+                    }
+                    break; /* match loop */
+                }
+            }
+        }
+        DBG2("readdir done %s", strerror(errno));
     }
     zzip_closedir(disk);
     return 0;
-} 
+}
 
-int 
-unzzip_long_list (int argc, char ** argv)
+int
+unzzip_long_list(int argc, char** argv)
 {
     return unzzip_list(argc, argv, 1);
 }
 
-int 
-unzzip_show_list (int argc, char ** argv)
+int
+unzzip_show_list(int argc, char** argv)
 {
     return unzzip_list(argc, argv, 0);
 }
-
-/* 
- * Local variables:
- * c-file-style: "stroustrup"
- * End:
- */

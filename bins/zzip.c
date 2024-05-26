@@ -11,7 +11,6 @@
 #include <zzip/write.h>
 #include <stdio.h>
 #include <string.h>
-#include "zzipmake-zip.h"
 
 #ifdef ZZIP_HAVE_UNISTD_H
 #include <unistd.h>
@@ -20,51 +19,48 @@
 #include <io.h>
 #endif
 
-static const char usage[] = 
-{
-    "zzip <dir> files... \n"
-    "  - zzip the files into a zip area."
-};
+/* common code */
+#include "zzipmake-zip.h"
 
-#define BASENAME(x) (strchr((x), '/') ? strrchr((x), '/')+1 : (x))
+static const char usage[] = /* .. */
+    {"zzip <dir> files... \n"
+     "  - zzip the files into a zip area."};
 
-static int unzzip_version(void)
+#define BASENAME(x) (strchr((x), '/') ? strrchr((x), '/') + 1 : (x))
+
+static int
+unzzip_version(void)
 {
 #if defined _ZZIP_ENABLE_WRITE
-	printf ("%s version %s %s - W/ -D_ZZIP_ENABLE_WRITE\n", BASENAME(__FILE__), ZZIP_PACKAGE_NAME, ZZIP_PACKAGE_VERSION);
+#define WRITE_OPTION "W/ -D_ZZIP_ENABLE_WRITE"
 #else
-	printf ("%s version %s %s - NO -D_ZZIP_ENABLE_WRITE\n", BASENAME(__FILE__), ZZIP_PACKAGE_NAME, ZZIP_PACKAGE_VERSION);
+#define WRITE_OPTION "NO -D_ZZIP_ENABLE_WRITE"
 #endif
+    printf("%s version %s %s - %s\n", BASENAME(__FILE__), ZZIP_PACKAGE_NAME, ZZIP_PACKAGE_VERSION,
+           WRITE_OPTION);
     return 0;
 }
 
-static int unzzip_help(void)
+static int
+unzzip_help(void)
 {
-    printf (usage);
+    printf(usage);
     return 0;
 }
 
-int 
-main (int argc, char ** argv)
+int
+main(int argc, char** argv)
 {
-    int argn;
-    int exitcode = 0;
-    ZZIP_DIR * dir;
+    int       argn;
+    int       exitcode = 0;
+    ZZIP_DIR* dir;
 
-    if (argc <= 1 || ! strcmp (argv[1], "--help"))
-    {
+    if (argc <= 1 || ! strcmp(argv[1], "--help")) {
         return unzzip_help();
     }
-    if (! strcmp (argv[1], "--version"))
-    {
-	    return unzzip_version();
+    if (! strcmp(argv[1], "--version")) {
+        return unzzip_version();
     }
 
     return rezzip_make(argc, argv);
-} 
-
-/* 
- * Local variables:
- * c-file-style: "stroustrup"
- * End:
- */
+}
