@@ -4005,7 +4005,7 @@ class ZZipTest(unittest.TestCase):
         self.assertEqual(size, 771)
     url_BUG_143 = "https://github.com/gdraheim/zziplib/files/9757091"
     zip_BUG_143 = "zip.c_347_44-in-__zzip_fetch_disk_trailer.zip"
-    def test_70143(self) ->None:
+    def test_70143(self) -> None:
         """ check github issue #143 - requires `make fortify`"""
         tmpdir = self.testdir()
         filename = self.zip_BUG_143
@@ -4019,7 +4019,7 @@ class ZZipTest(unittest.TestCase):
         #
     url_BUG_144 = "https://github.com/gdraheim/zziplib/files/9757121"
     zip_BUG_144 = "zip.c_347_44-in-__zzip_fetch_disk_trailer.zip"
-    def test_70144(self) ->None:
+    def test_70144(self) -> None:
         """ check github issue #144 - requires `make fortify`"""
         tmpdir = self.testdir()
         filename = self.zip_BUG_144
