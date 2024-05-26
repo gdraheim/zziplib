@@ -103,7 +103,7 @@ checkversion versions:
 
 # format ..............................
 CLANG_FORMAT=clang-format
-format ff: ; $(CLANG_FORMAT) -i zzip/*.h zzip/*.c
+format ff: ; $(CLANG_FORMAT) -i zzip/*.h zzip/*.c bins/*.h bins/*.c
 
 FORMATDIR=../zziplib-format
 formatdir:
