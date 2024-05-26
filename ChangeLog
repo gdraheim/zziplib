@@ -1,19 +1,33 @@
-2024-04-16
+2024-05-26  gdraheim@github
+   * add bins/*.c and test/*.c to make format
+   * for bins/ --version shorten the automatic binary name #156
+   * simplify bins/ ssize_t construction
+   * tested 'make nextversion' to ensure version number is increased
+   * note: last 0.13.74 was internally still named 0.13.72
+   * integrate opensuse patch for -Wwrite-strings for GCC4.1+
+   * switch to mypy minimum of python3.8
+   * fix dbk2man regression (from typehints changes)
+   * fixed again cmake bug - parallel builds can lead to race condition
+   * removed ubuntu1604 testbuilds - python3.5 is too old
+   * ubuntu2404 is ready - was waiting for sdl-dev in universe
+   * release 0.13.75
+
+2024-04-16  gdraheim@github
    * add -DCOVERAGE=ON cmake option
    * allow for 'make coverage' summary
    * run 'make new check coverage' to see the result
 
-2024-04-10
+2024-04-10  gdraheim@github
    * add DEVGUIDE.md and prep release process
 
-2024-04-09
+2024-04-09  gdraheim@github
     * change zzipdoc to python3 typehints
     * allow for make types check on python
     * remove unused make-doc.py make-doc.pl
 
 2024-02-29  gdraheim@github
     * disabled local file header offset64
-    * allowed to 'make fortify' for extended debugging
+    * allowed to 'make fortify' for extended debugging ... -DFORTIFY=ON
     * fixed all memleak bugs from address sanitizer
     * fixed ZIP64 bugs - but the support is still incomplete
     * fixed remaining failures as they were recorded in testsuite
