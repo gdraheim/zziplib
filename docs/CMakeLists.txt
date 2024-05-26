@@ -121,7 +121,7 @@ add_custom_command(OUTPUT htmlsite.tar
     COMMAND ${BASH} -c "tar cf htmlsite.tar site/*.*"
     COMMAND ${BASH} -c "ls -l `pwd`/htmlsite.tar || true"
     #  DEPENDS site/site.html zziplib.html zzipmmapped.html zzipfseeko.html
-    DEPENDS    site/site.html zziplib.xml  zzipmmapped.xml  zzipfseeko.xml
+    DEPENDS    site/site.html zziplib_xml  zzipmmapped_xml  zzipfseeko_xml
     VERBATIM)
 if(ZZIP_HTMLSITE)
 add_custom_target(htmlsite ALL DEPENDS htmlsite.tar COMMAND ${BASH} -c "ls -l htmlsite.tar")
