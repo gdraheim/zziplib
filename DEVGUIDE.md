@@ -128,7 +128,7 @@ if they have some patch that should be integrated. Here are some links:
 * `make docs` # includes `make mans`
 * `make auto` # update automake variant
 * `make am`   # remake with obsolete autotools
-* consider running alternative cmake variants like ninja and nmake
+* `make ninja` # if installed. Also consider `make nmake`
 * `make testbuilds` # run some different build variants automatically
 * `make new check coverage` 
 * update README.md with the result from coverage
