@@ -47,6 +47,7 @@ NOCACHE = False
 
 MAINDIR = os.path.dirname(sys.argv[0]) or "."
 MIRROR = os.path.join(MAINDIR, "docker_mirror.py")
+NONLOCAL = 0
 LOCAL = 0
 
 def decodes(text: Union[bytes, str]) -> str:
@@ -284,6 +285,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         extras = extras or ""
         docker = DOCKER
         mirror = MIRROR
+        if NONLOCAL:
+           return ""
         if LOCAL:
             mirror += " --local"
         cmd = "{mirror} start {image} --add-hosts {extras}"
@@ -637,7 +640,6 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    @unittest.expectedFailure
     def test_225_ubuntu24_cmake_build_dockerfile(self) -> None:
         # no universe yet (in February 2024)
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
@@ -1123,7 +1125,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    @unittest.expectedFailure
+    # @unittest.expectedFailure
     def test_334_ubuntu24_use_gcc14_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
@@ -2339,6 +2341,8 @@ if __name__ == "__main__":
                   help="use another docker execution engine [%default]")
     _o.add_option("-M", "--mirror", metavar="EXE", default=MIRROR,
                   help="use another docker_mirror.py script [%default]")
+    _o.add_option("-N", "--nolocal", "--nonlocal", action="count", default=0,
+                  help="disable local docker mirror [%default]")
     _o.add_option("-L", "--local", action="count", default=0,
                   help="fail if not local docker mirror found [%default]")
     _o.add_option("-k", "--keep", action="count", default=0,
@@ -2360,6 +2364,7 @@ if __name__ == "__main__":
     DOCKER = opt.docker
     MIRROR = opt.mirror
     LOCAL = opt.local
+    NONLOCAL = opt.nolocal
     KEEP = opt.keep
     FORCE = opt.force
     NOCACHE = opt.no_cache

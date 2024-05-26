@@ -70,6 +70,7 @@ testss:  ; $(PYTHON3) testbuilds.py -vv --failfast --local
 testbuilds: ; $(PYTHON3) testbuilds.py -vv --no-cache
 k_%: ; $(PYTHON3) testbuilds.py $@ -vv --no-cache --keep
 b_%: ; $(PYTHON3) testbuilds.py $@ -vv --no-cache --failfast --local
+x_%: ; $(PYTHON3) testbuilds.py $@ -vv --no-cache --failfast --nonlocal
 t_%: ;    cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py $@ -vv
 test_%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py $@ -vv
 est_%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py t$@ -vv --keep
