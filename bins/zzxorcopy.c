@@ -7,7 +7,7 @@
  *      Remember that xor'ing data twice will result in the original data.
  *      This file has no dependency with zziplib - it's freestanding.
  */
-
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,12 +15,14 @@
 
 #include <zzip/_config.h> /* for  ZZIP_PACKAGE_VERSION  */
 
-#if __STDC_VERSION__+0 < 199901
-#define _ssize_t int
-#define _size_t unsigned
+#ifdef ZZIP_HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#elif defined SSIZE_T
+typedef SSIZE_T ssize_t
+#elif defined __SSIZE_T_TYPE
+typedef __SSIZE_T_TYPE ssize_t
 #else
-#define _ssize_t ssize_t
-#define _size_t size_t
+typedef int ssize_t;
 #endif
 
 static const char usage[] = 
@@ -48,10 +50,10 @@ static int unzzip_help(void)
 
 static int xor_value;
 
-static _ssize_t xor_read (FILE* f, void* p, _size_t l)
+static ssize_t xor_read (FILE* f, void* p, size_t l)
 {
-    _ssize_t r = fread(p, 1, l, f);
-    _ssize_t x; char* q; for (x=0, q=p; x < r; x++) q[x] ^= xor_value;
+    ssize_t r = fread(p, 1, l, f);
+    ssize_t x; char* q; for (x=0, q=p; x < r; x++) q[x] ^= xor_value;
     return r;
 }
 
@@ -95,7 +97,7 @@ main (int argc, char ** argv)
 
 	{
             char buf[17];
-            _ssize_t n;
+            ssize_t n;
 
 	    /* read chunks of 16 bytes into buf and print them to stdout */
             while (0 < (n = xor_read(iF, buf, 16)))
