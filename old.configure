@@ -16067,7 +16067,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 #       puts them into .rodata, but they are copied later.
 #       need to be "-G0 -rdatashared" for strictmode but
 #       I am not sure what effect that has really.         - guidod
-for ac_arg in "-pedantic % -fno-writable-strings -Wwrite-strings"    "-pedantic % -fconst-strings -Wwrite-strings"    "-v -Xc    % -xstrconst"    "+w1 -Aa   % +ESlit"         "-w0 -std1 % -readonly_strings"    "-fullwarn -use_readonly_const %% ok, its the default"    #
+for ac_arg in "-pedantic % -fno-writable-strings -Wwrite-strings"    "-pedantic % -fconst-strings -Wwrite-strings"    "-Wall     %                       -Wwrite-strings"    "-v -Xc    % -xstrconst"    "+w1 -Aa   % +ESlit"         "-w0 -std1 % -readonly_strings"    "-fullwarn -use_readonly_const %% ok, its the default"    #
 do CFLAGS="$ac_save_CFLAGS "`echo $ac_arg | sed -e 's,%%.*,,' -e 's,%,,'`
    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
