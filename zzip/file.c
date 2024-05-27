@@ -20,6 +20,7 @@
 #include <zzip/fetch.h>
 #include <zzip/zzip32.h>
 #include <zzip/__debug.h>
+#include <zzip/__param.h>
 
 #if 0
 #if defined ZZIP_HAVE_IO_H

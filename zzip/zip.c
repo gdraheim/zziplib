@@ -22,6 +22,7 @@
 
 #include <zzip/__debug.h>
 #include <zzip/__mmap.h>
+#include <zzip/__param.h>
 
 #define __sizeof(X) ((zzip_ssize_t) (sizeof(X)))
 

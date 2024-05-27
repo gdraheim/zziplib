@@ -21,6 +21,7 @@
 
 #include <zzip/zzip32.h>
 #include <zzip/__dirent.h>
+#include <zzip/__param.h>
 
 #ifndef offsetof
 #pragma warning had to DEFINE offsetof as it was not in stddef.h

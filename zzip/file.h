@@ -37,8 +37,6 @@
 #endif
 #endif
 
-#include <zzip/__param.h>
-
 /*
  * ZZIP_FILE structure... currently no need to unionize, since structure needed
  * for inflate is superset of structure needed for unstore.
