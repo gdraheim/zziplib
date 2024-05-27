@@ -289,11 +289,8 @@ class ZZiplibBuildTest(unittest.TestCase):
             return ""
         if LOCAL:
             mirror += " --local"
-        if extras:
-            cmd = "{mirror} start {image} --add-hosts {extras}"
-            out, rc = output2(cmd.format(**locals()))
-        else:
-            cmd = "{mirror} start {image}"
+        cmd = "{mirror} start {image} --add-hosts {extras}"
+        out, rc = output2(cmd.format(**locals()))
         if LOCAL and rc:
             raise SystemError("--local docker-mirror-packages-repo not found")
         return decodes(out).strip()
