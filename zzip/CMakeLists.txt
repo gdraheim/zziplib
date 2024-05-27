@@ -176,7 +176,8 @@ set(libzzip_HDRS
     zzip.h
     format.h
     types.h
-    conf.h 
+    conf.h
+    cstdint.h
     _msvc.h 
     file.h
     info.h
