@@ -10,6 +10,9 @@
 /* Define if pointers to integers require aligned access */
 /* #undef HAVE_ALIGNED_ACCESS_REQUIRED */
 
+/* Define to 1 if you have the <ansidecl.h> header file. */
+/* #undef HAVE_ANSIDECL_H */
+
 /* Define to 1 if you have the <byteswap.h> header file. */
 /* #undef HAVE_BYTESWAP_H */
 
@@ -43,9 +46,6 @@
 
 /* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
 /* #undef HAVE_NDIR_H */
-
-/* Define to 1 if you have the <ansidecl.h> header file. */
-/* #undef HAVE_ANSIDECL_H */
 
 /* Define to 1 if you have the <stdint.h> header file. */
 /* #undef HAVE_STDINT_H */
