@@ -26,6 +26,7 @@ libzzip_la_SOURCES = \
 	write.c \
 	fetch.c
 libzzip_la_headers = \
+        cdecl.h \
 	cstdint.h \
 	stdint.h \
 	file.h \
