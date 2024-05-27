@@ -85,6 +85,8 @@ target_include_directories(unzzip-big   PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_B
 target_include_directories(unzzip-mem   PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 target_include_directories(unzip-mem    PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 
+add_custom_target(bins DEPENDS zzcat zzdir zzxorcat zzxorcopy zzobfuscated zziptest zzip unzzip unzzip-mix unzzip-big unzzip-mem unzip-mem)
+
 # install ########################################################
 if(ZZIP_INSTALL_BINS)
 install(TARGETS zzcat zzdir zzxorcat zzxordir zzxorcopy

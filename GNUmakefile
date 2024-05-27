@@ -41,6 +41,8 @@ cov coverage: libzzip.gcov libzzipmmapped.gcov libzzipfseeko.gcov
 libzzip.gcov libzzipmmapped.gcov libzzipfseeko.gcov:
 	cd $(BUILD)/zzip && $(MAKE) $@
 	tail -1 $(BUILD)/zzip/$@.txt
+bins:
+	cd $(BUILD)/bins && $(MAKE) $@
 
 # targets defined in cmakefile.txt
 check checks site install-site manpages htmpages:
