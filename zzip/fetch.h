@@ -3,8 +3,8 @@
 
 #include <zzip/types.h>
 #include <zzip/format.h>
+#include <zzip/cdecl.h>
 #include <zzip/cstdint.h>
-#include <zzip/__hints.h>
 
 /* linux knows "byteswap.h" giving us an optimized variant */
 #ifdef ZZIP_HAVE_BYTESWAP_H
@@ -17,16 +17,16 @@ extern "C" {
 
 /* get 16/32 bits from little-endian zip-file to host byteorder */
 extern uint32_t
-__zzip_get32(zzip_byte_t* s) ZZIP_GNUC_CONST;
+__zzip_get32(zzip_byte_t* s) ZZIP_GNUC_PURE;
 extern uint16_t
-__zzip_get16(zzip_byte_t* s) ZZIP_GNUC_CONST;
+__zzip_get16(zzip_byte_t* s) ZZIP_GNUC_PURE;
 extern void
 __zzip_set32(zzip_byte_t* s, uint32_t v);
 extern void
 __zzip_set16(zzip_byte_t* s, uint16_t v);
 
 extern uint64_t
-__zzip_get64(zzip_byte_t* s) ZZIP_GNUC_CONST;
+__zzip_get64(zzip_byte_t* s) ZZIP_GNUC_PURE;
 extern void
 __zzip_set64(zzip_byte_t* s, uint64_t v);
 

@@ -143,10 +143,12 @@
 #endif
 #endif
 
+#ifndef ZZIP_GNUC_PACKED
 #ifdef __GNUC__
 #define ZZIP_GNUC_PACKED __attribute__((packed))
 #else
 #define ZZIP_GNUC_PACKED
+#endif
 #endif
 
 #ifndef ZZIP_FUNCTION

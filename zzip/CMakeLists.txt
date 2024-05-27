@@ -178,6 +178,7 @@ set(libzzip_HDRS
     types.h
     conf.h
     cstdint.h
+    cdecl.h
     _msvc.h 
     file.h
     info.h

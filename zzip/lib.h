@@ -14,8 +14,8 @@
 #define _ZZIP_LIB_H
 
 #include <zzip/zzip.h>
-#include <zzip/plugin.h>
 #include <zzip/cstdint.h>
+#include <zzip/plugin.h>
 
 #ifdef __cplusplus
 extern "C" {

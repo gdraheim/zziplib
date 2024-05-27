@@ -9,7 +9,7 @@
 
 #include <zzip/types.h>
 #include <zzip/mmapped.h>
-#include <zzip/__hints.h>
+#include <zzip/cdecl.h>
 
 #ifdef __cplusplus
 extern "C" {
