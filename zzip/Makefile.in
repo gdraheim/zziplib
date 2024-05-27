@@ -426,6 +426,7 @@ libzzip_la_SOURCES = \
 	fetch.c
 
 libzzip_la_headers = \
+	cstdint.h \
 	stdint.h \
 	file.h \
 	plugin.h \
