@@ -1,3 +1,17 @@
+2024-05-27 gdraheim@github
+   * move definitions form zzip/stdint.h to zzip/cstdint.h
+   * note: some includepaths made zzip/stdint.h be found as stdint.h
+   * move some definitions from zzip/__hints.h to zzip/cdecl.h
+   * make zzip/cdecl.h use gcc's ansidecl.h definitions if found
+   * remove zzip/__hints.h in public headers - use zzip/cdecl.h instead
+   * the __*.h files were not meant to be installed
+   * some distros have installed them anyway - that should be dropped
+   * the "make format" will check for __*.h in public headers as well
+   * note: this should help to avoide it creep in again
+   * add "make bins" to ensure testing compilation of those binaries
+   * add PACKAGE_NAME and PACKAGE_VERSION to _msvc.h
+   * release 0.13.76
+
 2024-05-26  gdraheim@github
    * add bins/*.c and test/*.c to make format
    * for bins/ --version shorten the automatic binary name #156
