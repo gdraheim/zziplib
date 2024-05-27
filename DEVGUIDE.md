@@ -146,3 +146,7 @@ Currently there is a problem with the testzip downloads during "make check" on G
 ## TODO
 
 * there is a longer wishlist in `TODO` - it should be cleaned up
+* rename stdint.h to avoid conflicts (perhaps cstdint.h)
+* rebase __hints.h to definitions as in GCC's ansidecl.h = ATTRIBUTE_PACKED
+* and unuse __hints.h to avoid dependency on internal headers
+
