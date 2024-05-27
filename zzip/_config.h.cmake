@@ -30,6 +30,9 @@
 /* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
 #cmakedefine ZZIP_HAVE_NDIR_H ${ZZIP_HAVE_NDIR_H}
 
+/* Define to 1 if you have the <ansidecl.h> header file. */
+#cmakedefine ZZIP_HAVE_ANSIDECL_H ${ZZIP_HAVE_ANSIDECL_H}
+
 /* Define to 1 if you have the <stdint.h> header file. */
 #cmakedefine ZZIP_HAVE_STDINT_H ${ZZIP_HAVE_STDINT_H}
 
