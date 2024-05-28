@@ -25,6 +25,9 @@ if sys.version[0] == '3':
     basestring = str
     xrange = range
 
+DONE = (logging.ERROR + logging.WARNING) // 2
+logging.addLevelName(DONE, "DONE")
+
 logg = logging.getLogger("TESTING")
 _python = "/usr/bin/python"
 
@@ -2430,3 +2433,4 @@ if __name__ == "__main__":
     if not result.wasSuccessful():
         sys.exit(1)
     run_clean()
+    logg.log(DONE, "OK")
