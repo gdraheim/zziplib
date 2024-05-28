@@ -455,6 +455,17 @@ class ZZiplibBuildTest(unittest.TestCase):
         zlib = output(cmd.format(**locals()))
         self.assertEqual(zlib.strip(), "-lz")
         #
+        cmd = "{docker} exec {testname} cp -r /src/bins /external"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} sed -i -e '/find_pack/s/^# *//' -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} mkdir -v /external/build"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake3 ..'"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && make VERBOSE=1'"
+        sh____(cmd.format(**locals()))
+        #
         if not KEEP:
             cmd = "{docker} rm --force {testname}"
             sx____(cmd.format(**locals()))
@@ -499,6 +510,17 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} exec {testname} pkg-config --libs zlib"
         zlib = output(cmd.format(**locals()))
         self.assertEqual(zlib.strip(), "-lz")
+        #
+        cmd = "{docker} exec {testname} cp -r /src/bins /external"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} sed -i -e '/find_pack/s/^# *//' -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} mkdir -v /external/build"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake3 ..'"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && make VERBOSE=1'"
+        sh____(cmd.format(**locals()))
         #
         if not KEEP:
             cmd = "{docker} rm --force {testname}"
@@ -545,6 +567,17 @@ class ZZiplibBuildTest(unittest.TestCase):
         zlib = output(cmd.format(**locals()))
         self.assertEqual(zlib.strip(), "-lz")
         #
+        cmd = "{docker} exec {testname} cp -r /src/bins /external"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} sed -i -e '/find_pack/s/^# *//' -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} mkdir -v /external/build"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake ..'"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && make VERBOSE=1'"
+        sh____(cmd.format(**locals()))
+        #
         if not KEEP:
             cmd = "{docker} rm --force {testname}"
             sx____(cmd.format(**locals()))
@@ -590,6 +623,17 @@ class ZZiplibBuildTest(unittest.TestCase):
         zlib = output(cmd.format(**locals()))
         self.assertEqual(zlib.strip(), "-lz")
         #
+        cmd = "{docker} exec {testname} cp -r /src/bins /external"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} sed -i -e '/find_pack/s/^# *//' -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} mkdir -v /external/build"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake ..'"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && make VERBOSE=1'"
+        sh____(cmd.format(**locals()))
+        #
         if not KEEP:
             cmd = "{docker} rm --force {testname}"
             sx____(cmd.format(**locals()))
@@ -634,6 +678,17 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} exec {testname} pkg-config --libs zlib"
         zlib = output(cmd.format(**locals()))
         self.assertEqual(zlib.strip(), "-lz")
+        #
+        cmd = "{docker} exec {testname} cp -r /src/bins /external"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} sed -i -e '/find_pack/s/^# *//' -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} mkdir -v /external/build"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake ..'"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && make VERBOSE=1'"
+        sh____(cmd.format(**locals()))
         #
         if not KEEP:
             cmd = "{docker} rm --force {testname}"
@@ -681,6 +736,17 @@ class ZZiplibBuildTest(unittest.TestCase):
         zlib = output(cmd.format(**locals()))
         self.assertEqual(zlib.strip(), "-lz")
         #
+        cmd = "{docker} exec {testname} cp -r /src/bins /external"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} sed -i -e '/find_pack/s/^# *//' -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} mkdir -v /external/build"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake ..'"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && make VERBOSE=1'"
+        sh____(cmd.format(**locals()))
+        #
         if not KEEP:
             cmd = "{docker} rm --force {testname}"
             sx____(cmd.format(**locals()))
@@ -725,6 +791,17 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} exec {testname} pkg-config --libs zlib"
         zlib = output(cmd.format(**locals()))
         self.assertEqual(zlib.strip(), "-lz")
+        #
+        cmd = "{docker} exec {testname} cp -r /src/bins /external"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} sed -i -e '/find_pack/s/^# *//' -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} mkdir -v /external/build"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake ..'"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && make VERBOSE=1'"
+        sh____(cmd.format(**locals()))
         #
         if not KEEP:
             cmd = "{docker} rm --force {testname}"
@@ -2341,8 +2418,8 @@ def run_clean() -> None:
     for line in output(docker + " images --format '{{.ID}} # {{.Repository}}:{{.Tag}}'").splitlines():
         check = "* # {saveto}/{pattern}".format(**locals())
         if fnmatch(line, check):
-            logg.info("  docker rmi %s", line)
-            sh____("{docker} rmi {line}".format(**locals()))
+            logg.info("  docker rmi -f %s", line)
+            sh____("{docker} rmi -f {line}".format(**locals()))
 def run_help() -> None:
     for line in open(__file__):
         if line.strip().startswith("def test_"):
