@@ -26,7 +26,9 @@ if sys.version[0] == '3':
     xrange = range
 
 DONE = (logging.ERROR + logging.WARNING) // 2
+NOTE = (logging.INFO + logging.WARNING) // 2
 logging.addLevelName(DONE, "DONE")
+logging.addLevelName(NOTE, "NOTE")
 
 logg = logging.getLogger("TESTING")
 _python = "/usr/bin/python"
@@ -2335,7 +2337,7 @@ def run_clean() -> None:
     docker = DOCKER
     saveto = SAVETO
     pattern = docname("*.dockerfile")
-    logg.warning("docker rmi {saveto}/{pattern}".format(**locals()))
+    logg.log(NOTE, "  docker rmi {saveto}/{pattern}".format(**locals()))
     for line in output(docker + " images --format '{{.ID}} # {{.Repository}}:{{.Tag}}'").splitlines():
         check = "* # {saveto}/{pattern}".format(**locals())
         if fnmatch(line, check):
@@ -2432,5 +2434,6 @@ if __name__ == "__main__":
         result = Runner(verbosity=opt.verbose, failfast=opt.failfast).run(suite)
     if not result.wasSuccessful():
         sys.exit(1)
-    run_clean()
-    logg.log(DONE, "OK")
+    if not KEEP:
+        run_clean()
+    logg.log(DONE, "OK - ran %s tests", result.testsRun)
