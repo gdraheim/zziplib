@@ -1,3 +1,11 @@
+2024-05-28 gdraheim@github
+   * `./testbuilds.py clean` will drop test-related docker images
+   * `./testbuilds.py` will automatically run clean if everything successful
+   * `./testbuilds.py help` shows the available tests and commands
+   * in test_2xx create /external bins and compile them by linking via cmake-configs
+   * fix bins/CMakeLists.txt to show realistic usage of cmake find_package
+   * note: it seems bins/unzzip*.c use internal headers which external programs can't
+
 2024-05-27 gdraheim@github
    * move definitions form zzip/stdint.h to zzip/cstdint.h
    * note: some includepaths made zzip/stdint.h be found as stdint.h
