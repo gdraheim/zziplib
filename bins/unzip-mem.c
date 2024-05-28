@@ -11,7 +11,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <zzip/__fnmatch.h>
 
 #ifdef ZZIP_HAVE_UNISTD_H
 #include <unistd.h>
