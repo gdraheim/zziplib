@@ -2328,6 +2328,17 @@ class ZZiplibBuildTest(unittest.TestCase):
         sx____(cmd.format(**locals()))
         self.rm_testdir()
 
+def run_clean() -> None:
+    docker = DOCKER
+    saveto = SAVETO
+    pattern = docname("*.dockerfile")
+    logg.warning("docker rmi {saveto}/{pattern}".format(**locals()))
+    for line in output(docker + " images --format '{{.ID}} # {{.Repository}}:{{.Tag}}'").splitlines():
+        check = "* # {saveto}/{pattern}".format(**locals())
+        if fnmatch(line, check):
+            logg.info("  docker rmi %s", line)
+            sh____("{docker} rmi {line}".format(**locals()))
+
 
 if __name__ == "__main__":
     from optparse import OptionParser
@@ -2388,6 +2399,10 @@ if __name__ == "__main__":
     suite = unittest.TestSuite()
     if not args: args = ["test_*"]
     for arg in args:
+        run = F"run_{arg}"
+        if run in globals():
+            globals()[run]()
+            continue
         for classname in sorted(globals()):
             if not classname.endswith("Test"):
                 continue
@@ -2414,3 +2429,4 @@ if __name__ == "__main__":
         result = Runner(verbosity=opt.verbose, failfast=opt.failfast).run(suite)
     if not result.wasSuccessful():
         sys.exit(1)
+    run_clean()
