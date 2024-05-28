@@ -13,7 +13,7 @@
  */
 
 #ifdef _USE_MMAP
-#if defined ZZIP_HAVE_SYS_MMAN_H
+#if defined ZZIP_HAVE_SYS_MMAN_H && !defined WIN32
 #include <sys/mman.h>
 #define USE_POSIX_MMAP 1
 #elif defined ZZIP_HAVE_WINBASE_H || defined WIN32
