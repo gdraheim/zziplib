@@ -2343,6 +2343,27 @@ def run_clean() -> None:
         if fnmatch(line, check):
             logg.info("  docker rmi %s", line)
             sh____("{docker} rmi {line}".format(**locals()))
+def run_help() -> None:
+    for line in open(__file__):
+        if line.strip().startswith("def test_"):
+            x, y = line.split("def test_")
+            if "_" in y:
+                testname, extra = y.split("_", 1)
+            else:
+                testname, extra = y, ""
+            if "(" in extra:
+                title, parameters = extra.split("(", 1)
+            else:
+                title = extra.rstrip()
+            print(" test_{:10}: {:}".format(testname, title))
+        if line.strip().startswith("def run_"):
+            x, y = line.split("def run_")
+            if "#" in line:
+                func, extra = y.split("#")
+            else:
+                func, extra = y.rstrip(), ""
+            testname = func.replace("()", "").replace(" None", "").rstrip()
+            print(" {:10} {:}".format(testname, extra.strip()))
 
 
 if __name__ == "__main__":
@@ -2434,6 +2455,6 @@ if __name__ == "__main__":
         result = Runner(verbosity=opt.verbose, failfast=opt.failfast).run(suite)
     if not result.wasSuccessful():
         sys.exit(1)
-    if not KEEP:
+    if not KEEP and result.testsRun:
         run_clean()
     logg.log(DONE, "OK - ran %s tests", result.testsRun)
