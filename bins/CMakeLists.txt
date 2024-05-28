@@ -38,9 +38,16 @@ endif()
 
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
-# pkg_search_module ( ZZIP zzip )
-# pkg_search_module ( ZZIPMAPPED zzipmmapped )
-# pkg_search_module ( ZZIPFSEEKO zzipfseeko )
+
+## linking while compiling zziplib itself (in ../zzip)
+set(zziplib_libzzip libzzip)
+set(zziplib_libzzipfseeko libzzipfseeko)
+set(zziplib_libzzipmmapped libzzipmmapped)
+## linking when using examples elsewhere
+# find_package ( zziplib REQUIRED)
+# set(zziplib_libzzip zziplib::libzzip) # find_pack
+# set(zziplib_libzzipfseeko zziplib::libzzipfseeko) # find_pack
+# set(zziplib_libzzipmmapped zziplib::libzzipmmapped) # find_pack
 
 # targets ########################################################
 add_executable(zzcat      zzcat.c)
@@ -57,19 +64,19 @@ add_executable(unzzip-big unzzip.c unzzipcat-big.c unzzipdir-big.c)
 add_executable(unzzip-mem unzzip.c unzzipcat-mem.c unzzipdir-mem.c)
 add_executable(unzip-mem  unzip-mem.c)
 
-target_link_libraries(zzcat        libzzip        ZLIB::ZLIB)
-target_link_libraries(zzdir        libzzip        ZLIB::ZLIB)
-target_link_libraries(zzxorcat     libzzip        ZLIB::ZLIB)
-target_link_libraries(zzxordir     libzzip        ZLIB::ZLIB)
-target_link_libraries(zzxorcopy    libzzip        ZLIB::ZLIB)
-target_link_libraries(zzobfuscated libzzip        ZLIB::ZLIB)
-target_link_libraries(zziptest     libzzip        ZLIB::ZLIB)
-target_link_libraries(zzip         libzzip        ZLIB::ZLIB)
-target_link_libraries(unzzip       libzzip        ZLIB::ZLIB)
-target_link_libraries(unzzip-mix   libzzip        ZLIB::ZLIB)
-target_link_libraries(unzzip-big   libzzipfseeko  ZLIB::ZLIB)
-target_link_libraries(unzzip-mem   libzzipmmapped ZLIB::ZLIB)
-target_link_libraries(unzip-mem    libzzipmmapped ZLIB::ZLIB)
+target_link_libraries(zzcat        ${zziplib_libzzip}        ZLIB::ZLIB)
+target_link_libraries(zzdir        ${zziplib_libzzip}        ZLIB::ZLIB)
+target_link_libraries(zzxorcat     ${zziplib_libzzip}        ZLIB::ZLIB)
+target_link_libraries(zzxordir     ${zziplib_libzzip}        ZLIB::ZLIB)
+target_link_libraries(zzxorcopy    ${zziplib_libzzip}        ZLIB::ZLIB)
+target_link_libraries(zzobfuscated ${zziplib_libzzip}        ZLIB::ZLIB)
+target_link_libraries(zziptest     ${zziplib_libzzip}        ZLIB::ZLIB)
+target_link_libraries(zzip         ${zziplib_libzzip}        ZLIB::ZLIB)
+target_link_libraries(unzzip       ${zziplib_libzzip}        ZLIB::ZLIB)
+target_link_libraries(unzzip-mix   ${zziplib_libzzip}        ZLIB::ZLIB)
+target_link_libraries(unzzip-big   ${zziplib_libzzipfseeko}  ZLIB::ZLIB)
+target_link_libraries(unzzip-mem   ${zziplib_libzzipmmapped} ZLIB::ZLIB)
+target_link_libraries(unzip-mem    ${zziplib_libzzipmmapped} ZLIB::ZLIB)
 
 target_include_directories(zzcat        PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
 target_include_directories(zzdir        PRIVATE "${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
