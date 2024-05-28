@@ -147,4 +147,4 @@ Currently there is a problem with the testzip downloads during "make check" on G
 
 * there is a longer wishlist in `TODO` - it should be cleaned up
 * remove usage of format(**locals()) as all python3 have f-strings
-
+* bins/unzzip*.c use internal headers which external programs can't
