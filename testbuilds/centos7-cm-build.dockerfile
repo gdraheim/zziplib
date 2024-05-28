@@ -17,7 +17,7 @@ COPY zzipwrap src/zzipwrap
 COPY zzip src/zzip
 
 RUN mkdir src/build
-RUN cd src/build && cmake3 ..
+RUN cd src/build && cmake3 .. `$no_check && echo -DZZIPTEST=OFF`
 RUN cd src/build && make
 RUN $no_check || (cd src/build && make check)
 RUN $no_install || (cd src/build && make install VERBOSE=1)
