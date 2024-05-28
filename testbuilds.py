@@ -813,7 +813,6 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    @unittest.expectedFailure
     def test_250_windows_static_x64_dockerfile(self) -> None:
         logg.warning("     windows-static-x64 compiles fine but segfaults on linking an .exe")
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
@@ -827,7 +826,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_check=true" + self.nocache()
+        build = "build --progress=plain --build-arg=no_check=true" + self.nocache()
         cmd = "{docker} {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "{docker} rm --force {testname}"
@@ -863,7 +862,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         savename = docname(dockerfile)
         saveto = SAVETO
         images = IMAGES
-        build = "build --build-arg=no_check=true" + self.nocache()
+        build = "build --progress=plain --build-arg=no_check=true" + self.nocache()
         cmd = "{docker} {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
         cmd = "{docker} rm --force {testname}"
