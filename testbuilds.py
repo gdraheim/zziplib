@@ -848,7 +848,6 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    @unittest.expectedFailure
     def test_260_windows_shared_x64_dockerfile(self) -> None:
         logg.warning("     windows-shared-x64 compiles fine but segfaults on linking an .exe")
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
