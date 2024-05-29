@@ -11,7 +11,6 @@ COPY test src/test
 COPY SDL src/SDL
 COPY zzipwrap src/zzipwrap
 COPY zzip src/zzip
-RUN echo "" > src/CMakeScripts/CodeCoverage.cmake
 
 RUN { echo "[requires]" \
     ; echo "zlib/1.2.13" \
