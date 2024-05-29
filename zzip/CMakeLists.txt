@@ -13,7 +13,6 @@ include ( GNUInstallDirs )
 include ( JoinPaths )
 include ( CheckVerboseSymlink )
 include ( CheckCCompilerFlag )
-include ( CodeCoverage )
 
 # options ###########################################################
 option(BUILD_SHARED_LIBS "Build a shared library" ON)
@@ -37,6 +36,10 @@ option(ZZIP_LIBLATEST "Ensure libname.lib links to libname-REL.lib" ON)
 else()
 option(ZZIP_LIBLATEST "Ensure libname.lib links to libname-REL.lib" OFF)
 endif()
+
+if(COVERAGE)
+include ( CodeCoverage )
+endif(COVERAGE)
 
 # used in zzip/_config.h
 set(ZZIP_PACKAGE "${PROJECT_NAME}lib")

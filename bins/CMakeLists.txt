@@ -9,7 +9,6 @@ endif(NOT CMAKE_BUILD_TYPE)
 
 include ( GNUInstallDirs )
 include ( FindPkgConfig )
-include ( CodeCoverage )
 
 # options ########################################################
 option(BUILD_SHARED_LIBS "Build a shared library" ON)
@@ -19,6 +18,10 @@ option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 option(ZZIP_INSTALL_BINS "Install the bins/ exanple programs" ON)
 option(ZZIP_INSTALL_ACLOCAL "Install zziplib.m4 aclocal helper" ON)
 option(COVERAGE "Code coverage" OFF)
+
+if(COVERAGE)
+include ( CodeCoverage )
+endif(COVERAGE)
 
 if(FORTIFY)
    add_definitions(
