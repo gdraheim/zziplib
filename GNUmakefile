@@ -9,6 +9,7 @@ NINJA=ninja
 PREFIX=$$HOME/local
 PYTHON3=python3
 MINPYTHON=3.8
+ALL=all
 
 .PHONY: build docs bins test tests testbuilds
 
@@ -17,16 +18,16 @@ default: build
 # defaults to 'cmake' (using gmake) but it can be 'ninja' as well
 build:
 	@ test -f Makefile || test -d $(BUILD) || (set -x ; mkdir $(BUILD) ; cd $(BUILD) && $(CMAKE) $(BUILDSOURCES) -DCMAKE_INSTALL_PREFIX:PATH=$(PREFIX) $(OPTIONS))
-	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/Makefile || (set -x ; cd $(BUILD) && $(MAKE) all)
-	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/rules.ninja || (set -x ; cd $(BUILD) && $(NINJA) all)
-	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/build.ninja || (set -x ; cd $(BUILD) && $(NINJA) all)
-	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/Makefile || echo 'DONE (cd $(BUILD) && $(MAKE) all) - please run (cd $(BUILD) && $(MAKE) check VERBOSE=1) now'
-	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/rules.ninja || echo 'DONE (cd $(BUILD) && $(NINJA) all) - please run (cd $(BUILD) && $(NINJA) check) now'
-	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/build.ninja || echo 'DONE (cd $(BUILD) && $(NINJA) all) - please run (cd $(BUILD) && $(NINJA) check) now'
+	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/Makefile || (set -x ; cd $(BUILD) && $(MAKE) $(ALL))
+	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/rules.ninja || (set -x ; cd $(BUILD) && $(NINJA) $(ALL))
+	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/build.ninja || (set -x ; cd $(BUILD) && $(NINJA) $(ALL))
+	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/Makefile || echo 'DONE (cd $(BUILD) && $(MAKE) $(ALL)) - please run (cd $(BUILD) && $(MAKE) check VERBOSE=1) now'
+	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/rules.ninja || echo 'DONE (cd $(BUILD) && $(NINJA) $(ALL)) - please run (cd $(BUILD) && $(NINJA) check) now'
+	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/build.ninja || echo 'DONE (cd $(BUILD) && $(NINJA) $(ALL)) - please run (cd $(BUILD) && $(NINJA) check) now'
 
 static: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-DBUILD_SHARED_LIBS=OFF
 fortify: ; rm -rf $(BUILD) && $(MAKE) build "OPTIONS=-DFORTIFY=ON -DCMAKE_BUILD_TYPE=Debug"
-cm new: ; rm -rf $(BUILD); $(MAKE) build "OPTIONS=-DCOVERAGE=ON -DCMAKE_BUILD_TYPE=Debug"
+cm new: ; rm -rf $(BUILD); $(MAKE) build "OPTIONS=-DCOVERAGE=ON -DCMAKE_BUILD_TYPE=Debug" "ALL=all VERBOSE=1"
 
 ninja: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-GNinja
 nmake: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-GNmake
