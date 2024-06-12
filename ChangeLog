@@ -1,3 +1,11 @@
+2024-06-12 gdraheim@github
+   * make new should be make-verbose
+
+2024-05-29 gdraheim@github
+   * fix Coverage include hack
+   * integrate mxe/src/zziplib-2-prefer-win32-mmap.patch
+   * make crossgcc/windows a working example for mingw 
+
 2024-05-28 gdraheim@github
    * `./testbuilds.py clean` will drop test-related docker images
    * `./testbuilds.py` will automatically run clean if everything successful
