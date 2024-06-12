@@ -138,7 +138,7 @@
 #endif
 
 /* Name of package */
-#ifndef ZZIP_PACKAGE
+#ifndef ZZIP_PACKAGE_NAME
 #define ZZIP_PACKAGE_NAME "zziplib-msvc" /* yes, make it known */
 #endif
 
