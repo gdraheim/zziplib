@@ -2779,6 +2779,6 @@ if __name__ == "__main__":
         result = Runner(verbosity=opt.verbose, failfast=opt.failfast).run(suite)
     if not result.wasSuccessful():
         sys.exit(1)
-    if not KEEP and result.testsRun:
+    if not KEEP and result.testsRun and args == ["test_*"]:
         run_clean()
     logg.log(DONE, "OK - ran %s tests", result.testsRun)
