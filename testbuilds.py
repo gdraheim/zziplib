@@ -35,13 +35,13 @@ _python = "/usr/bin/python"
 
 SAVETO = "localhost:5000/zziplib"
 IMAGES = "localhost:5000/zziplib/image"
-CENTOS9 = "almalinux:9.3"
+CENTOS9 = "almalinux:9.4"
 CENTOS7 = "centos:7.9.2009"
 UBUNTU1 = "ubuntu:18.04"
-UBUNTU2 = "ubuntu:16.04"
-UBUNTU3 = "ubuntu:20.04"
-UBUNTU4 = "ubuntu:22.04"
-OPENSUSE5 = "opensuse/leap:15.2"
+UBUNTU2 = "ubuntu:20.04"
+UBUNTU3 = "ubuntu:22.04"
+UBUNTU4 = "ubuntu:24.04"
+OPENSUSE5 = "opensuse/leap:15.6"
 SOFTWARE = "../Software"
 
 DOCKER_SOCKET = "/var/run/docker.sock"
@@ -303,6 +303,29 @@ class ZZiplibBuildTest(unittest.TestCase):
         if FORCE or NOCACHE:
             return " --no-cache"
         return ""
+    def pull_baseimage(self, dockerfile: str, extras: Optional[str] = None) -> str:
+        image = ""
+        for line in open(dockerfile):
+            m = re.match('[Ff][Rr][Oo][Mm] *"([^"]*)"', line)
+            if m:
+                image = m.group(1)
+                break
+            m = re.match("[Ff][Rr][Oo][Mm] *(\w[^ ]*)", line)
+            if m:
+                image = m.group(1).strip()
+                break
+        logg.debug("--\n-- '%s' FROM '%s'", dockerfile, image)
+        if image:
+            return self.pull_image(image, extras)
+        return ""
+    def pull_image(self, image: str, extras: Optional[str] = None) -> str:
+        extras = extras or ""
+        docker = DOCKER
+        cmd = "{docker} pull {image}"
+        out, rc = output2(cmd.format(**locals()))
+        if rc:
+            logg.error("could not pull {image}".format(**locals()))
+        return decodes(out).strip()
     #
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
     #
@@ -822,6 +845,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         testdir = self.testdir()
         docker = DOCKER
         dockerfile = "testbuilds/windows-static-x64.dockerfile"
+        baseimage = self.pull_baseimage(dockerfile)
         addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
         saveto = SAVETO
@@ -857,6 +881,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         testdir = self.testdir()
         docker = DOCKER
         dockerfile = "testbuilds/windows-shared-x64.dockerfile"
+        baseimage = self.pull_baseimage(dockerfile)
         addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
         saveto = SAVETO
@@ -1237,7 +1262,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} bash -c 'gcc --version'"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c 'gcc-14 --version'"
+        cmd = "{docker} exec {testname} bash -c 'gcc-9 --version'"
         sh____(cmd.format(**locals()))
         #
         if not KEEP:
@@ -1282,7 +1307,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} bash -c 'gcc --version'"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c 'gcc-14 --version'"
+        cmd = "{docker} exec {testname} bash -c 'gcc-10 --version'"
         sh____(cmd.format(**locals()))
         #
         if not KEEP:
@@ -1327,7 +1352,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} bash -c 'gcc --version'"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c 'gcc-14 --version'"
+        cmd = "{docker} exec {testname} bash -c 'gcc-11 --version'"
         sh____(cmd.format(**locals()))
         #
         if not KEEP:
@@ -1372,7 +1397,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} bash -c 'gcc --version'"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c 'gcc-14 --version'"
+        cmd = "{docker} exec {testname} bash -c 'gcc-12 --version'"
         sh____(cmd.format(**locals()))
         #
         if not KEEP:
@@ -1417,7 +1442,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} bash -c 'gcc --version'"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c 'gcc-14 --version'"
+        cmd = "{docker} exec {testname} bash -c 'gcc-13 --version'"
         sh____(cmd.format(**locals()))
         #
         if not KEEP:
