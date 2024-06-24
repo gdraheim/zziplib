@@ -105,6 +105,9 @@
 /* Define to the one symbol short name of this package. */
 #cmakedefine ZZIP_PACKAGE_TARNAME "${ZZIP_PACKAGE_TARNAME}"
 
+/* Define to the home page for this package. */
+#undef ZZIP_PACKAGE_URL
+
 /* Define to the version of this package. */
 #cmakedefine ZZIP_PACKAGE_VERSION "${ZZIP_PACKAGE_VERSION}"
 

@@ -137,21 +137,13 @@
 #define ZZIP_PACKAGE "zziplib-msvc" /* yes, make it known */
 #endif
 
-/* Name of package */
-#ifndef ZZIP_PACKAGE_NAME
-#define ZZIP_PACKAGE_NAME "zziplib-msvc" /* yes, make it known */
-#endif
-
-/* Define to the version of this package. */
-#ifndef ZZIP_PACKAGE_VERSION
-#define ZZIP_PACKAGE_VERSION "0.13.x"
-#endif
-
 /* Define to the address where bug reports for this package should be sent. */
 /* #undef PACKAGE_BUGREPORT */
 
 /* Define to the full name of this package. */
-/* #undef PACKAGE_NAME */
+#ifndef ZZIP_PACKAGE_NAME
+#define ZZIP_PACKAGE_NAME  "zziplib"
+#endif
 
 /* Define to the full name and version of this package. */
 /* #undef PACKAGE_STRING */
@@ -163,7 +155,9 @@
 /* #undef PACKAGE_URL */
 
 /* Define to the version of this package. */
-/* #undef PACKAGE_VERSION */
+#ifndef ZZIP_PACKAGE_VERSION
+#define ZZIP_PACKAGE_VERSION "0.13.x"
+#endif
 
 /* The number of bytes in type int */
 #ifndef ZZIP_SIZEOF_INT
