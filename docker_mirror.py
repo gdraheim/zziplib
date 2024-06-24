@@ -1,10 +1,10 @@
 #! /usr/bin/python3
 # from __future__ import print_function
 
-__copyright__ = "(C) 2023 Guido Draheim"
+__copyright__ = "(C) 2024 Guido Draheim"
 __contact__ = "https://github.com/gdraheim/docker-mirror-packages-repo"
 __license__ = "CC0 Creative Commons Zero (Public Domain)"
-__version__ = "1.7.5117"
+__version__ = "1.7.6262"
 
 from collections import OrderedDict, namedtuple
 import os.path
@@ -17,6 +17,7 @@ import tempfile
 import shutil
 import socket
 import time
+import configparser
 
 if sys.version[0] != '2':
     xrange = range
@@ -30,22 +31,84 @@ UPDATES = False
 UNIVERSE = False
 
 MAXWAIT = 6
+WAXWAIT = ""
 
-LEAP = "opensuse/leap"
-SUSE = "opensuse"
-OPENSUSE_VERSIONS = {"42.2": SUSE, "42.3": SUSE, "15.0": LEAP, "15.1": LEAP, "15.2": LEAP, "15.3": LEAP, "15.4": LEAP}
-UBUNTU_LTS = {"16": "16.04", "18": "18.04", "20": "20.04"}
-UBUNTU_VERSIONS = {"12.04": "precise", "14.04": "trusty", "16.04": "xenial", "17.10": "artful",
-                   "18.04": "bionic", "18.10": "cosmic", "19.04": "disco", "19.10": "eoan",
-                   "20.04": "focal", "20.10": "groovy", "21.04": "hirsute", "21.10": "impish",
-                   "22.04": "jammpy", "22.10": "kinetic", "23.04": "lunatic"}
-CENTOS_VERSIONS = {"7.0": "7.0.1406", "7.1": "7.1.1503", "7.2": "7.2.1511", "7.3": "7.3.1611",
-                   "7.4": "7.4.1708", "7.5": "7.5.1804", "7.6": "7.6.1810", "7.7": "7.7.1908",
-                   "7.8": "7.8.2003", "7.9": "7.9.2009",
-                   "8.0": "8.0.1905", "8.1": "8.1.1911", "8.2": "8.2.2004", "8.3": "8.3.2011",
-                   "8.4": "8.4.2105"}
-ALMA_VERSIONS = {"9.1-20230222": "9.1", "9.1-20221201": "9.1", "9.1-20221117": "9.1",
-                 "9.0-20221001": "9.0", "9.0-20220901": "9.0", "9.0-20220706": "9.0", }
+BASE = {}
+BASE["8.5.2111"] = "8.5"
+BASE["8.4.2105"] = "8.4"
+BASE["8.3.2011"] = "8.3"
+BASE["8.2.2004"] = "8.2"
+BASE["8.1.1911"] = "8.1"
+BASE["8.0.1905"] = "8.0"
+BASE["7.9.2009"] = "7.9"
+BASE["7.8.2003"] = "7.8"
+BASE["7.7.1908"] = "7.7"
+BASE["7.6.1810"] = "7.6"
+BASE["7.5.1804"] = "7.5"
+BASE["7.4.1708"] = "7.4"
+BASE["7.3.1611"] = "7.3"
+BASE["7.2.1511"] = "7.2"
+BASE["7.1.1503"] = "7.1"
+BASE["7.0.1406"] = "7.0"
+
+ALMA = {}
+ALMA["8.8-20230524"] = "8.8"
+ALMA["8.8-20230718"] = "8.8"
+ALMA["8.9-20231124"] = "8.9"
+ALMA["8.9-20240410"] = "8.9"
+ALMA["8.10-20240528"] = "8.10"
+ALMA["9.0-20220706"] = "9.0"
+ALMA["9.0-20220901"] = "9.0"
+ALMA["9.0-20221001"] = "9.0"
+ALMA["9.0-20221102"] = "9.0"
+ALMA["9.1-20221117"] = "9.1"
+ALMA["9.1-20221201"] = "9.1"
+ALMA["9.1-20230222"] = "9.1"
+ALMA["9.1-20230407"] = "9.1"
+ALMA["9.2-20230512"] = "9.2"
+ALMA["9.2-20230718"] = "9.2"
+ALMA["9.3-20231124"] = "9.3"
+ALMA["9.3-20240410"] = "9.3"
+ALMA["9.4-20240506"] = "9.4"
+ALMA["9.4-20240530"] = "9.4"
+
+DIST = {}
+DIST["12.04"] = "precise"  # Precise Pangolin
+DIST["12.10"] = "quantal"  # Quntal Quetzal
+DIST["14.04"] = "trusty"   # Trusty Tahr LTS    (April 2022)
+DIST["14.10"] = "utopic"   # Utopic Unicorn
+DIST["16.04"] = "xenial"   # Xenial Xerus LTS   (April 2024)
+DIST["16.10"] = "yaketty"  # Yaketty Yak
+DIST["17.10"] = "artful"   # Artful Aardvark
+DIST["18.04"] = "bionic"   # Bionic Beaver LTS  (April 2028)
+DIST["18.10"] = "cosmic"   # Cosmic Cuttlefish  (x)
+DIST["19.04"] = "disco"    # Disco Dingo
+DIST["19.10"] = "eoan"     # Eoan Ermine
+DIST["20.04"] = "focal"    # Focal Fossa LTS    (April 2030)
+DIST["20.10"] = "groovy"   # Groovy Gorilla
+DIST["21.04"] = "hirsute"  # Hirsute Hippo
+DIST["21.10"] = "impish"   # Impish Indri
+DIST["22.04"] = "jammy"    # Jammy Jellyfish    (April 2027)
+DIST["22.10"] = "kinetic"  # Kinetic Kudu
+DIST["23.04"] = "lunatic"  # Lunatic Lobster
+DIST["23.10"] = "mantic"   # Mantic Minotaur
+DIST["24.04"] = "noble"    # Noble Numbat       (April 2029)
+
+OPENSUSE = {}
+OPENSUSE["13.2"] = "opensuse"  # no docker image
+OPENSUSE["42.2"] = "opensuse/leap"  # docker image removed
+OPENSUSE["42.3"] = "opensuse/leap"
+OPENSUSE["15.0"] = "opensuse/leap"
+OPENSUSE["15.1"] = "opensuse/leap"
+OPENSUSE["15.2"] = "opensuse/leap"
+OPENSUSE["15.3"] = "opensuse/leap"
+OPENSUSE["15.4"] = "opensuse/leap"
+OPENSUSE["15.5"] = "opensuse/leap"
+OPENSUSE["15.6"] = "opensuse/leap"
+OPENSUSE["16.0"] = "opensuse/leap"
+
+XDG_CONFIG_HOME = os.environ.get("XDG_CONFIG_HOME", "~/.config")
+DOCKER_MIRROR_CONFIG = os.environ.get("DOCKER_MIRROR_CONFIG", os.path.join(XDG_CONFIG_HOME, "docker_mirror.ini"))
 
 def decodes(text):
     if text is None: return None
@@ -79,10 +142,13 @@ def onlyversion(image):
     return image
 
 class DockerMirror:
-    def __init__(self, cname, image, hosts):
+    def __init__(self, cname, image, hosts, mount=""):
         self.cname = cname  # name of running container
         self.image = image  # image used to start the container
         self.hosts = hosts  # domain names for the container
+        self.mount = mount  # mounting as data to serve
+    def __str__(self):
+        return "(cname='%s',image='%s',hosts=%s,mount='%s')" % (self.cname, self.image, self.hosts, self.mount)
 
 class DockerMirrorPackagesRepo:
     def __init__(self, image=None):
@@ -160,7 +226,7 @@ class DockerMirrorPackagesRepo:
             shutil.rmtree(tempdir)
             cmd = "{docker} rm {cname}"
             out, err, end = output3(cmd.format(**locals()))
-        return ""
+        return image
     def detect_base_image_from(self, cname, tempdir):
         debug = False
         docker = DOCKER
@@ -241,7 +307,12 @@ class DockerMirrorPackagesRepo:
             Effectivly when it is required to 'docker start centos:x.y' then do
             'docker start centos-repo:x.y' before and extend the original to 
             'docker start --add-host mirror...:centos-repo centos:x.y'. """
+        logg.info("mirrors for %s", image)
         mirrors = []
+        config = configparser.ConfigParser()
+        configfile = os.path.expanduser(DOCKER_MIRROR_CONFIG)
+        if os.path.exists(configfile):
+            config.read(configfile)
         if image.startswith("centos:"):
             mirrors = self.get_centos_docker_mirrors(image)
             if ADDEPEL:
@@ -258,6 +329,28 @@ class DockerMirrorPackagesRepo:
             mirrors = self.get_opensuse_docker_mirrors(image)
         if image.startswith("ubuntu:"):
             mirrors = self.get_ubuntu_docker_mirrors(image)
+        if ":" in image:
+            if image in config.sections():
+                cname1 = config[image].get("cname", "")
+                image1 = config[image].get("image", "")
+                hosts1 = [x.strip() for x in config[image].get("hosts", "").split(",") if x.strip()]
+                mount1 = config[image].get("mount", "")
+                logg.info("config [%s]\n\tcname=%s\n\timage=%s\n\thosts=%s\n\tmount=%s",
+                          image, cname1, image1, hosts1, mount1)
+                if len(mirrors) > 0:
+                    if cname1:
+                        mirrors[0].cname = cname1
+                    if image1:
+                        mirrors[0].image = image1
+                    if hosts1:
+                        logg.info("hosts1=%s", hosts1)
+                        mirrors[0].hosts = hosts1
+                    if mount1:
+                        mirrors[0].mount = mount1
+                elif image1:
+                    if not hosts1:
+                        hosts1 = [image1.split(":", 1)[0] + ".org"]
+                    mirrors = [DockerMirror(self.containername(image1), image1, hosts1)]
         logg.info("     mirrors for %s -> %s", image, " ".join([mirror.cname for mirror in mirrors]))
         return mirrors
     def get_ubuntu_latest(self, image, default=None):
@@ -277,9 +370,9 @@ class DockerMirrorPackagesRepo:
             ver = ""
         if "." not in ver:
             latest = ""
-            for release in UBUNTU_VERSIONS:
-                codename = UBUNTU_VERSIONS[release]
-                if len(ver) >= 3 and codename.startswith(ver):
+            for release in DIST:
+                codename = DIST[release]
+                if len(ver) >= 3 and ver.startswith(codename):
                     logg.debug("release (%s) %s", release, codename)
                     if latest < release:
                         latest = release
@@ -327,27 +420,26 @@ class DockerMirrorPackagesRepo:
             ver = ""
         if "." not in ver:
             latest = ""
-            for release in CENTOS_VERSIONS:
+            for release in BASE:
                 if release.startswith(ver):
-                    fullrelease = CENTOS_VERSIONS[release]
-                    logg.debug("release %s (%s)", release, fullrelease)
-                    if latest < fullrelease:
-                        latest = fullrelease
-            for release in ALMA_VERSIONS:
+                    mainrelease = BASE[release]
+                    logg.debug("release %s (%s)", release, mainrelease)
+                    if latest < release:
+                        latest = release
+            for release in ALMA:
                 if release.startswith(ver):
-                    # fullrelease = ALMA_VERSIONS[release]
-                    mainrelease = CENTOS_VERSIONS[release]
+                    mainrelease = BASE[release]
                     logg.debug("release %s (%s)", release, mainrelease)
                     if latest < mainrelease:
                         latest = mainrelease
             if latest:
                 ver = latest
-        if ver in CENTOS_VERSIONS:
-            ver = CENTOS_VERSIONS[ver]
-        if version in ALMA_VERSIONS:
-            ver = ALMA_VERSIONS[version]
-        elif version in ALMA_VERSIONS.values():
-            ver = max([os for os in ALMA_VERSIONS if ALMA_VERSIONS[os] == version])
+        if ver in BASE:
+            ver = BASE[ver]
+        if version in ALMA:
+            ver = ALMA[version]
+        elif version in ALMA.values():
+            ver = max([os for os in ALMA if ALMA[os] == version])
         logg.debug("latest version %s for %s", ver, version)
         return ver or version
     def get_centos_docker_mirror(self, image):
@@ -375,16 +467,16 @@ class DockerMirrorPackagesRepo:
             version = image[len("opensuse/leap:"):]
             latest = self.get_opensuse_latest_version(version)
             if latest:
-                if latest in OPENSUSE_VERSIONS:
-                    distro = OPENSUSE_VERSIONS[latest]
+                if latest in OPENSUSE:
+                    distro = OPENSUSE[latest]
                 return "{distro}:{latest}".format(**locals())
         if image.startswith("opensuse:"):
             distro = "opensuse"
             version = image[len("opensuse:"):]
             latest = self.get_opensuse_latest_version(version)
             if latest:
-                if latest in OPENSUSE_VERSIONS:
-                    distro = OPENSUSE_VERSIONS[latest]
+                if latest in OPENSUSE:
+                    distro = OPENSUSE[latest]
                 return "{distro}:{latest}".format(**locals())
         if default is not None:
             return default
@@ -396,7 +488,7 @@ class DockerMirrorPackagesRepo:
             ver = ""
         if "." not in ver:
             latest = ""
-            for release in OPENSUSE_VERSIONS:
+            for release in OPENSUSE:
                 if release.startswith(ver):
                     logg.debug("release %s", release)
                     # opensuse:42.0 was before opensuse/leap:15.0
@@ -423,6 +515,12 @@ class DockerMirrorPackagesRepo:
         image = "{rmi}/{rep}:{ver}".format(**locals())
         cname = "{req}-{ver}".format(**locals())
         return DockerMirror(cname, image, list(hosts))
+    def containername(self, image):
+        x = image.rfind("/")
+        if x > 0:
+            return image[x + 1:].replace(":", "-")
+        else:
+            return image.replace(":", "-")
     #
     def get_extra_mirrors(self, image):
         mirrors = []
@@ -495,10 +593,10 @@ class DockerMirrorPackagesRepo:
         mirrors = self.get_docker_mirrors(image)
         done = {}
         for mirror in mirrors:
-            addr = self.start_container(mirror.image, mirror.cname)
+            addr = self.start_container(mirror.image, mirror.cname, mirror.mount)
             done[mirror.cname] = addr
         return done
-    def start_container(self, image, container):
+    def start_container(self, image, container, mount):
         docker = DOCKER
         cmd = "{docker} inspect {image}"
         out, err, ok = output3(cmd.format(**locals()))
@@ -521,10 +619,19 @@ class DockerMirrorPackagesRepo:
                     logg.debug("%s : %s", cmd, err)
                 container_found = []
         if not container_found:
-            cmd = "{docker} run --rm=true --detach --name {container} {image}"
+            cmd = "{docker} run --rm=true --detach"
+            if mount and os.path.isdir(mount):
+                cmd += " -v {mount}:/srv/repo"
+            elif mount:
+                logg.warning("no such volume %s", mount)
+            else:
+                logg.debug("no extra volume given")
+            cmd += " --name {container} {image}"
             out, err, rc = output3(cmd.format(**locals()))
             if rc:
                 logg.error("%s : %s", cmd, err)
+            else:
+                logg.info("%s : %s", cmd, "OK")
         addr = self.ip_container(container)
         logg.info(" ---> %s : %s", container, addr)
         return addr
@@ -741,33 +848,37 @@ def repo_scripts():
     return "scripts"
 
 if __name__ == "__main__":
-    from argparse import ArgumentParser
-    _o = ArgumentParser(description="""starts local containers representing mirrors of package repo repositories 
+    from argparse import ArgumentParser, HelpFormatter
+    cmdline = ArgumentParser(formatter_class=lambda prog: HelpFormatter(prog, max_help_position=36, width=81),  # type: ignore[arg-type]
+                             description="""starts local containers representing mirrors of package repo repositories 
         which are required by a container type. Subsequent 'docker run' can use the '--add-hosts' from this
         helper script to divert 'pkg install' calls to a local docker container as the real source.""")
-    _o.add_argument("-v", "--verbose", action="count", default=0, help="more logging")
-    _o.add_argument("-a", "--add-hosts", "--add-host", action="store_true", default=ADDHOSTS,
-                    help="show addhost options for 'docker run' [%(default)s]")
-    _o.add_argument("--epel", action="store_true", default=ADDEPEL,
-                    help="addhosts for epel as well [%(default)s]")
-    _o.add_argument("--updates", "--update", action="store_true", default=UPDATES,
-                    help="addhosts using updates variant [%(default)s]")
-    _o.add_argument("--universe", action="store_true", default=UNIVERSE,
-                    help="addhosts using universe variant [%(default)s]")
-    _o.add_argument("-f", "--file", metavar="DOCKERFILE", default=None,
-                    help="default to image FROM the dockerfile [%(default)s]")
-    _o.add_argument("-l", "--local", "--localmirrors", action="count", default=0,
-                    help="fail if a local mirror was not found [%(default)s]")
+    cmdline.add_argument("-v", "--verbose", action="count", default=0, help="more logging")
+    cmdline.add_argument("-a", "--add-hosts", "--add-host", action="store_true", default=ADDHOSTS,
+                         help="show addhost options for 'docker run' [%(default)s]")
+    cmdline.add_argument("--epel", action="store_true", default=ADDEPEL,
+                         help="addhosts for epel as well [%(default)s]")
+    cmdline.add_argument("--updates", "--update", action="store_true", default=UPDATES,
+                         help="addhosts using updates variant [%(default)s]")
+    cmdline.add_argument("--universe", action="store_true", default=UNIVERSE,
+                         help="addhosts using universe variant [%(default)s]")
+    cmdline.add_argument("-f", "--file", metavar="DOCKERFILE", default=None,
+                         help="default to image FROM the dockerfile [%(default)s]")
+    cmdline.add_argument("-l", "--local", "--localmirrors", action="count", default=0,
+                         help="fail if a local mirror was not found [%(default)s]")
+    cmdline.add_argument("-C", "--configfile", metavar="FILE", default=DOCKER_MIRROR_CONFIG,
+                         help="overrides in [%(default)s]")
     commands = ["help", "detect", "image", "repo", "info", "facts", "start", "stop"]
-    _o.add_argument("command", nargs="?", default="detect", help="|".join(commands))
-    _o.add_argument("image", nargs="?", default=None, help="defaults to image name of the local host system")
-    opt = _o.parse_args()
+    cmdline.add_argument("command", nargs="?", default="detect", help="|".join(commands))
+    cmdline.add_argument("image", nargs="?", default=None, help="defaults to image name matching the local host system")
+    opt = cmdline.parse_args()
     logging.basicConfig(level=max(0, logging.WARNING - opt.verbose * 10))
     ADDHOSTS = opt.add_hosts
     ADDEPEL = opt.epel  # centos epel-repo
-    UPDATES = opt.updates
+    # UPDATES = opt.updates
     UNIVERSE = opt.universe  # ubuntu universe repo
     LOCAL = opt.local
+    DOCKER_MIRROR_CONFIG = opt.configfile
     command = opt.command or "detect"
     repo = DockerMirrorPackagesRepo()
     if not opt.image and opt.file:
