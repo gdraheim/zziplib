@@ -19,9 +19,10 @@ s:undef *off_t *$:define off_t long:
 s:undef *off64_t *$:define off64_t __int64:
 s:undef *ssize_t *$:define ssize_t int:
 s:undef restrict *$:define restrict:
-s:undef PACKAGE:define PACKAGE "zziplib":
-s:undef PACKAGE_NAME:define PACKAGE_NAME "zziplib":
-s:undef PACKAGE_VERSION:define PACKAGE_VERSION "0.13.x":
+s:undef PACKAGE *$:define PACKAGE "zziplib":
+s:undef PACKAGE_NAME *$:define PACKAGE_NAME "zziplib":
+s:undef PACKAGE_VERSION *$:define PACKAGE_VERSION "0.13.x":
+s:undef VERSION *$:define VERSION "0.13.x":
 s:^ *# *undef.*$:/* & */:
 /Generated automatically .* by autoheader/a\
 /* config values have been automatically set by zzip/_msvc.sed */
