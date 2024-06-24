@@ -1,4 +1,4 @@
-FROM almalinux:9.3
+FROM almalinux:9.4
 ARG no_check=false
 ARG no_install=false
 

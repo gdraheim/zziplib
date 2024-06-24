@@ -1,11 +1,12 @@
-FROM opensuse/leap:15.5
+FROM opensuse/leap:15.6
 ARG no_check=false
 ARG no_install=false
 # -DMAKE_INSTALL_PREFIX:PATH=/usr
 
-RUN zypper mr --no-gpgcheck repo-oss repo-update
+RUN zypper mr --no-gpgcheck repo-oss repo-update repo-non-oss repo-backports-update repo-sle-update repo-update-non-oss
 RUN zypper refresh repo-oss
-RUN zypper install -y gcc13 zlib-devel python3 cmake unzip zip gzip tar  libSDL2-devel
+RUN zypper install -y gcc13 
+RUN zypper install -y zlib-devel python3 cmake unzip zip gzip tar  libSDL2-devel
 # RUN rpm -q --list gcc8; exit 1
 
 RUN mkdir src

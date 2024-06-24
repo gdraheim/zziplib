@@ -1,4 +1,5 @@
-FROM ubuntu:22.04
+# FROM ubuntu:22.04
+FROM ubuntu:jammy-20220428
 ARG no_check=false
 ARG no_install=false
 

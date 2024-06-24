@@ -1,4 +1,5 @@
-FROM ubuntu:24.04
+# FROM ubuntu:24.04
+FROM ubuntu:noble-20240530
 ARG no_check=false
 ARG no_install=false
 

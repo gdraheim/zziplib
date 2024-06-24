@@ -1,4 +1,4 @@
-FROM opensuse/leap:15.2
+FROM opensuse/leap:15.6
 ARG no_check=false
 ARG no_install=false
 
