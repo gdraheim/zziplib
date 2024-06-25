@@ -9,7 +9,7 @@ endif(NOT CMAKE_BUILD_TYPE)
 
 include ( GNUInstallDirs )
 include ( FindPkgConfig )
-include ( CodeCoverage )
+
 
 # options ########################################################
 option(BUILD_SHARED_LIBS "Build a shared library" ON)
@@ -33,6 +33,7 @@ if(FORTIFY)
 endif()
 
 if(COVERAGE)
+include ( CodeCoverage )
 append_coverage_compiler_flags()
 endif()
 
