@@ -142,7 +142,7 @@
 
 /* Define to the full name of this package. */
 #ifndef ZZIP_PACKAGE_NAME
-#define ZZIP_PACKAGE_NAME  "zziplib"
+#define ZZIP_PACKAGE_NAME "zziplib"
 #endif
 
 /* Define to the full name and version of this package. */
