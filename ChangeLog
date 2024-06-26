@@ -1,5 +1,11 @@
+2024-06-24
+   * make afl to check for fuzzer bugs
+   * ensure that make tests removes the intermediate images
+   * update os versions to latest from docker_mirror.py
+
 2024-06-12 gdraheim@github
    * make new should be make-verbose
+   * add missing tests scenarios for later os releases
 
 2024-05-29 gdraheim@github
    * fix Coverage include hack
