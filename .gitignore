@@ -19,3 +19,6 @@ cmake_install.cmake
 configure
 configure.ac
 .vscode/settings.json
+dist
+*.egg-info
+id_*

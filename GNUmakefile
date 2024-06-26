@@ -6,6 +6,7 @@ BUILDSOURCES=..
 BUILD=build
 CMAKE=cmake
 NINJA=ninja
+TWINE=twine
 PREFIX=$$HOME/local
 PYTHON3=python3
 MINPYTHON=3.8
@@ -161,6 +162,38 @@ py4: ; $(MAKE) $(PY4).type $(PY4).pep8
 py3: ; $(MAKE) $(PY3).type $(PY3).pep8
 py2: ; $(MAKE) $(PY2).type $(PY2).pep8
 py1: ; $(MAKE) $(PY1).type $(PY1).pep8
+
+# .....................................
+README: README.MD GNUmakefile
+	cat README.MD | sed -e "/\\/badge/d" -e /^---/q > README
+setup.py: GNUmakefile
+	{ echo '#!/usr/bin/env python3' \
+	; echo 'import setuptools' \
+	; echo 'setuptools.setup()' ; } > setup.py
+	chmod +x setup.py
+setup.py.tmp: GNUmakefile
+	echo "import setuptools ; setuptools.setup()" > setup.py
+
+bui build-tools:
+	rm -rf build dist *.egg-info
+	$(MAKE) $(PARALLEL) README setup.py
+	# pip install --root=~/local . -v
+	$(PYTHON3) setup.py sdist
+	- rm -v setup.py README
+	$(TWINE) check dist/*
+	: $(TWINE) upload dist/*
+
+ins install-tools:
+	$(MAKE) setup.py
+	$(PYTHON3) -m pip install --no-compile --user .
+	rm -v setup.py
+	$(MAKE) show-setup | sed -e "s|[.][.]/[.][.]/[.][.]/bin|$$HOME/.local/bin|"
+sho show-setup:
+	python3 -m pip show -f $$(sed -e '/^name *=/!d' -e 's/.*= *//' setup.cfg)
+uns uninstall-tools: setup.py
+	$(MAKE) setup.py
+	$(PYTHON3) -m pip uninstall -v --yes $$(sed -e '/^name *=/!d' -e 's/.*= *//' setup.cfg)
+	rm -v setup.py
 
 # extras ..............................
 auto:
