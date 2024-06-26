@@ -27,12 +27,12 @@ build:
 
 static: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-DBUILD_SHARED_LIBS=OFF
 cm new: ; rm -rf $(BUILD); $(MAKE) build "OPTIONS=-DCOVERAGE=ON -DCMAKE_BUILD_TYPE=Debug" "ALL=all VERBOSE=1"
-asan-build fortify: ; rm -rf $(BUILD) && $(MAKE) build "OPTIONS=-DFORTIFY=ON -DCMAKE_BUILD_TYPE=Debug"
-asan: ;  rm -rf $(BUILD); mkdir $(BUILD); cd $(BUILD) && \
- $(CMAKE) $(BUILDSOURCES) -DCMAKE_INSTALL_PREFIX:PATH=$(PREFIX) -DFORTIFY=ON -DCMAKE_BUILD_TYPE=Debug $(OPTIONS) -DZZIP_TESTCVE=OFF  \
+asan-build fortify: ; rm -rf $(BUILD) && $(MAKE) build "OPTIONS=-DCMAKE_BUILD_TYPE=Debug -DFORTIFY=ON"
+asan: ;  rm -rf $(BUILD); mkdir $(BUILD); cd $(BUILD) &&  \
+ $(CMAKE) $(BUILDSOURCES) -DCMAKE_INSTALL_PREFIX:PATH=$(PREFIX) -DCMAKE_BUILD_TYPE=Debug -DFORTIFY=ON $(OPTIONS) -DZZIP_TESTCVE=OFF  \
  && $(MAKE) $(ALL)
 afl: ;  rm -rf $(BUILD); mkdir $(BUILD); cd $(BUILD) && AFL_USE_ASAN=1 CC=afl-clang-fast CXX=afl-clang-fast++ \
- $(CMAKE) $(BUILDSOURCES) -DCMAKE_INSTALL_PREFIX:PATH=$(PREFIX) -DCMAKE_BUILD_TYPE=Debug $(OPTIONS) -DZZIP_TESTCVE=OFF \
+ $(CMAKE) $(BUILDSOURCES) -DCMAKE_INSTALL_PREFIX:PATH=$(PREFIX) -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=OFF $(OPTIONS) -DZZIP_TESTCVE=OFF \
  && $(MAKE) $(ALL)
 
 ninja: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-GNinja
@@ -105,6 +105,7 @@ nextversion:
 	; oldr=`echo $$oldv | sed -e 's:.*[.]::'` ; newr=`expr $$oldr + 1` \
 	; newv=`echo $$oldv | sed -e "s:[.]$$oldr\$$:.$$newr:"` \
 	; echo "$$oldv -> $$newv" \
+	; sed -i -e "s:$$oldv:$$newv:" setup.cfg \
 	; sed -i -e "s:$$oldv:$$newv:" zziplib.spec testbuilds.py \
 	; sed -i -e "s:$$oldv:$$newv:" */CMakeLists.txt \
 	; sed -i -e "s:$$oldv:$$newv:" CMakeLists.txt \
