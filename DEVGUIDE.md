@@ -134,8 +134,9 @@ if they have some patch that should be integrated. Here are some links:
 * update README.md with the result from coverage
 * `git push` # if necessary
 * wait for github workflows to be okay
-* prepare a tmp.changes.txt 
-* `git tag -F tmp.changes.txt v1.x` to the version in zziplib.spec
+* prepare a tmp.changes.txt
+* `make tag` 
+   * and `git tag -F tmp.changes.txt v1.x` to the version in zziplib.spec
 * `git push --tags`
 * update the short description on github
 * consider making a github release with the latest news

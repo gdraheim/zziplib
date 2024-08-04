@@ -113,6 +113,10 @@ nextversion:
 	; git --no-pager diff -U0
 checkversion versions:
 	@ git --no-pager diff -U0
+tag:
+	@ ver=`grep "version.*=" setup.cfg | sed -e "s/version *= */v/"` \
+	; rev=`git rev-parse --short HEAD` \
+	; echo ": ${GIT} tag $$ver $$rev"
 
 # format ..............................
 CLANG_FORMAT=clang-format
