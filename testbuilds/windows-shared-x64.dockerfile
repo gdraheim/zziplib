@@ -42,7 +42,7 @@ RUN mkdir src/build
 RUN cd src/build && conan install .. --build=missing --profile:host=windows --profile:build=default 
 RUN cd src/build && cmake .. -DCMAKE_TOOLCHAIN_FILE=./conan_toolchain.cmake \
      -DCMAKE_SYSTEM_NAME=Windows  -DCMAKE_VERBOSE_MAKEFILE=ON  -DZZIPTEST=OFF
-RUN cd src/build && cmake --build . VERBOSE=1
+RUN cd src/build && cmake --build . --verbose
 # RUN $no_check || (cd src/build && make check)
 # RUN $no_install || (cd src/build && make install)
 RUN cd src/build && cmake --build . --target install
