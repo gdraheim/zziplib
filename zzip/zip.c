@@ -292,7 +292,7 @@ __zzip_fetch_disk_trailer(int fd, zzip_off_t filesize, struct _disk_trailer* _zz
             register unsigned char* tail;
             for (tail = end - 1; (tail >= mapped); tail--) {
                 if ((*tail == 'P') && /* quick pre-check for trailer magic */
-                    end - tail >= __sizeof(struct zzip_disk_trailer) - 2 &&
+                    end - tail >= __sizeof(struct zzip_disk_trailer) &&
                     zzip_disk_trailer_check_magic(tail)) {
 #ifndef ZZIP_DISK64_TRAILER
                     /* if the file-comment is not present, it happens
@@ -328,7 +328,7 @@ __zzip_fetch_disk_trailer(int fd, zzip_off_t filesize, struct _disk_trailer* _zz
                         return (0);
                     }
                 }
-                else if ((*tail == 'P') && end - tail >= __sizeof(struct zzip_disk64_trailer) - 2 &&
+                else if ((*tail == 'P') && end - tail >= __sizeof(struct zzip_disk64_trailer) &&
                          zzip_disk64_trailer_check_magic(tail)) {
 #ifndef ZZIP_DISK64_TRAILER
                     return (ZZIP_DIR_LARGEFILE);
