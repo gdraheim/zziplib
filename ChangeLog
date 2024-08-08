@@ -1,7 +1,13 @@
+2024-08-07
+   * fix windows crossgcc builds
+   * fix ZIP64 trailer and ZIP64 extras being too short sometimes #169 #170
+   * release 0.13.78
+
 2024-06-24
    * make afl to check for fuzzer bugs
    * ensure that make tests removes the intermediate images
    * update os versions to latest from docker_mirror.py
+   * release 0.13.77
 
 2024-06-12 gdraheim@github
    * make new should be make-verbose
