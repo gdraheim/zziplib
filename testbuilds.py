@@ -2,7 +2,7 @@
 """ Testcases for zziplib build system """
 
 __copyright__ = "(C) Guido Draheim, all rights reserved"""
-__version__ = "0.13.77"
+__version__ = "0.13.78"
 
 from typing import Union, Optional, Tuple, List, Iterator
 import subprocess

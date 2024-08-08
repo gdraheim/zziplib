@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.1)
-project(zzip VERSION "0.13.77" LANGUAGES C)
+project(zzip VERSION "0.13.78" LANGUAGES C)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMakeScripts")
 
