@@ -526,8 +526,12 @@ __zzip_parse_root_directory(int fd, struct _disk_trailer* trailer, struct zzip_d
         hdr->d_name[u_namlen] = '\0';
         hdr->d_namlen         = u_namlen;
 
+        /* there are some zip files around that do not encode the diskstart field,
+           so the actual zzip_extras_zip64 block is a bit shorter */
+#define __sizeof_z_diskstart64 4
         /* looking for ZIP64 extras when csize on intmax */
-        if (u_extras >= sizeof(struct zzip_extra_zip64) && (hdr->d_csize & 0xFFFFu == 0xFFFFu)) {
+        if (u_extras >= (sizeof(struct zzip_extra_zip64) - __sizeof_z_diskstart64) &&
+            (hdr->d_csize & 0xFFFFu == 0xFFFFu)) {
             DBG3("%i extras bytes (%i)", u_extras, sizeof(struct zzip_extra_zip64));
             zzip_off64_t zz_extras = zz_offset + sizeof(*d) + u_namlen;
             zzip_byte_t* extras_ptr;
