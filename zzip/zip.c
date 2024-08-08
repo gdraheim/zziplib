@@ -287,21 +287,23 @@ __zzip_fetch_disk_trailer(int fd, zzip_off_t filesize, struct _disk_trailer* _zz
                   (long) offset, (long) maplen, (long) filesize, ZZIP_BUFSIZ);
         }
 
+        /* if the file-comment is not present, it happens that the z_comment field
+           often isn't either. The actual zip_disk_trailer is a bit shorter then,
+           with __sizeof(((struct zzip_disk_trailer*)(0))->z_comment) == 2 */
+#define __sizeof_z_comment 2
         { /* now, check for the trailer-magic, hopefully near the end of file */
             register unsigned char* end = mapped + maplen;
             register unsigned char* tail;
             for (tail = end - 1; (tail >= mapped); tail--) {
                 if ((*tail == 'P') && /* quick pre-check for trailer magic */
-                    end - tail >= __sizeof(struct zzip_disk_trailer) &&
+                    end - tail >= __sizeof(struct zzip_disk_trailer) - __sizeof_z_comment &&
                     zzip_disk_trailer_check_magic(tail)) {
 #ifndef ZZIP_DISK64_TRAILER
-                    /* if the file-comment is not present, it happens
-                       that the z_comment field often isn't either */
                     if (end - tail >= __sizeof(*trailer)) {
                         memcpy(trailer, tail, sizeof(*trailer));
                     }
                     else {
-                        memcpy(trailer, tail, sizeof(*trailer) - 2);
+                        memcpy(trailer, tail, sizeof(*trailer) - sizeof_z_comment);
                         trailer->z_comment[0] = 0;
                         trailer->z_comment[1] = 0;
                     }
