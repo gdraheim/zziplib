@@ -117,7 +117,9 @@ checkversion versions:
 tag:
 	@ ver=`grep "version.*=" setup.cfg | sed -e "s/version *= */v/"` \
 	; rev=`$(GIT) rev-parse --short HEAD` \
-	; echo ": ${GIT} tag $$ver $$rev"
+	; if test -f tmp.changes.txt \
+        ; then echo ": ${GIT} tag -F tmp.changes.txt $$ver $$rev" \
+        ; else echo ": ${GIT} tag $$ver $$rev"; fi 
 
 # format ..............................
 CLANG_FORMAT=clang-format
