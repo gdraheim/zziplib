@@ -53,7 +53,7 @@ struct _disk_trailer {
 };
 #define _disk_trailer_entries(__p)           ((__p)->zz_entries)
 #define _disk_trailer_localentries(__p)      ((__p)->zz_entries)
-#define _disk_trailer_finalentries(__p)      ((__p)->zz_entries)
+#define _disk_trailer_finalentries(__p)      ((__p)->zz_finalentries)
 #define _disk_trailer_rootseek(__p)          ((__p)->zz_rootseek)
 #define _disk_trailer_rootsize(__p)          ((__p)->zz_rootsize)
 #define _disk_trailer_set_rootseek(__p, __v) ((__p)->rootseek = (__v))
