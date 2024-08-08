@@ -10,6 +10,7 @@ TWINE=twine
 PREFIX=$$HOME/local
 PYTHON3=python3
 MINPYTHON=3.8
+GIT=git
 ALL=all
 
 .PHONY: build docs bins test tests testbuilds
@@ -110,12 +111,12 @@ nextversion:
 	; sed -i -e "s:$$oldv:$$newv:" zziplib.spec testbuilds.py \
 	; sed -i -e "s:$$oldv:$$newv:" */CMakeLists.txt \
 	; sed -i -e "s:$$oldv:$$newv:" CMakeLists.txt \
-	; git --no-pager diff -U0
+	; $(GIT) --no-pager diff -U0
 checkversion versions:
-	@ git --no-pager diff -U0
+	@ $(GIT) --no-pager diff -U0
 tag:
 	@ ver=`grep "version.*=" setup.cfg | sed -e "s/version *= */v/"` \
-	; rev=`git rev-parse --short HEAD` \
+	; rev=`$(GIT) rev-parse --short HEAD` \
 	; echo ": ${GIT} tag $$ver $$rev"
 
 # format ..............................
@@ -152,7 +153,7 @@ AUTOPEP8_ASDIFF= --diff
 
 %.pep8:
 	$(AUTOPEP8) $(AUTOPEP8_OPTIONS) $(@:.pep8=) $(AUTOPEP8_INPLACE)
-	git --no-pager diff $(@:.pep8=)
+	$(GIT) --no-pager diff $(@:.pep8=)
 
 PY1 = testbuilds.py
 PY2 = test/zziptests.py
