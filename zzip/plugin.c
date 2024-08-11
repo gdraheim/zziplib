@@ -82,3 +82,42 @@ zzip_init_io(zzip_plugin_io_handlers_t io, int flags)
     io->fd.sys = flags;
     return 0;
 }
+
+/* 64on32 - define functions with "long" instead of "off_t" */
+#ifndef EOVERFLOW
+#define EOVERFLOW EFBIG
+#endif
+
+/** ==> zzip_filesize
+ * 64on32 compability
+ */
+long
+zzip_filesize32(int fd)
+{
+    if (sizeof(zzip_off_t) == sizeof(long)) {
+        return zzip_filesize(fd);
+    }
+    else {
+        off_t off = zzip_filesize(fd);
+        if (off >= 0) {
+            register long off32 = off;
+            if (off32 == off)
+                return off32;
+            errno = EOVERFLOW;
+        }
+        return -1;
+    }
+}
+
+/* keep these at the end of the file */
+#if defined ZZIP_LARGEFILE_RENAME && defined EOVERFLOW
+/* DLL compatibility layer - so that 32bit code can link with a 64on32 too */
+#undef zzip_filesize
+
+long
+zzip_filesize(int fd)
+{
+    return zzip_filesize32(fd);
+}
+
+#endif
