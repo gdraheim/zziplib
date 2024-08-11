@@ -1,3 +1,12 @@
+2024-08-11
+   * renames zzip_seek64 and zzip_tell64 can be forced with ZZIP_LARGFILE_RENAME_SEEK
+   * add zzip_seek64 and zzip_tell64 that were errornously not renamed for 64on32
+   * add 'make missing32' to check for more missing 64on32 implementations
+   * add missing zzip_filesize32 for zzipwrap helper
+   * introduce 32bit testbuild/ubuntu18-cm32-build.dockerfile
+   * introduce option(LARGEFILE) but default to OFF (relevant to 32bit builds)
+   * extract CMakeScripts/TestLargefileSensitive.cmake from zzip/CMakeLists.txt
+
 2024-08-07
    * fix windows crossgcc builds
    * fix ZIP64 trailer and ZIP64 extras being too short sometimes #169 #170
