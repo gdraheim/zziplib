@@ -584,7 +584,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         #
         cmd = "{docker} exec {testname} bash -c 'test ! -d /usr/local/include/SDL_rwops_zzip'"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} dpkg -S /usr/lib/x86_64-linux-gnu/pkgconfig/zlib.pc"
+        cmd = "{docker} exec {testname} dpkg -S /usr/lib/i386-linux-gnu/pkgconfig/zlib.pc" # !!
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} pkg-config --libs zlib"
         zlib = output(cmd.format(**locals()))
@@ -592,11 +592,13 @@ class ZZiplibBuildTest(unittest.TestCase):
         #
         cmd = "{docker} exec {testname} cp -r /src/bins /external"
         sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} cp -r /src/CMakeScripts /external/"
+        sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} sed -i -e '/find_pack/s/^# *//' -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} mkdir -v /external/build"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake ..'"
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake .. -DLARGEFILE=ON'"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} bash -c  'cd /external/build && make VERBOSE=1'"
         sh____(cmd.format(**locals()))

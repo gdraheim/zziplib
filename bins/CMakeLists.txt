@@ -17,6 +17,7 @@ option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 
 option(ZZIP_INSTALL_BINS "Install the bins/ exanple programs" ON)
 option(ZZIP_INSTALL_ACLOCAL "Install zziplib.m4 aclocal helper" ON)
+option(LARGEFILE "64on32 largefile" OFF)
 option(COVERAGE "Code coverage" OFF)
 
 if(COVERAGE)
@@ -38,6 +39,15 @@ endif()
 if(COVERAGE)
 append_coverage_compiler_flags()
 endif()
+
+if(LARGEFILE)
+include ( CheckTypeSize )
+include(TestLargefileSensitive)
+test_largefile_sensitive(ZZIPBIN_LARGEFILE)
+if(ZZIPBIN_LARGEFILE_FLAGS)
+   add_definitions(${ZZIPBIN_LARGEFILE_FLAGS})
+endif()
+endif(LARGEFILE)
 
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
