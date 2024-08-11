@@ -910,3 +910,11 @@ zzip_dir_read(ZZIP_DIR* dir, ZZIP_DIRENT* d)
 
     return 1;
 }
+
+/* keep these at the end of the file */
+#if defined ZZIP_LARGEFILE_RENAME && defined EOVERFLOW
+
+/* DLL compatibility layer - so that 32bit code can link with a 64on32 too */
+/* ignoring zzip_dir_open_ext_io32 */
+
+#endif
