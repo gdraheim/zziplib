@@ -171,6 +171,10 @@ py3: ; $(MAKE) $(PY3).type $(PY3).pep8
 py2: ; $(MAKE) $(PY2).type $(PY2).pep8
 py1: ; $(MAKE) $(PY1).type $(PY1).pep8
 
+missing32:
+	grep "define *zzip_[a-z_]* *zzip_[a-z_]*64" zzip/*.h | { while read def old new; do : \
+	  echo -n $$new ":" ; if grep "return $$new" zzip/*.c; then : ; else echo "WARNING: missing 32bit for $$new"; fi ; done; }
+
 # .....................................
 README: README.MD GNUmakefile
 	cat README.MD | sed -e "/\\/badge/d" -e /^---/q > README

@@ -119,6 +119,7 @@ if they have some patch that should be integrated. Here are some links:
 * `make type`   # python mypy
 * `make style`  # python style
 * `make format` # cxx style
+* `make missing32` # checks for missing functions from ZZIP_LARGEFILE_RENAME
 * `make fortify` # build with address-sanitizer
 * `make check`
 * `make version` # aka 'make nextversion' !!!
