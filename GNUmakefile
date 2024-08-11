@@ -179,9 +179,7 @@ missing32:
 	  ; if grep "return $$new" zzip/*.c; then : \
 	  ; else if grep "return $${old}32" zzip/*.c; then : \
 	  ; else if grep "  *$${old}32" zzip/*.c; then : \
-	  ; else if grep "^$${old}32(ZZIP_FILE" zzip/*.c; then : \
-	  ;      echo "            ^^^^^^^^^^^^ forgot to define $${old} $${new}" \
-	  ; else echo "WARNING: missing 32bit for $$new"; fi ; fi; fi; fi; fi; done; }
+	  ; else echo "WARNING: missing 32bit for $$new"; fi ; fi; fi; fi; done; }
 
 # .....................................
 README: README.MD GNUmakefile

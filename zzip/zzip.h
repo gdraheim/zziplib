@@ -226,9 +226,10 @@ zzip_fstat(ZZIP_FILE* fp, ZZIP_STAT* zs);
 #define zzip_opendir_ext_io  zzip_opendir_ext_io64
 #define zzip_dir_open_ext_io zzip_dir_open_ext_io64
 #define zzip_plugin_io_t     zzip_plugin_io64_t
-/* forgot about these: */
-/* define zzip_seek zzip_seek64 */
-/* define zzip_tell zzip_tell64 */
+#ifdef ZZIP_LARGEFILE_RENAME_SEEK
+#define zzip_seek zzip_seek64
+#define zzip_tell zzip_tell64
+#endif
 #endif
 
 /*

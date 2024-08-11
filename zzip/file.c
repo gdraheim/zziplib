@@ -1247,4 +1247,36 @@ zzip_opendir_ext_io(zzip_char_t* name, int o_modes, zzip_strings_t* ext, zzip_pl
     }
 }
 
+/* missing 'define zzip_tell zzip_tell64' and  'define zzip_seek zzip_seek64' */
+
+#ifndef ZZIP_LARGEFILE_RENAME_SEEK
+off_t
+zzip_tell64(ZZIP_FILE* fp)
+{
+    return zzip_tell(fp);
+}
+
+off_t
+zzip_seek64(ZZIP_FILE* fp, off_t offset, int whence)
+{
+    return zzip_tell(fp);
+}
+#else
+#undef zzip_tell
+#undef zzip_seek
+
+off_t
+zzip_tell(ZZIP_FILE* fp)
+{
+    return zzip_tell32(fp);
+}
+
+off_t
+zzip_seek(ZZIP_FILE* fp, off_t offset, int whence)
+{
+    return zzip_seek32(fp, offset, whence);
+}
+
+#endif
+
 #endif /* ZZIP_LARGEFILE_RENAME && EOVERFLOW */
