@@ -1151,6 +1151,7 @@ zzip_tell(ZZIP_FILE* fp)
     return (fp->usize - fp->restlen);
 }
 
+/* 64on32 - define functions with "long" instead of "off_t" */
 #ifndef EOVERFLOW
 #define EOVERFLOW EFBIG
 #endif
