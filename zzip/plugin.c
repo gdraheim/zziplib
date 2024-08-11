@@ -120,4 +120,7 @@ zzip_filesize(int fd)
     return zzip_filesize32(fd);
 }
 
+/* ignoring zzip_init_io32 */
+/* ignoring zzip_get_default_io32 */
+
 #endif

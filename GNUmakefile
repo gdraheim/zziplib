@@ -173,10 +173,11 @@ py1: ; $(MAKE) $(PY1).type $(PY1).pep8
 
 missing32:
 	grep "define *zzip_[a-z_]* *zzip_[a-z_]*64" zzip/*.h | { while read def old new; do : \
-	  echo -n $$new ":" ; if grep "return $$new" zzip/*.c; then : \
+	  ; if [ "$${old}64" = "$${new}" ]; then : \
+	  ; if grep "return $$new" zzip/*.c; then : \
 	  ; else if grep "return $${old}32" zzip/*.c; then : \
 	  ; else if grep "  *$${old}32" zzip/*.c; then : \
-	  ; else echo "WARNING: missing 32bit for $$new"; fi ; fi; fi; done; }
+	  ; else echo "WARNING: missing 32bit for $$new"; fi ; fi; fi; fi; done; }
 
 # .....................................
 README: README.MD GNUmakefile
