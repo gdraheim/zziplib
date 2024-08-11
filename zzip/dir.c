@@ -215,7 +215,7 @@ zzip_seekdir32(ZZIP_DIR* dir, long offset)
     zzip_seekdir(dir, offset);
 }
 
-#if defined ZZIP_LARGEFILE_RENAME && defined EOVERFLOW && defined PIC
+#if defined ZZIP_LARGEFILE_RENAME && defined EOVERFLOW
 /* DLL compatibility layer - so that 32bit code can link with a 64on32 too */
 
 #undef zzip_seekdir /* zzip_seekdir64 */

@@ -942,7 +942,7 @@ try_zzip:
     }
 }
 
-#if defined ZZIP_LARGEFILE_RENAME && defined EOVERFLOW && defined PIC
+#if defined ZZIP_LARGEFILE_RENAME && defined EOVERFLOW
 
 /* DLL compatibility layer - so that 32bit code can link with this lib too */
 
@@ -990,7 +990,7 @@ zzip_opendir_ext_io(zzip_char_t* name, int o_modes, zzip_strings_t* ext, zzip_pl
     }
 }
 
-#endif /* ZZIP_LARGEFILE_RENAME && EOVERFLOW && PIC */
+#endif /* ZZIP_LARGEFILE_RENAME && EOVERFLOW */
 
 /* ------------------------------------------------------------------- */
 
