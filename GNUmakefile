@@ -27,6 +27,7 @@ build:
 	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/rules.ninja || echo 'DONE (cd $(BUILD) && $(NINJA) $(ALL)) - please run (cd $(BUILD) && $(NINJA) check) now'
 	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/build.ninja || echo 'DONE (cd $(BUILD) && $(NINJA) $(ALL)) - please run (cd $(BUILD) && $(NINJA) check) now'
 
+config: ; rm -rf $(BUILD) && mkdir $(BUILD) && cd $(BUILD) && $(CMAKE) $(BUILDSOURCES) -DCMAKE_INSTALL_PREFIX:PATH=$(PREFIX) $(OPTIONS)
 static: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-DBUILD_SHARED_LIBS=OFF
 cm new: ; rm -rf $(BUILD); $(MAKE) build "OPTIONS=-DCOVERAGE=ON -DCMAKE_BUILD_TYPE=Debug" "ALL=all VERBOSE=1"
 asan-build fortify: ; rm -rf $(BUILD) && $(MAKE) build "OPTIONS=-DCMAKE_BUILD_TYPE=Debug -DFORTIFY=ON"
