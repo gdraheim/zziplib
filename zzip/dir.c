@@ -215,24 +215,6 @@ zzip_seekdir32(ZZIP_DIR* dir, long offset)
     zzip_seekdir(dir, offset);
 }
 
-#if defined ZZIP_LARGEFILE_RENAME && defined EOVERFLOW
-/* DLL compatibility layer - so that 32bit code can link with a 64on32 too */
-
-#undef zzip_seekdir /* zzip_seekdir64 */
-#undef zzip_telldir /* zzip_telldir64 */
-
-long
-zzip_telldir(ZZIP_DIR* dir)
-{
-    return zzip_telldir32(dir);
-}
-void
-zzip_seekdir(ZZIP_DIR* dir, long offset)
-{
-    zzip_seekdir32(dir, offset);
-}
-#endif
-
 /** start usage.
  *
  * This function is the equivalent of => opendir(3) for a realdir or zipfile.
@@ -326,3 +308,22 @@ zzip_closedir(ZZIP_DIR* dir)
         return 0;
     }
 }
+
+/* keep these at the end of the file */
+#if defined ZZIP_LARGEFILE_RENAME && defined EOVERFLOW
+/* DLL compatibility layer - so that 32bit code can link with a 64on32 too */
+
+#undef zzip_seekdir /* zzip_seekdir64 */
+#undef zzip_telldir /* zzip_telldir64 */
+
+long
+zzip_telldir(ZZIP_DIR* dir)
+{
+    return zzip_telldir32(dir);
+}
+void
+zzip_seekdir(ZZIP_DIR* dir, long offset)
+{
+    zzip_seekdir32(dir, offset);
+}
+#endif

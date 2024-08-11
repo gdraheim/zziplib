@@ -942,56 +942,6 @@ try_zzip:
     }
 }
 
-#if defined ZZIP_LARGEFILE_RENAME && defined EOVERFLOW
-
-/* DLL compatibility layer - so that 32bit code can link with this lib too */
-
-#undef zzip_open_shared_io /* zzip_open_shared_io64 */
-#undef zzip_open_ext_io    /* zzip_open_ext_io64 */
-#undef zzip_opendir_ext_io /* zzip_opendir_ext_io64 */
-
-ZZIP_FILE*
-zzip_open_shared_io(ZZIP_FILE* stream, zzip_char_t* name, int o_flags, int o_modes,
-                    zzip_strings_t* ext, zzip_plugin_io_t io);
-ZZIP_FILE*
-zzip_open_ext_io(zzip_char_t* name, int o_flags, int o_modes, zzip_strings_t* ext,
-                 zzip_plugin_io_t io);
-ZZIP_DIR*
-zzip_opendir_ext_io(zzip_char_t* name, int o_modes, zzip_strings_t* ext, zzip_plugin_io_t io);
-
-ZZIP_FILE*
-zzip_open_shared_io(ZZIP_FILE* stream, zzip_char_t* name, int o_flags, int o_modes,
-                    zzip_strings_t* ext, zzip_plugin_io_t io)
-{
-    if (! io)
-        return zzip_open_shared_io64(stream, name, o_flags, o_modes, ext, io);
-    errno = EOVERFLOW;
-    return NULL;
-}
-
-ZZIP_FILE*
-zzip_open_ext_io(zzip_char_t* name, int o_flags, int o_modes, zzip_strings_t* ext,
-                 zzip_plugin_io_t io)
-{
-    if (! io)
-        return zzip_open_ext_io64(name, o_flags, o_modes, ext, io);
-    errno = EOVERFLOW;
-    return NULL;
-}
-
-ZZIP_DIR*
-zzip_opendir_ext_io(zzip_char_t* name, int o_modes, zzip_strings_t* ext, zzip_plugin_io_t io)
-{
-    if (! io)
-        return zzip_opendir_ext_io64(name, o_modes, ext, io);
-    else {
-        errno = EOVERFLOW;
-        return NULL;
-    }
-}
-
-#endif /* ZZIP_LARGEFILE_RENAME && EOVERFLOW */
-
 /* ------------------------------------------------------------------- */
 
 /** rewind.
@@ -1246,3 +1196,54 @@ zzip_seek32(ZZIP_FILE* fp, long offset, int whence)
         return -1;
     }
 }
+
+/* keep these at the end of the file */
+#if defined ZZIP_LARGEFILE_RENAME && defined EOVERFLOW
+
+/* DLL compatibility layer - so that 32bit code can link with this lib too */
+
+#undef zzip_open_shared_io /* zzip_open_shared_io64 */
+#undef zzip_open_ext_io    /* zzip_open_ext_io64 */
+#undef zzip_opendir_ext_io /* zzip_opendir_ext_io64 */
+
+ZZIP_FILE*
+zzip_open_shared_io(ZZIP_FILE* stream, zzip_char_t* name, int o_flags, int o_modes,
+                    zzip_strings_t* ext, zzip_plugin_io_t io);
+ZZIP_FILE*
+zzip_open_ext_io(zzip_char_t* name, int o_flags, int o_modes, zzip_strings_t* ext,
+                 zzip_plugin_io_t io);
+ZZIP_DIR*
+zzip_opendir_ext_io(zzip_char_t* name, int o_modes, zzip_strings_t* ext, zzip_plugin_io_t io);
+
+ZZIP_FILE*
+zzip_open_shared_io(ZZIP_FILE* stream, zzip_char_t* name, int o_flags, int o_modes,
+                    zzip_strings_t* ext, zzip_plugin_io_t io)
+{
+    if (! io)
+        return zzip_open_shared_io64(stream, name, o_flags, o_modes, ext, io);
+    errno = EOVERFLOW;
+    return NULL;
+}
+
+ZZIP_FILE*
+zzip_open_ext_io(zzip_char_t* name, int o_flags, int o_modes, zzip_strings_t* ext,
+                 zzip_plugin_io_t io)
+{
+    if (! io)
+        return zzip_open_ext_io64(name, o_flags, o_modes, ext, io);
+    errno = EOVERFLOW;
+    return NULL;
+}
+
+ZZIP_DIR*
+zzip_opendir_ext_io(zzip_char_t* name, int o_modes, zzip_strings_t* ext, zzip_plugin_io_t io)
+{
+    if (! io)
+        return zzip_opendir_ext_io64(name, o_modes, ext, io);
+    else {
+        errno = EOVERFLOW;
+        return NULL;
+    }
+}
+
+#endif /* ZZIP_LARGEFILE_RENAME && EOVERFLOW */
