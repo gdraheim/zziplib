@@ -172,12 +172,16 @@ py2: ; $(MAKE) $(PY2).type $(PY2).pep8
 py1: ; $(MAKE) $(PY1).type $(PY1).pep8
 
 missing32:
-	grep "define *zzip_[a-z_]* *zzip_[a-z_]*64" zzip/*.h | { while read def old new; do : \
+	@ grep "define *zzip_[a-z_]* *zzip_[a-z_]*64" zzip/*.h | sed -e "s/.*define//" | \
+	  { while read old new end; do : \
+	  ; [ -n "$(VERBOSE)" ] && echo "$$old -> $$new" \
 	  ; if [ "$${old}64" = "$${new}" ]; then : \
 	  ; if grep "return $$new" zzip/*.c; then : \
 	  ; else if grep "return $${old}32" zzip/*.c; then : \
 	  ; else if grep "  *$${old}32" zzip/*.c; then : \
-	  ; else echo "WARNING: missing 32bit for $$new"; fi ; fi; fi; fi; done; }
+	  ; else if grep "^$${old}32(ZZIP_FILE" zzip/*.c; then : \
+	  ;      echo "            ^^^^^^^^^^^^ forgot to define $${old} $${new}" \
+	  ; else echo "WARNING: missing 32bit for $$new"; fi ; fi; fi; fi; fi; done; }
 
 # .....................................
 README: README.MD GNUmakefile
