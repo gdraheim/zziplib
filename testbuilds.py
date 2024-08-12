@@ -15,6 +15,7 @@ import inspect
 import types
 import logging
 import re
+from os import EX_USAGE, EX_DATAERR, EX_NOINPUT, EX_CANTCREAT, EX_SOFTWARE
 from collections import namedtuple
 from fnmatch import fnmatchcase as fnmatch
 from glob import glob
@@ -591,7 +592,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.assertEqual(zlib.strip(), "-lz")
         #
         cmd = "{docker} exec {testname} /src/build/zzipwrap/zzipwrap /src/test/test.zip"
-        sh____(cmd.format(**locals()))
+        ret = sx____(cmd.format(**locals()))
+        self.assertEqual(EX_SOFTWARE, ret)
         #
         cmd = "{docker} exec {testname} cp -r /src/bins /external"
         sh____(cmd.format(**locals()))
