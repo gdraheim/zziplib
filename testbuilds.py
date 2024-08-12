@@ -4,7 +4,7 @@
 __copyright__ = "(C) Guido Draheim, all rights reserved"""
 __version__ = "0.13.78"
 
-from typing import Union, Optional, Tuple, List, Iterator
+from typing import Union, Optional, Tuple, List, Iterator, NamedTuple, Mapping, Sequence
 import subprocess
 import os.path
 import time
@@ -79,6 +79,44 @@ def sx____(cmd: Union[str, List[str]], shell: bool = True) -> int:
     else:
         logg.info(": %s", " ".join(["'%s'" % item for item in cmd]))
     return subprocess.call(cmd, shell=shell)
+
+class Run(NamedTuple):
+    out: str
+    err: str
+    code: int
+def sh(cmd: Union[str, List[str]], cwd: Optional[str] = None, shell: Optional[bool] = None,
+       input: Optional[str] = None, env: Mapping[str, str] = {"LANG": "C"}, returncodes: Optional[Sequence[Optional[int]]] = None) -> Run:
+    std = shell(cmd, cwd, shell, input, env)
+    if std.code:
+        if not returncodes or std.code not in returncodes:
+            raise subprocess.CalledProcessError(std.code, cmd, std.out, std.err)
+    return std
+def shell(cmd: Union[str, List[str]], cwd: Optional[str] = None, shell: Optional[bool] = None,
+        input: Optional[str] = None, env: Mapping[str, str] = {"LANG": "C"}) -> Run:
+    if isinstance(cmd, str):
+        logg.info(": %s", cmd)
+        shell = True if shell is None else shell
+    else:
+        logg.info(": %s", " ".join(["'%s'" % item for item in cmd]))
+        shell = False if shell is None else shell
+    if input is not None:
+        run = subprocess.Popen(cmd, cwd=cwd, shell=shell, env=env, # ..
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+        out, err = run.communicate(input.encode("utf-8"))
+    else:
+        run = subprocess.Popen(cmd, cwd=cwd, shell=shell,env=env, # ..
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE )
+        out, err = run.communicate()
+    text_out = decodes(out)
+    text_err = decodes(err)
+    logg.debug("stdout = %s", text_out.splitlines())
+    if text_err:
+        logg.debug(" stderr = %s", text_err.splitlines())
+    if run.returncode:
+        logg.debug(" return = %s", run.returncode)
+    return Run(text_out, text_err, run.returncode)
+
+
 def output(cmd: Union[str, List[str]], shell: bool = True) -> str:
     if isinstance(cmd, basestring):
         logg.info(": %s", cmd)
@@ -592,8 +630,10 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.assertEqual(zlib.strip(), "-lz")
         #
         cmd = "{docker} exec {testname} /src/build/zzipwrap/zzipwrap /src/test/test.zip"
-        ret = sx____(cmd.format(**locals()))
-        self.assertEqual(EX_SOFTWARE, ret)
+        ret = shell(cmd.format(**locals()))
+        logg.info("[%s] ERR %s", ret.code, ret.err)
+        self.assertEqual(EX_SOFTWARE, ret.code)
+        self.assertIn("largefile mismatch", ret.err)
         #
         cmd = "{docker} exec {testname} cp -r /src/bins /external"
         sh____(cmd.format(**locals()))
