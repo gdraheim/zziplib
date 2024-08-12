@@ -39,6 +39,13 @@ zzip_seek32(ZZIP_FILE* fp, long offset, int whence);
 _zzip_export long
 zzip_tell32(ZZIP_FILE* fp);
 
+/*
+ * ext io functions.
+ * Implemented in zzip/plugin.c
+ */
+_zzip_export long
+zzip_filesize32(int fd);
+
 #ifdef __cplusplus
 }
 #endif

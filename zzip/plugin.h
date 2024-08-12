@@ -99,10 +99,6 @@ zzip_get_default_io(void);
 _zzip_export int
 zzip_init_io(zzip_plugin_io_handlers_t io, int flags);
 
-_zzip_export long
-zzip_filesize32(int fd);
-
-
 #ifdef __cplusplus
 }
 #endif

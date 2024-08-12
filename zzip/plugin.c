@@ -20,6 +20,7 @@
 
 #include <zzip/file.h>
 #include <zzip/format.h>
+#include <zzip/zzip32.h>
 
 /** get
  * This function works on a real file descriptor.
