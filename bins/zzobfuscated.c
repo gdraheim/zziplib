@@ -51,6 +51,10 @@
 #define EX_IOERR 74
 #endif
 
+#ifndef BITS
+#define BITS 8
+#endif
+
 
 /*
  * Only override our the read handler. Let the system take care
@@ -142,7 +146,7 @@ main(int argc, char* argv[])
 
     if (! (our_handlers.fd.type & (long)(sizeof(off_t))))
     {
-        fprintf(stderr, "largefile mismatch: bin %ibit <> lib %ibit", 8 * sizeof(off_t), 8 * (our_handlers.fd.type & ZZIP_PLUGIN_BITS));
+        fprintf(stderr, "largefile mismatch: bin %ibit <> lib %ibit", BITS * sizeof(off_t), BITS * (our_handlers.fd.type & ZZIP_PLUGIN_OFF_T));
         return EX_SOFTWARE;
     }
 

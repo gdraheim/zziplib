@@ -30,6 +30,10 @@
 #define EX_SOFTWARE 70
 #endif
 
+#ifndef BITS
+#define BITS 8
+#endif
+
 static const char usage[] = /* .. */
     {"zzdir <dir>.. \n"
      "  - prints a content table to stdout, but the dir can also be a zip-arch."
@@ -91,7 +95,7 @@ main(int argc, char** argv)
 
     if (! (xor_handlers.fd.type & (long)(sizeof(off_t))))
     {
-        fprintf(stderr, "largefile mismatch: bin %ibit <> lib %ibit", 8 * sizeof(off_t), 8 * (xor_handlers.fd.type & ZZIP_PLUGIN_BITS));
+        fprintf(stderr, "largefile mismatch: bin %ibit <> lib %ibit", BITS * sizeof(off_t), BITS * (xor_handlers.fd.type & ZZIP_PLUGIN_OFF_T));
         return EX_SOFTWARE;
     }
 

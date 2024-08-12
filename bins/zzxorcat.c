@@ -33,6 +33,10 @@
 #define EX_NOINPUT 66
 #endif
 
+#ifndef BITS
+#define BITS 8
+#endif
+
 static const char usage[] = /* .. */
     {" zzxorcat [-#] <file>... \n"
      "  - prints the file to stdout, so you may want to redirect the output; \n"
@@ -92,7 +96,7 @@ main(int argc, char** argv)
 
     if (! (xor_handlers.fd.type & (long)(sizeof(off_t))))
     {
-        fprintf(stderr, "largefile mismatch: bin %ibit <> lib %ibit", 8 * sizeof(off_t), 8 * (xor_handlers.fd.type & ZZIP_PLUGIN_BITS));
+        fprintf(stderr, "largefile mismatch: bin %ibit <> lib %ibit", BITS * sizeof(off_t), BITS * (xor_handlers.fd.type & ZZIP_PLUGIN_OFF_T));
         return EX_SOFTWARE;
     }
 
