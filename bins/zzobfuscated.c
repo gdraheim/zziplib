@@ -142,6 +142,7 @@ main(int argc, char* argv[])
 
     if (! (our_handlers.fd.type & (long)(sizeof(off_t))))
     {
+        fprintf(stderr, "largefile mismatch: bin %ibit <> lib %ibit", 8 * sizeof(off_t), 8 * (our_handlers.fd.type & ZZIP_PLUGIN_BITS));
         return EX_SOFTWARE;
     }
 
