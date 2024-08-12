@@ -20,9 +20,9 @@ default: build
 # defaults to 'cmake' (using gmake) but it can be 'ninja' as well
 build:
 	@ test -f Makefile || test -d $(BUILD) || (set -x ; mkdir $(BUILD) ; cd $(BUILD) && $(CMAKE) $(BUILDSOURCES) -DCMAKE_INSTALL_PREFIX:PATH=$(PREFIX) $(OPTIONS))
-	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/Makefile || (set -x ; cd $(BUILD) && $(MAKE) $(ALL))
-	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/rules.ninja || (set -x ; cd $(BUILD) && $(NINJA) $(ALL))
-	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/build.ninja || (set -x ; cd $(BUILD) && $(NINJA) $(ALL))
+	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/Makefile || (set -x ; cd $(BUILD) && $(MAKE) $(ALL) VERBOSE=$(VERBOSE))
+	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/rules.ninja || (set -x ; cd $(BUILD) && $(NINJA) $(ALL) VERBOSE=$(VERBOSE))
+	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/build.ninja || (set -x ; cd $(BUILD) && $(NINJA) $(ALL) VERBOSE=$(VERBOSE))
 	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/Makefile || echo 'DONE (cd $(BUILD) && $(MAKE) $(ALL)) - please run (cd $(BUILD) && $(MAKE) check VERBOSE=1) now'
 	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/rules.ninja || echo 'DONE (cd $(BUILD) && $(NINJA) $(ALL)) - please run (cd $(BUILD) && $(NINJA) check) now'
 	@ test -f Makefile || test ! -d $(BUILD) || test ! -f $(BUILD)/build.ninja || echo 'DONE (cd $(BUILD) && $(NINJA) $(ALL)) - please run (cd $(BUILD) && $(NINJA) check) now'
@@ -38,9 +38,9 @@ afl: ;  rm -rf $(BUILD); mkdir $(BUILD); cd $(BUILD) && AFL_USE_ASAN=1 CC=afl-cl
  $(CMAKE) $(BUILDSOURCES) -DCMAKE_INSTALL_PREFIX:PATH=$(PREFIX) -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=OFF $(OPTIONS) -DZZIP_TESTCVE=OFF \
  && $(MAKE) $(ALL)
 
-ninja: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-GNinja
-nmake: ; rm -rf $(BUILD) && $(MAKE) build OPTIONS=-GNmake
-cmake: ; rm -rf $(BUILD) && $(MAKE) build "OPTIONS=-DZZIP_MANPAGES=OFF -DZZIP_INSTALL_BINS=OFF -DZZIP_TESTCVE=OFF"
+ninja: ; rm -rf $(BUILD) && $(MAKE) build VERBOSE=1 "OPTIONS=-DVERBOSE=ON -GNinja"
+nmake: ; rm -rf $(BUILD) && $(MAKE) build VERBOSE=1 "OPTIONS=-DVERBOSE=ON -GNmake"
+cmake: ; rm -rf $(BUILD) && $(MAKE) build VERBOSE=1 "OPTIONS=-DVERBOSE=ON -DZZIP_MANPAGES=OFF -DZZIP_INSTALL_BINS=OFF -DZZIP_TESTCVE=OFF"
 
 cov coverage: libzzip.gcov libzzipmmapped.gcov libzzipfseeko.gcov
 	@ for i in $?; do : \
