@@ -144,8 +144,8 @@ main(int argc, char* argv[])
     our_handlers.fd.read = &our_read;
 
     if (! (our_handlers.fd.type & (long) (sizeof(off_t)))) {
-        fprintf(stderr, "largefile mismatch: bin %ibit <> lib %ibit", BITS * sizeof(off_t),
-                BITS * (our_handlers.fd.type & ZZIP_PLUGIN_OFF_T));
+        fprintf(stderr, "largefile mismatch: bin %ibit <> lib %ibit\n", /* .. */
+                BITS * sizeof(off_t), BITS * zzip_plugin_off_t());
         return EX_SOFTWARE;
     }
 
