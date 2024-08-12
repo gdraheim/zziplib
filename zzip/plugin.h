@@ -37,6 +37,9 @@ extern "C" {
 /* we have renamed zzip_plugin_io.use_mmap to zzip_plugin_io.sys */
 #define ZZIP_PLUGIN_IO_SYS 1
 
+/* zzip_init_io flags : */
+#define ZZIP_IO_USE_MMAP 1
+
 /* just use sizeof(off_t) to initialize the bit-type */
 #define ZZIP_PLUGIN_TYPE_DEFAULT 1
 #define ZZIP_PLUGIN_TYPE_32BIT   4
@@ -96,8 +99,9 @@ zzip_get_default_io(void);
 _zzip_export int
 zzip_init_io(zzip_plugin_io_handlers_t io, int flags);
 
-/* zzip_init_io flags : */
-#define ZZIP_IO_USE_MMAP 1
+_zzip_export long
+zzip_filesize32(int fd);
+
 
 #ifdef __cplusplus
 }
