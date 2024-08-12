@@ -647,12 +647,26 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake .. -DLARGEFILE=ON'"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} bash -c  'cd /external/build && make VERBOSE=1'"
+        ret = run(cmd.format(**locals()))
+        logg.info("[%i] ERR %s", ret.code, ret.err)
+        self.assertIn("undefined reference", ret.err)
+        cmd = "{docker} exec {testname} sed -i -e /target.*zzxorcat/d -e /add_exe.*zzxorcat/d /external/CMakeLists.txt"
         sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} sed -i -e /target.*zzxordir/d -e /add_exe.*zzxordir/d /external/CMakeLists.txt"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} sed -i -e /target.*zzobfuscated/d -e /add_exe.*zzobfuscated/d /external/CMakeLists.txt"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} sed -i -e s/zzxorcat// -e s/zzxordir// -e s/zzobfuscated// /external/CMakeLists.txt"
+        sh____(cmd.format(**locals()))
+        logg.info("try again...")
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake .. -DLARGEFILE=ON'"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && make VERBOSE=1'"
+        ret = run(cmd.format(**locals()))
         cmd = "{docker} exec {testname} /external/build/zzdir /src/test/test.zip"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} /external/build/zzcat /src/test/test/README"
         sh____(cmd.format(**locals()))
-        logg.error("FIXME: it should not be possible to link a largefile bin to a non-largefile lib when using ext-io???")
         #
         logg.info("____________________ /external32")
         cmd = "{docker} exec {testname} cp -r /src/bins /external32"
@@ -748,6 +762,14 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} sed -i -e '/find_pack/s/^# *//' -e /CodeCoverage/d -e /unzzip/d /external32/CMakeLists.txt"
         sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} mkdir -v /external32/build"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} bash -c  'cd /external32/build && cmake .. '"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} bash -c  'cd /external32/build && make VERBOSE=1'"
+        ret = run(cmd.format(**locals()))
+        logg.info("[%i] ERR %s", ret.code, ret.err)
+        self.assertIn("undefined reference", ret.err)
         cmd = "{docker} exec {testname} sed -i -e /target.*zzxorcat/d -e /add_exe.*zzxorcat/d /external32/CMakeLists.txt"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} sed -i -e /target.*zzxordir/d -e /add_exe.*zzxordir/d /external32/CMakeLists.txt"
@@ -756,8 +778,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} sed -i -e s/zzxorcat// -e s/zzxordir// -e s/zzobfuscated// /external32/CMakeLists.txt"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} mkdir -v /external32/build"
-        sh____(cmd.format(**locals()))
+        logg.info("try again...")
         cmd = "{docker} exec {testname} bash -c  'cd /external32/build && cmake .. '"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} bash -c  'cd /external32/build && make VERBOSE=1'"
