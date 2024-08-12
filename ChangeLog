@@ -4,6 +4,8 @@
    * introduce zzip_plugin_off_t() and mark the sizeof(off_t) in every plugin_io table.
    * show checking for a "largefile mismatch" in every example programming using plugin.h
    * testing for a "largefile mismatch" in the testcase
+   * introduce 32bit testbuild/ubuntu18-cm3264-build.dockerfile
+   * testing for "undefined reference" when having a largefile mismatch and ext-io code
    * NOTE: linkage errors show that zziplib had not been compiled in 32bit for a while
    * takeover RUN-tuple for testbuilds.py
    * apply 'make format' to SDL/* and zzipwrap/* as well
