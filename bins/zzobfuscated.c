@@ -55,7 +55,6 @@
 #define BITS 8
 #endif
 
-
 /*
  * Only override our the read handler. Let the system take care
  * the rest.
@@ -144,9 +143,9 @@ main(int argc, char* argv[])
     zzip_init_io(&our_handlers, 0);
     our_handlers.fd.read = &our_read;
 
-    if (! (our_handlers.fd.type & (long)(sizeof(off_t))))
-    {
-        fprintf(stderr, "largefile mismatch: bin %ibit <> lib %ibit", BITS * sizeof(off_t), BITS * (our_handlers.fd.type & ZZIP_PLUGIN_OFF_T));
+    if (! (our_handlers.fd.type & (long) (sizeof(off_t)))) {
+        fprintf(stderr, "largefile mismatch: bin %ibit <> lib %ibit", BITS * sizeof(off_t),
+                BITS * (our_handlers.fd.type & ZZIP_PLUGIN_OFF_T));
         return EX_SOFTWARE;
     }
 
@@ -181,8 +180,7 @@ main(int argc, char* argv[])
 #endif
             }
 
-            if (n == -1)
-            {
+            if (n == -1) {
                 perror(argv[argn]);
                 exit(EX_IOERR);
             }

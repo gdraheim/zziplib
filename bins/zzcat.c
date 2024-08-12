@@ -77,8 +77,7 @@ main(int argc, char** argv)
 #endif
             }
 
-            if (n == -1)
-            {
+            if (n == -1) {
                 perror(argv[argn]);
                 exitcode = EX_IOERR;
             }
