@@ -25,6 +25,14 @@
 #define O_BINARY 0
 #endif
 
+#ifndef EX_SOFTWARE
+#define EX_SOFTWARE 70
+#endif
+
+#ifndef EX_NOINPUT
+#define EX_NOINPUT 66
+#endif
+
 static const char usage[] = /* .. */
     {" zzxorcat [-#] <file>... \n"
      "  - prints the file to stdout, so you may want to redirect the output; \n"
@@ -69,6 +77,7 @@ int
 main(int argc, char** argv)
 {
     int argn;
+    int exitcode = 0;
     xor_value = 0x55;
 
     if (argc <= 1 || ! strcmp(argv[1], "--help")) {
@@ -80,6 +89,11 @@ main(int argc, char** argv)
 
     zzip_init_io(&xor_handlers, 0);
     xor_handlers.fd.read = &xor_read;
+
+    if (! (xor_handlers.fd.type & (long)(sizeof(off_t))))
+    {
+        return EX_SOFTWARE;
+    }
 
     for (argn = 1; argn < argc; argn++) {
         ZZIP_FILE* fp;
@@ -95,6 +109,7 @@ main(int argc, char** argv)
                               xor_fileext, &xor_handlers);
         if (! fp) {
             perror(argv[argn]);
+            exitcode = EX_NOINPUT;
             continue;
         }
         else {
@@ -118,5 +133,5 @@ main(int argc, char** argv)
         }
     }
 
-    return 0;
+    return exitcode;
 }

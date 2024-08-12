@@ -31,6 +31,19 @@
 #define _MSC_VER_NULL
 #endif
 
+#ifndef EX_NOINPUT
+#define EX_NOINPUT 66
+#endif
+
+#ifndef EX_SOFTWARE
+#define EX_SOFTWARE 70
+#endif
+
+#ifndef EX_CANTCREAT
+#define EX_CANTCREAT 73
+#endif
+
+
 /*
  * Only override our the read handler. Let the system take care
  * the rest.
@@ -100,12 +113,12 @@ main(int argc, char* argv[])
         fin = fopen(argv[1], "rb");
         if (! fin) {
             fprintf(stderr, "Can't open input file \"%s\"\n", argv[1]);
-            exit(1);
+            exit(EX_NOINPUT);
         }
         fout = fopen((argc == 2) ? "obfuscated" : "obfuscated.dat", "wb");
         if (! fout) {
             fprintf(stderr, "Can't open output file \"obfuscated\"\n");
-            exit(1);
+            exit(EX_CANTCREAT);
         }
         while ((ch = fgetc(fin)) != EOF) {
             ch ^= 0x55;
@@ -118,6 +131,11 @@ main(int argc, char* argv[])
     /* install our I/O hander */
     zzip_init_io(&our_handlers, 0);
     our_handlers.fd.read = &our_read;
+
+    if (! (our_handlers.fd.type & (long)(sizeof(off_t))))
+    {
+        return EX_SOFTWARE;
+    }
 
     {
 #define argn 2
@@ -134,7 +152,7 @@ main(int argc, char* argv[])
 
         if (! fp) {
             perror(name);
-            exit(1);
+            exit(EX_NOINPUT);
         }
         else {
             char buf[17];

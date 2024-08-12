@@ -209,7 +209,7 @@ zzipwrap_use_memory_io(int blocksize,
   (void *) zzip_memory_read,
   (void *) zzip_memory_lseek,
   (void *) zzip_filesize,
-  0
+  0, sizeof(off_t)
  };
 
  /* Store blocksize and block-processing callback data */

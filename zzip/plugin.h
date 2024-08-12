@@ -36,6 +36,11 @@ extern "C" {
 /* we have renamed zzip_plugin_io.use_mmap to zzip_plugin_io.sys */
 #define ZZIP_PLUGIN_IO_SYS 1
 
+/* just use sizeof(off_t) to initialize the bit-type */
+#define ZZIP_PLUGIN_TYPE_DEFAULT 1
+#define ZZIP_PLUGIN_TYPE_32BIT 4
+#define ZZIP_PLUGIN_TYPE_64BIT 8
+
 struct zzip_plugin_io { /* use "zzip_plugin_io_handlers" in applications !! */
     int (*open)(zzip_char_t* name, int flags, ...);
     int (*close)(int fd);

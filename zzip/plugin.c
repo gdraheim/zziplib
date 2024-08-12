@@ -48,7 +48,8 @@ static const struct zzip_plugin_io default_io = {
     &_zzip_read,
     &_zzip_lseek,
     &zzip_filesize,
-    1, 1,
+    1,
+    ZZIP_PLUGIN_TYPE_DEFAULT | (long)(sizeof(zzip_off_t)),
     &_zzip_write
 };
 /* clang-format on */

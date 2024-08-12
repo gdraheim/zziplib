@@ -25,6 +25,18 @@ typedef __SSIZE_T_TYPE ssize_t
 typedef int ssize_t;
 #endif
 
+#ifndef EX_USAGE
+#define EX_USAGE 66
+#endif
+
+#ifndef EX_NOINPUT
+#define EX_NOINPUT 66
+#endif
+
+#ifndef EX_CANTCREAT
+#define EX_CANTCREAT 73
+#endif
+
 static const char usage[] = /* .. */
     {" zzxopy [-#] <input-file> <output-file> \n"
      "   copies data from input-file to output-file adding simple \n"
@@ -86,20 +98,20 @@ main(int argc, char** argv)
 
         if (argn + 1 >= argc) {
             printf(usage);
-            exit(1);
+            exit(EX_USAGE);
         }
 
         iF = fopen(argv[argn], "rb");
         if (! iF) {
             perror(argv[argn]);
-            exit(2);
+            exit(EX_NOINPUT);
         }
         argn++;
         oF = fopen(argv[argn], "wb");
         if (! oF) {
             perror(argv[argn]);
             fclose(iF);
-            exit(3);
+            exit(EX_CANTCREAT);
         }
 
         {

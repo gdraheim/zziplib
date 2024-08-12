@@ -22,6 +22,14 @@
 #error need posix io for this example
 #endif
 
+#ifndef EX_NOINPUT
+#define EX_NOINPUT 66
+#endif
+
+#ifndef EX_SOFTWARE
+#define EX_SOFTWARE 70
+#endif
+
 static const char usage[] = /* .. */
     {"zzdir <dir>.. \n"
      "  - prints a content table to stdout, but the dir can also be a zip-arch."
@@ -81,6 +89,11 @@ main(int argc, char** argv)
     zzip_init_io(&xor_handlers, 0);
     xor_handlers.fd.read = &xor_read;
 
+    if (! (xor_handlers.fd.type & (long)(sizeof(off_t))))
+    {
+        return EX_SOFTWARE;
+    }
+
     for (argn = 1; argn < argc; argn++) {
         ZZIP_DIR*    dir;
         ZZIP_DIRENT* d;
@@ -96,7 +109,7 @@ main(int argc, char** argv)
         if (! dir) {
             fprintf(stderr, "did not open %s: ", argv[argn]);
             perror(argv[argn]);
-            exitcode++;
+            exitcode = EX_NOINPUT;
             continue;
         }
 
