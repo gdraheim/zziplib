@@ -69,9 +69,9 @@ main(int argc, char** argv)
         return EX_SOFTWARE;
     }
 
-    if (! (zzip_get_default_io()->fd.type & (long) (sizeof(off_t)))) {
-        fprintf(stderr, "largefile mismatch: bin %ibit <> lib %ibit", BITS * sizeof(off_t),
-                BITS * (zzip_get_default_io()->fd.type & ZZIP_PLUGIN_OFF_T));
+    if (! (zzip_plugin_off_t() & (long) (sizeof(off_t)))) {
+        fprintf(stderr, "largefile mismatch: bin %ibit <> lib %ibit\n", /* .. */
+                BITS * sizeof(off_t), BITS * zzip_plugin_off_t());
         return EX_SOFTWARE;
     }
 

@@ -590,6 +590,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         zlib = output(cmd.format(**locals()))
         self.assertEqual(zlib.strip(), "-lz")
         #
+        cmd = "{docker} exec {testname} /src/build/zzipwrap/zzipwrap /src/test/test.zip"
+        sh____(cmd.format(**locals()))
+        #
         cmd = "{docker} exec {testname} cp -r /src/bins /external"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} cp -r /src/CMakeScripts /external/"

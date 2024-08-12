@@ -28,6 +28,7 @@
 #define _ZZIP_PLUGIN_H 1
 
 #include <zzip/zzip.h>
+#include <zzip/cdecl.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -67,6 +68,9 @@ typedef union _zzip_plugin_io {
  * #define _zzip_plugin_io_handlers struct zzip_plugin_io
  */
 typedef zzip_plugin_io_handlers* zzip_plugin_io_handlers_t;
+
+_zzip_export long
+zzip_plugin_off_t() ZZIP_GNUC_PURE_CONST;
 
 #ifdef ZZIP_LARGEFILE_RENAME
 #define zzip_filesize       zzip_filesize64

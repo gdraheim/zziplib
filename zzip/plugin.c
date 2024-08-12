@@ -21,6 +21,15 @@
 #include <zzip/file.h>
 #include <zzip/format.h>
 
+/** get
+ * This function works on a real file descriptor.
+ */
+long
+zzip_plugin_off_t()
+{
+    return sizeof(off_t);
+}
+
 /** get file size.
  * This function works on a real file descriptor.
  */
