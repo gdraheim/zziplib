@@ -1,3 +1,13 @@
+2024-08-12
+   * check 'write' return values avoiding a compiler warning on unused values
+   * use BSD exitcodes where possible, and adapt testsuite to expect 66 instead of 3.
+   * introduce zzip_plugin_off_t() and mark the sizeof(off_t) in every plugin_io table.
+   * show checking for a "largefile mismatch" in every example programming using plugin.h
+   * testing for a "largefile mismatch" in the testcase
+   * NOTE: linkage errors show that zziplib had not been compiled in 32bit for a while
+   * takeover RUN-tuple for testbuilds.py
+   * apply 'make format' to SDL/* and zzipwrap/* as well
+
 2024-08-11
    * renames zzip_seek64 and zzip_tell64 can be forced with ZZIP_LARGFILE_RENAME_SEEK
    * add zzip_seek64 and zzip_tell64 that were errornously not renamed for 64on32
