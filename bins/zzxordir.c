@@ -94,8 +94,8 @@ main(int argc, char** argv)
     xor_handlers.fd.read = &xor_read;
 
     if (! (xor_handlers.fd.type & (long) (sizeof(off_t)))) {
-        fprintf(stderr, "largefile mismatch: bin %ibit <> lib %ibit\n", /* .. */
-                BITS * sizeof(off_t), BITS * zzip_plugin_off_t());
+        fprintf(stderr, "largefile mismatch: bin %libit <> lib %libit\n", /* .. */
+                (long) BITS * sizeof(off_t), BITS * zzip_plugin_off_t());
         return EX_SOFTWARE;
     }
 

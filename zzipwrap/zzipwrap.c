@@ -70,8 +70,8 @@ main(int argc, char** argv)
     }
 
     if (! (zzip_plugin_off_t() & (long) (sizeof(off_t)))) {
-        fprintf(stderr, "largefile mismatch: bin %ibit <> lib %ibit\n", /* .. */
-                BITS * sizeof(off_t), BITS * zzip_plugin_off_t());
+        fprintf(stderr, "largefile mismatch: bin %libit <> lib %libit\n", /* .. */
+                (long) BITS * sizeof(off_t), BITS * zzip_plugin_off_t());
         return EX_SOFTWARE;
     }
 
