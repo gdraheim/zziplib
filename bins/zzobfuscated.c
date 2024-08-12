@@ -31,6 +31,10 @@
 #define _MSC_VER_NULL
 #endif
 
+#ifndef EX_USAGE
+#define EX_USAGE 64
+#endif
+
 #ifndef EX_NOINPUT
 #define EX_NOINPUT 66
 #endif
@@ -41,6 +45,10 @@
 
 #ifndef EX_CANTCREAT
 #define EX_CANTCREAT 73
+#endif
+
+#ifndef EX_IOERR
+#define EX_IOERR 74
 #endif
 
 
@@ -102,7 +110,7 @@ main(int argc, char* argv[])
 
     if (strlen(argv[1]) > 128) {
         fprintf(stderr, "Please provide a filename shorter than 128 chars.\n");
-        exit(1);
+        exit(EX_USAGE);
     }
 
     /* obfuscate the file */
@@ -169,7 +177,10 @@ main(int argc, char* argv[])
             }
 
             if (n == -1)
+            {
                 perror(argv[argn]);
+                exit(EX_IOERR);
+            }
         }
     }
 

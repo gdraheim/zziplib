@@ -7,6 +7,14 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifndef EX_NOINPUT
+#define EX_NOINPUT 66
+#endif
+
+#ifndef EX_IOERR
+#define EX_IOERR 74
+#endif
+
 static const char usage[] = /* .. */
     {"zzdir <dir>.. \n"
      "  - prints a content table to stdout, but the dir can also be a zip-arch."
@@ -51,7 +59,7 @@ main(int argc, char** argv)
         if (! dir) {
             fprintf(stderr, "did not open %s: ", argv[argn]);
             perror(argv[argn]);
-            exitcode++;
+            exitcode = EX_NOINPUT;
             continue;
         }
 

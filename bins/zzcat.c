@@ -11,6 +11,14 @@
 #define O_BINARY 0
 #endif
 
+#ifndef EX_NOINPUT
+#define EX_NOINPUT 66
+#endif
+
+#ifndef EX_IOERR
+#define EX_IOERR 74
+#endif
+
 static const char usage[] = /* .. */
     {" zzcat <file>... \n"
      "  - prints the file to stdout, so you may want to redirect the output; \n"
@@ -38,6 +46,7 @@ int
 main(int argc, char** argv)
 {
     int argn;
+    int exitcode = 0;
 
     if (argc <= 1 || ! strcmp(argv[1], "--help")) {
         return unzzip_help();
@@ -51,6 +60,7 @@ main(int argc, char** argv)
 
         if (! fp) {
             perror(argv[argn]);
+            exitcode = EX_NOINPUT;
             continue;
         }
         else {
@@ -68,11 +78,14 @@ main(int argc, char** argv)
             }
 
             if (n == -1)
+            {
                 perror(argv[argn]);
+                exitcode = EX_IOERR;
+            }
 
             zzip_close(fp);
         }
     }
 
-    return 0;
+    return exitcode;
 }

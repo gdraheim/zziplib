@@ -600,8 +600,8 @@ class ZZipTest(unittest.TestCase):
         zipfile = "test0x.dat"
         getfile = "test0x.dat"
         exe = self.bins("zzdir")
-        run = shell("{exe} {getfile} ".format(**locals()), returncodes=[0, 1])
-        self.assertEqual(run.returncode, 1)
+        run = shell("{exe} {getfile} ".format(**locals()), returncodes=[0, 66])
+        self.assertEqual(run.returncode, 66)
         self.assertEqual("", run.output)
         self.assertIn("did not open test", run.errors)
         exe = self.bins("zzxordir")
@@ -614,8 +614,8 @@ class ZZipTest(unittest.TestCase):
         zipfile = "test1x.dat"
         getfile = "test1x.dat"
         exe = self.bins("zzdir")
-        run = shell("{exe} {getfile} ".format(**locals()), returncodes=[0, 1])
-        self.assertEqual(run.returncode, 1)
+        run = shell("{exe} {getfile} ".format(**locals()), returncodes=[0, 66])
+        self.assertEqual(run.returncode, 66)
         self.assertEqual("", run.output)
         self.assertIn("did not open test", run.errors)
         exe = self.bins("zzxordir")
@@ -631,8 +631,8 @@ class ZZipTest(unittest.TestCase):
         zipfile = "test2x.dat"
         getfile = "test2x"
         exe = self.bins("zzdir")
-        run = shell("{exe} {getfile} ".format(**locals()), returncodes=[0, 1])
-        self.assertEqual(run.returncode, 1)
+        run = shell("{exe} {getfile} ".format(**locals()), returncodes=[0, 66])
+        self.assertEqual(run.returncode, 66)
         self.assertEqual("", run.output)
         self.assertIn("did not open test", run.errors)
         exe = self.bins("zzxordir")
@@ -647,8 +647,8 @@ class ZZipTest(unittest.TestCase):
         zipfile = "test3x.dat"
         getfile = "test3x"
         exe = self.bins("zzdir")
-        run = shell("{exe} {getfile} ".format(**locals()), returncodes=[0, 1])
-        self.assertEqual(run.returncode, 1)
+        run = shell("{exe} {getfile} ".format(**locals()), returncodes=[0, 66])
+        self.assertEqual(run.returncode, 66)
         self.assertEqual("", run.output)
         self.assertIn("did not open test", run.errors)
         exe = self.bins("zzxordir")
@@ -663,8 +663,8 @@ class ZZipTest(unittest.TestCase):
         zipfile = "test4x.dat"
         getfile = "test4x"
         exe = self.bins("zzdir")
-        run = shell("{exe} {getfile} ".format(**locals()), returncodes=[0, 1])
-        self.assertEqual(run.returncode, 1)
+        run = shell("{exe} {getfile} ".format(**locals()), returncodes=[0, 66])
+        self.assertEqual(run.returncode, 66)
         self.assertEqual("", run.output)
         self.assertIn("did not open test", run.errors)
         exe = self.bins("zzxordir")
@@ -679,7 +679,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "test0x/README"
         logfile = "test0x.readme.txt"
         exe = self.bins("zzcat")
-        run = shell("{exe} {getfile} ".format(**locals()), lang="C")
+        run = shell("{exe} {getfile} ".format(**locals()), lang="C", returncodes=[66])
         self.assertEqual("", run.output)
         self.assertIn("No such file or directory", run.errors)
         exe = self.bins("zzxorcat")
@@ -691,7 +691,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "test1x/README"
         logfile = "test1x.readme.txt"
         exe = self.bins("zzcat")
-        run = shell("{exe} {getfile} ".format(**locals()), lang="C")
+        run = shell("{exe} {getfile} ".format(**locals()), lang="C", returncodes=[66])
         self.assertEqual("", run.output)
         self.assertIn("No such file or directory", run.errors)
         exe = self.bins("zzxorcat")
@@ -706,7 +706,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "test2x/README"
         logfile = "test2x.readme.txt"
         exe = self.bins("zzcat")
-        run = shell("{exe} {getfile} ".format(**locals()), lang="C")
+        run = shell("{exe} {getfile} ".format(**locals()), lang="C", returncodes=[66])
         self.assertEqual("", run.output)
         self.assertIn("No such file or directory", run.errors)
         exe = self.bins("zzxorcat")
@@ -721,7 +721,7 @@ class ZZipTest(unittest.TestCase):
         getfile = "test3x/README"
         logfile = "test3x.readme.txt"
         exe = self.bins("zzcat")
-        run = shell("{exe} {getfile} ".format(**locals()), lang="C")
+        run = shell("{exe} {getfile} ".format(**locals()), lang="C", returncodes=[66])
         self.assertEqual("", run.output)
         self.assertIn("No such file or directory", run.errors)
         exe = self.bins("zzxorcat")
@@ -2440,7 +2440,7 @@ class ZZipTest(unittest.TestCase):
             self.skipTest("no zip_CVE_2018_10 available: " + filename)
         exe = self.bins("zzdir")
         run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-                    returncodes=[1])
+                    returncodes=[66])
         self.assertLess(len(run.output), 1)
         self.assertLess(len(errors(run.errors)), 80)
         self.assertErrorMessage(run.errors, errno.EILSEQ)
@@ -2808,7 +2808,7 @@ class ZZipTest(unittest.TestCase):
             self.skipTest("no zip_CVE_2018_14 available: " + filename)
         exe = self.bins("zzdir")
         run = shell("cd {tmpdir} && ../{exe} {filename} ".format(**locals()),
-                    returncodes=[1])
+                    returncodes=[66])
         self.assertLess(len(run.output), 1)
         self.assertLess(len(errors(run.errors)), 200)
         self.assertErrorMessage(run.errors, errno.EILSEQ)
@@ -3443,7 +3443,7 @@ class ZZipTest(unittest.TestCase):
             self.skipTest("no zip_CVE_2018_41 available: " + filename)
         exe = self.bins("zzdir")
         run = shell("{exe} {tmpdir}/{filename} ".format(**locals()),
-                    returncodes=[1])
+                    returncodes=[66])
         logg.info("OUT %s", run.output)
         logg.info("ERR %s", run.errors)
         ####### self.assertIn(" zipped ", run.output)

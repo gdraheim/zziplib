@@ -26,7 +26,7 @@ typedef int ssize_t;
 #endif
 
 #ifndef EX_USAGE
-#define EX_USAGE 66
+#define EX_USAGE 64
 #endif
 
 #ifndef EX_NOINPUT
