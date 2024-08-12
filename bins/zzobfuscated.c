@@ -104,6 +104,7 @@ unzzip_help(void)
 int
 main(int argc, char* argv[])
 {
+    int exitcode = 0;
     if (argc <= 1 || argc > 3 || ! strcmp(argv[1], "--help")) {
         return unzzip_help();
     }
@@ -164,7 +165,7 @@ main(int argc, char* argv[])
 
         if (! fp) {
             perror(name);
-            exit(EX_NOINPUT);
+            exitcode = EX_NOINPUT;
         }
         else {
             char buf[17];
@@ -174,7 +175,11 @@ main(int argc, char* argv[])
             while (0 < (n = zzip_read(fp, buf, 16))) {
                 buf[n] = '\0';
 #ifdef STDOUT_FILENO
-                write(STDOUT_FILENO, buf, n);
+                if (-1 == write(STDOUT_FILENO, buf, n)) {
+                    perror("stdout");
+                    exitcode = EX_IOERR;
+                    break;
+                }
 #else
                 fwrite(buf, 1, n, stdout);
 #endif
@@ -182,10 +187,10 @@ main(int argc, char* argv[])
 
             if (n == -1) {
                 perror(argv[argn]);
-                exit(EX_IOERR);
+                exitcode = EX_IOERR;
             }
         }
     }
 
-    return 0;
+    return exitcode;
 }

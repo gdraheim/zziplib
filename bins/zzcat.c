@@ -71,7 +71,11 @@ main(int argc, char** argv)
             while (0 < (n = zzip_read(fp, buf, 16))) {
                 buf[n] = '\0';
 #ifdef STDOUT_FILENO
-                write(STDOUT_FILENO, buf, n);
+                if (-1 == write(STDOUT_FILENO, buf, n)) {
+                    perror("stdout");
+                    exitcode = EX_IOERR;
+                    break;
+                }
 #else
                 fwrite(buf, 1, n, stdout);
 #endif

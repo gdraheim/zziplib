@@ -33,6 +33,10 @@
 #define EX_NOINPUT 66
 #endif
 
+#ifndef EX_IOERR
+#define EX_IOERR 74
+#endif
+
 #ifndef BITS
 #define BITS 8
 #endif
@@ -125,14 +129,20 @@ main(int argc, char** argv)
             while (0 < (n = zzip_read(fp, buf, 16))) {
                 buf[n] = '\0';
 #ifdef STDOUT_FILENO
-                write(STDOUT_FILENO, buf, n);
+                if (-1 == write(STDOUT_FILENO, buf, n)) {
+                    perror("stdout");
+                    exitcode = EX_IOERR;
+                    break;
+                }
 #else
                 fwrite(buf, 1, n, stdout);
 #endif
             }
 
-            if (n == -1)
+            if (n == -1) {
                 perror(argv[n]);
+                exitcode = EX_IOERR;
+            }
 
             zzip_close(fp);
         }

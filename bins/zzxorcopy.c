@@ -37,6 +37,10 @@ typedef int ssize_t;
 #define EX_CANTCREAT 73
 #endif
 
+#ifndef EX_IOERR
+#define EX_IOERR 74
+#endif
+
 static const char usage[] = /* .. */
     {" zzxopy [-#] <input-file> <output-file> \n"
      "   copies data from input-file to output-file adding simple \n"
@@ -76,6 +80,7 @@ xor_read(FILE* f, void* p, size_t l)
 int
 main(int argc, char** argv)
 {
+    int exitcode = 0;
     int argn;
     xor_value = 0x55;
 
@@ -122,14 +127,18 @@ main(int argc, char** argv)
             while (0 < (n = xor_read(iF, buf, 16))) {
                 buf[n] = '\0';
                 n      = fwrite(buf, 1, n, oF);
-                if (n < 0)
+                if (n < 0) {
+                    exitcode = EX_IOERR;
                     break;
+                }
             }
 
-            if (n < 0 && ferror(iF))
+            if (n < 0 && ferror(iF)) {
+                exitcode = EX_IOERR;
                 perror(argv[argn]);
+            }
         }
     }
 
-    return 0;
+    return exitcode;
 }
