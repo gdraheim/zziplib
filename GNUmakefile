@@ -125,8 +125,13 @@ tag:
 # format ..............................
 CLANG_FORMAT=clang-format
 format ff:
-	$(CLANG_FORMAT) -i zzip/*.h zzip/*.c bins/*.h bins/*.c test/*.c
+	$(CLANG_FORMAT) -i zzip/*.h zzip/*.c bins/*.h bins/*.c test/*.c zzipwrap/*.h zzipwrap/*.c
 	@ grep include.*__.*.h zzip/[a-z]*.h | sed -e "s/^/?? /"
+
+%.c.format: %.c
+	$(CLANG_FORMAT) -i $@
+%.h.format: %.h
+	$(CLANG_FORMAT) -i $@
 
 FORMATDIR=../zziplib-format
 formatdir:
