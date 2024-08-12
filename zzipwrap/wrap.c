@@ -209,13 +209,14 @@ zzip_memory_lseek(int fildes, off_t offset, int whence)
 zzip_plugin_io_t
 zzipwrap_use_memory_io(int blocksize, zzipwrap_pfn_t callback, void* callbackdata)
 {
-    static const struct zzip_plugin_io zzip_memory_io = {(void*) zzip_memory_open,
-                                                         (void*) zzip_memory_close,
-                                                         (void*) zzip_memory_read,
-                                                         (void*) zzip_memory_lseek,
-                                                         (void*) zzip_filesize,
-                                                         0,
-                                                         sizeof(off_t)};
+    static const struct zzip_plugin_io zzip_memory_io = /* .. */
+        {(void*) zzip_memory_open,
+         (void*) zzip_memory_close,
+         (void*) zzip_memory_read,
+         (void*) zzip_memory_lseek,
+         (void*) zzip_filesize,
+         0,
+         sizeof(off_t)};
 
     /* Store blocksize and block-processing callback data */
 

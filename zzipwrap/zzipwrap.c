@@ -11,11 +11,24 @@
 #include <string.h>
 
 #include <zzip/zzip.h>
+#include <zzip/plugin.h>
 /* #incl <zzip/wrap.h> */
 #include "wrap.h"
 
 #ifndef O_BINARY
 #define O_BINARY 0
+#endif
+
+#ifndef EX_NOINPUT
+#define EX_NOINPUT 66
+#endif
+
+#ifndef EX_SOFTWARE
+#define EX_SOFTWARE 70
+#endif
+
+#ifndef BITS
+#define BITS 8
 #endif
 
 static const char usage[] = {
@@ -39,6 +52,7 @@ demo_block_callback(void* buffer, int buffersize, void* data)
 int
 main(int argc, char** argv)
 {
+    int              exitcode = 0;
     zzip_plugin_io_t io;
     int              argn;
 
@@ -52,7 +66,13 @@ main(int argc, char** argv)
     io = zzipwrap_use_memory_io(32, demo_block_callback, (void*) "Some callback data");
     if (! io) {
         fprintf(stderr, "could not initialize memory-io");
-        return 1;
+        return EX_SOFTWARE;
+    }
+
+    if (! (zzip_get_default_io()->fd.type & (long) (sizeof(off_t)))) {
+        fprintf(stderr, "largefile mismatch: bin %ibit <> lib %ibit", BITS * sizeof(off_t),
+                BITS * (zzip_get_default_io()->fd.type & ZZIP_PLUGIN_OFF_T));
+        return EX_SOFTWARE;
     }
 
     for (argn = 1; argn < argc; argn++) {
@@ -63,6 +83,7 @@ main(int argc, char** argv)
         if (! dir) {
             fprintf(stderr, "did not open %s:", argv[argn]);
             perror(argv[argn]);
+            exitcode = EX_NOINPUT;
             continue;
         }
 
@@ -85,5 +106,5 @@ main(int argc, char** argv)
         zzip_closedir(dir);
     }
 
-    return 0;
+    return exitcode;
 }
