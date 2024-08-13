@@ -10,15 +10,13 @@ RUN apt-get install -y gcc zlib1g-dev python3 cmake unzip zip gzip tar pkg-confi
 ## libsdl2-dev is on "universe"
 
 RUN mkdir src
+COPY README COPYING.LIB ChangeLog src/
 COPY Makefile.am Makefile.in old.configure.ac old.configure config.h.in zziplib.spec src/
 RUN test ! -f src/old.configure || mv src/old.configure src/configure
 RUN test ! -f src/old.configure.ac || mv src/old.configure.ac src/configure.ac
 COPY uses src/uses
-
-# RUN mkdir src
 # COPY CMakeLists.txt src/
 # COPY CMakeScripts src/CMakeScripts
-COPY README COPYING.LIB ChangeLog src/
 COPY bins src/bins
 COPY docs src/docs
 COPY test src/test

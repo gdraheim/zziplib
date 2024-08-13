@@ -6,7 +6,8 @@ RUN apt-get update
 RUN apt-get install -y gcc zlib1g-dev python3 cmake unzip zip gzip tar pkg-config
 
 RUN mkdir src
-COPY CMakeLists.txt README COPYING.LIB ChangeLog src/
+COPY README COPYING.LIB ChangeLog src/
+COPY CMakeLists.txt src/
 COPY CMakeScripts src/CMakeScripts
 COPY bins src/bins
 COPY docs src/docs

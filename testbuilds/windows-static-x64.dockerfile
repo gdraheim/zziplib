@@ -3,7 +3,8 @@ ARG no_check=false
 ARG no_install=false
 
 RUN mkdir src
-COPY CMakeLists.txt README COPYING.LIB ChangeLog src/
+COPY README COPYING.LIB ChangeLog src/
+COPY CMakeLists.txt src/
 COPY CMakeScripts src/CMakeScripts
 COPY bins src/bins
 COPY docs src/docs
