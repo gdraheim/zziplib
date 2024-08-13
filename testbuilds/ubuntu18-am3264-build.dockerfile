@@ -24,7 +24,7 @@ COPY zzipwrap src/zzipwrap
 COPY zzip src/zzip
 
 RUN mkdir src/build
-RUN cd src/build && sh ../configure --libdir=$_libdir --with-docdir=$_docdir --disable-static --enable-largefile
+RUN cd src/build && sh ../configure --libdir=$_libdir --with-docdir=$_docdir --disable-static --enable-largefile --with-largefile
 # RUN cd src/build && cmake .. -DVERBOSE=ON -DLARGEFILE=ON `$no_check && echo -DZZIPTEST=OFF`
 RUN cd src/build && make VERBOSE=ON
 RUN $no_check || (cd src/build && make check)
