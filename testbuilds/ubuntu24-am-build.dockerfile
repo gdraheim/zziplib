@@ -3,7 +3,7 @@ FROM ubuntu:noble-20240530
 ARG no_check=false
 ARG no_install=false
 
-ARG _libdir=/usr/local/lib64
+ARG _libdir=/usr/local/lib
 ARG _docdir=/usr/share/doc
 
 RUN apt-get update

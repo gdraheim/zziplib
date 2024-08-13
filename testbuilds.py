@@ -425,7 +425,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} pkg-config --libs zlib"
         zlib = output(cmd.format(**locals()))
-        self.assertEqual(zlib.strip(), "-lz")
+        self.assertEqual("-lz", zlib.strip())
+        cmd = "{docker} exec {testname} pkg-config --libs zziplib"
+        zziplib = output(cmd.format(**locals()))
+        logg.info("zziplib --libs = %s", zziplib)
+        self.assertEqual("-L/usr/local/lib -lzzip -lz", zziplib.strip())
         #
         cmd = "{docker} exec {testname} cp -r /src/bins /external"
         sh____(cmd.format(**locals()))
@@ -543,7 +547,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} pkg-config --libs zlib"
         zlib = output(cmd.format(**locals()))
-        self.assertEqual(zlib.strip(), "-lz")
+        self.assertEqual("-lz", zlib.strip())
+        cmd = "{docker} exec {testname} pkg-config --libs zziplib"
+        zziplib = output(cmd.format(**locals()))
+        logg.info("zziplib --libs = %s", zziplib)
+        self.assertEqual("-L/usr/local/lib -lzzip -lz", zziplib.strip())
         #
         cmd = "{docker} exec {testname} cp -r /src/bins /external"
         sh____(cmd.format(**locals()))
@@ -590,7 +598,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} find /usr/local/include -type f"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
+        cmd = "{docker} exec {testname} bash -c 'ls -l /usr/local/lib/libzz*'"
         sh____(cmd.format(**locals()))
         #
         cmd = "{docker} exec {testname} bash -c 'test ! -d /usr/local/include/SDL_rwops_zzip'"
@@ -603,7 +611,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} exec {testname} pkg-config --libs zziplib"
         zziplib = output(cmd.format(**locals()))
         logg.info("zziplib --libs = %s", zziplib)
-        self.assertEqual("-L/usr/local/lib64 -lzzip -lz", zziplib.strip())
+        self.assertEqual("-L/usr/local/lib -lzzip -lz", zziplib.strip())
         #
         cmd = "{docker} exec {testname} cp -r /src/bins /external"
         sh____(cmd.format(**locals()))
@@ -661,7 +669,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} pkg-config --libs zlib"
         zlib = output(cmd.format(**locals()))
-        self.assertEqual(zlib.strip(), "-lz")
+        self.assertEqual("-lz", zlib.strip())
+        cmd = "{docker} exec {testname} pkg-config --libs zziplib"
+        zziplib = output(cmd.format(**locals()))
+        logg.info("zziplib --libs = %s", zziplib)
+        self.assertEqual("-L/usr/local/lib -lzzip -lz", zziplib.strip())
         #
         cmd = "{docker} exec {testname} cp -r /src/bins /external"
         sh____(cmd.format(**locals()))
@@ -708,7 +720,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} find /usr/local/include -type f"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
+        cmd = "{docker} exec {testname} bash -c 'ls -l /usr/local/lib/libzz*'"
         sh____(cmd.format(**locals()))
         #
         cmd = "{docker} exec {testname} bash -c 'test ! -d /usr/local/include/SDL_rwops_zzip'"
@@ -721,7 +733,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} exec {testname} pkg-config --libs zziplib"
         zziplib = output(cmd.format(**locals()))
         logg.info("zziplib --libs = %s", zziplib)
-        self.assertEqual("-L/usr/local/lib64 -lzzip -lz", zziplib.strip())
+        self.assertEqual("-L/usr/local/lib -lzzip -lz", zziplib.strip())
         #
         cmd = "{docker} exec {testname} cp -r /src/bins /external"
         sh____(cmd.format(**locals()))
@@ -780,7 +792,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} pkg-config --libs zlib"
         zlib = output(cmd.format(**locals()))
-        self.assertEqual(zlib.strip(), "-lz")
+        self.assertEqual("-lz", zlib.strip())
+        cmd = "{docker} exec {testname} pkg-config --libs zziplib"
+        zziplib = output(cmd.format(**locals()))
+        logg.info("zziplib --libs = %s", zziplib)
+        self.assertEqual("-L/usr/local/lib -lzzip -lz", zziplib.strip())
         #
         cmd = "{docker} exec {testname} cp -r /src/bins /external"
         sh____(cmd.format(**locals()))
@@ -827,7 +843,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} find /usr/local/include -type f"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
+        cmd = "{docker} exec {testname} bash -c 'ls -l /usr/local/lib/libzz*'"
         sh____(cmd.format(**locals()))
         #
         cmd = "{docker} exec {testname} bash -c 'test ! -d /usr/local/include/SDL_rwops_zzip'"
@@ -840,7 +856,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} exec {testname} pkg-config --libs zziplib"
         zziplib = output(cmd.format(**locals()))
         logg.info("zziplib --libs = %s", zziplib)
-        self.assertEqual("-L/usr/local/lib64 -lzzip -lz", zziplib.strip())
+        self.assertEqual("-L/usr/local/lib -lzzip -lz", zziplib.strip())
         #
         cmd = "{docker} exec {testname} cp -r /src/bins /external"
         sh____(cmd.format(**locals()))
@@ -898,7 +914,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} pkg-config --libs zlib"
         zlib = output(cmd.format(**locals()))
-        self.assertEqual(zlib.strip(), "-lz")
+        self.assertEqual("-lz", zlib.strip())
+        cmd = "{docker} exec {testname} pkg-config --libs zziplib"
+        zziplib = output(cmd.format(**locals()))
+        logg.info("zziplib --libs = %s", zziplib)
+        self.assertEqual("-L/usr/local/lib -lzzip -lz", zziplib.strip())
         #
         cmd = "{docker} exec {testname} /src/build/zzipwrap/zzipwrap /src/test/test.zip"
         ret = run(cmd.format(**locals()))
@@ -991,7 +1011,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} find /usr/local/include -type f"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
+        cmd = "{docker} exec {testname} bash -c 'ls -l /usr/local/lib/libzz*'"
         sh____(cmd.format(**locals()))
         #
         cmd = "{docker} exec {testname} bash -c 'test ! -d /usr/local/include/SDL_rwops_zzip'"
@@ -1000,7 +1020,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} pkg-config --libs zlib"
         zlib = output(cmd.format(**locals()))
-        self.assertEqual(zlib.strip(), "-lz")
+        self.assertEqual("-lz", zlib.strip())
+        cmd = "{docker} exec {testname} pkg-config --libs zziplib"
+        zziplib = output(cmd.format(**locals()))
+        logg.info("zziplib --libs = %s", zziplib)
+        self.assertEqual("-L/usr/local/lib -lzzip -lz", zziplib.strip())
         #
         cmd = "{docker} exec {testname} /src/build/zzipwrap/zzipwrap /src/test/test.zip"
         ret = run(cmd.format(**locals()))
@@ -1102,7 +1126,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} pkg-config --libs zlib"
         zlib = output(cmd.format(**locals()))
-        self.assertEqual(zlib.strip(), "-lz")
+        self.assertEqual("-lz", zlib.strip())
+        cmd = "{docker} exec {testname} pkg-config --libs zziplib"
+        zziplib = output(cmd.format(**locals()))
+        logg.info("zziplib --libs = %s", zziplib)
+        self.assertEqual("-L/usr/local/lib -lzzip -lz", zziplib.strip())
         #
         cmd = "{docker} exec {testname} /src/build/zzipwrap/zzipwrap /src/test/test.zip"
         ret = run(cmd.format(**locals()))
@@ -1204,7 +1232,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} pkg-config --libs zlib"
         zlib = output(cmd.format(**locals()))
-        self.assertEqual(zlib.strip(), "-lz")
+        self.assertEqual("-lz", zlib.strip())
+        cmd = "{docker} exec {testname} pkg-config --libs zziplib"
+        zziplib = output(cmd.format(**locals()))
+        logg.info("zziplib --libs = %s", zziplib)
+        self.assertEqual("-L/usr/local/lib -lzzip -lz", zziplib.strip())
         #
         cmd = "{docker} exec {testname} /src/build/zzipwrap/zzipwrap /src/test/test.zip"
         ret = run(cmd.format(**locals()))
@@ -1669,7 +1701,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} find /usr/local/include -type f"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
+        cmd = "{docker} exec {testname} bash -c 'ls -l /usr/local/lib/libzz*'"
         sh____(cmd.format(**locals()))
         #
         cmd = "{docker} exec {testname} bash -c 'test -d /usr/local/include/SDL_rwops_zzip'"
@@ -1751,7 +1783,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} find /usr/local/include -type f"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
+        cmd = "{docker} exec {testname} bash -c 'ls -l /usr/local/lib/libzz*'"
         sh____(cmd.format(**locals()))
         #
         cmd = "{docker} exec {testname} bash -c 'test -d /usr/local/include/SDL_rwops_zzip'"
@@ -1832,7 +1864,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} find /usr/local/include -type f"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
+        cmd = "{docker} exec {testname} bash -c 'ls -l /usr/local/lib/libzz*'"
         sh____(cmd.format(**locals()))
         #
         cmd = "{docker} exec {testname} bash -c 'test -d /usr/local/include/SDL_rwops_zzip'"
@@ -1913,7 +1945,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} find /usr/local/include -type f"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
+        cmd = "{docker} exec {testname} bash -c 'ls -l /usr/local/lib/libzz*'"
         sh____(cmd.format(**locals()))
         #
         cmd = "{docker} exec {testname} bash -c 'test -d /usr/local/include/SDL_rwops_zzip'"
