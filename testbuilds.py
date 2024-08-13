@@ -50,11 +50,13 @@ DOCKER = "docker"
 KEEP = False
 FORCE = False
 NOCACHE = False
+GIT = "git"
 
 MAINDIR = os.path.dirname(sys.argv[0]) or "."
 MIRROR = os.path.join(MAINDIR, "docker_mirror.py")
 NONLOCAL = 0
 LOCAL = 0
+OLDER = 0
 
 def decodes(text: Union[bytes, str]) -> str:
     if text is None: return None
@@ -365,6 +367,18 @@ class ZZiplibBuildTest(unittest.TestCase):
         if rc:
             logg.error("could not pull {image}".format(**locals()))
         return decodes(out).strip()
+    def latest(self, previous: int = 0, latest: str = "latest") -> str:
+        if not previous:
+            return latest
+        ret = sh([GIT, "tag", "-l"])
+        logg.info("ret.out = %s", ret.out)
+        if previous < 0:
+            return ret.out.splitlines()[previous]
+        else:
+            last = ret.out.splitlines()[-1]
+            part = last.split(".")
+            part[-1] = str(int(part[-1]) + previous)
+            return ".".join(part)
     #
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
     #
@@ -2740,6 +2754,80 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
+    def test_398_almalinux9_cmake_sdl2_previous(self) -> None:
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
+        testname = self.testname()
+        testdir = self.testdir()
+        docker = DOCKER
+        dockerfile = "testbuilds/almalinux9-cm-sdl2.dockerfile"
+        addhosts = self.local_addhosts(dockerfile)
+        savename = docname(dockerfile)
+        saveto = SAVETO
+        images = IMAGES
+        repo = os.path.abspath(".")
+        latest = self.latest(-2-OLDER)
+        cmd = "cd {testdir} && git clone --branch {latest} {repo} ."
+        sh____(cmd.format(**locals()))
+        build = "build --progress=plain --build-arg=no_check=true" + self.nocache()
+        cmd = "cd {testdir} && {docker} {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} rm --force {testname}"
+        sx____(cmd.format(**locals()))
+        cmd = "{docker} run -d --name {testname} {images}:{testname} sleep 60"
+        sh____(cmd.format(**locals()))
+        #:# container = self.ip_container(testname)
+        cmd = "{docker} exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
+        sh____(cmd.format(**locals()))
+        #
+        if not KEEP:
+            cmd = "{docker} rm --force {testname}"
+            sx____(cmd.format(**locals()))
+        cmd = "{docker} rmi {saveto}/{savename}:{latest}"
+        sx____(cmd.format(**locals()))
+        cmd = "{docker} tag {images}:{testname} {saveto}/{savename}:{latest}"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} rmi {images}:{testname}"
+        sx____(cmd.format(**locals()))
+        self.rm_testdir()
+    def test_399_almalinux9_cmake_sdl2_previous(self) -> None:
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
+        testname = self.testname()
+        testdir = self.testdir()
+        docker = DOCKER
+        dockerfile = "testbuilds/almalinux9-cm-sdl2.dockerfile"
+        addhosts = self.local_addhosts(dockerfile)
+        savename = docname(dockerfile)
+        saveto = SAVETO
+        images = IMAGES
+        repo = os.path.abspath(".")
+        latest = self.latest(-1-OLDER)
+        cmd = "cd {testdir} && git clone --branch {latest} {repo} ."
+        sh____(cmd.format(**locals()))
+        build = "build --progress=plain --build-arg=no_check=true" + self.nocache()
+        cmd = "cd {testdir} && {docker} {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} rm --force {testname}"
+        sx____(cmd.format(**locals()))
+        cmd = "{docker} run -d --name {testname} {images}:{testname} sleep 60"
+        sh____(cmd.format(**locals()))
+        #:# container = self.ip_container(testname)
+        cmd = "{docker} exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
+        sh____(cmd.format(**locals()))
+        #
+        if not KEEP:
+            cmd = "{docker} rm --force {testname}"
+            sx____(cmd.format(**locals()))
+        cmd = "{docker} rmi {saveto}/{savename}:{latest}"
+        sx____(cmd.format(**locals()))
+        cmd = "{docker} tag {images}:{testname} {saveto}/{savename}:{latest}"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} rmi {images}:{testname}"
+        sx____(cmd.format(**locals()))
+        self.rm_testdir()
     def test_450_opensuse15_ninja_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
@@ -4291,6 +4379,175 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
+    def test_998_almalinux9_objdump_symbols(self) -> None:
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
+        latest1 = self.latest(-1-OLDER)
+        latest2 = self.latest(-2-OLDER)
+        testname1 = self.testname() + "_1"
+        testname2 = self.testname() + "_2"
+        testdir = self.testdir()
+        docker = DOCKER
+        dockerfile = "testbuilds/almalinux9-cm-sdl2.dockerfile"
+        savename = docname(dockerfile)
+        addhosts = self.local_addhosts(dockerfile)
+        saveto = SAVETO
+        images = IMAGES
+        cmd = "{docker} rm --force {testname1}"
+        sx____(cmd.format(**locals()))
+        cmd = "{docker} rm --force {testname2}"
+        sx____(cmd.format(**locals()))
+        cmd = "{docker} run -d --name {testname1} {addhosts} {saveto}/{savename}:{latest1} sleep 600"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} run -d --name {testname2} {addhosts} {saveto}/{savename}:{latest2} sleep 600"
+        sh____(cmd.format(**locals()))
+        #
+        cmd = "{docker} exec {testname1} bash -c 'objdump -T /usr/local/lib64/libzzipmmapped-0.so'"
+        objdump1 = sh(cmd.format(**locals()))
+        logg.debug("objdump:%s\n%s", latest1, objdump1.out)
+        libzzipmmapped1 = [line.split("Base")[1].strip() for line in objdump1.out.splitlines() if "Base" in line]
+        logg.info("libzzipfseeko:%s = %s", latest1, sorted(libzzipmmapped1))
+        #
+        cmd = "{docker} exec {testname2} bash -c 'objdump -T /usr/local/lib64/libzzipmmapped-0.so'"
+        objdump2 = sh(cmd.format(**locals()))
+        logg.debug("objdump:%s\n%s", latest2, objdump2.out)
+        libzzipmmapped2 = [line.split("Base")[1].strip() for line in objdump2.out.splitlines() if "Base" in line]
+        logg.info("libzzipfseeko:%s = %s", latest2, sorted(libzzipmmapped2))
+        #
+        cmd = "{docker} exec {testname1} bash -c 'objdump -T /usr/local/lib64/libzzipfseeko-0.so'"
+        objdump1 = sh(cmd.format(**locals()))
+        logg.debug("objdump:%s\n%s", latest1, objdump1.out)
+        libzzipfseeko1 = [line.split("Base")[1].strip() for line in objdump1.out.splitlines() if "Base" in line]
+        logg.info("libzzipfseeko:%s = %s", latest1, sorted(libzzipfseeko1))
+        #
+        cmd = "{docker} exec {testname2} bash -c 'objdump -T /usr/local/lib64/libzzipfseeko-0.so'"
+        objdump2 = sh(cmd.format(**locals()))
+        logg.debug("objdump:%s\n%s", latest2, objdump2.out)
+        libzzipfseeko2 = [line.split("Base")[1].strip() for line in objdump2.out.splitlines() if "Base" in line]
+        logg.info("libzzipfseeko:%s = %s", latest2, sorted(libzzipfseeko2))
+        #
+        cmd = "{docker} exec {testname1} bash -c 'objdump -T /usr/local/lib64/libzzip-0.so'"
+        objdump1 = sh(cmd.format(**locals()))
+        logg.debug("objdump:%s\n%s", latest1, objdump1.out)
+        libzzip1 = [line.split("Base")[1].strip() for line in objdump1.out.splitlines() if "Base" in line]
+        logg.info("libzzip:%s = %s", latest1, sorted(libzzip1))
+        #
+        cmd = "{docker} exec {testname2} bash -c 'objdump -T /usr/local/lib64/libzzip-0.so'"
+        objdump2 = sh(cmd.format(**locals()))
+        logg.debug("objdump:%s\n%s", latest2, objdump2.out)
+        libzzip2 = [line.split("Base")[1].strip() for line in objdump2.out.splitlines() if "Base" in line]
+        logg.info("libzzip:%s = %s", latest2, sorted(libzzip2))
+        #
+        extras2 = [name for name in libzzipmmapped2 if name not in libzzipmmapped1]
+        extras1 = [name for name in libzzipmmapped1 if name not in libzzipmmapped2]
+        logg.info("libzzipmmapped:extras:%s = %s", latest2, extras2)
+        logg.info("libzzipmmapped:extras:%s = %s", latest1, extras1)
+        #
+        extras2 = [name for name in libzzipfseeko2 if name not in libzzipfseeko1]
+        extras1 = [name for name in libzzipfseeko1 if name not in libzzipfseeko2]
+        logg.info("libzzipfseeko:extras:%s = %s", latest2, extras2)
+        logg.info("libzzipfseeko:extras:%s = %s", latest1, extras1)
+        #
+        extras2 = [name for name in libzzip2 if name not in libzzip1]
+        extras1 = [name for name in libzzip1 if name not in libzzip2]
+        logg.info("libzzip:extras:%s = %s", latest2, extras2)
+        logg.info("libzzip:extras:%s = %s", latest1, extras1)
+        extras = { "v0.13.79": ['zzip_plugin_off_t', 'zzip_filesize32']}
+        self.assertEqual(extras2, extras.get(latest2, []))
+        self.assertEqual(extras1, extras.get(latest1, []))
+        self.assertEqual(sorted(libzzip2 + extras1), sorted(libzzip1 + extras2))
+        #
+        cmd = "{docker} rm --force {testname1}"
+        sx____(cmd.format(**locals()))
+        cmd = "{docker} rm --force {testname2}"
+        sx____(cmd.format(**locals()))
+        self.rm_testdir()
+    def test_999_almalinux9_objdump_symbols(self) -> None:
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
+        future1 = self.latest(+1)
+        latest1 = self.latest(0)
+        latest2 = self.latest(-1-OLDER)
+        testname1 = self.testname() + "_1"
+        testname2 = self.testname() + "_2"
+        testdir = self.testdir()
+        docker = DOCKER
+        dockerfile = "testbuilds/almalinux9-cm-sdl2.dockerfile"
+        savename = docname(dockerfile)
+        addhosts = self.local_addhosts(dockerfile)
+        saveto = SAVETO
+        images = IMAGES
+        cmd = "{docker} rm --force {testname1}"
+        sx____(cmd.format(**locals()))
+        cmd = "{docker} rm --force {testname2}"
+        sx____(cmd.format(**locals()))
+        cmd = "{docker} run -d --name {testname1} {addhosts} {saveto}/{savename}:{latest1} sleep 600"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} run -d --name {testname2} {addhosts} {saveto}/{savename}:{latest2} sleep 600"
+        sh____(cmd.format(**locals()))
+        #
+        cmd = "{docker} exec {testname1} bash -c 'objdump -T /usr/local/lib64/libzzipmmapped-0.so'"
+        objdump1 = sh(cmd.format(**locals()))
+        logg.debug("objdump:%s\n%s", latest1, objdump1.out)
+        libzzipmmapped1 = [line.split("Base")[1].strip() for line in objdump1.out.splitlines() if "Base" in line]
+        logg.info("libzzipfseeko:%s = %s", latest1, sorted(libzzipmmapped1))
+        #
+        cmd = "{docker} exec {testname2} bash -c 'objdump -T /usr/local/lib64/libzzipmmapped-0.so'"
+        objdump2 = sh(cmd.format(**locals()))
+        logg.debug("objdump:%s\n%s", latest2, objdump2.out)
+        libzzipmmapped2 = [line.split("Base")[1].strip() for line in objdump2.out.splitlines() if "Base" in line]
+        logg.info("libzzipfseeko:%s = %s", latest2, sorted(libzzipmmapped2))
+        #
+        cmd = "{docker} exec {testname1} bash -c 'objdump -T /usr/local/lib64/libzzipfseeko-0.so'"
+        objdump1 = sh(cmd.format(**locals()))
+        logg.debug("objdump:%s\n%s", latest1, objdump1.out)
+        libzzipfseeko1 = [line.split("Base")[1].strip() for line in objdump1.out.splitlines() if "Base" in line]
+        logg.info("libzzipfseeko:%s = %s", latest1, sorted(libzzipfseeko1))
+        #
+        cmd = "{docker} exec {testname2} bash -c 'objdump -T /usr/local/lib64/libzzipfseeko-0.so'"
+        objdump2 = sh(cmd.format(**locals()))
+        logg.debug("objdump:%s\n%s", latest2, objdump2.out)
+        libzzipfseeko2 = [line.split("Base")[1].strip() for line in objdump2.out.splitlines() if "Base" in line]
+        logg.info("libzzipfseeko:%s = %s", latest2, sorted(libzzipfseeko2))
+        #
+        cmd = "{docker} exec {testname1} bash -c 'objdump -T /usr/local/lib64/libzzip-0.so'"
+        objdump1 = sh(cmd.format(**locals()))
+        logg.debug("objdump:%s\n%s", latest1, objdump1.out)
+        libzzip1 = [line.split("Base")[1].strip() for line in objdump1.out.splitlines() if "Base" in line]
+        logg.info("libzzip:%s = %s", latest1, sorted(libzzip1))
+        #
+        cmd = "{docker} exec {testname2} bash -c 'objdump -T /usr/local/lib64/libzzip-0.so'"
+        objdump2 = sh(cmd.format(**locals()))
+        logg.debug("objdump:%s\n%s", latest2, objdump2.out)
+        libzzip2 = [line.split("Base")[1].strip() for line in objdump2.out.splitlines() if "Base" in line]
+        logg.info("libzzip:%s = %s", latest2, sorted(libzzip2))
+        #
+        extras2 = [name for name in libzzipmmapped2 if name not in libzzipmmapped1]
+        extras1 = [name for name in libzzipmmapped1 if name not in libzzipmmapped2]
+        logg.info("libzzipmmapped:extras:%s = %s", latest2, extras2)
+        logg.info("libzzipmmapped:extras:%s = %s", latest1, extras1)
+        #
+        extras2 = [name for name in libzzipfseeko2 if name not in libzzipfseeko1]
+        extras1 = [name for name in libzzipfseeko1 if name not in libzzipfseeko2]
+        logg.info("libzzipfseeko:extras:%s = %s", latest2, extras2)
+        logg.info("libzzipfseeko:extras:%s = %s", latest1, extras1)
+        #
+        extras2 = [name for name in libzzip2 if name not in libzzip1]
+        extras1 = [name for name in libzzip1 if name not in libzzip2]
+        logg.info("libzzip:extras:%s = %s", latest2, extras2)
+        logg.info("libzzip:extras:%s = %s # latest", future1, extras1)
+        extras = { "v0.13.79": ['zzip_plugin_off_t', 'zzip_filesize32']}
+        self.assertEqual(extras2, extras.get(latest2, []))
+        self.assertEqual(extras1, extras.get(future1, []))
+        self.assertEqual(sorted(libzzip2 + extras1), sorted(libzzip1 + extras2))
+        #
+        cmd = "{docker} rm --force {testname1}"
+        sx____(cmd.format(**locals()))
+        cmd = "{docker} rm --force {testname2}"
+        sx____(cmd.format(**locals()))
+        self.rm_testdir()
 
 def run_clean() -> None:
     docker = DOCKER
@@ -4333,6 +4590,8 @@ if __name__ == "__main__":
                   help="increase logging level [%default]")
     _o.add_option("-p", "--python", metavar="EXE", default=_python,
                   help="use another python execution engine [%default]")
+    _o.add_option("-G", "--git", metavar="EXE", default=GIT,
+                  help="use another git client [%default]")
     _o.add_option("-D", "--docker", metavar="EXE", default=DOCKER,
                   help="use another docker execution engine [%default]")
     _o.add_option("-M", "--mirror", metavar="EXE", default=MIRROR,
@@ -4341,6 +4600,8 @@ if __name__ == "__main__":
                   help="disable local docker mirror [%default]")
     _o.add_option("-L", "--local", action="count", default=0,
                   help="fail if not local docker mirror found [%default]")
+    _o.add_option("-o", "--older", action="count", default=0,
+                  help="symbol comparis with even older version [%default]")
     _o.add_option("-k", "--keep", action="count", default=0,
                   help="keep docker build container [%default]")
     _o.add_option("-f", "--force", action="count", default=0,
@@ -4357,10 +4618,12 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING - opt.verbose * 5)
     #
     _python = opt.python
+    GIT = opt.git
     DOCKER = opt.docker
     MIRROR = opt.mirror
     LOCAL = opt.local
     NONLOCAL = opt.nolocal
+    OLDER = int(opt.older)
     KEEP = opt.keep
     FORCE = opt.force
     NOCACHE = opt.no_cache
