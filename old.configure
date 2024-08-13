@@ -15081,6 +15081,12 @@ elif test ".$with_largefile" != ".no" ; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: compiles library as 64bit off_t variant - and renaming some function names" >&5
 $as_echo "compiles library as 64bit off_t variant - and renaming some function names" >&6; }
   LARGEFILE_CFLAGS="$LARGEFILE_CFLAGS -D_LARGEFILE_SOURCE"
+  if test 64 = "$ac_cv_sys_file_offset_bits"; then
+     LARGEFILE_CFLAGS="$LARGEFILE_CFLAGS -D_FILE_OFFSET_BITS=64"
+  fi
+  if test 1 = "$ac_cv_sys_large_files"; then
+     LARGEFILE_CFLAGS="$LARGEFILE_CFLAGS -D_LARGE_FILES"
+  fi
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: ..adding CFLAGS $LARGEFILE_CFLAGS" >&5
 $as_echo "..adding CFLAGS $LARGEFILE_CFLAGS" >&6; }
   CFLAGS="$CFLAGS $LARGEFILE_CFLAGS"

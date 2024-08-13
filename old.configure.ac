@@ -130,6 +130,13 @@ elif test ".$with_largefile" != ".no" ; then
   AC_MSG_RESULT(compiles library as 64bit off_t variant dnl
 - and renaming some function names)
   LARGEFILE_CFLAGS="$LARGEFILE_CFLAGS -D_LARGEFILE_SOURCE"
+  # AC-SYS-LARGEFILE does not add to CFLAGS (anymore)
+  if test 64 = "$ac_cv_sys_file_offset_bits"; then
+     LARGEFILE_CFLAGS="$LARGEFILE_CFLAGS -D_FILE_OFFSET_BITS=64"
+  fi
+  if test 1 = "$ac_cv_sys_large_files"; then
+     LARGEFILE_CFLAGS="$LARGEFILE_CFLAGS -D_LARGE_FILES"
+  fi
   AC_MSG_RESULT(..adding CFLAGS $LARGEFILE_CFLAGS)
   CFLAGS="$CFLAGS $LARGEFILE_CFLAGS"
   AC_MSG_RESULT(..adding 64 into RELEASE_INFO for the libraries)
