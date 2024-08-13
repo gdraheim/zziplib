@@ -1,6 +1,5 @@
 # FROM ubuntu:24.04
 FROM ubuntu:noble-20240530
-FROM ubuntu:jammy-20220428
 ARG no_check=false
 ARG no_install=false
 
