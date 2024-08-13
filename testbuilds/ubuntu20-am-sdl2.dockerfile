@@ -1,7 +1,9 @@
-# FROM ubuntu:24.04
-FROM ubuntu:noble-20240530
+FROM ubuntu:20.04
 ARG no_check=false
 ARG no_install=false
+
+ARG _libdir=/usr/local/lib64
+ARG _docdir=/usr/share/doc
 
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
@@ -10,8 +12,12 @@ RUN apt-get install -y gcc zlib1g-dev python3 cmake unzip zip gzip tar pkg-confi
 
 RUN mkdir src
 COPY README COPYING.LIB ChangeLog src/
-COPY CMakeLists.txt src/
-COPY CMakeScripts src/CMakeScripts
+COPY Makefile.am Makefile.in old.configure.ac old.configure config.h.in zziplib.spec src/
+RUN test ! -f src/old.configure || mv src/old.configure src/configure
+RUN test ! -f src/old.configure.ac || mv src/old.configure.ac src/configure.ac
+COPY uses src/uses
+# COPY CMakeLists.txt src/
+# COPY CMakeScripts src/CMakeScripts
 COPY bins src/bins
 COPY docs src/docs
 COPY test src/test
@@ -20,7 +26,8 @@ COPY zzipwrap src/zzipwrap
 COPY zzip src/zzip
 
 RUN mkdir src/build
-RUN cd src/build && cmake ..
+RUN cd src/build && sh ../configure --libdir=$_libdir --with-docdir=$_docdir --disable-static --enable-sdl
+# RUN cd src/build && cmake ..
 RUN cd src/build && make
 RUN $no_check || (cd src/build && make check)
 RUN $no_install || (cd src/build && make install)
