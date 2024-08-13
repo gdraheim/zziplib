@@ -26,7 +26,7 @@
  * This function works on a real file descriptor.
  */
 long
-zzip_plugin_off_t()
+zzip_io_size_off_t()
 {
     return sizeof(off_t);
 }
@@ -59,7 +59,7 @@ static const struct zzip_plugin_io default_io = {
     &_zzip_lseek,
     &zzip_filesize,
     1,
-    ZZIP_PLUGIN_TYPE_DEFAULT | (long)(sizeof(zzip_off_t)),
+    ZZIP_IO_TYPE_DEFAULT | (long)(sizeof(zzip_off_t)),
     &_zzip_write
 };
 /* clang-format on */

@@ -41,10 +41,10 @@ extern "C" {
 #define ZZIP_IO_USE_MMAP 1
 
 /* just use sizeof(off_t) to initialize the bit-type */
-#define ZZIP_PLUGIN_TYPE_DEFAULT 1
-#define ZZIP_PLUGIN_TYPE_32BIT   4
-#define ZZIP_PLUGIN_TYPE_64BIT   8
-#define ZZIP_PLUGIN_OFF_T        (8 + 4)
+#define ZZIP_IO_TYPE_DEFAULT 1
+#define ZZIP_IO_SIZE_32BIT   4
+#define ZZIP_IO_SIZE_64BIT   8
+#define ZZIP_IO_SIZE_OFF_T  (8 + 4)
 
 struct zzip_plugin_io { /* use "zzip_plugin_io_handlers" in applications !! */
     int (*open)(zzip_char_t* name, int flags, ...);
@@ -73,7 +73,7 @@ typedef union _zzip_plugin_io {
 typedef zzip_plugin_io_handlers* zzip_plugin_io_handlers_t;
 
 _zzip_export long
-zzip_plugin_off_t() ZZIP_GNUC_PURE_CONST;
+zzip_io_size_off_t() ZZIP_GNUC_PURE_CONST;
 
 #ifdef ZZIP_LARGEFILE_RENAME
 #define zzip_filesize       zzip_filesize64
