@@ -17,6 +17,8 @@ option(MSVC_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 
 option(ZZIP_INSTALL_BINS "Install the bins/ exanple programs" ON)
 option(ZZIP_INSTALL_ACLOCAL "Install zziplib.m4 aclocal helper" ON)
+option(FINDPKGCONFIG "search zziplib via pkg-config (from automake)" OFF)
+option(FINDPKGCMAKE "search zziplib as external package (form cmake)" OFF)
 option(LARGEFILE "64on32 largefile" OFF)
 option(COVERAGE "Code coverage" OFF)
 
@@ -52,15 +54,31 @@ endif(LARGEFILE)
 # Zlib library needed
 find_package ( ZLIB REQUIRED )
 
+#if(INTERNAL)
 ## linking while compiling zziplib itself (in ../zzip)
 set(zziplib_libzzip libzzip)
 set(zziplib_libzzipfseeko libzzipfseeko)
 set(zziplib_libzzipmmapped libzzipmmapped)
-## linking when using examples elsewhere
-# find_package ( zziplib REQUIRED)
-# set(zziplib_libzzip zziplib::libzzip) # find_pack
-# set(zziplib_libzzipfseeko zziplib::libzzipfseeko) # find_pack
-# set(zziplib_libzzipmmapped zziplib::libzzipmmapped) # find_pack
+#endif(INTERNAL)
+
+if(FINDPKGCMAKE)
+## linking when using examples elsewhere (via zziplib.cmake)
+find_package ( zziplib REQUIRED)
+set(zziplib_libzzip zziplib::libzzip) # find_pack
+set(zziplib_libzzipfseeko zziplib::libzzipfseeko) # find_pack
+set(zziplib_libzzipmmapped zziplib::libzzipmmapped) # find_pack
+endif(FINDPKGCMAKE)
+
+if(FINDPKGCONFIG)
+## linking with pkg-config (automake)
+include(FindPkgConfig) # pkg_check
+pkg_check_modules ( libzzip REQUIRED IMPORTED_TARGET zziplib)
+pkg_check_modules ( libzzipfseeko REQUIRED IMPORTED_TARGET zzipfseeko)
+pkg_check_modules ( libzzipmmapped REQUIRED IMPORTED_TARGET zzipmmapped)
+set(zziplib_libzzip PkgConfig::libzzip) # pkg_check
+set(zziplib_libzzipfseeko PkgConfig::libzzipfseeko) # pkg_check
+set(zziplib_libzzipmmapped PkgConfig::libzzipmmapped) # pkg_check
+endif(FINDPKGCONFIG)
 
 # targets ########################################################
 add_executable(zzcat      zzcat.c)

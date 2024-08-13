@@ -438,11 +438,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} cp -r /src/CMakeScripts /external/"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} sed -i -e '/find_pack/s/^# *//' -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
+        cmd = "{docker} exec {testname} sed -i -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} mkdir -v /external/build"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake .. -DLARGEFILE=ON'"
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake .. -DFINDPKGCMAKE=ON -DLARGEFILE=ON'"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} bash -c  'cd /external/build && make VERBOSE=1'"
         ret = run(cmd.format(**locals()))
@@ -457,7 +457,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} exec {testname} sed -i -e s/zzxorcat// -e s/zzxordir// -e s/zzobfuscated// /external/CMakeLists.txt"
         sh____(cmd.format(**locals()))
         logg.info("try again...")
-        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake .. -DLARGEFILE=ON'"
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake .. -DFINDPKGCMAKE=ON -DLARGEFILE=ON'"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} bash -c  'cd /external/build && make VERBOSE=1'"
         ret = run(cmd.format(**locals()))
@@ -471,11 +471,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} cp -r /src/CMakeScripts /external32/"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} sed -i -e '/find_pack/s/^# *//' -e /CodeCoverage/d -e /unzzip/d /external32/CMakeLists.txt"
+        cmd = "{docker} exec {testname} sed -i  -e /CodeCoverage/d -e /unzzip/d /external32/CMakeLists.txt"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} mkdir -v /external32/build"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c  'cd /external32/build && cmake .. '"
+        cmd = "{docker} exec {testname} bash -c  'cd /external32/build && cmake .. -DFINDPKGCMAKE=ON'"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} bash -c  'cd /external32/build && make VERBOSE=1'"
         sh____(cmd.format(**locals()))
@@ -540,11 +540,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} cp -r /src/CMakeScripts /external/"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} sed -i -e '/find_pack/s/^# *//' -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
+        cmd = "{docker} exec {testname} sed -i -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} mkdir -v /external/build"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake .. -DLARGEFILE=ON'"
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake .. -DFINDPKGCMAKE=ON -DLARGEFILE=ON'"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} bash -c  'cd /external/build && make VERBOSE=1'"
         sh____(cmd.format(**locals()))
@@ -558,11 +558,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} cp -r /src/CMakeScripts /external32/"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} sed -i -e '/find_pack/s/^# *//' -e /CodeCoverage/d -e /unzzip/d /external32/CMakeLists.txt"
+        cmd = "{docker} exec {testname} sed -i -e /CodeCoverage/d -e /unzzip/d /external32/CMakeLists.txt"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} mkdir -v /external32/build"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c  'cd /external32/build && cmake .. '"
+        cmd = "{docker} exec {testname} bash -c  'cd /external32/build && cmake .. -DFINDPKGCMAKE=ON'"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} bash -c  'cd /external32/build && make VERBOSE=1'"
         ret = run(cmd.format(**locals()))
@@ -633,11 +633,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         #
         cmd = "{docker} exec {testname} cp -r /src/bins /external"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} sed -i -e '/find_pack/s/^# *//' -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
+        cmd = "{docker} exec {testname} sed -i -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} mkdir -v /external/build"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake ..'"
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake .. -DFINDPKGCMAKE=ON'"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} bash -c  'cd /external/build && make VERBOSE=1'"
         sh____(cmd.format(**locals()))
@@ -676,7 +676,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} find /usr/local/include -type f"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c 'ls -l /usr/local/lib/libzz*'"
+        cmd = "{docker} exec {testname} bash -c 'ls -l /usr/local/lib64/libzz*'"
         sh____(cmd.format(**locals()))
         #
         cmd = "{docker} exec {testname} bash -c 'test ! -d /usr/local/include/SDL_rwops_zzip'"
@@ -685,15 +685,21 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} pkg-config --libs zlib"
         zlib = output(cmd.format(**locals()))
-        self.assertEqual(zlib.strip(), "-lz")
+        self.assertEqual("-lz", zlib.strip())
+        cmd = "{docker} exec {testname} pkg-config --libs zziplib"
+        zziplib = output(cmd.format(**locals()))
+        logg.info("zziplib --libs = %s", zziplib)
+        self.assertEqual("-L/usr/local/lib64 -lzzip -lz", zziplib.strip())
         #
         cmd = "{docker} exec {testname} cp -r /src/bins /external"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} sed -i -e '/find_pack/s/^# *//' -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
+        cmd = "{docker} exec {testname} sed -i -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} cat /external/CMakeLists.txt"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} mkdir -v /external/build"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake ..'"
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake .. -DFINDPKGCONFIG=ON'"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} bash -c  'cd /external/build && make VERBOSE=1'"
         sh____(cmd.format(**locals()))
@@ -745,11 +751,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         #
         cmd = "{docker} exec {testname} cp -r /src/bins /external"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} sed -i -e '/find_pack/s/^# *//' -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
+        cmd = "{docker} exec {testname} sed -i -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} mkdir -v /external/build"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake ..'"
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake .. -DFINDPKGCMAKE=ON'"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} bash -c  'cd /external/build && make VERBOSE=1'"
         sh____(cmd.format(**locals()))
@@ -801,11 +807,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         #
         cmd = "{docker} exec {testname} cp -r /src/bins /external"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} sed -i -e '/find_pack/s/^# *//' -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
+        cmd = "{docker} exec {testname} sed -i -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} mkdir -v /external/build"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake ..'"
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake .. -DFINDPKGCMAKE=ON'"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} bash -c  'cd /external/build && make VERBOSE=1'"
         sh____(cmd.format(**locals()))
@@ -858,11 +864,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         #
         cmd = "{docker} exec {testname} cp -r /src/bins /external"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} sed -i -e '/find_pack/s/^# *//' -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
+        cmd = "{docker} exec {testname} sed -i -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} mkdir -v /external/build"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake ..'"
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake .. -DFINDPKGCMAKE=ON'"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} bash -c  'cd /external/build && make VERBOSE=1'"
         sh____(cmd.format(**locals()))
@@ -914,11 +920,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         #
         cmd = "{docker} exec {testname} cp -r /src/bins /external"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} sed -i -e '/find_pack/s/^# *//' -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
+        cmd = "{docker} exec {testname} sed -i -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} mkdir -v /external/build"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake ..'"
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake .. -DFINDPKGCMAKE=ON'"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} bash -c  'cd /external/build && make VERBOSE=1'"
         sh____(cmd.format(**locals()))
@@ -1087,11 +1093,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         #
         cmd = "{docker} exec {testname} cp -r /src/bins /external"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} sed -i -e '/find_pack/s/^# *//' -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
+        cmd = "{docker} exec {testname} sed -i -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} mkdir -v /external/build"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake3 ..'"
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake3 .. -DFINDPKGCMAKE=ON'"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} bash -c  'cd /external/build && make VERBOSE=1'"
         sh____(cmd.format(**locals()))
@@ -1188,11 +1194,11 @@ class ZZiplibBuildTest(unittest.TestCase):
         #
         cmd = "{docker} exec {testname} cp -r /src/bins /external"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} sed -i -e '/find_pack/s/^# *//' -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
+        cmd = "{docker} exec {testname} sed -i -e /CodeCoverage/d -e /unzzip/d /external/CMakeLists.txt"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} mkdir -v /external/build"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake3 ..'"
+        cmd = "{docker} exec {testname} bash -c  'cd /external/build && cmake3 .. -DFINDPKGCMAKE=ON'"
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} bash -c  'cd /external/build && make VERBOSE=1'"
         sh____(cmd.format(**locals()))
