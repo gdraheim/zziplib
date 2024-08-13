@@ -1,3 +1,18 @@
+2024-08-13
+   * create ubuntu18 automake testbuilds, including am32-bit and am3264-largefile
+   * created automake testbuilds with external 32-bit and 64on32-largefile binaries
+   * adjusted external cmake builds to get `pkg-config --libs` provided by non-cmake builds
+   * found problem with ubuntu lib/pkgconfig not used by pkg-config
+   * moved *.pc from `$libdir/pkgconfig/` to `$datadir/pkgconfig/` = `../share/pkgconfig/`
+   * found probme with AC_SYS_LARGEFILE not enabling 64-bit off_t on 32-bit platforms
+   * fixed autoconf/automake build to get 64-bit off_t in `--with-largefile` builds
+   * NOTE: does this mean the 64on32 largefile builds had not been used for a long time?
+   * however the `cmake -DLARGEFILE=ON` were correct all the time (just refactored now)
+   * the `testbuilds.py` test numbers are shuffled around
+   * have automake tests for every ubuntu version we have (including 32 and 64on32).
+   * have comparison tests that show cmake and automake install the same files
+   * with the exception of automake 64on32 wich renames to `libzzip-0-64.so`
+
 2024-08-12
    * check 'write' return values avoiding a compiler warning on unused values
    * use BSD exitcodes where possible, and adapt testsuite to expect 66 instead of 3.
