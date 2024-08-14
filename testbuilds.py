@@ -103,12 +103,12 @@ def run(cmd: Union[str, List[str]], cwd: Optional[str] = None, shell: Optional[b
         logg.info(": %s", " ".join(["'%s'" % item for item in cmd]))
         shell = False if shell is None else shell
     if input is not None:
-        run = subprocess.Popen(cmd, cwd=cwd, shell=shell, env=env, # ..
+        run = subprocess.Popen(cmd, cwd=cwd, shell=shell, env=env,  # ..
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
         out, err = run.communicate(input.encode("utf-8"))
     else:
-        run = subprocess.Popen(cmd, cwd=cwd, shell=shell,env=env, # ..
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE )
+        run = subprocess.Popen(cmd, cwd=cwd, shell=shell, env=env,  # ..
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = run.communicate()
     text_out = decodes(out)
     text_err = decodes(err)
@@ -929,7 +929,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         #
         cmd = "{docker} exec {testname} bash -c 'test ! -d /usr/local/include/SDL_rwops_zzip'"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} dpkg -S /usr/lib/i386-linux-gnu/pkgconfig/zlib.pc" # !!
+        cmd = "{docker} exec {testname} dpkg -S /usr/lib/i386-linux-gnu/pkgconfig/zlib.pc"  # !!
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} pkg-config --libs zlib"
         zlib = output(cmd.format(**locals()))
@@ -1035,7 +1035,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         #
         cmd = "{docker} exec {testname} bash -c 'test ! -d /usr/local/include/SDL_rwops_zzip'"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} dpkg -S /usr/lib/i386-linux-gnu/pkgconfig/zlib.pc" # !!
+        cmd = "{docker} exec {testname} dpkg -S /usr/lib/i386-linux-gnu/pkgconfig/zlib.pc"  # !!
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} pkg-config --libs zlib"
         zlib = output(cmd.format(**locals()))
@@ -1141,7 +1141,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         #
         cmd = "{docker} exec {testname} bash -c 'test ! -d /usr/local/include/SDL_rwops_zzip'"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} dpkg -S /usr/lib/i386-linux-gnu/pkgconfig/zlib.pc" # !!
+        cmd = "{docker} exec {testname} dpkg -S /usr/lib/i386-linux-gnu/pkgconfig/zlib.pc"  # !!
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} pkg-config --libs zlib"
         zlib = output(cmd.format(**locals()))
@@ -1247,7 +1247,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         #
         cmd = "{docker} exec {testname} bash -c 'test ! -d /usr/local/include/SDL_rwops_zzip'"
         sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} dpkg -S /usr/lib/i386-linux-gnu/pkgconfig/zlib.pc" # !!
+        cmd = "{docker} exec {testname} dpkg -S /usr/lib/i386-linux-gnu/pkgconfig/zlib.pc"  # !!
         sh____(cmd.format(**locals()))
         cmd = "{docker} exec {testname} pkg-config --libs zlib"
         zlib = output(cmd.format(**locals()))
@@ -1262,7 +1262,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         logg.info("[%s] ERR %s", ret.code, ret.err)
         # self.assertEqual(EX_SOFTWARE, ret.code)
         # self.assertIn("largefile mismatch", ret.err)
-        self.assertEqual(0, ret.code) # automake puts the LARGEFILE_CFLAGS into all modules
+        self.assertEqual(0, ret.code)  # automake puts the LARGEFILE_CFLAGS into all modules
         #
         logg.info("____________________ /external")
         cmd = "{docker} exec {testname} cp -r /src/bins /external"
@@ -2772,7 +2772,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         saveto = SAVETO
         images = IMAGES
         repo = os.path.abspath(".")
-        latest = self.latest(-2-OLDER)
+        latest = self.latest(-2 - OLDER)
         cmd = "cd {testdir} && git clone --branch {latest} {repo} ."
         sh____(cmd.format(**locals()))
         if latest in ["v0.13.71", "v0.13.72"]:
@@ -2812,7 +2812,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         saveto = SAVETO
         images = IMAGES
         repo = os.path.abspath(".")
-        latest = self.latest(-1-OLDER)
+        latest = self.latest(-1 - OLDER)
         cmd = "cd {testdir} && git clone --branch {latest} {repo} ."
         sh____(cmd.format(**locals()))
         if latest in ["v0.13.71", "v0.13.72"]:
@@ -4394,8 +4394,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
-        latest1 = self.latest(-1-OLDER)
-        latest2 = self.latest(-2-OLDER)
+        latest1 = self.latest(-1 - OLDER)
+        latest2 = self.latest(-2 - OLDER)
         testname1 = self.testname() + "_1"
         testname2 = self.testname() + "_2"
         testdir = self.testdir()
@@ -4464,7 +4464,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         extras1 = [name for name in libzzip1 if name not in libzzip2]
         logg.info("libzzip:extras:%s = %s", latest2, extras2)
         logg.info("libzzip:extras:%s = %s", latest1, extras1)
-        extras = { "v0.13.79": ['zzip_io_size_off_t', 'zzip_filesize32'], "v0.13.72": ['zzip_pread']}
+        extras = {"v0.13.79": ['zzip_io_size_off_t', 'zzip_filesize32'], "v0.13.72": ['zzip_pread']}
         self.assertEqual(extras2, extras.get(latest2, []))
         self.assertEqual(extras1, extras.get(latest1, []))
         self.assertEqual(sorted(libzzip2 + extras1), sorted(libzzip1 + extras2))
@@ -4480,7 +4480,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         self.rm_testdir()
         future1 = self.latest(+1)
         latest1 = self.latest(0)
-        latest2 = self.latest(-1-OLDER)
+        latest2 = self.latest(-1 - OLDER)
         testname1 = self.testname() + "_1"
         testname2 = self.testname() + "_2"
         testdir = self.testdir()
@@ -4549,7 +4549,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         extras1 = [name for name in libzzip1 if name not in libzzip2]
         logg.info("libzzip:extras:%s = %s", latest2, extras2)
         logg.info("libzzip:extras:%s = %s # latest", future1, extras1)
-        extras = { "v0.13.79": ['zzip_io_size_off_t', 'zzip_filesize32'], "v0.13.72": ['zzip_pread']}
+        extras = {"v0.13.79": ['zzip_io_size_off_t', 'zzip_filesize32'], "v0.13.72": ['zzip_pread']}
         self.assertEqual(extras2, extras.get(latest2, []))
         self.assertEqual(extras1, extras.get(future1, []))
         self.assertEqual(sorted(libzzip2 + extras1), sorted(libzzip1 + extras2))
