@@ -59,7 +59,7 @@ check checks site install-site manpages htmpages:
 	@ test ! -f $(BUILD)/Makefile    || (set -x; cd $(BUILD) && $(MAKE) $@ VERBOSE=1)
 	@ test ! -f $(BUILD)/rules.ninja || (set -x; cd $(BUILD) && $(NINJA) $@)
 	@ test ! -f $(BUILD)/build.ninja || (set -x; cd $(BUILD) && $(NINJA) $@)
-install docs:
+install docs zziptestdownloads:
 	@ test ! -f $(BUILD)/Makefile    || (set -x; cd $(BUILD) && $(MAKE) $@)
 	@ test ! -f $(BUILD)/rules.ninja || (set -x; cd $(BUILD) && $(NINJA) $@)
 	@ test ! -f $(BUILD)/build.ninja || (set -x; cd $(BUILD) && $(NINJA) $@)
