@@ -34,6 +34,10 @@ if(ZZIPSDL)
 add_subdirectory(SDL)
 endif()
 
+if(ZZIPDOCS)
+add_subdirectory(docs)
+endif()
+
 if(ZZIPBINS)
 add_subdirectory(bins)
 endif()
@@ -42,6 +46,3 @@ if(ZZIPTEST)
 add_subdirectory(test)
 endif()
 
-if(ZZIPDOCS)
-add_subdirectory(docs)
-endif()
