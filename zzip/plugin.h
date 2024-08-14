@@ -44,7 +44,7 @@ extern "C" {
 #define ZZIP_IO_TYPE_DEFAULT 1
 #define ZZIP_IO_SIZE_32BIT   4
 #define ZZIP_IO_SIZE_64BIT   8
-#define ZZIP_IO_SIZE_OFF_T  (8 + 4)
+#define ZZIP_IO_SIZE_OFF_T   12
 
 struct zzip_plugin_io { /* use "zzip_plugin_io_handlers" in applications !! */
     int (*open)(zzip_char_t* name, int flags, ...);
