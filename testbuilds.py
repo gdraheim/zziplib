@@ -2770,6 +2770,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         latest = self.latest(-2-OLDER)
         cmd = "cd {testdir} && git clone --branch {latest} {repo} ."
         sh____(cmd.format(**locals()))
+        if latest in ["v0.13.71", "v0.13.72"]:
+            cmd = "cp testbuilds/almalinux9-cm-sdl2.dockerfile {testdir}/testbuilds/"
+            sh____(cmd.format(**locals()))
         build = "build --progress=plain --build-arg=no_check=true" + self.nocache()
         cmd = "cd {testdir} && {docker} {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
@@ -2807,6 +2810,9 @@ class ZZiplibBuildTest(unittest.TestCase):
         latest = self.latest(-1-OLDER)
         cmd = "cd {testdir} && git clone --branch {latest} {repo} ."
         sh____(cmd.format(**locals()))
+        if latest in ["v0.13.71", "v0.13.72"]:
+            cmd = "cp testbuilds/almalinux9-cm-sdl2.dockerfile {testdir}/testbuilds/"
+            sh____(cmd.format(**locals()))
         build = "build --progress=plain --build-arg=no_check=true" + self.nocache()
         cmd = "cd {testdir} && {docker} {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
         sh____(cmd.format(**locals()))
@@ -4453,7 +4459,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         extras1 = [name for name in libzzip1 if name not in libzzip2]
         logg.info("libzzip:extras:%s = %s", latest2, extras2)
         logg.info("libzzip:extras:%s = %s", latest1, extras1)
-        extras = { "v0.13.79": ['zzip_io_size_off_t', 'zzip_filesize32']}
+        extras = { "v0.13.79": ['zzip_io_size_off_t', 'zzip_filesize32'], "v0.13.72": ['zzip_pread']}
         self.assertEqual(extras2, extras.get(latest2, []))
         self.assertEqual(extras1, extras.get(latest1, []))
         self.assertEqual(sorted(libzzip2 + extras1), sorted(libzzip1 + extras2))
@@ -4538,7 +4544,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         extras1 = [name for name in libzzip1 if name not in libzzip2]
         logg.info("libzzip:extras:%s = %s", latest2, extras2)
         logg.info("libzzip:extras:%s = %s # latest", future1, extras1)
-        extras = { "v0.13.79": ['zzip_io_size_off_t', 'zzip_filesize32']}
+        extras = { "v0.13.79": ['zzip_io_size_off_t', 'zzip_filesize32'], "v0.13.72": ['zzip_pread']}
         self.assertEqual(extras2, extras.get(latest2, []))
         self.assertEqual(extras1, extras.get(future1, []))
         self.assertEqual(sorted(libzzip2 + extras1), sorted(libzzip1 + extras2))
