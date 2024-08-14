@@ -41,14 +41,15 @@ set(srcdir ${CMAKE_CURRENT_SOURCE_DIR})
 set(topdir ${CMAKE_SOURCE_DIR})
 
 # downloads ########################################################
-if(ZZIP_TESTCVE)
-include(ExternalProject)
-ExternalProject_Add(zziptestdownloads
-   DOWNLOAD_COMMAND ${PY} ${srcdir}/zziptests.py --downloadonly -vv
-   CONFIGURE_COMMAND ""
-   BUILD_COMMAND ${CMAKE_COMMAND} -E create_symlink "${outdir}/zziptestdownloads-prefix/src/tmp.download" "${outdir}/tmp.download"
-   INSTALL_COMMAND "")
-endif(ZZIP_TESTCVE)
+add_custom_command(OUTPUT "${outdir}/tmp.download"
+   COMMENT "tmp.download: testing the CVE zips need internet access - disable with -DZZIP_TESTCVE=OFF"
+   COMMAND ${PY} ${srcdir}/zziptests.py --downloadonly -vv
+)
+add_custom_command(OUTPUT "${outdir}/tmp.download.info.txt"
+   COMMENT "make 'zziptestdownloads' before the tests to get the 'tmp.download' zip files seperately"
+   COMMAND "${TOUCH}" "${outdir}/tmp.download.info.txt"
+)
+add_custom_target(zziptestdownloads DEPENDS "${outdir}/tmp.download.txt" "${outdir}/tmp.download")
 
 # targets ########################################################
 add_executable(zzipself    zzipself.c)
@@ -74,9 +75,14 @@ add_custom_command(OUTPUT zzipshowme${EXEEXT}
 add_custom_target(sfx ALL DEPENDS zzipshowme${EXEEXT})
 endif()
 
+if(ZZIP_TESTCVE)
+message(NOTICE "with ZZIPTEST_CVE=ON the tmp.download zips need internet access")
+set(need_zziptestdownloads zziptestdownloads)
+endif()
+
 add_custom_target(tests
    COMMAND ${PY} ${srcdir}/zziptests.py --exeext=${EXEEXT} --topsrcdir=${topdir} -v ${TESTFLAGS} --downloads=${ZZIP_TESTCVE} -Z ${MKZIP} -U ${UNZIP}
-   DEPENDS ../bins/zzcat ../bins/zzdir ../bins/zziptest ../bins/zzxorcat ../bins/zzxorcopy)
+   DEPENDS ../bins/zzcat ../bins/zzdir ../bins/zziptest ../bins/zzxorcat ../bins/zzxorcopy ${need_zziptestdownloads})
 add_custom_command(OUTPUT ../bins/zzcat COMMMAND cd ../bins && $(MAKE) zzcat)
 add_custom_command(OUTPUT ../bins/zzdir COMMMAND cd ../bins && $(MAKE) zzdir)
 add_custom_command(OUTPUT ../bins/zziptest COMMMAND cd ../bins && $(MAKE) zziptest)
