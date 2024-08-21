@@ -65,7 +65,7 @@ add_custom_command(OUTPUT SDL_rwops_zzip.pc
    COMMAND ${BASH} -c "echo 'Name: SDL_rwops_zzip' >> SDL_rwops_zzip.pc"
    COMMAND ${BASH} -c "echo 'Version: ${PROJECT_VERSION}' >> SDL_rwops_zzip.pc"
    COMMAND ${BASH} -c "echo 'Description: SDL_rwops for ZZipLib' >> SDL_rwops_zzip.pc"
-   COMMAND ${BASH} -c "echo 'Requires: sdl, zziplib' >> SDL_rwops_zzip.pc"
+   COMMAND ${BASH} -c "echo 'Requires: sdl2, zziplib' >> SDL_rwops_zzip.pc"
    COMMAND ${BASH} -c "echo 'Cflags: -I\${zzipsdldir}' >> SDL_rwops_zzip.pc"
    VERBATIM)
 add_custom_target(pkgconfig-sdl ALL DEPENDS SDL_rwops_zzip.pc)
