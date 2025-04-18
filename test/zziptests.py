@@ -4032,7 +4032,7 @@ class ZZipTest(unittest.TestCase):
                     returncodes=[0])
         #
 
-    def test_91000_zzshowme_check_sfx(self) -> None:
+    def test_81000_zzshowme_check_sfx(self) -> None:
         """ create an *.exe that can extract its own zip content """
         mkzip = self.bins("mkzip")
         exefile = "tmp.zzshowme" + exeext
@@ -4059,7 +4059,7 @@ class ZZipTest(unittest.TestCase):
         txt = open(txtfile).read()
         self.assertEqual(txt.split("\n"), run.output.split("\n"))
 
-    def test_99000_make_test1w_zip(self) -> None:
+    def test_89000_make_test1w_zip(self) -> None:
         """ create a test1w.zip using zzip/write functions. """
         exe = self.bins("zzip")
         run = shell("{exe} --version".format(**locals()))
