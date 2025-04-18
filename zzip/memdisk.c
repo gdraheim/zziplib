@@ -222,7 +222,6 @@ zzip_mem_entry_new(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry)
             debug2("unknown extras block %04x", ZZIP_GETEXTRA(extras_ptr));
         }
     }
-    debug2("csize = $%lx", (long) item->zz_csize);
 
     /*
      * If zz_data+zz_csize exceeds the size of the file, bail out
