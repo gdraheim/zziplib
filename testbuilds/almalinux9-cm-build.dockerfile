@@ -4,6 +4,7 @@ ARG no_install=false
 
 RUN echo sslverify=false >> /etc/yum.conf
 RUN yum install -y gcc zlib-devel python3 cmake make unzip zip gzip tar diffutils
+RUN cmake --version
 
 RUN mkdir src
 COPY CMakeLists.txt README COPYING.LIB ChangeLog src/

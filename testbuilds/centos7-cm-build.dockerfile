@@ -5,6 +5,7 @@ ARG no_install=false
 RUN yum install -y epel-release
 RUN echo sslverify=false >> /etc/yum.conf
 RUN yum install -y gcc zlib-devel python3 cmake3 make unzip zip gzip tar
+RUN cmake3 --version
 
 RUN mkdir src
 COPY CMakeLists.txt README COPYING.LIB ChangeLog src/

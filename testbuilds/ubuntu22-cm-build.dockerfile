@@ -6,6 +6,7 @@ ARG no_install=false
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
 RUN apt-get install -y gcc zlib1g-dev python3 cmake unzip zip gzip tar pkg-config
+RUN cmake --version
 
 RUN mkdir src
 COPY README COPYING.LIB ChangeLog src/

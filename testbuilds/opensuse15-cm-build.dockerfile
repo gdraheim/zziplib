@@ -5,6 +5,7 @@ ARG no_install=false
 RUN zypper mr --no-gpgcheck repo-oss repo-update
 RUN zypper refresh repo-oss
 RUN zypper install -r repo-oss -y gcc zlib-devel python3 cmake unzip zip gzip tar
+RUN cmake --version
 
 RUN mkdir src
 COPY CMakeLists.txt README COPYING.LIB ChangeLog src/
