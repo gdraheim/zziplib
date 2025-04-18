@@ -524,7 +524,7 @@ zzip_disk_findnext(ZZIP_DISK* disk, struct zzip_disk_entry* entry)
     if ((zzip_byte_t*) entry > disk->endbuf - sizeof(*entry) || /* .. */
         ! zzip_disk_entry_check_magic(entry) ||                 /* .. */
         zzip_disk_entry_sizeto_end(entry) > 64 * 1024 ||        /* .. */
-        zzip_disk_entry_skipto_end(entry) > disk->endbuf - sizeof(*entry)) {
+        zzip_disk_entry_skipto_end(entry) > disk->endbuf) {
         errno = ENOENT;
         return 0;
     }
