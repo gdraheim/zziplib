@@ -387,31 +387,31 @@ class ZZiplibBuildTest(unittest.TestCase):
     #
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
     #
-    def test_101_docker_mirror_ubuntu1(self) -> None:
+    def test_90101_docker_mirror_ubuntu1(self) -> None:
         logg.info("\n  UBUNTU1 = '%s'", UBUNTU1)
         self.start_mirror(UBUNTU1, "--update")
-    def test_102_docker_mirror_ubuntu2(self) -> None:
+    def test_90102_docker_mirror_ubuntu2(self) -> None:
         logg.info("\n  UBUNTU2 = '%s'", UBUNTU2)
         self.start_mirror(UBUNTU2, "--update")
-    def test_103_docker_mirror_ubuntu3(self) -> None:
+    def test_90103_docker_mirror_ubuntu3(self) -> None:
         logg.info("\n  UBUNTU3 = '%s'", UBUNTU3)
         if LOCAL:
             self.start_mirror(UBUNTU3)
         else:
             self.start_mirror(UBUNTU3, "--universe")
-    def test_104_docker_mirror_ubuntu3(self) -> None:
+    def test_90104_docker_mirror_ubuntu3(self) -> None:
         logg.info("\n  UBUNTU4 = '%s'", UBUNTU4)
         self.start_mirror(UBUNTU4, "--universe")
-    def test_105_docker_mirror_opensuse5(self) -> None:
+    def test_90105_docker_mirror_opensuse5(self) -> None:
         logg.info("\n  OPENSUSE5 = '%s'", OPENSUSE5)
         self.start_mirror(OPENSUSE5)
-    def test_107_docker_mirror_centos7(self) -> None:
+    def test_90107_docker_mirror_centos7(self) -> None:
         logg.info("\n  CENTOS7 = '%s'", CENTOS7)
         self.start_mirror(CENTOS7, "--epel")
-    def test_109_docker_mirror_centos9(self) -> None:
+    def test_90109_docker_mirror_centos9(self) -> None:
         logg.info("\n  CENTOS9 = '%s'", CENTOS9)
         self.start_mirror(CENTOS9)
-    def test_218_ubuntu18_cmake_build_dockerfile(self) -> None:
+    def test_90218_ubuntu18_cmake_build_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -471,7 +471,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_219_ubuntu18_automake_dockerfile(self) -> None:
+    def test_90219_ubuntu18_automake_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -533,7 +533,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_220_ubuntu20_cmake_build_dockerfile(self) -> None:
+    def test_90220_ubuntu20_cmake_build_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -593,7 +593,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_221_ubuntu20_automake_dockerfile(self) -> None:
+    def test_90221_ubuntu20_automake_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -655,7 +655,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_222_ubuntu22_cmake_build_dockerfile(self) -> None:
+    def test_90222_ubuntu22_cmake_build_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -715,7 +715,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_223_ubuntu22_automake_dockerfile(self) -> None:
+    def test_90223_ubuntu22_automake_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -777,7 +777,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_224_ubuntu24_cmake_build_dockerfile(self) -> None:
+    def test_90224_ubuntu24_cmake_build_dockerfile(self) -> None:
         # no universe yet (in February 2024)
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
@@ -838,7 +838,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_225_ubuntu24_automake_dockerfile(self) -> None:
+    def test_90225_ubuntu24_automake_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -900,7 +900,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_242_ubuntu18_cmake_32bit_build_dockerfile(self) -> None:
+    def test_90242_ubuntu18_cmake_32bit_build_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1006,7 +1006,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_243_ubuntu18_automake_32bit_build_dockerfile(self) -> None:
+    def test_90243_ubuntu18_automake_32bit_build_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1112,7 +1112,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_244_ubuntu18_cmake_32bit_largefile64_build_dockerfile(self) -> None:
+    def test_90244_ubuntu18_cmake_32bit_largefile64_build_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1218,7 +1218,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_245_ubuntu18_automake_32bit_largefile64_build_dockerfile(self) -> None:
+    def test_90245_ubuntu18_automake_32bit_largefile64_build_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1325,7 +1325,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_250_opensuse15_cmake_build_dockerfile(self) -> None:
+    def test_90250_opensuse15_cmake_build_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1381,7 +1381,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_264_windows_static_x64_dockerfile(self) -> None:
+    def test_90264_windows_static_x64_dockerfile(self) -> None:
         logg.warning("     windows-static-x64 compiles fine but segfaults on linking an .exe")
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
@@ -1417,7 +1417,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_265_windows_shared_x64_dockerfile(self) -> None:
+    def test_90265_windows_shared_x64_dockerfile(self) -> None:
         logg.warning("     windows-shared-x64 compiles fine but segfaults on linking an .exe")
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
@@ -1453,7 +1453,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_270_centos7_automake_dockerfile(self) -> None:
+    def test_90270_centos7_automake_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1498,7 +1498,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_271_centos7_cmake_build_dockerfile(self) -> None:
+    def test_90271_centos7_cmake_build_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1554,7 +1554,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_290_almalinux9_automake_dockerfile(self) -> None:
+    def test_90290_almalinux9_automake_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1599,7 +1599,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_291_almalinux9_cmake_build_dockerfile(self) -> None:
+    def test_90291_almalinux9_cmake_build_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1655,7 +1655,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_318_ubuntu18_cmake_sdl2_dockerfile(self) -> None:
+    def test_90318_ubuntu18_cmake_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1696,7 +1696,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_319_ubuntu18_automake_sdl2_dockerfile(self) -> None:
+    def test_90319_ubuntu18_automake_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1737,7 +1737,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_320_ubuntu20_cmake_sdl2_dockerfile(self) -> None:
+    def test_90320_ubuntu20_cmake_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1778,7 +1778,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_321_ubuntu20_automake_sdl2_dockerfile(self) -> None:
+    def test_90321_ubuntu20_automake_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1819,7 +1819,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_322_ubuntu22_cmake_sdl2_dockerfile(self) -> None:
+    def test_90322_ubuntu22_cmake_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1859,7 +1859,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_323_ubuntu22_automake_sdl2_dockerfile(self) -> None:
+    def test_90323_ubuntu22_automake_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1900,7 +1900,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_324_ubuntu24_cmake_sdl2_dockerfile(self) -> None:
+    def test_90324_ubuntu24_cmake_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1940,7 +1940,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_325_ubuntu24_automake_sdl2_dockerfile(self) -> None:
+    def test_90325_ubuntu24_automake_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -1981,7 +1981,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_329_ubuntu24_use_gcc09_dockerfile(self) -> None:
+    def test_90329_ubuntu24_use_gcc09_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2026,7 +2026,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_330_ubuntu24_use_gcc10_dockerfile(self) -> None:
+    def test_90330_ubuntu24_use_gcc10_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2071,7 +2071,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_331_ubuntu24_use_gcc11_dockerfile(self) -> None:
+    def test_90331_ubuntu24_use_gcc11_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2116,7 +2116,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_332_ubuntu24_use_gcc12_dockerfile(self) -> None:
+    def test_90332_ubuntu24_use_gcc12_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2161,7 +2161,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_333_ubuntu24_use_gcc13_dockerfile(self) -> None:
+    def test_90333_ubuntu24_use_gcc13_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2206,7 +2206,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_334_ubuntu24_use_gcc14_dockerfile(self) -> None:
+    def test_90334_ubuntu24_use_gcc14_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2251,7 +2251,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_350_opensuse15_cmake_sdl2_dockerfile(self) -> None:
+    def test_90350_opensuse15_cmake_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2291,7 +2291,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_357_opensuse15_cmake_use_gcc7_dockerfile(self) -> None:
+    def test_90357_opensuse15_cmake_use_gcc7_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2335,7 +2335,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_358_opensuse15_cmake_use_gcc8_dockerfile(self) -> None:
+    def test_90358_opensuse15_cmake_use_gcc8_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2379,7 +2379,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_359_opensuse15_cmake_use_gcc9_dockerfile(self) -> None:
+    def test_90359_opensuse15_cmake_use_gcc9_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2423,7 +2423,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_360_opensuse15_cmake_use_gcc10_dockerfile(self) -> None:
+    def test_90360_opensuse15_cmake_use_gcc10_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2467,7 +2467,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_361_opensuse15_cmake_use_gcc11_dockerfile(self) -> None:
+    def test_90361_opensuse15_cmake_use_gcc11_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2511,7 +2511,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_362_opensuse15_cmake_use_gcc12_dockerfile(self) -> None:
+    def test_90362_opensuse15_cmake_use_gcc12_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2555,7 +2555,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_363_opensuse15_cmake_use_gcc13_dockerfile(self) -> None:
+    def test_90363_opensuse15_cmake_use_gcc13_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2599,7 +2599,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_370_centos7_automake_sdl2_dockerfile(self) -> None:
+    def test_90370_centos7_automake_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2639,7 +2639,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_390_almalinux9_automake_sdl2_dockerfile(self) -> None:
+    def test_90390_almalinux9_automake_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2679,7 +2679,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_371_centos7_cmake_sdl2_dockerfile(self) -> None:
+    def test_90371_centos7_cmake_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2719,7 +2719,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_391_almalinux9_cmake_sdl2_dockerfile(self) -> None:
+    def test_90391_almalinux9_cmake_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2759,7 +2759,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_398_almalinux9_cmake_sdl2_previous(self) -> None:
+    def test_90398_almalinux9_cmake_sdl2_previous(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2799,7 +2799,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_399_almalinux9_cmake_sdl2_previous(self) -> None:
+    def test_90399_almalinux9_cmake_sdl2_previous(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2839,7 +2839,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_450_opensuse15_ninja_sdl2_dockerfile(self) -> None:
+    def test_90450_opensuse15_ninja_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2879,7 +2879,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_451_opensuse15_cm_htmpages_nonparallel_dockerfile(self) -> None:
+    def test_90451_opensuse15_cm_htmpages_nonparallel_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2919,7 +2919,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_452_opensuse15_cm_htmpages_parallel_dockerfile(self) -> None:
+    def test_90452_opensuse15_cm_htmpages_parallel_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2959,7 +2959,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_471_centos7_cmake_sdl2_destdir_dockerfile(self) -> None:
+    def test_90471_centos7_cmake_sdl2_destdir_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -2999,7 +2999,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_491_almalinux9_cmake_sdl2_destdir_dockerfile(self) -> None:
+    def test_90491_almalinux9_cmake_sdl2_destdir_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3039,7 +3039,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_707_centos7_automake_docs_dockerfile(self) -> None:
+    def test_90707_centos7_automake_docs_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3081,7 +3081,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_717_centos7_cmake_docs_dockerfile(self) -> None:
+    def test_90717_centos7_cmake_docs_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3124,7 +3124,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_818_ubuntu18_am_cm_dockerfile(self) -> None:
+    def test_90818_ubuntu18_am_cm_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3198,7 +3198,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_820_ubuntu20_am_cm_dockerfile(self) -> None:
+    def test_90820_ubuntu20_am_cm_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3272,7 +3272,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_822_ubuntu22_am_cm_dockerfile(self) -> None:
+    def test_90822_ubuntu22_am_cm_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3346,7 +3346,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_824_ubuntu24_am_cm_dockerfile(self) -> None:
+    def test_90824_ubuntu24_am_cm_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3420,7 +3420,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_830_ubuntu18_am_cm_sdl2_dockerfile(self) -> None:
+    def test_90830_ubuntu18_am_cm_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3494,7 +3494,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_831_ubuntu20_am_cm_sdl2_dockerfile(self) -> None:
+    def test_90831_ubuntu20_am_cm_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3568,7 +3568,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_832_ubuntu22_am_cm_sdl2_dockerfile(self) -> None:
+    def test_90832_ubuntu22_am_cm_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3642,7 +3642,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_834_ubuntu24_am_cm_sdl2_dockerfile(self) -> None:
+    def test_90834_ubuntu24_am_cm_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3716,7 +3716,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_842_ubuntu18_am_cm_32bit_largefile64_dockerfile(self) -> None:
+    def test_90842_ubuntu18_am_cm_32bit_largefile64_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3790,7 +3790,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_844_ubuntu18_am_cm_32bit_largefile64_dockerfile(self) -> None:
+    def test_90844_ubuntu18_am_cm_32bit_largefile64_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3867,7 +3867,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_870_centos7_am_cm_dockerfile(self) -> None:
+    def test_90870_centos7_am_cm_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3941,7 +3941,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_890_almalinux9_am_cm_dockerfile(self) -> None:
+    def test_90890_almalinux9_am_cm_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -4015,7 +4015,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_937_centos7_am_cm_sdl2_dockerfile(self) -> None:
+    def test_90937_centos7_am_cm_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -4089,7 +4089,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_939_almalinux9_am_cm_sdl2_dockerfile(self) -> None:
+    def test_90939_almalinux9_am_cm_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -4163,7 +4163,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_947_centos7_cm_sdl2_or_destdir_dockerfile(self) -> None:
+    def test_90947_centos7_cm_sdl2_or_destdir_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -4220,7 +4220,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_949_almalinux9_cm_sdl2_or_destdir_dockerfile(self) -> None:
+    def test_90949_almalinux9_cm_sdl2_or_destdir_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -4277,7 +4277,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_965_opensuse_cm_or_nj_sdl2_dockerfile(self) -> None:
+    def test_90965_opensuse_cm_or_nj_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -4329,7 +4329,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_977_centos7_am_cm_docs_dockerfile(self) -> None:
+    def test_90977_centos7_am_cm_docs_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -4390,7 +4390,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_998_almalinux9_objdump_symbols(self) -> None:
+    def test_90998_almalinux9_objdump_symbols(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -4474,7 +4474,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_999_almalinux9_objdump_symbols(self) -> None:
+    def test_90999_almalinux9_objdump_symbols(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -4670,7 +4670,10 @@ if __name__ == "__main__":
                 continue
             testclass = globals()[classname]
             for method in sorted(dir(testclass)):
-                if "*" not in arg: arg += "*"
+                if arg.endswith("/"): 
+                    arg = arg[:-1]
+                if "*" not in arg: 
+                    arg += "*"
                 if len(arg) > 2 and arg[1] == "_":
                     arg = "test" + arg[1:]
                 if fnmatch(method, arg):
