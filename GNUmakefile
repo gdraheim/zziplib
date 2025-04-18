@@ -84,8 +84,25 @@ k_%: ; $(PYTHON3) testbuilds.py $@ -vv $V --no-cache --keep
 b_%: ; $(PYTHON3) testbuilds.py $@ -vv $V --no-cache --failfast --local
 x_%: ; $(PYTHON3) testbuilds.py $@ -vv $V --no-cache --failfast --nonlocal
 t_%: ;    cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py $@ -vv $V
-test_%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py $@ -vv $V 
-est_%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py t$@ -vv $V --keep
+
+test_1%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py $@ -vv $V 
+est_1%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py t$@ -vv $V --keep
+test_2%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py $@ -vv $V 
+est_2%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py t$@ -vv $V --keep
+test_3%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py $@ -vv $V 
+est_3%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py t$@ -vv $V --keep
+test_4%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py $@ -vv $V 
+est_4%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py t$@ -vv $V --keep
+test_5%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py $@ -vv $V 
+est_5%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py t$@ -vv $V --keep
+test_6%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py $@ -vv $V 
+est_6%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py t$@ -vv $V --keep
+test_7%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py $@ -vv $V 
+est_7%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py t$@ -vv $V --keep
+test_8%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py $@ -vv $V 
+est_8%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py t$@ -vv $V --keep
+test_9%: ; $(PYTHON3) testbuilds.py $@ -vv $V 
+est_9%: ; $(PYTHON3) testbuilds.py t$@ -vv $V --keep
 
 b: ; grep "def test_" testbuilds.py | sed -e "s/ *def test_/make b_/" -e "s/(self).*//"
 t: ; grep "def test_" test/zziptests.py | sed -e "s/ *def test_/make t_/" -e "s/(self).*//"
