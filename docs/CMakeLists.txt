@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project(zzipbins VERSION "0.13.78" LANGUAGES C)
+project(zzipbins VERSION "0.13.79" LANGUAGES C)
 
 include ( GNUInstallDirs )
 include ( FindPkgConfig )
