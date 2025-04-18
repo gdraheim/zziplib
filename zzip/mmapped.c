@@ -514,20 +514,21 @@ zzip_disk_findnext(ZZIP_DISK* disk, struct zzip_disk_entry* entry)
         return 0;
     }
     if ((zzip_byte_t*) entry < disk->buffer ||                 /* .. */
-        (zzip_byte_t*) entry > disk->endbuf - sizeof(entry) || /* .. */
+        (zzip_byte_t*) entry > disk->endbuf - sizeof(*entry) || /* .. */
         ! zzip_disk_entry_check_magic(entry) ||                /* .. */
         zzip_disk_entry_sizeto_end(entry) > 64 * 1024) {
         errno = EBADMSG;
         return 0;
     }
     entry = zzip_disk_entry_to_next_entry(entry);
-    if ((zzip_byte_t*) entry > disk->endbuf - sizeof(entry) || /* .. */
+    if ((zzip_byte_t*) entry > disk->endbuf - sizeof(*entry) || /* .. */
         ! zzip_disk_entry_check_magic(entry) ||                /* .. */
         zzip_disk_entry_sizeto_end(entry) > 64 * 1024 ||       /* .. */
-        zzip_disk_entry_skipto_end(entry) + sizeof(entry) > disk->endbuf) {
+        zzip_disk_entry_skipto_end(entry) > disk->endbuf - sizeof(*entry)) {
         errno = ENOENT;
         return 0;
     }
+    fprintf(stderr, "findnext %p .. %p OK\n", entry, disk->endbuf);
     return entry;
 }
 
