@@ -276,6 +276,11 @@ zzip_disk_entry_to_file_header(ZZIP_DISK* disk, struct zzip_disk_entry* entry)
     zzip_off64_t offset = zzip_disk_entry_fileoffset(entry);
     if ((offset & 0xFFFFu) == 0xFFFFu) {
         zzip_byte_t* extras_ptr = zzip_disk_entry_to_extras(entry);
+        if (extras_ptr + sizeof(struct zzip_extra_zip64) > disk->endbuf) {
+            debug1("ZIP64 corrupted file header");
+            errno = EBADMSG;
+            return 0;
+        }
         if (ZZIP_EXTRA_ZIP64_CHECK(extras_ptr)) {
             struct zzip_extra_zip64* zip64 = (struct zzip_extra_zip64*) extras_ptr;
             WARN1("ZIP64 support incomplete");
