@@ -180,7 +180,9 @@ main(int argc, char** argv)
             if (i < 0)
                 printf("error %d\n", zzip_error(dir));
         }
+        zzip_fclose(fp);
     }
+    zzip_dir_close(dir);
 
     return 0;
 }

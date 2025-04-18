@@ -49,7 +49,7 @@ add_custom_command(OUTPUT "${outdir}/tmp.download.info.txt"
    COMMENT "make 'zziptestdownloads' before the tests to get the 'tmp.download' zip files seperately"
    COMMAND "${TOUCH}" "${outdir}/tmp.download.info.txt"
 )
-add_custom_target(zziptestdownloads DEPENDS "${outdir}/tmp.download.txt" "${outdir}/tmp.download")
+add_custom_target(zziptestdownloads DEPENDS "${outdir}/tmp.download.info.txt" "${outdir}/tmp.download")
 
 # targets ########################################################
 add_executable(zzipself    zzipself.c)
