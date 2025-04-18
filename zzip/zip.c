@@ -541,7 +541,7 @@ __zzip_parse_root_directory(int fd, struct _disk_trailer* trailer, struct zzip_d
                 if (extras_ptr >
                     fd_map + zz_rootsize + zz_fd_gap + sizeof(struct zzip_extra_zip64)) {
                     WARN1("ZIP64 corrupted file header");
-                    free (hdr0);
+                    free(hdr0);
                     return ZZIP_CORRUPTED;
                 }
             }
