@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.1)
+cmake_minimum_required (VERSION 3.10)
 project(zzipbins VERSION "0.13.78" LANGUAGES C)
 
 include ( GNUInstallDirs )
