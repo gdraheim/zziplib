@@ -537,7 +537,7 @@ __zzip_parse_root_directory(int fd, struct _disk_trailer* trailer, struct zzip_d
             zzip_off64_t zz_extras = zz_offset + sizeof(*d) + u_namlen;
             zzip_byte_t* extras_ptr;
             if (fd_map) {
-                zzip_byte_t* extras_ptr         = fd_map + zz_fd_gap + zz_extras;
+                extras_ptr = fd_map + zz_fd_gap + zz_extras;
                 if (extras_ptr >
                     fd_map + zz_rootsize + zz_fd_gap + sizeof(struct zzip_extra_zip64)) {
                     WARN1("ZIP64 corrupted file header");
