@@ -3675,12 +3675,38 @@ class ZZipTest(unittest.TestCase):
         mkzip = self.bins("mkzip")
         run = shell("{chdir} {tmpdir} &&  {mkzip} -9 {zipname}.zip d".format(**locals()))
         self.assertFalse(run.returncode)
+        run = shell("{chdir} {tmpdir} && unzip -v {zipname}.zip".format(**locals()))
+        logg.info("unzip \n%s", run.output)
         # list the ZIPfile
         exe = self.bins("unzip-mem")
-        run = shell("{chdir} {tmpdir} && ../{exe} -v {zipname}.zip".format(**locals()), returncodes=[0, -8, 136])
-        logg.error("FIXME: unzip-mem test_65485 is not solved")
-        self.skipTest("FIXME: not solved")
+        run = shell("{chdir} {tmpdir} && ../{exe} -v {zipname}.zip".format(**locals()), returncodes=[0])
         self.assertFalse(run.returncode)
+        self.assertIn("d/", run.output)
+        self.rm_testdir()
+
+    def test_65486_list_verbose_compressed_with_directory(self) -> None:
+        """ verbously list a zipfile containing directories """
+        chdir = "chdir"
+        if not exeext: chdir = "cd"
+        tmpdir = self.testdir()
+        workdir = tmpdir + "/d"
+        zipname = "ZIPfile"
+        os.makedirs(workdir)
+        f = open(tmpdir + "/d/file", "w+")
+        for i in range(10):
+            f.write("This is line %d\r\n" % (i + 1))
+        f.close()
+        # create the ZIPfile
+        mkzip = self.bins("mkzip")
+        run = shell("{chdir} {tmpdir} &&  {mkzip} -9r {zipname}.zip d".format(**locals()))
+        self.assertFalse(run.returncode)
+        run = shell("{chdir} {tmpdir} && unzip -v {zipname}.zip".format(**locals()))
+        logg.info("unzip \n%s", run.output)
+        # list the ZIPfile
+        exe = self.bins("unzip-mem")
+        run = shell("{chdir} {tmpdir} && ../{exe} -v {zipname}.zip".format(**locals()), returncodes=[0])
+        self.assertFalse(run.returncode)
+        self.assertIn("d/file", run.output)
         self.rm_testdir()
 
     url_CVE_2020_04 = "https://github.com/gdraheim/zziplib/files/5340201"
