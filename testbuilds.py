@@ -47,8 +47,8 @@ SOFTWARE = "../Software"
 
 DOCKER_SOCKET = "/var/run/docker.sock"
 DOCKER = "docker"
-BUILDPROGRESS=0
-BUILDCENTOS7=0
+BUILDPROGRESS = 0
+BUILDCENTOS7 = 0
 KEEP = False
 FORCE = False
 NOCACHE = False
@@ -4692,8 +4692,8 @@ if __name__ == "__main__":
     #
     _python = opt.python
     GIT = opt.git
-    BUILDPROGRESS=opt.buildprogress
-    BUILDCENTOS7=opt.buildcentos7
+    BUILDPROGRESS = opt.buildprogress
+    BUILDCENTOS7 = opt.buildcentos7
     DOCKER = opt.docker
     MIRROR = opt.mirror
     LOCAL = opt.local
@@ -4732,9 +4732,9 @@ if __name__ == "__main__":
                 continue
             testclass = globals()[classname]
             for method in sorted(dir(testclass)):
-                if arg.endswith("/"): 
+                if arg.endswith("/"):
                     arg = arg[:-1]
-                if "*" not in arg: 
+                if "*" not in arg:
                     arg += "*"
                 if len(arg) > 2 and arg[1] == "_":
                     arg = "test" + arg[1:]
