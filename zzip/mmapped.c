@@ -528,7 +528,6 @@ zzip_disk_findnext(ZZIP_DISK* disk, struct zzip_disk_entry* entry)
         errno = ENOENT;
         return 0;
     }
-    fprintf(stderr, "findnext %p .. %p OK\n", entry, disk->endbuf);
     return entry;
 }
 
