@@ -1,15 +1,17 @@
 #! /usr/bin/python3
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
+# pylint: disable=wrong-import-position,ungrouped-imports,invalid-name
 import sys
 import os.path
-
-zzipdocdir = os.path.dirname(__file__)
-sys.path = [zzipdocdir] + sys.path
-from zzipdoctool import md2dbk
-from unittest import TestCase, TestSuite, TextTestRunner, main
-from fnmatch import fnmatchcase as matches
-
 import os
 import logging
+from unittest import TestCase, TestSuite, TextTestRunner
+from fnmatch import fnmatchcase as matches
+
+zzipdocdir = os.path.dirname(os.path.abspath(__file__))
+sys.path = [zzipdocdir] + sys.path
+from zzipdoctool import md2dbk
+
 logg = logging.getLogger("TOOLS")
 
 class md2dbkTests(TestCase):
@@ -340,17 +342,16 @@ class md2dbkTests(TestCase):
         b = md2dbk.blocks4("> ###### a\n>\n>\n> ## b")
         self.assertEqual(b, ["<blockquote>", "###### a\n", "## b\n", "</blockquote>"])
 
-if __name__ == "__main__":
-    # main()
-    import optparse
-    _o = optparse.OptionParser("%prog [options] test_xxx")
-    _o.add_option("--failfast", action="store_true", default=False,
+def main() -> int:
+    import optparse # pylint: disable=deprecated-module,import-outside-toplevel
+    cmdline = optparse.OptionParser("%prog [options] test_xxx")
+    cmdline.add_option("--failfast", action="store_true", default=False,
                   help="Stop the test run on the first error or failure. [%default]")
-    _o.add_option("--xmlresults", metavar="FILE", default=None,
+    cmdline.add_option("--xmlresults", metavar="FILE", default=None,
                   help="capture results as a junit xml file [%default]")
-    _o.add_option("-v", "--verbose", action="count", default=0,
+    cmdline.add_option("-v", "--verbose", action="count", default=0,
                   help="increase logging output [%default]")
-    opt, args = _o.parse_args()
+    opt, args = cmdline.parse_args()
     logging.basicConfig(level=logging.WARNING - 10 * opt.verbose)
     #
     if not args: args += ["test_"]
@@ -367,8 +368,10 @@ if __name__ == "__main__":
                     suite.addTest(testclass(method))
     xmlresults = opt.xmlresults
     if xmlresults:
-        try: import xmlrunner  # type: ignore[import]
-        except: xmlresults = None
+        try:
+            import xmlrunner  # type: ignore[import] # pylint: disable=import-outside-toplevel
+        except ImportError:
+            xmlresults = None
     if xmlresults:
         if os.path.exists(opt.xmlresults):
             os.remove(opt.xmlresults)
@@ -379,4 +382,8 @@ if __name__ == "__main__":
         Runner = TextTestRunner
         result = Runner(verbosity=opt.verbose, failfast=opt.failfast).run(suite)
     if not result.wasSuccessful():
-        sys.exit(1)
+        return os.EX_DATAERR
+    return os.EX_OK
+
+if __name__ == "__main__":
+    sys.exit(main())
