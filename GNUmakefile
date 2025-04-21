@@ -264,6 +264,9 @@ dd:
 	diff -U0 $A/build/docs/zziplib.docbook $B/build/docs/zziplib.docbook
 
 # extras ..............................
+conan:
+	conan create . --build=missing
+
 auto:
 	- rm -v configure configure.ac
 	ln -s old.configure.ac configure.ac
