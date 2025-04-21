@@ -388,7 +388,7 @@ def main() -> int:
     xmlresults = opt.xmlresults
     if xmlresults:
         try:
-            import xmlrunner  # type: ignore[import] # pylint: disable=import-outside-toplevel
+            import xmlrunner  # type: ignore[import] # pylint: disable=import-error,import-outside-toplevel
         except ImportError:
             xmlresults = None
     if xmlresults:

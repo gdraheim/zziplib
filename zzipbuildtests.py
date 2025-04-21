@@ -4756,7 +4756,7 @@ def main() -> int:
         xmlresults = open(opt.xmlresults, "wb")  # type: ignore[assignment]
         logg.info("xml results into %s", opt.xmlresults)
     if xmlresults:
-        import xmlrunner  # type: ignore # pylint: disable=import-outside-toplevel
+        import xmlrunner  # type: ignore # pylint: disable=import-error,import-outside-toplevel
         Runner = xmlrunner.XMLTestRunner
         result = Runner(xmlresults).run(suite)
     else:
