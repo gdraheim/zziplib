@@ -1,4 +1,5 @@
 #! /usr/bin/env python3
+# type: ignore
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 
 from conan import ConanFile
@@ -19,11 +20,11 @@ class ZZipLibRecipe(ConanFile):
 
     def requirements(self) -> None:
         self.requires("zlib/[>=1.2.10 <1.3]")
-        if self.settings.os == "Windows":
+        if self.settings.os == "Windows":  # pylint: disable=no-member
             self.requires("base64/0.4.0")
 
     def build_requirements(self) -> None:
-        self.tool_requires("cmake/[>=3.10]")
+        self.tool_requires("cmake/[>=3.10]") # pylint: disable=not-callable
 
     def layout(self) -> None:
         cmake_layout(self)
