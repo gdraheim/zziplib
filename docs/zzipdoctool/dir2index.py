@@ -5,7 +5,10 @@
 """ Searches through a directory and creates an index page for it
 """
 
-__author__ = "Guido U. Draheim"
+__copyright__ = "(C) 2021 Guido Draheim"
+__contact__ = "https://github.com/gdraheim/zziplib"
+__license__ = "CC0 Creative Commons Zero (Public Domain)"
+__version__ = "0.13.79"
 
 from typing import List, Iterator, Optional
 import logging

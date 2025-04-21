@@ -1,5 +1,10 @@
 #! /usr/bin/python3
 
+__copyright__ = "(C) 2021 Guido Draheim"
+__contact__ = "https://github.com/gdraheim/zziplib"
+__license__ = "CC0 Creative Commons Zero (Public Domain)"
+__version__ = "0.13.79"
+
 from __future__ import print_function
 
 from typing import Optional, Iterator, Tuple

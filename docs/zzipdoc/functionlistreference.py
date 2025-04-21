@@ -1,8 +1,14 @@
 #! /usr/bin/env python3
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
-import logging
+
+__copyright__ = "(C) 2021 Guido Draheim"
+__contact__ = "https://github.com/gdraheim/zziplib"
+__license__ = "CC0 Creative Commons Zero (Public Domain)"
+__version__ = "0.13.79"
 
 from typing import Optional, List
+import logging
+
 from zzipdoc.htm2dbk import html2docbook
 from zzipdoc.htmldoctypes import DocOptions
 from zzipdoc.htmldoctypes import RefDocPart

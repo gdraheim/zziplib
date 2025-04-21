@@ -2,6 +2,10 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements,line-too-long
 # pylint: disable=unspecified-encoding
 
+__copyright__ = "(C) 2021 Guido Draheim"
+__contact__ = "https://github.com/gdraheim/zziplib"
+__license__ = "CC0 Creative Commons Zero (Public Domain)"
+__version__ = "0.13.79"
 
 """
 this file converts simple html text into a docbook xml variant. 

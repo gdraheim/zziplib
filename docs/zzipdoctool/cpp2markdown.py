@@ -3,6 +3,11 @@
 # pylint: disable=invalid-name,unspecified-encoding
 """ use pygments.lexer.CLexer to scan for C comment blocks and convert to basic markdown format """
 
+__copyright__ = "(C) 2021 Guido Draheim"
+__contact__ = "https://github.com/gdraheim/zziplib"
+__license__ = "CC0 Creative Commons Zero (Public Domain)"
+__version__ = "0.13.79"
+
 from typing import Iterator, Tuple, Optional
 import re
 import sys
