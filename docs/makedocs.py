@@ -162,8 +162,7 @@ class PerFunctionFamily:
                 retarget = is_retarget[1]
                 self.retarget[name] = retarget
         lead_list = []
-        for name in self.retarget:
-            into = self.retarget[name]
+        for name, into in self.retarget.items():
             if into not in name_list:
                 print("function '"+name+"' retarget into '"+into+
                       "' does not exist - keep alone")
