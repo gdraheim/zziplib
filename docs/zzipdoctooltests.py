@@ -1,6 +1,7 @@
 #! /usr/bin/python3
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
 # pylint: disable=wrong-import-position,ungrouped-imports,invalid-name
+""" unit tests for zziplib/docs/zzipdoctool """
 import sys
 import os.path
 import os
@@ -344,7 +345,7 @@ class md2dbkTests(TestCase):
 
 def main() -> int:
     import optparse # pylint: disable=deprecated-module,import-outside-toplevel
-    cmdline = optparse.OptionParser("%prog [options] test_xxx")
+    cmdline = optparse.OptionParser("%prog [options] test_xxx", epilog=__doc__)
     cmdline.add_option("-v", "--verbose", action="count", default=0, help="more logging")
     cmdline.add_option("-^", "--quiet", action="count", default=0, help="less logging")
     cmdline.add_option("--failfast", action="store_true", default=False,
