@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements,line-too-long,too-many-lines
-# pylint: disable=too-many-branches,too-many-statements,consider-using-with,unspecified-encoding,consider-using-f-string
+# pylint: disable=too-many-branches,too-many-statements,too-many-locals,too-many-arguments,too-many-positional-arguments,too-many-public-methods,no-else-return
+# pylint: disable=consider-using-with,unspecified-encoding,consider-using-f-string
 # pylint: disable=possibly-unused-variable,invalid-name,unused-variable,redefined-outer-name
 """ Testcases for zziplib build system """
 
