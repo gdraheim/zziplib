@@ -127,6 +127,7 @@ if they have some patch that should be integrated. Here are some links:
 * `make uninstalls`
 * `make ins` # pip for zzipdoctool
 * `make uns` # pip for zzipdoctool
+* `make bui` # build for pip twine
 * `make build` # default build
 * `make docs` # includes `make mans`
 * `make auto` # update automake variant
@@ -141,6 +142,8 @@ if they have some patch that should be integrated. Here are some links:
 * `make tag` 
    * and `git tag -F tmp.changes.txt v1.x` to the version in zziplib.spec
 * `git push --tags`
+* `make bui` 
+   * and run twine as shown to upload to pypi.org
 * update the short description on github
 * consider making a github release with the latest news
 
