@@ -1,4 +1,7 @@
 #! /usr/bin/env python3
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements,line-too-long,too-many-lines
+# pylint: disable=too-many-branches,too-many-statements,consider-using-with,unspecified-encoding,consider-using-f-string
+# pylint: disable=possibly-unused-variable,invalid-name,unused-variable,redefined-outer-name
 """ Testcases for zziplib build system """
 
 __copyright__ = "(C) Guido Draheim, all rights reserved"""
@@ -7,19 +10,15 @@ __contact__ = "https://github.com/gdraheim/zziplib"
 
 from typing import Union, Optional, Tuple, List, Iterator, NamedTuple, Mapping, Sequence
 import subprocess
+import os
 import os.path
-import time
-import datetime
 import unittest
 import shutil
 import inspect
-import types
 import logging
 import re
-from os import EX_USAGE, EX_DATAERR, EX_NOINPUT, EX_CANTCREAT, EX_SOFTWARE, EX_OK
 from collections import namedtuple
 from fnmatch import fnmatchcase as fnmatch
-from glob import glob
 import json
 import sys
 
@@ -87,14 +86,17 @@ class Run(NamedTuple):
     err: str
     code: int
 def sh(cmd: Union[str, List[str]], cwd: Optional[str] = None, shell: Optional[bool] = None,
-       input: Optional[str] = None, env: Mapping[str, str] = {"LANG": "C"}, returncodes: Optional[Sequence[Optional[int]]] = None) -> Run:
+       input: Optional[str] = None, env: Optional[Mapping[str, str]] = None, # pylint: disable=redefined-builtin
+       returncodes: Optional[Sequence[Optional[int]]] = None) -> Run:
+    env = env if env is not None else {"LANG": "C"}
     std = run(cmd, cwd, shell, input, env)
     if std.code:
         if not returncodes or std.code not in returncodes:
             raise subprocess.CalledProcessError(std.code, cmd, std.out, std.err)
     return std
 def run(cmd: Union[str, List[str]], cwd: Optional[str] = None, shell: Optional[bool] = None,
-        input: Optional[str] = None, env: Mapping[str, str] = {"LANG": "C"}) -> Run:
+        input: Optional[str] = None, env: Optional[Mapping[str, str]] = None) -> Run: # pylint: disable=redefined-builtin
+    env = env if env is not None else {"LANG": "C"}
     if isinstance(cmd, str):
         logg.info(": %s", cmd)
         shell = True if shell is None else shell
@@ -176,7 +178,7 @@ def download(base_url: str, filename: str, into: str) -> None:
     if not os.path.isdir(into):
         os.makedirs(into)
     if not os.path.exists(os.path.join(into, filename)):
-        sh____("cd {into} && wget {base_url}/{filename}".format(**locals()))
+        sh____(F"cd {into} && wget {base_url}/{filename}")
 def text_file(filename: str, content: str) -> None:
     filedir = os.path.dirname(filename)
     if not os.path.isdir(filedir):
@@ -291,12 +293,12 @@ class ZZiplibBuildTest(unittest.TestCase):
         if not os.path.isdir(path):
             os.makedirs(path)
     def user(self) -> str:
-        import getpass
+        import getpass # pylint: disable=import-outside-toplevel
         return getpass.getuser()
     def ip_container(self, name: str) -> str:
         docker = DOCKER
-        cmd = "{docker} inspect {name}"
-        values = output(cmd.format(**locals()))
+        cmd = F"{docker} inspect {name}"
+        values = output(cmd)
         values = json.loads(values)
         if not values or "NetworkSettings" not in values[0]:
             logg.critical(" %s inspect %s => %s ", docker, name, values)
@@ -310,7 +312,7 @@ class ZZiplibBuildTest(unittest.TestCase):
             return image
         add_hosts = self.start_mirror(image)
         if add_hosts:
-            return "{add_hosts} {image}".format(**locals())
+            return F"{add_hosts} {image}"
         return image
     def local_addhosts(self, dockerfile: str, extras: Optional[str] = None) -> str:
         image = ""
@@ -319,7 +321,7 @@ class ZZiplibBuildTest(unittest.TestCase):
             if m:
                 image = m.group(1)
                 break
-            m = re.match("[Ff][Rr][Oo][Mm] *(\w[^ ]*)", line)
+            m = re.match("[Ff][Rr][Oo][Mm] *(\\w[^ ]*)", line)
             if m:
                 image = m.group(1).strip()
                 break
@@ -335,8 +337,8 @@ class ZZiplibBuildTest(unittest.TestCase):
             return ""
         if LOCAL:
             mirror += " --local"
-        cmd = "{mirror} start {image} --add-hosts {extras}"
-        out, rc = output2(cmd.format(**locals()))
+        cmd = F"{mirror} start {image} --add-hosts {extras}"
+        out, rc = output2(cmd)
         if LOCAL and rc:
             raise SystemError("--local docker-mirror-packages-repo not found")
         return decodes(out).strip()
@@ -359,7 +361,7 @@ class ZZiplibBuildTest(unittest.TestCase):
             if m:
                 image = m.group(1)
                 break
-            m = re.match("[Ff][Rr][Oo][Mm] *(\w[^ ]*)", line)
+            m = re.match("[Ff][Rr][Oo][Mm] *(\\w[^ ]*)", line)
             if m:
                 image = m.group(1).strip()
                 break
@@ -370,10 +372,10 @@ class ZZiplibBuildTest(unittest.TestCase):
     def pull_image(self, image: str, extras: Optional[str] = None) -> str:
         extras = extras or ""
         docker = DOCKER
-        cmd = "{docker} pull {image}"
-        out, rc = output2(cmd.format(**locals()))
+        cmd = F"{docker} pull {image}"
+        out, rc = output2(cmd)
         if rc:
-            logg.error("could not pull {image}".format(**locals()))
+            logg.error("could not pull %s", image)
         return decodes(out).strip()
     def latest(self, previous: int = 0, latest: str = "latest") -> str:
         if not previous:
@@ -1158,7 +1160,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} exec {testname} /src/build/zzipwrap/zzipwrap /src/test/test.zip"
         ret = run(cmd.format(**locals()))
         logg.info("[%s] ERR %s", ret.code, ret.err)
-        self.assertEqual(EX_SOFTWARE, ret.code)
+        self.assertEqual(os.EX_SOFTWARE, ret.code)
         self.assertIn("largefile mismatch", ret.err)
         #
         logg.info("____________________ /external")
@@ -4617,7 +4619,7 @@ def run_clean() -> None:
     docker = DOCKER
     saveto = SAVETO
     pattern = docname("*.dockerfile")
-    logg.log(NOTE, "  docker rmi {saveto}/{pattern}".format(**locals()))
+    logg.log(NOTE, "  docker rmi %s/%s", saveto, pattern)
     for line in output(docker + " images --format '{{.ID}} # {{.Repository}}:{{.Tag}}'").splitlines():
         check = "* # {saveto}/{pattern}".format(**locals())
         if fnmatch(line, check):
@@ -4647,10 +4649,11 @@ def run_help() -> None:
 
 
 def main() -> int:
+    # pylint: disable=global-statement
     global _python, GIT, BUILDPROGRESS, BUILDCENTOS7, DOCKER, MIRROR, LOCAL, NONLOCAL, OLDER, KEEP, FORCE, NOCACHE, MAKECHECK
-    from optparse import OptionParser
-    cmdline = OptionParser("%prog [options] test*",
-                      epilog=__doc__.strip().split("\n")[0])
+    import optparse # pylint: disable=deprecated-module,import-outside-toplevel
+    cmdline = optparse.OptionParser("%prog [options] test*",
+                      epilog=__doc__.strip().split("\n", 1)[0])
     cmdline.add_option("-v", "--verbose", action="count", default=0, help="more logging")
     cmdline.add_option("-^", "--quiet", action="count", default=0, help="less logging")
     cmdline.add_option("-?", "--version", action="count", default=0, help="author info")
@@ -4692,7 +4695,7 @@ def main() -> int:
         print("version:", __version__)
         print("contact:", __contact__)
         print("authors:", __copyright__)
-        return EX_OK
+        return os.EX_OK
     #
     _python = opt.python
     GIT = opt.git
@@ -4752,18 +4755,18 @@ def main() -> int:
         xmlresults = open(opt.xmlresults, "wb")  # type: ignore[assignment]
         logg.info("xml results into %s", opt.xmlresults)
     if xmlresults:
-        import xmlrunner  # type: ignore
+        import xmlrunner  # type: ignore # pylint: disable=import-outside-toplevel
         Runner = xmlrunner.XMLTestRunner
         result = Runner(xmlresults).run(suite)
     else:
         Runner = unittest.TextTestRunner
         result = Runner(verbosity=opt.verbose, failfast=opt.failfast).run(suite)
     if not result.wasSuccessful():
-        return EX_DATAERR
+        return os.EX_DATAERR
     if not KEEP and result.testsRun and args == ["test_*"]:
         run_clean()
     logg.log(DONE, "OK - ran %s tests", result.testsRun)
-    return EX_OK
+    return os.EX_OK
 
 if __name__ == "__main__":
     sys.exit(main())
