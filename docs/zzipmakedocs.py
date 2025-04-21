@@ -1,5 +1,6 @@
 #! /usr/bin/python3
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements,line-too-long
+# pylint: disable=too-many-branches,too-few-public-methods,too-many-locals
 # pylint: disable=wrong-import-position
 """ generate docbook.xml from *.c input sources with `/**` comment blocks, to be further converted to individual manpages/htmlpages """
 

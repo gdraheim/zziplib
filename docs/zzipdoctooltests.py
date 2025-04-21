@@ -1,5 +1,6 @@
 #! /usr/bin/python3
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
+# pylint: disable=too-many-branches,too-many-public-methods
 # pylint: disable=wrong-import-position,ungrouped-imports,invalid-name
 """ unit tests for zziplib/docs/zzipdoctool """
 
