@@ -1,5 +1,7 @@
 # zzipmakedocs
 
+generate troff manpages and htm manual pages from C source comments via docbook reference and markdown parts
+
 ## background
 
 The ZZipLib had been embedding documentation into the C source code from the beginning.
