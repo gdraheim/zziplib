@@ -105,6 +105,8 @@ test_8%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py $@ -vv $V
 est_8%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py t$@ -vv $V --keep
 test_9%: ; $(PYTHON3) testbuilds.py $@ -vv $V 
 est_9%: ; $(PYTHON3) testbuilds.py t$@ -vv $V --keep
+test_0%: ; cd docs && $(PYTHON3) zzipdoctooltests.py $@ -vv $V 
+est_0%: ; cd docs && $(PYTHON3) zzipdoctooltests.py t$@ -vv $V --keep
 
 b: ; grep "def test_" testbuilds.py | sed -e "s/ *def test_/make b_/" -e "s/(self).*//"
 t: ; grep "def test_" test/zziptests.py | sed -e "s/ *def test_/make t_/" -e "s/(self).*//"
