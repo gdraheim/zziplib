@@ -3,7 +3,7 @@
 
 from zzipdoc.match import Match
 
-class dbk2htm_conversion:
+class HtmlConversions:
     mapping = { "<screen>" : "<pre>", "</screen>" : "</pre>",
                 "<para>" : "<p>", "</para>" : "</p>" ,
                 "<function>" : "<link>", "</function>" : "</link>" }
@@ -23,6 +23,6 @@ class dbk2htm_conversion:
         return txt
 
 def section2html(text: str) -> str:
-    return dbk2htm_conversion().section2html(text)
+    return HtmlConversions().section2html(text)
 def paramdef2html(text: str) -> str:
-    return dbk2htm_conversion().paramdef2html(text)
+    return HtmlConversions().paramdef2html(text)

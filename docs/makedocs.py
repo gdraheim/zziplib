@@ -31,7 +31,8 @@ from zzipdoc.functionlisthtmlpage import FunctionListHtmlPage
 from zzipdoc.dbk2htm import section2html, paramdef2html
 from zzipdoc.htmldoctypes import RefDocPart
 from zzipdoc.htmldocument import HtmlDocPart, HtmlDocument
-from zzipdoc.docbookdocument import FunctionListReference, DocbookDocument
+from zzipdoc.functionlistreference import FunctionListReference
+from zzipdoc.docbookdocument import DocbookDocument
 
 NIX = ""
 
