@@ -235,6 +235,27 @@ uns uninstall-tools: setup.py
 	$(PYTHON3) -m pip uninstall -v --yes $$(sed -e '/^name *=/!d' -e 's/.*= *//' setup.cfg)
 	rm -v setup.py
 
+# compare ..............................
+zziplibsrc = zzip/dir.c zzip/err.c zzip/fetch.c zzip/file.c zzip/fseeko.c zzip/info.c \
+             zzip/memdisk.c zzip/mmapped.c zzip/plugin.c zzip/stat.c zzip/write.c zzip/zip.c
+
+
+A = .
+B = ../zziplib_master
+mm:
+	mkdir -p $A/build/docs
+	cd $A && $(PYTHON3) docs/makedocs.py $(zziplibsrc) --package=zziplib --version=0.13.80 --onlymainheader=zzip/lib.h --output=build/docs/zziplib
+	cd $A/build/docs && cp zziplib.docbook zziplib.xml
+	cd $A/build/docs && $(PYTHON3) ../../docs/tools/dbk2man.py -o man3 man zziplib.xml -vv
+
+nn:
+	mkdir -p $B/build/docs
+	cd $B && $(PYTHON3) docs/makedocs.py $(zziplibsrc) --package=zziplib --version=0.13.80 --onlymainheader=zzip/lib.h --output=build/docs/zziplib
+	cd $B/build/docs && cp zziplib.docbook zziplib.xml
+	cd $B/build/docs && $(PYTHON3) ../../docs/tools/dbk2man.py -o man3 man zziplib.xml -vv
+dd:
+	diff -U0 $A/build/docs/zziplib.docbook $B/build/docs/zziplib.docbook
+
 # extras ..............................
 auto:
 	- rm -v configure configure.ac
