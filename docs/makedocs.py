@@ -132,10 +132,10 @@ class PerFunctionFamily:
         self.families = []
         self.retarget = {}
         self.entries = []
-    def add_PerFunction(self, per_list: PerFunction) -> None:
+    def add_function(self, per_list: PerFunction) -> None:
         for item in per_list.entries:
-            self.add_PerFunctionEntry(item)
-    def add_PerFunctionEntry(self, item: PerFunctionEntry) -> None:
+            self.add_functionentry(item)
+    def add_functionentry(self, item: PerFunctionEntry) -> None:
         self.functions += [ item ]
     def get_function(self, name: str) -> Optional[PerFunctionEntry]:
         for item in self.functions:
@@ -313,7 +313,7 @@ def makedocs(filenames: List[str], o: DocOptions) -> None:
             per_function.add(child, funccomment, funcprototype)
     per_family = PerFunctionFamily()
     for item in per_function.entries:
-        per_family.add_PerFunctionEntry(item)
+        per_family.add_functionentry(item)
     per_family.fill_families()
     # debug output....
     # per_file.print_list_mainheader()
