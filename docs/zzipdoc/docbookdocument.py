@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
-# pylint: disable=broad-exception-caught,unspecified-encoding
+# pylint: disable=broad-exception-caught,unspecified-encoding,consider-using-with,no-else-return
 
 __copyright__ = "(C) 2021 Guido Draheim"
 __contact__ = "https://github.com/gdraheim/zziplib"
@@ -41,7 +41,7 @@ class DocbookDocument:
         return self
     def get_title(self) -> Optional[str]:
         if self.title: return self.title
-        try:   
+        try:
             return self.text[0].get_title()
         except Exception as e:
             logg.info("could not get title: %s", e)

@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements,line-too-long
-# pylint: disable=unspecified-encoding,invalid-name
+# pylint: disable=unspecified-encoding,invalid-name,consider-using-with,too-few-public-methods
 """
 this file converts simple html text into a docbook xml variant. 
 The mapping of markups and links is far from perfect. But all we
