@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
-# pylint: disable=unspecified-encoding,consider-using-f-string
+# pylint: disable=too-many-branches,too-many-locals
+# pylint: disable=unspecified-encoding,consider-using-f-string,consider-using-with
 
 """ Searches through a directory and creates an index page for it
 """

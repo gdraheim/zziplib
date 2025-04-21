@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
-# pylint: disable=unspecified-encoding
+# pylint: disable=unspecified-encoding,consider-using-with
 
 __copyright__ = "(C) 2021 Guido Draheim"
 __contact__ = "https://github.com/gdraheim/zziplib"

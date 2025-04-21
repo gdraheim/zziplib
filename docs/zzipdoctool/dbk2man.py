@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements,line-too-long
+# pylint: disable=too-many-branches,too-many-locals,too-many-statements,no-else-return
 # pylint: disable=consider-using-f-string,unused-argument,unspecified-encoding
 
 """ Converts an xml-file with docbook elements into troff manual pages.

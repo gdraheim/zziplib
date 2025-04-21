@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements,line-too-long
-# pylint: disable=consider-using-f-string,invalid-name,unspecified-encoding
+# pylint: disable=too-many-branches,too-many-statements,too-many-return-statements,too-many-locals,too-few-public-methods,no-else-return
+# pylint: disable=consider-using-f-string,invalid-name,unspecified-encoding,consider-using-with,use-yield-from
 
 __copyright__ = "(C) 2021 Guido Draheim"
 __contact__ = "https://github.com/gdraheim/zziplib"
@@ -51,7 +52,7 @@ def blocks4(text: str) -> List[str]:
     for block in _blocks(text):
         blocks.append(block)
     return blocks
-def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str, None, None]:
+def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str, None, None]: # pylint: disable=redefined-builtin
     """ this function cuts the input string into text blocks.
     The original text content is not modified but some additional
     container blocks are generated which return the single-line 
@@ -79,11 +80,11 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
             if fenced:
                 pass
             elif blockquote.count(">") < newblock.count(">"):
-                for newdepth in range(blockquote.count(">"), newblock.count(">")):
+                for _ in range(blockquote.count(">"), newblock.count(">")):
                     yield mark.newBQ or "<%s>" % mark.BQ
                 blockquote = newblock
             elif newblock.count(">") < blockquote.count(">"):
-                for newdepth in range(newblock.count(">"), blockquote.count(">")):
+                for _ in range(newblock.count(">"), blockquote.count(">")):
                     if text:
                         yield text
                         text = ""
@@ -107,7 +108,7 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
             elif fenced:
                 pass
             elif listblock.count("*") < newblock.count("*"):
-                for newdepth in range(listblock.count("*"), newblock.count("*")):
+                for _ in range(listblock.count("*"), newblock.count("*")):
                     if text:
                         yield text
                         text = ""
@@ -115,7 +116,7 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
                     yield mark.newLI or "<%s>" % mark.LI
                 listblock = newblock
             elif newblock.count("*") < listblock.count("*"):
-                for newdepth in range(newblock.count("*"), listblock.count("*")):
+                for _ in range(newblock.count("*"), listblock.count("*")):
                     if text:
                         yield text
                         text = ""
@@ -354,11 +355,11 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
                 line = _blockquote2.group(2)
             # assert not fenced
             if blockquote.count(">") < newblock.count(">"):
-                for newdepth in range(blockquote.count(">"), newblock.count(">")):
+                for _ in range(blockquote.count(">"), newblock.count(">")):
                     yield mark.newBQ or "<%s>" % mark.BQ
                 blockquote = newblock
             elif newblock.count(">") < blockquote.count(">"):
-                for newdepth in range(newblock.count(">"), blockquote.count(">")):
+                for _ in range(newblock.count(">"), blockquote.count(">")):
                     if text:
                         yield text
                         text = ""
@@ -374,7 +375,7 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
                 newblock = _newlist2.group(1)
             # assert not fenced
             if listblock.count("*") < newblock.count("*"):
-                for newdepth in range(listblock.count("*"), newblock.count("*")):
+                for _ in range(listblock.count("*"), newblock.count("*")):
                     if text:
                         yield text
                         text = ""
@@ -382,7 +383,7 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
                     yield mark.newLI or "<%s>" % mark.LI
                 listblock = newblock
             elif newblock.count("*") < listblock.count("*"):
-                for newdepth in range(newblock.count("*"), listblock.count("*")):
+                for _ in range(newblock.count("*"), listblock.count("*")):
                     if text:
                         yield text
                         text = ""
@@ -408,11 +409,11 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
     if text:
         yield text
         text = ""
-    for olddepth in range(listblock.count("*")):
+    for _ in range(listblock.count("*")):
         yield mark.endLI or "</%s>" % mark.LI
         yield mark.endUL or "</%s>" % mark.UL
         listblock = ""
-    for olddepth in range(blockquote.count(">")):
+    for _ in range(blockquote.count(">")):
         yield mark.endBQ or "</%s>" % mark.BQ
         blockquote = ""
 
@@ -609,7 +610,7 @@ def _xmlblocks(block: str) -> List[str]:
     return blocks
 
 escaping = {"*": "ast", "[": "lbra", "]": "rbra", "(": "lpar", ")": "rpar", "\n<br />": "br"}
-descaping = dict([(name, char) for char, name in escaping.items()])
+descaping = dict({name: char for char, name in escaping.items()}) # dict-comprehension
 
 def formatting(block: str) -> str:
     return descapes(inlines(escapes(block)))

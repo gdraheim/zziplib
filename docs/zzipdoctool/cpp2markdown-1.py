@@ -1,4 +1,5 @@
 #! /usr/bin/python3
+# pylint: disable-all
 
 __copyright__ = "(C) 2021 Guido Draheim"
 __contact__ = "https://github.com/gdraheim/zziplib"

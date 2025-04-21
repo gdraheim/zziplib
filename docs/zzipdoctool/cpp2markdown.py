@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
-# pylint: disable=invalid-name,unspecified-encoding
+# pylint: disable=too-many-branches,too-many-return-statements,too-many-statements,too-many-instance-attributes,no-else-return
+# pylint: disable=invalid-name,unspecified-encoding,consider-using-with
 """ use pygments.lexer.CLexer to scan for C comment blocks and convert to basic markdown format """
 
 __copyright__ = "(C) 2021 Guido Draheim"
@@ -20,6 +21,7 @@ from pygments.token import Token
 logg = logging.getLogger("CPP2MD")
 
 OK = True
+TODO = False
 FileComment = "FileComment"
 FileInclude = "FileInclude"
 FunctionComment = "FunctionComment"
@@ -125,7 +127,8 @@ class CppToMarkdown:
         if self.alldefinitions >= 2:
             return True
         logg.debug("@ NO ** COMMENT %s", self.function_text.strip())
-        defs = self.function_text
+        if not TODO:
+            defs = self.function_text # pylint: disable=unused-variable
         return False
     def parse(self, filetext: str) -> Iterator[Tuple[str,str]]:
         c = lexer.CLexer()
