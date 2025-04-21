@@ -4116,19 +4116,20 @@ def main() -> int:
     global MKZIP, UNZIP, UNZIP_SKIP, EXEEXT # pylint: disable=global-statement
     import optparse # pylint: disable=deprecated-module,import-outside-toplevel
     cmdline = optparse.OptionParser("%prog [options] test_xxx", epilog=__doc__)
+    cmdline.formatter.max_help_position = 37
     cmdline.add_option("-D", "--downloadonly", action="store_true", default=downloadonly,
                        help="setup helper: get downloads only [%default]")
     cmdline.add_option("-d", "--downloaddir", metavar="DIR", default=downloaddir,
                        help="put and get downloads from here [%default]")
     cmdline.add_option("-n", "--nodownloads", action="store_true", default=nodownloads,
-                       help="no downloads / skipping CVE zip file tests [%default]")
+                       help="no downloads / skipping CVE zip file tests")
     cmdline.add_option("--downloads", metavar="YES", default="")
     cmdline.add_option("-b", "--bindir", metavar="DIR", default=bindir,
                        help="path to the bindir to use [%default]")
     cmdline.add_option("-s", "--topsrcdir", metavar="DIR", default=topsrcdir,
                        help="path to the top srcdir / unpack directory [%default]")
     cmdline.add_option("-t", "--testdatadir", metavar="DIR", default=testdatadir,
-                       help="path where temporary testdata is created [%default]")
+                       help="path for temporary testdata [%default]")
     cmdline.add_option("-Z", "--mkzip", metavar="EXE", default=MKZIP,
                        help="name or path to zip.exe for *.zip creation [%default]")
     cmdline.add_option("-U", "--unzip", metavar="EXE", default=UNZIP,
@@ -4138,7 +4139,7 @@ def main() -> int:
     cmdline.add_option("-K", "--keep", action="store_true", default=KEEP,
                        help="Keep test data around. [%default]")
     cmdline.add_option("--failfast", action="store_true", default=False,
-                       help="Stop the test run on the first error or failure. [%default]")
+                       help="Stop the test run on the first error or failure.")
     cmdline.add_option("--xmlresults", metavar="FILE", default=None,
                        help="capture results as a junit xml file [%default]")
     cmdline.add_option("-v", "--verbose", action="count", default=0,

@@ -4655,11 +4655,12 @@ def main() -> int:
     import optparse # pylint: disable=deprecated-module,import-outside-toplevel
     cmdline = optparse.OptionParser("%prog [options] test*",
                                     epilog=__doc__.strip().split("\n", 1)[0])
+    cmdline.formatter.max_help_position = 29
     cmdline.add_option("-v", "--verbose", action="count", default=0, help="more logging")
     cmdline.add_option("-^", "--quiet", action="count", default=0, help="less logging")
     cmdline.add_option("-?", "--version", action="count", default=0, help="author info")
     cmdline.add_option("-p", "--python", metavar="EXE", default=_python,
-                       help="use another python execution engine [%default]")
+                       help="use another python [%default]")
     cmdline.add_option("-G", "--git", metavar="EXE", default=GIT,
                        help="use another git client [%default]")
     cmdline.add_option("-D", "--docker", metavar="EXE", default=DOCKER,
@@ -4687,7 +4688,7 @@ def main() -> int:
     cmdline.add_option("-l", "--logfile", metavar="FILE", default="",
                        help="additionally save the output log to a file [%default]")
     cmdline.add_option("--failfast", action="store_true", default=False,
-                       help="Stop the test run on the first error or failure. [%default]")
+                       help="Stop the test run on the first error or failure.")
     cmdline.add_option("--xmlresults", metavar="FILE", default=None,
                        help="capture results as a junit xml file [%default]")
     opt, args = cmdline.parse_args()

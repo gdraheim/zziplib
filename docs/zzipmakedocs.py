@@ -370,6 +370,7 @@ def makedocs(filenames: List[str], o: DocOptions) -> None:
 def main() -> int:
     import optparse # pylint: disable=deprecated-module,import-outside-toplevel
     cmdline = optparse.OptionParser("%prog [file.c].. --package=x --release=y --onlymainheader=zzip/lib.h", epilog=__doc__)
+    cmdline.formatter.max_help_position = 37
     cmdline.add_option("-v", "--verbose", action="count", default=0, help="more logging")
     cmdline.add_option("-^", "--quiet", action="count", default=0, help="less logging")
     cmdline.add_option("-?", "--version", action="count", default=0, help="author info")
