@@ -149,9 +149,9 @@ def html2docbook(text: str) -> str:
     """ the C comment may contain html markup - simulate with docbook tags """
     return htm2dbk_conversion().convert2(text)
 
-if __name__ == "__main__":
-    from optparse import OptionParser # pylint: disable=deprecated-module
-    cmdline = OptionParser("%prog [options] files...")
+def main() -> int:
+    import optparse # pylint: disable=deprecated-module,import-outside-toplevel
+    cmdline = optparse.OptionParser("%prog [options] files...")
     cmdline.add_option("-o", "--into", metavar="FILE", default="")
     opt, cmdline_args = cmdline.parse_args()
     result = htm2dbk_files(cmdline_args)
@@ -160,3 +160,7 @@ if __name__ == "__main__":
     else:
         with open(opt.into, "w") as _into:
             _into.write(result)
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())

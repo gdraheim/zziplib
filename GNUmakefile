@@ -13,6 +13,8 @@ MINPYTHON=3.8
 GIT=git
 ALL=all
 
+-include GNUmakefile.inc
+
 .PHONY: build docs bins test tests testbuilds
 
 default: build
@@ -204,36 +206,36 @@ missing32:
 	  ; else echo "WARNING: missing 32bit for $$new"; fi ; fi; fi; fi; done; }
 
 # .....................................
-README: README.MD GNUmakefile
-	cat README.MD | sed -e "/\\/badge/d" -e /^---/q > README
-setup.py: GNUmakefile
-	{ echo '#!/usr/bin/env python3' \
-	; echo 'import setuptools' \
-	; echo 'setuptools.setup()' ; } > setup.py
-	chmod +x setup.py
-setup.py.tmp: GNUmakefile
-	echo "import setuptools ; setuptools.setup()" > setup.py
+tmp/README: README.MD GNUmakefile
+	cat $< | sed -e "/\\/badge/d" -e /^---/q > $@
 
 bui build-tools:
 	rm -rf build dist *.egg-info
-	$(MAKE) $(PARALLEL) README setup.py
-	# pip install --root=~/local . -v
-	$(PYTHON3) setup.py sdist
-	- rm -v setup.py README
+	$(MAKE) $(PARALLEL) tmp/README
+	$(PYTHON3) -m build
+	- rm -v tmp/README
+	$MAKE fix-metadata-version
 	$(TWINE) check dist/*
 	: $(TWINE) upload dist/*
 
 ins install-tools:
-	$(MAKE) setup.py
+	$(MAKE) $(PARALLEL) tmp/README
 	$(PYTHON3) -m pip install --no-compile --user .
-	rm -v setup.py
-	$(MAKE) show-setup | sed -e "s|[.][.]/[.][.]/[.][.]/bin|$$HOME/.local/bin|"
-sho show-setup:
-	python3 -m pip show -f $$(sed -e '/^name *=/!d' -e 's/.*= *//' setup.cfg)
-uns uninstall-tools: setup.py
-	$(MAKE) setup.py
-	$(PYTHON3) -m pip uninstall -v --yes $$(sed -e '/^name *=/!d' -e 's/.*= *//' setup.cfg)
-	rm -v setup.py
+	rm -v tmp/README
+	$(MAKE) sho
+sho: ; $(MAKE) show-setup | sed -e "s|[.][.]/[.][.]/[.][.]/bin|$$HOME/.local/bin|"
+show-setup:
+	$(PYTHON3) -m pip show --files `sed -e '/^name *=/!d' -e 's/name *= *"//' -e 's/".*//' pyproject.toml` 
+
+uns uninstall-tools:
+	$(PYTHON3) -m pip uninstall -v --yes `sed -e '/^name *=/!d' -e 's/name *= *"//' -e 's/".*//'  pyproject.toml`
+
+fix-metadata-version:
+	ls dist/*
+	rm -rf dist.tmp; mkdir dist.tmp
+	cd dist.tmp; for z in ../dist/*; do case "$$z" in *.whl) unzip $$z ;; *) tar xzvf $$z;; esac \
+	; ( find . -name PKG-INFO ; find . -name METADATA ) | while read f; do echo FOUND $$f; sed -i -e "s/Metadata-Version: 2.4/Metadata-Version: 2.2/" $$f; done \
+	; case "$$z" in *.whl) zip -r $$z * ;; *) tar czvf $$z *;; esac ; ls -l $$z; done
 
 # compare ..............................
 zziplibsrc = zzip/dir.c zzip/err.c zzip/fetch.c zzip/file.c zzip/fseeko.c zzip/info.c \

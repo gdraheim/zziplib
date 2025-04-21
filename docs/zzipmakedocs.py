@@ -7,7 +7,9 @@ import sys
 import os.path
 import logging
 
-sys.path = [ os.path.dirname(__file__) ] + sys.path
+zzipdocdir = os.path.dirname(__file__)
+if zzipdocdir.startswith("zzip"):
+    sys.path = [ zzipdocdir ] + sys.path
 # from zzipdoc.match import *
 # from zzipdoc.textfile import *
 # from zzipdoc.textfileheader import *
