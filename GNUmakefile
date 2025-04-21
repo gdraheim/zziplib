@@ -218,22 +218,15 @@ missing32:
 	  ; else echo "WARNING: missing 32bit for $$new"; fi ; fi; fi; fi; done; }
 
 # .....................................
-tmp/README: README.MD GNUmakefile
-	cat $< | sed -e "/\\/badge/d" -e /^---/q > $@
-
 bui build-tools:
 	rm -rf build dist *.egg-info
-	$(MAKE) $(PARALLEL) tmp/README
 	$(PYTHON3) -m build
-	- rm -v tmp/README
-	$MAKE fix-metadata-version
+	$(MAKE) fix-metadata-version
 	$(TWINE) check dist/*
 	: $(TWINE) upload dist/*
 
 ins install-tools:
-	$(MAKE) $(PARALLEL) tmp/README
 	$(PYTHON3) -m pip install --no-compile --user .
-	rm -v tmp/README
 	$(MAKE) sho
 sho: ; $(MAKE) show-setup | sed -e "s|[.][.]/[.][.]/[.][.]/bin|$$HOME/.local/bin|"
 show-setup:
