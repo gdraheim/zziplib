@@ -6,7 +6,7 @@ from typing import Optional, List
 import logging
 
 from zzipdoc.match import Match
-from zzipdoc.options import DocOptions
+from zzipdoc.htmldoctypes import DocOptions
 from zzipdoc.functionlistreference import FunctionListReference
 
 logg = logging.getLogger(__name__)

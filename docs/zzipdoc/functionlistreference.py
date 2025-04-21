@@ -4,7 +4,7 @@ import logging
 
 from typing import Optional, List
 from zzipdoc.htm2dbk import html2docbook
-from zzipdoc.options import DocOptions
+from zzipdoc.htmldoctypes import DocOptions
 from zzipdoc.htmldoctypes import RefDocPart
 
 logg = logging.getLogger(__name__)

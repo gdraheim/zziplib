@@ -11,7 +11,6 @@ class HtmlDocPart:
     def get_title(self) -> str:
         return ""
 
-
 class HtmlStylePart:
     def xml_style(self) -> str:
         return ""
@@ -49,3 +48,14 @@ class RefDocPart:
         return None
     def get_copyright(self) -> Optional[str]:
         return None
+
+class DocOptions:
+    package = ""
+    program = ""
+    html = "html"
+    docbook = "docbook"
+    output = ""
+    suffix = ""
+    onlymainheader = ""
+    version = ""
+    body = ""

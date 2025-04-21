@@ -1,23 +1,39 @@
 #! /usr/bin/python3
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements,line-too-long
+# pylint: disable=wrong-import-position
 from typing import Optional, List, Dict
 
 import sys
 import os.path
+import logging
 
 sys.path = [ os.path.dirname(__file__) ] + sys.path
-from zzipdoc.match import *
-from zzipdoc.options import *
-from zzipdoc.textfile import *
-from zzipdoc.textfileheader import *
-from zzipdoc.functionheader import *
-from zzipdoc.functionprototype import *
-from zzipdoc.commentmarkup import *
-from zzipdoc.functionlisthtmlpage import *
-from zzipdoc.functionlistreference import *
-from zzipdoc.dbk2htm import *
-from zzipdoc.htmldoctypes import *
-from zzipdoc.htmldocument import *
-from zzipdoc.docbookdocument import *
+# from zzipdoc.match import *
+# from zzipdoc.textfile import *
+# from zzipdoc.textfileheader import *
+# from zzipdoc.functionheader import *
+# from zzipdoc.functionprototype import *
+# from zzipdoc.commentmarkup import *
+# from zzipdoc.functionlisthtmlpage import *
+# from zzipdoc.functionlistreference import *
+# from zzipdoc.dbk2htm import *
+# from zzipdoc.htmldoctypes import *
+# from zzipdoc.htmldocument import *
+# from zzipdoc.docbookdocument import *
+
+from zzipdoc.match import Match
+from zzipdoc.htmldoctypes import DocOptions
+from zzipdoc.textfileheader import TextFile
+from zzipdoc.functionheader import FunctionHeaderList
+from zzipdoc.functionprototype import FunctionPrototype
+from zzipdoc.commentmarkup import TextFileHeader, CommentMarkupTextFileHeader, FunctionHeader, CommentMarkupFunctionHeader, CommentMarkup
+from zzipdoc.functionlisthtmlpage import FunctionListHtmlPage
+from zzipdoc.dbk2htm import section2html, paramdef2html
+from zzipdoc.htmldoctypes import RefDocPart
+from zzipdoc.htmldocument import HtmlDocPart, HtmlDocument
+from zzipdoc.docbookdocument import FunctionListReference, DocbookDocument
+
+NIX = ""
 
 def _src_to_xml(text: str) -> str:
     return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
@@ -50,7 +66,7 @@ class PerFile:
     def print_list_mainheader(self) -> None:
         for t_fileheader in self.textfileheaders:
             print(t_fileheader.get_filename(), t_fileheader.src_mainheader())
-        
+
 class PerFunctionEntry:
     header: FunctionHeader
     comment: CommentMarkupFunctionHeader
@@ -141,7 +157,7 @@ class PerFunctionFamily:
             line = func.get_titleline()
             if not name or not line:
                 continue
-            is_retarget = Match("=>\s*(\w+)")
+            is_retarget = Match("=>\\s*(\\w+)")
             if line & is_retarget:
                 retarget = is_retarget[1]
                 self.retarget[name] = retarget
@@ -213,7 +229,7 @@ class HtmlManualPageAdapter(RefDocPart):
     def get_filename(self) -> Optional[str]:
         return self._body().header.get_filename()
     def src_mainheader(self) -> Optional[str]:
-        return self._body().header.src_mainheader() 
+        return self._body().header.src_mainheader()
     def get_mainheader(self) -> Optional[str]:
         return _src_to_xml(self.src_mainheader() or "")
 class RefEntryManualPageAdapter(RefDocPart):
@@ -311,8 +327,9 @@ def makedocs(filenames: List[str], o: DocOptions) -> None:
         for func in entry.functions:
             html_adapter = HtmlManualPageAdapter(func)
             src_mainheader = html_adapter.src_mainheader() or ""
-            if o.onlymainheader and not (Match("<"+o.onlymainheader+">")
-                                         & src_mainheader):
+            if o.onlymainheader:
+                include = "<"+o.onlymainheader+">"
+                if include not in src_mainheader:
                     continue
             html.add(html_adapter)
         html.cut()
@@ -331,27 +348,45 @@ def makedocs(filenames: List[str], o: DocOptions) -> None:
         for func in entry.functions:
             func_adapter = RefEntryManualPageAdapter(func, per_file)
             src_mainheader = func_adapter.src_mainheader() or ""
-            if o.onlymainheader and not (Match("<"+o.onlymainheader+">")
-                                         & src_mainheader):
+            if o.onlymainheader:
+                include = "<"+o.onlymainheader+">"
+                if include not in src_mainheader:
                     continue
             man3.add(func_adapter)
         man3.cut()
     man3.cut()
     DocbookDocument(o).add(man3).save(o.output+o.suffix)
-    
-        
-if __name__ == "__main__":
-    filenames = []
+
+
+def main() -> int:
+    import optparse # pylint: disable=deprecated-module,import-outside-toplevel
+    cmdline = optparse.OptionParser("%prog [file.c].. --package=x --version=y --onlymainheader=zzip/lib.h")
+    cmdline.add_option("-v", "--verbose", action="count", default=0, help="more logging")
+    cmdline.add_option("-^", "--quiet", action="count", default=0, help="less logging")
+    cmdline.add_option("--program", metavar="NAM", default=sys.argv[0], help="[%default]")
+    cmdline.add_option("--package", metavar="NAM", default="ZzipLib", help="[%default]")
+    cmdline.add_option("--version", metavar="X.Y", default=NIX)
+    cmdline.add_option("--html", metavar="EXT", default="html", help="extension [%default]")
+    cmdline.add_option("--docbook", metavar="EXT", default="docbook", help="extension [%default]")
+    cmdline.add_option("--output", metavar="BASE", default="zziplib", help="basename for output files")
+    cmdline.add_option("--suffix", metavar="NAM", default=NIX, help="suffix for basename output")
+    cmdline.add_option("--onlymainheader", metavar="x/lib.h", default=NIX, help="put this include first")
+    cmdline.add_option("--body", metavar="FILE", default=NIX, help="append this body text")
+    opt, args = cmdline.parse_args()
+    logging.basicConfig(level = max(0, logging.WARNING - 10 * opt.verbose + 10 * opt.quiet))
+    #
     o = DocOptions()
-    o.package = "ZZipLib"
-    o.program = sys.argv[0]
-    o.html = "html"
-    o.docbook = "docbook"
-    o.output = "zziplib"
-    o.suffix = ""
-    for item in sys.argv[1:]:
-        if o.scan(item): continue
-        filenames += [ item ]
-    makedocs(filenames, o)
-    
-        
+    o.program = opt.program or sys.argv[0]
+    o.package = opt.package or "ZZipLib"
+    o.version = opt.version
+    o.html = opt.html or "html"
+    o.docbook = opt.docbook or "docbook"
+    o.output = opt.output or "zziplib"
+    o.suffix = opt.suffix
+    o.onlymainheader = opt.onlymainheader
+    o.body = opt.body
+    makedocs(args, o)
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())

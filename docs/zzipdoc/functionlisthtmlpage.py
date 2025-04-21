@@ -8,7 +8,7 @@ import logging
 
 from typing import Optional, List
 from zzipdoc.match import Match
-from zzipdoc.options import DocOptions
+from zzipdoc.htmldoctypes import DocOptions
 from zzipdoc.htmldoctypes import RefDocPart
 
 logg = logging.getLogger(__name__)
