@@ -131,7 +131,7 @@ endif()
 
 ####
 
-set(docinfo --package=zziplib --version=${PROJECT_VERSION})
+set(docinfo --package=zziplib --release=${PROJECT_VERSION})
 file(GLOB zzip_sources "${topdir}/zzip/*.c")
 add_custom_command(OUTPUT zziplib.xml
     COMMAND ${PY} ${srcdir}/zzipmakedocs.py ${zzip_sources} ${docinfo} --onlymainheader=zzip/lib.h --output=zziplib

@@ -368,13 +368,13 @@ def makedocs(filenames: List[str], o: DocOptions) -> None:
 
 def main() -> int:
     import optparse # pylint: disable=deprecated-module,import-outside-toplevel
-    cmdline = optparse.OptionParser("%prog [file.c].. --package=x --version=y --onlymainheader=zzip/lib.h", epilog=__doc__)
+    cmdline = optparse.OptionParser("%prog [file.c].. --package=x --release=y --onlymainheader=zzip/lib.h", epilog=__doc__)
     cmdline.add_option("-v", "--verbose", action="count", default=0, help="more logging")
     cmdline.add_option("-^", "--quiet", action="count", default=0, help="less logging")
     cmdline.add_option("-?", "--version", action="count", default=0, help="author info")
     cmdline.add_option("--program", metavar="NAM", default=sys.argv[0], help="[%default]")
     cmdline.add_option("--package", metavar="NAM", default="ZzipLib", help="[%default]")
-    cmdline.add_option("--version", metavar="X.Y", default=NIX)
+    cmdline.add_option("--release", metavar="X.Y", default=NIX)
     cmdline.add_option("--html", metavar="EXT", default="html", help="extension [%default]")
     cmdline.add_option("--docbook", metavar="EXT", default="docbook", help="extension [%default]")
     cmdline.add_option("--output", metavar="BASE", default="zziplib", help="basename for output files")
@@ -392,7 +392,7 @@ def main() -> int:
     o = DocOptions()
     o.program = opt.program or sys.argv[0]
     o.package = opt.package or "ZZipLib"
-    o.version = opt.version
+    o.version = opt.release
     o.html = opt.html or "html"
     o.docbook = opt.docbook or "docbook"
     o.output = opt.output or "zziplib"
