@@ -171,7 +171,7 @@ PYLINT = pylint
 PYLINT_OPTIONS =
 pylint: lint
 lint:
-	for py in zzip*.py docs/*.py docs/zzdoc*/*.py test/*.py; do $(PYLINT) $(PYLINT_OPTIONS) $$py || exit 1; done
+	for py in zzip*.py docs/*.py docs/zzipdoc*/*.py test/*.py; do echo "#" $$py; $(PYLINT) $(PYLINT_OPTIONS) $$py || exit 1; done
 
 mypy:
 	zypper install -y mypy
