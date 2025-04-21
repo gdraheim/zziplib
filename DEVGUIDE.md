@@ -125,6 +125,8 @@ if they have some patch that should be integrated. Here are some links:
 * `make version` # aka 'make nextversion' !!!
 * `make install` 
 * `make uninstalls`
+* `make ins` # pip for zzipdoctool
+* `make uns` # pip for zzipdoctool
 * `make build` # default build
 * `make docs` # includes `make mans`
 * `make auto` # update automake variant
