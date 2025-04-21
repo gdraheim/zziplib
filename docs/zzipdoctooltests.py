@@ -18,7 +18,7 @@ from fnmatch import fnmatchcase as matches
 
 zzipdocdir = os.path.dirname(os.path.abspath(__file__))
 sys.path = [zzipdocdir] + sys.path
-from zzipdoctool import md2dbk
+from zzipdoctool import md2dbk  # autopep8: noqa
 
 logg = logging.getLogger("TOOLS")
 
