@@ -129,8 +129,9 @@ nextversion:
 	; oldr=`echo $$oldv | sed -e 's:.*[.]::'` ; newr=`expr $$oldr + 1` \
 	; newv=`echo $$oldv | sed -e "s:[.]$$oldr\$$:.$$newr:"` \
 	; echo "$$oldv -> $$newv" \
-	; sed -i -e "s:$$oldv:$$newv:" setup.cfg \
+	; sed -i -e "s:$$oldv:$$newv:" pyproject.toml \
 	; sed -i -e "s:$$oldv:$$newv:" zziplib.spec zzipbuildtests.py \
+	; sed -i -e "s:$$oldv:$$newv:" docs/*.py docs/zzipdoc/*.py docs/zzipdoctool/*.py \
 	; sed -i -e "s:$$oldv:$$newv:" */CMakeLists.txt \
 	; sed -i -e "s:$$oldv:$$newv:" CMakeLists.txt \
 	; $(GIT) --no-pager diff -U0
