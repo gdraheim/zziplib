@@ -164,7 +164,15 @@ formatdir:
 diff: ; diff -U0 zzip $(FORMATDIR) -x "*.am" -x "*.in" -x "*.wpj" -x "*.cmake" -x "*.sed" -x "*.txt"
 dif:  ; diff -u zzip $(FORMATDIR) -x "*.am" -x "*.in" -x "*.wpj" -x "*.cmake" -x "*.sed" -x "*.txt"
 
+-include Makefile.tmp
+
 # style ...............................
+PYLINT = pylint
+PYLINT_OPTIONS =
+pylint: lint
+lint:
+	for py in zzip*.py docs/*.py docs/zzdoc*/*.py test/*.py; do $(PYLINT) $(PYLINT_OPTIONS) $$py || exit 1; done
+
 mypy:
 	zypper install -y mypy
 	zypper install -y python3-click python3-pathspec
