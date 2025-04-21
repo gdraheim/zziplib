@@ -471,7 +471,7 @@ def _xmlblocks(block: str) -> List[str]:
         result = ""
         x = line.find("`")
         y = line.rfind("`")
-        indent = line[x]
+        indent = line[:x]
         fenced = line[:y + 1]
         for nextline in block.splitlines():
             if not result:  # first line
@@ -484,7 +484,7 @@ def _xmlblocks(block: str) -> List[str]:
                 continue
             if nextline.startswith(fenced):
                 break
-            result += escape(nextline[x:]) + "\n"
+            result += escape(nextline[len(indent):] if nextline.startswith(indent) else nextline) + "\n"
         if result:
             return [result + "</screen>\n"]
         return []
