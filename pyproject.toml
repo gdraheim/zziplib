@@ -29,7 +29,9 @@ repository = "https://github.com/gdraheim/zziplib.git"
 issues = "https://github.com/gdraheim/zziplib/issues"
 
 [project.scripts]
-zzipdbk2htm = "zzipdoc.dbk2htm:main"
+zzip-htm2dbk = "zzipdoc.htm2dbk:main"
+zzip-md2dbk = "zzipdoctool.md2dbk:main"
+zzip-dbk2man = "zzipdoctool.dbk2man:main"
 
 [tool.setuptools]
 package-dir = {"zzipdoc" = "docs/zzipdoc", "zzipdoctool" = "docs/zzipdoctool" }
