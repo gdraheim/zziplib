@@ -331,7 +331,7 @@ SDL_RWOPS = $(SDL)/SDL_rwops_zzcat.c \
 
 changelog = @top_srcdir@/ChangeLog
 EXTRA_DIST = $(doc_FILES) $(htm_md_FILES) $(SDL_RWOPS) \
-             make-dbk.pl   mksite.sh mksite.pl body.htm \
+             mksite.sh mksite.pl body.htm \
              tools/dbk2man.py tools/dir2index.py \
              $(zzipdoc_FILES) sdocbook.css \
              zziplib-manpages.dbk zziplib-master.dbk \
@@ -798,8 +798,7 @@ changes.htm : $(top_srcdir)/ChangeLog Makefile
 # ----------------------------------------------- create pdf via docbook xml
 # sorry, the xmlto / docbook-xsl are too broken to rebuild the PDF anymore
 
-zzip.xml : $(htm_FILES) zziplib.xml make-dbk.pl
-	: '@PERL@ make-dbk.pl $(htm_FILES) zziplib.xml >$@'
+zzip.xml : $(htm_FILES) zziplib.xml 
 	@PYTHON@ $(srcdir)/zzipdoc/htm2dbk.py $(htm_FILES) zziplib.xml >$@
 	test -s "$@" || rm "$@"
 
