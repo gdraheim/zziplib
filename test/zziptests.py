@@ -4117,32 +4117,32 @@ def main() -> int:
     import optparse # pylint: disable=deprecated-module,import-outside-toplevel
     cmdline = optparse.OptionParser("%prog [options] test_xxx", epilog=__doc__)
     cmdline.add_option("-D", "--downloadonly", action="store_true", default=downloadonly,
-                  help="setup helper: get downloads only [%default]")
+                       help="setup helper: get downloads only [%default]")
     cmdline.add_option("-d", "--downloaddir", metavar="DIR", default=downloaddir,
-                  help="put and get downloads from here [%default]")
+                       help="put and get downloads from here [%default]")
     cmdline.add_option("-n", "--nodownloads", action="store_true", default=nodownloads,
-                  help="no downloads / skipping CVE zip file tests [%default]")
+                       help="no downloads / skipping CVE zip file tests [%default]")
     cmdline.add_option("--downloads", metavar="YES", default="")
     cmdline.add_option("-b", "--bindir", metavar="DIR", default=bindir,
-                  help="path to the bindir to use [%default]")
+                       help="path to the bindir to use [%default]")
     cmdline.add_option("-s", "--topsrcdir", metavar="DIR", default=topsrcdir,
-                  help="path to the top srcdir / unpack directory [%default]")
+                       help="path to the top srcdir / unpack directory [%default]")
     cmdline.add_option("-t", "--testdatadir", metavar="DIR", default=testdatadir,
-                  help="path where temporary testdata is created [%default]")
+                       help="path where temporary testdata is created [%default]")
     cmdline.add_option("-Z", "--mkzip", metavar="EXE", default=MKZIP,
-                  help="name or path to zip.exe for *.zip creation [%default]")
+                       help="name or path to zip.exe for *.zip creation [%default]")
     cmdline.add_option("-U", "--unzip", metavar="EXE", default=UNZIP,
-                  help="name or path to unzip.exe to unpack *.zip [%default]")
+                       help="name or path to unzip.exe to unpack *.zip [%default]")
     cmdline.add_option("-E", "--exeext", metavar="EXT", default=EXEEXT,
-                  help="the executable extension (automake $(EXEEXT)) [%default]")
+                       help="the executable extension (automake $(EXEEXT)) [%default]")
     cmdline.add_option("-K", "--keep", action="store_true", default=KEEP,
-                  help="Keep test data around. [%default]")
+                       help="Keep test data around. [%default]")
     cmdline.add_option("--failfast", action="store_true", default=False,
-                  help="Stop the test run on the first error or failure. [%default]")
+                       help="Stop the test run on the first error or failure. [%default]")
     cmdline.add_option("--xmlresults", metavar="FILE", default=None,
-                  help="capture results as a junit xml file [%default]")
+                       help="capture results as a junit xml file [%default]")
     cmdline.add_option("-v", "--verbose", action="count", default=0,
-                  help="increase logging output [%default]")
+                       help="increase logging output [%default]")
     opt, args = cmdline.parse_args()
     logging.basicConfig(level=logging.WARNING - 10 * opt.verbose)
     downloadonly = opt.downloadonly

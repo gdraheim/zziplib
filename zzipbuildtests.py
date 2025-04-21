@@ -4654,42 +4654,42 @@ def main() -> int:
     global _python, GIT, BUILDPROGRESS, BUILDCENTOS7, DOCKER, MIRROR, LOCAL, NONLOCAL, OLDER, KEEP, FORCE, NOCACHE, MAKECHECK
     import optparse # pylint: disable=deprecated-module,import-outside-toplevel
     cmdline = optparse.OptionParser("%prog [options] test*",
-                      epilog=__doc__.strip().split("\n", 1)[0])
+                                    epilog=__doc__.strip().split("\n", 1)[0])
     cmdline.add_option("-v", "--verbose", action="count", default=0, help="more logging")
     cmdline.add_option("-^", "--quiet", action="count", default=0, help="less logging")
     cmdline.add_option("-?", "--version", action="count", default=0, help="author info")
     cmdline.add_option("-p", "--python", metavar="EXE", default=_python,
-                  help="use another python execution engine [%default]")
+                       help="use another python execution engine [%default]")
     cmdline.add_option("-G", "--git", metavar="EXE", default=GIT,
-                  help="use another git client [%default]")
+                       help="use another git client [%default]")
     cmdline.add_option("-D", "--docker", metavar="EXE", default=DOCKER,
-                  help="use another docker execution engine [%default]")
+                       help="use another docker execution engine [%default]")
     cmdline.add_option("-M", "--mirror", metavar="EXE", default=MIRROR,
-                  help="use another docker_mirror.py script [%default]")
+                       help="use another docker_mirror.py script [%default]")
     cmdline.add_option("-N", "--nolocal", "--nonlocal", action="count", default=0,
-                  help="disable local docker mirror [%default]")
+                       help="disable local docker mirror [%default]")
     cmdline.add_option("-L", "--local", action="count", default=0,
-                  help="fail if not local docker mirror found [%default]")
+                       help="fail if not local docker mirror found [%default]")
     cmdline.add_option("-o", "--older", action="count", default=0,
-                  help="symbol comparis with even older version [%default]")
+                       help="symbol comparis with even older version [%default]")
     cmdline.add_option("-k", "--keep", action="count", default=0,
-                  help="keep docker build container [%default]")
+                       help="keep docker build container [%default]")
     cmdline.add_option("-K", "--makecheck", action="count", default=0,
-                  help="make checks in every testbuild [%default]")
+                       help="make checks in every testbuild [%default]")
     cmdline.add_option("--buildprogress", action="count", default=0,
-                  help="show intermediate steps of build [%default]")
+                       help="show intermediate steps of build [%default]")
     cmdline.add_option("--buildcentos7", action="count", default=0,
-                  help="do not skip centos7 builds [%default]")
+                       help="do not skip centos7 builds [%default]")
     cmdline.add_option("-f", "--force", action="count", default=0,
-                  help="force the rebuild steps [%default]")
+                       help="force the rebuild steps [%default]")
     cmdline.add_option("-x", "--no-cache", action="count", default=0,
-                  help="force docker build --no-cache [%default]")
+                       help="force docker build --no-cache [%default]")
     cmdline.add_option("-l", "--logfile", metavar="FILE", default="",
-                  help="additionally save the output log to a file [%default]")
+                       help="additionally save the output log to a file [%default]")
     cmdline.add_option("--failfast", action="store_true", default=False,
-                  help="Stop the test run on the first error or failure. [%default]")
+                       help="Stop the test run on the first error or failure. [%default]")
     cmdline.add_option("--xmlresults", metavar="FILE", default=None,
-                  help="capture results as a junit xml file [%default]")
+                       help="capture results as a junit xml file [%default]")
     opt, args = cmdline.parse_args()
     logging.basicConfig(level=logging.WARNING - 5 * opt.verbose + 10 * opt.quiet)
     if opt.version:

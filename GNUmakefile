@@ -180,8 +180,9 @@ mypy:
 MYPY = mypy
 MYPY_STRICT = --strict --show-error-codes --show-error-context --no-warn-unused-ignores --python-version $(MINPYTHON) --implicit-reexport
 AUTOPEP8=autopep8
+AUTOPEP8_OPTIONS= --max-line-length=188 --ignore=E301,E302,E305,E306,E701,E401,E225,E226,E251,E261
 AUTOPEP8_INPLACE= --in-place
-AUTOPEP8_ASDIFF= --diff
+AUTOPEP8_ASDIFF= --diff --list-fixes
 
 %.type:
 	$(MYPY) $(MYPY_STRICT) $(MYPY_OPTIONS) $(@:.type=)

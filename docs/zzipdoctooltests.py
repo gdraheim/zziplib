@@ -18,7 +18,7 @@ from fnmatch import fnmatchcase as matches
 
 zzipdocdir = os.path.dirname(os.path.abspath(__file__))
 sys.path = [zzipdocdir] + sys.path
-from zzipdoctool import md2dbk  # autopep8: noqa
+from zzipdoctool import md2dbk  # noqa
 
 logg = logging.getLogger("TOOLS")
 
@@ -357,9 +357,9 @@ def main() -> int:
     cmdline.add_option("-^", "--quiet", action="count", default=0, help="less logging")
     cmdline.add_option("-?", "--version", action="count", default=0, help="author info")
     cmdline.add_option("--failfast", action="store_true", default=False,
-                  help="Stop the test run on the first error or failure. [%default]")
+                       help="Stop the test run on the first error or failure. [%default]")
     cmdline.add_option("--xmlresults", metavar="FILE", default=None,
-                  help="capture results as a junit xml file [%default]")
+                       help="capture results as a junit xml file [%default]")
     opt, args = cmdline.parse_args()
     logging.basicConfig(level=logging.WARNING - 10 * opt.verbose + 10 * opt.quiet)
     if opt.version:

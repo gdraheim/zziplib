@@ -761,13 +761,13 @@ def main() -> int:
     cmdline = OptionParser("%prog [-options] filename...")
     cmdline.add_option("-v", "--verbose", action="count", default=0, help="more logging")
     cmdline.add_option("-^", "--quiet", action="count", default=0, help="less logging")
-    cmdline.add_option("-?","--version", action="count", default=0, help="version info")
+    cmdline.add_option("-?", "--version", action="count", default=0, help="version info")
     cmdline.add_option("-b", "--blocks", action="store_true", default=0,
-                  help="show block structure")
+                       help="show block structure")
     cmdline.add_option("-c", "--xmlblocks", action="store_true", default=0,
-                  help="show xml block structure")
+                       help="show xml block structure")
     cmdline.add_option("-r", "--htm", action="store_true", default=0,
-                  help="returns as htm text")
+                       help="returns as htm text")
     opt, args = cmdline.parse_args()
     logging.basicConfig(level=max(0, logging.WARNING - 10 * opt.verbose + 10 * opt.quiet))
     if opt.version:
