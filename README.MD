@@ -1,9 +1,10 @@
 <p style="float:right"><img align="right" src="docs/dir-zzip-64.png" /></p>
 
 [![make check](https://github.com/gdraheim/zziplib/actions/workflows/makecheck.yml/badge.svg?event=push&branch=develop)](https://github.com/gdraheim/zziplib/actions/workflows/makecheck.yml)
-[![py style](https://github.com/gdraheim/zziplib/actions/workflows/stylecheck.yml/badge.svg?event=push&branch=develop)](https://github.com/gdraheim/zziplib/actions/workflows/stylecheck.yml)
+[![py lint](https://github.com/gdraheim/zziplib/actions/workflows/lintcheck.yml/badge.svg?event=push&branch=develop)](https://github.com/gdraheim/zziplib/actions/workflows/lintcheck.yml)
 [![py types](https://github.com/gdraheim/zziplib/actions/workflows/typecheck.yml/badge.svg?event=push&branch=develop)](https://github.com/gdraheim/zziplib/actions/workflows/typecheck.yml)
-[![py types](https://github.com/gdraheim/zziplib/actions/workflows/clangformat.yml/badge.svg?event=push&branch=develop)](https://github.com/gdraheim/zziplib/actions/workflows/clangformat.yml)
+[![py style](https://github.com/gdraheim/zziplib/actions/workflows/stylecheck.yml/badge.svg?event=push&branch=develop)](https://github.com/gdraheim/zziplib/actions/workflows/stylecheck.yml)
+[![clang format](https://github.com/gdraheim/zziplib/actions/workflows/clangformat.yml/badge.svg?event=push&branch=develop)](https://github.com/gdraheim/zziplib/actions/workflows/clangformat.yml)
 [![coverage](https://img.shields.io/badge/233%20test-50%25%20coverage-brightgreen)](https://github.com/gdraheim/zziplib/blob/master/test/zziptests.py)
 
 ... **please switch to 'cmake' based builds** ... 
