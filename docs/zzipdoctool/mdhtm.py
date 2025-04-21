@@ -10,6 +10,7 @@ __version__ = "0.13.79"
 from typing import Iterator
 import sys
 import re
+import os
 import logging
 
 logg = logging.getLogger("MD2HTM")
@@ -59,14 +60,20 @@ def main() -> int:
     cmdline = optparse.OptionParser()
     cmdline.add_option("-v", "--verbose", action="count", default=0, help="more logging")
     cmdline.add_option("-^", "--quiet", action="count", default=0, help="less logging")
+    cmdline.add_option("-?","--version", action="count", default=0, help="version info")
     opt, args = cmdline.parse_args()
     logging.basicConfig(level = max(0, logging.INFO - 10 * opt.verbose + 10 * opt.quiet))
-
+    if opt.version:
+        print("version:", __version__)
+        print("contact:", __contact__)
+        print("license:", __license__)
+        print("authors:", __copyright__)
+        return os.EX_OK
     for arg in args:
         logg.info(" ## %s", arg)
         for part in md2htm(arg):
             print(part)
-    return 0
+    return os.EX_OK
 
 if __name__ == "__main__":
     sys.exit(main())

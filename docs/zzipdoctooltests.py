@@ -2,6 +2,12 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
 # pylint: disable=wrong-import-position,ungrouped-imports,invalid-name
 """ unit tests for zziplib/docs/zzipdoctool """
+
+__copyright__ = "(C) 2021 Guido Draheim"
+__contact__ = "https://github.com/gdraheim/zziplib"
+__license__ = "CC0 Creative Commons Zero (Public Domain)"
+__version__ = "0.13.79"
+
 import sys
 import os.path
 import os
@@ -348,12 +354,19 @@ def main() -> int:
     cmdline = optparse.OptionParser("%prog [options] test_xxx", epilog=__doc__)
     cmdline.add_option("-v", "--verbose", action="count", default=0, help="more logging")
     cmdline.add_option("-^", "--quiet", action="count", default=0, help="less logging")
+    cmdline.add_option("-?", "--version", action="count", default=0, help="author info")
     cmdline.add_option("--failfast", action="store_true", default=False,
                   help="Stop the test run on the first error or failure. [%default]")
     cmdline.add_option("--xmlresults", metavar="FILE", default=None,
                   help="capture results as a junit xml file [%default]")
     opt, args = cmdline.parse_args()
     logging.basicConfig(level=logging.WARNING - 10 * opt.verbose + 10 * opt.quiet)
+    if opt.version:
+        print("version:", __version__)
+        print("contact:", __contact__)
+        print("license:", __license__)
+        print("authors:", __copyright__)
+        return os.EX_OK
     #
     if not args: args += ["test_"]
     suite = TestSuite()

@@ -9,6 +9,7 @@ __version__ = "0.13.79"
 
 from typing import List, Generator, Optional
 import re
+import os
 import sys
 from html import escape
 
@@ -756,17 +757,24 @@ def inlines(block: str) -> str:
 
 def main() -> int:
     from optparse import OptionParser # pylint: disable=deprecated-module,import-outside-toplevel
-    _o = OptionParser("%prog [-options] filename...")
-    _o.add_option("-v", "--verbose", action="count", default=0, help="more logging")
-    _o.add_option("-^", "--quiet", action="count", default=0, help="less logging")
-    _o.add_option("-b", "--blocks", action="store_true", default=0,
+    cmdline = OptionParser("%prog [-options] filename...")
+    cmdline.add_option("-v", "--verbose", action="count", default=0, help="more logging")
+    cmdline.add_option("-^", "--quiet", action="count", default=0, help="less logging")
+    cmdline.add_option("-?","--version", action="count", default=0, help="version info")
+    cmdline.add_option("-b", "--blocks", action="store_true", default=0,
                   help="show block structure")
-    _o.add_option("-c", "--xmlblocks", action="store_true", default=0,
+    cmdline.add_option("-c", "--xmlblocks", action="store_true", default=0,
                   help="show xml block structure")
-    _o.add_option("-r", "--htm", action="store_true", default=0,
+    cmdline.add_option("-r", "--htm", action="store_true", default=0,
                   help="returns as htm text")
-    opt, args = _o.parse_args()
+    opt, args = cmdline.parse_args()
     logging.basicConfig(level=max(0, logging.WARNING - 10 * opt.verbose + 10 * opt.quiet))
+    if opt.version:
+        print("version:", __version__)
+        print("contact:", __contact__)
+        print("license:", __license__)
+        print("authors:", __copyright__)
+        return os.EX_OK
     document: List[str] = []
     for arg in args:
         logg.info(">> %s", arg)
@@ -827,7 +835,7 @@ def main() -> int:
         for block in document:
             for part in _xmlblocks(block):
                 print(part)
-    return 0
+    return os.EX_OK
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -8,7 +8,8 @@ __contact__ = "https://github.com/gdraheim/zziplib"
 __license__ = "CC0 Creative Commons Zero (Public Domain)"
 __version__ = "0.13.79"
 
-from typing import Iterator, Tuple, Optional
+from typing import Iterator, Tuple
+import os
 import re
 import sys
 import logging
@@ -188,23 +189,29 @@ class CppToMarkdown:
                     pass # yield "|",text
 
 
-def main(doc: Optional[str] = None) -> int:
+def main() -> int:
     import optparse # pylint: disable=deprecated-module,import-outside-toplevel
-    cmdline = optparse.OptionParser("%prog files..", epilog=doc)
+    cmdline = optparse.OptionParser("%prog files..", epilog=__doc__)
     cmdline.add_option("-v", "--verbose", action="count", default=0, help="more logging")
     cmdline.add_option("-^", "--quiet", action="count", default=0, help="less logging")
+    cmdline.add_option("-?", "--version", action="count", default=0, help="author info")
     cmdline.add_option("-a", "--all", action="count", default=0,
                   help="include all definitions in the output (not only /**)")
     opt, cmdline_args = cmdline.parse_args()
     logging.basicConfig(level = max(0, logging.WARNING - 10 * opt.verbose + 10 * opt.quiet))
     logg.addHandler(logging.StreamHandler())
-
+    if opt.version:
+        print("version:", __version__)
+        print("contact:", __contact__)
+        print("license:", __license__)
+        print("authors:", __copyright__)
+        return os.EX_OK
     c = CppToMarkdown()
     if opt.all:
         c.alldefinitions = opt.all
     for arg in cmdline_args:
         c.run(arg)
-    return 0
+    return os.EX_OK
 
 if __name__ == "__main__":
-    sys.exit(main(__doc__))
+    sys.exit(main())

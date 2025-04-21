@@ -111,19 +111,26 @@ def writefile(filename: str, manpagetext: str) -> None:
 
 def main(doc: Optional[str] = None) -> int:
     from optparse import OptionParser # pylint: disable=deprecated-module,import-outside-toplevel
-    _o = OptionParser("%prog [options] directories...", epilog=doc)
-    _o.add_option("-o","--into", metavar="DIR", default=".",
+    cmdline = OptionParser("%prog [options] directories...", epilog=doc)
+    cmdline.add_option("-v","--verbose", action="count", default=0, help="more logging")
+    cmdline.add_option("-^","--quiet", action="count", default=0, help="less logging")
+    cmdline.add_option("-?","--version", action="count", default=0, help="version info")
+    cmdline.add_option("-o","--into", metavar="DIR", default=".",
         help="specify base directory for output [%default]")
-    _o.add_option("-t","--make", metavar="DIR", default="man",
+    cmdline.add_option("-t","--make", metavar="DIR", default="man",
         help="make 'man'/'html' output pages [%default]")
-    _o.add_option("-v","--verbose", action="count", default=0,
-        help="increase logging level [%default]")
-    opt, args = _o.parse_args()
-    logging.basicConfig(level = max(0, logging.WARNING - 10 * opt.verbose))
+    opt, args = cmdline.parse_args()
+    logging.basicConfig(level = max(0, logging.WARNING - 10 * opt.verbose + 10 * opt.quiet))
+    if opt.version:
+        print("version:", __version__)
+        print("contact:", __contact__)
+        print("license:", __license__)
+        print("authors:", __copyright__)
+        return os.EX_OK
     # ensure commandline is compatible with "xmlto -o DIR TYPE INPUTFILE"
     make = opt.make
     dir2(make == 'man', args, opt.into) # only "html" mode is implemented
-    return 0
+    return os.EX_OK
 
 if __name__ == "__main__":
     import sys
