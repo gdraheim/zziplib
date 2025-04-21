@@ -3,6 +3,7 @@
 
 __copyright__ = "(C) Guido Draheim, all rights reserved"""
 __version__ = "0.13.79"
+__contact__ = "https://github.com/gdraheim/zziplib"
 
 from typing import Union, Optional, Tuple, List, Iterator, NamedTuple, Mapping, Sequence
 import subprocess
@@ -15,16 +16,12 @@ import inspect
 import types
 import logging
 import re
-from os import EX_USAGE, EX_DATAERR, EX_NOINPUT, EX_CANTCREAT, EX_SOFTWARE
+from os import EX_USAGE, EX_DATAERR, EX_NOINPUT, EX_CANTCREAT, EX_SOFTWARE, EX_OK
 from collections import namedtuple
 from fnmatch import fnmatchcase as fnmatch
 from glob import glob
 import json
 import sys
-
-if sys.version[0] == '3':
-    basestring = str
-    xrange = range
 
 DONE = (logging.ERROR + logging.WARNING) // 2
 NOTE = (logging.INFO + logging.WARNING) // 2
@@ -69,17 +66,17 @@ def decodes(text: Union[bytes, str]) -> str:
             encoded = "utf-8"
         try:
             return text.decode(encoded)
-        except:
+        except UnicodeDecodeError:
             return text.decode("latin-1")
     return text
 def sh____(cmd: Union[str, List[str]], shell: bool = True) -> int:
-    if isinstance(cmd, basestring):
+    if isinstance(cmd, str):
         logg.info(": %s", cmd)
     else:
         logg.info(": %s", " ".join(["'%s'" % item for item in cmd]))
     return subprocess.check_call(cmd, shell=shell)
 def sx____(cmd: Union[str, List[str]], shell: bool = True) -> int:
-    if isinstance(cmd, basestring):
+    if isinstance(cmd, str):
         logg.info(": %s", cmd)
     else:
         logg.info(": %s", " ".join(["'%s'" % item for item in cmd]))
@@ -123,7 +120,7 @@ def run(cmd: Union[str, List[str]], cwd: Optional[str] = None, shell: Optional[b
 
 
 def output(cmd: Union[str, List[str]], shell: bool = True) -> str:
-    if isinstance(cmd, basestring):
+    if isinstance(cmd, str):
         logg.info(": %s", cmd)
     else:
         logg.info(": %s", " ".join(["'%s'" % item for item in cmd]))
@@ -131,7 +128,7 @@ def output(cmd: Union[str, List[str]], shell: bool = True) -> str:
     out, err = run.communicate()
     return decodes(out)
 def output2(cmd: Union[str, List[str]], shell: bool = True) -> Tuple[str, int]:
-    if isinstance(cmd, basestring):
+    if isinstance(cmd, str):
         logg.info(": %s", cmd)
     else:
         logg.info(": %s", " ".join(["'%s'" % item for item in cmd]))
@@ -139,7 +136,7 @@ def output2(cmd: Union[str, List[str]], shell: bool = True) -> Tuple[str, int]:
     out, err = run.communicate()
     return decodes(out), run.returncode
 def output3(cmd: Union[str, List[str]], shell: bool = True) -> Tuple[str, str, int]:
-    if isinstance(cmd, basestring):
+    if isinstance(cmd, str):
         logg.info(": %s", cmd)
     else:
         logg.info(": %s", " ".join(["'%s'" % item for item in cmd]))
@@ -157,7 +154,7 @@ def background(cmd: List[str], shell: bool = True) -> BackgroundProcess:
 
 
 def _lines(lines: Union[str, List[str]]) -> List[str]:
-    if isinstance(lines, basestring):
+    if isinstance(lines, str):
         xlines = lines.split("\n")
         if len(xlines) and xlines[-1] == "":
             xlines = xlines[:-1]
@@ -4256,7 +4253,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         #
         DIRS = "etc lib libexec sbin games src share/info share/applications share/man/mann"
-        for i in xrange(1, 10):
+        for i in range(1, 10):
             DIRS += " share/man/man%i share/man/man%ix" % (i, i)
         cmd = "{docker} exec {testname1} bash -c 'cd /new/local && (for u in {DIRS}; do mkdir -pv $u; done)'"
         sh____(cmd.format(**locals()))
@@ -4313,7 +4310,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         #
         DIRS = "etc lib libexec sbin games src share/info share/applications share/man/mann lib64/bpf"
-        for i in xrange(1, 10):
+        for i in range(1, 10):
             DIRS += " share/man/man%i share/man/man%ix" % (i, i)
         cmd = "{docker} exec {testname1} bash -c 'cd /new/local && (for u in {DIRS}; do mkdir -pv $u; done)'"
         sh____(cmd.format(**locals()))
@@ -4649,46 +4646,53 @@ def run_help() -> None:
             print(" {:10} {:}".format(testname, extra.strip()))
 
 
-if __name__ == "__main__":
+def main() -> int:
+    global _python, GIT, BUILDPROGRESS, BUILDCENTOS7, DOCKER, MIRROR, LOCAL, NONLOCAL, OLDER, KEEP, FORCE, NOCACHE, MAKECHECK
     from optparse import OptionParser
-    _o = OptionParser("%prog [options] test*",
+    cmdline = OptionParser("%prog [options] test*",
                       epilog=__doc__.strip().split("\n")[0])
-    _o.add_option("-v", "--verbose", action="count", default=0,
-                  help="increase logging level [%default]")
-    _o.add_option("-p", "--python", metavar="EXE", default=_python,
+    cmdline.add_option("-v", "--verbose", action="count", default=0, help="more logging")
+    cmdline.add_option("-^", "--quiet", action="count", default=0, help="less logging")
+    cmdline.add_option("-?", "--version", action="count", default=0, help="author info")
+    cmdline.add_option("-p", "--python", metavar="EXE", default=_python,
                   help="use another python execution engine [%default]")
-    _o.add_option("-G", "--git", metavar="EXE", default=GIT,
+    cmdline.add_option("-G", "--git", metavar="EXE", default=GIT,
                   help="use another git client [%default]")
-    _o.add_option("-D", "--docker", metavar="EXE", default=DOCKER,
+    cmdline.add_option("-D", "--docker", metavar="EXE", default=DOCKER,
                   help="use another docker execution engine [%default]")
-    _o.add_option("-M", "--mirror", metavar="EXE", default=MIRROR,
+    cmdline.add_option("-M", "--mirror", metavar="EXE", default=MIRROR,
                   help="use another docker_mirror.py script [%default]")
-    _o.add_option("-N", "--nolocal", "--nonlocal", action="count", default=0,
+    cmdline.add_option("-N", "--nolocal", "--nonlocal", action="count", default=0,
                   help="disable local docker mirror [%default]")
-    _o.add_option("-L", "--local", action="count", default=0,
+    cmdline.add_option("-L", "--local", action="count", default=0,
                   help="fail if not local docker mirror found [%default]")
-    _o.add_option("-o", "--older", action="count", default=0,
+    cmdline.add_option("-o", "--older", action="count", default=0,
                   help="symbol comparis with even older version [%default]")
-    _o.add_option("-k", "--keep", action="count", default=0,
+    cmdline.add_option("-k", "--keep", action="count", default=0,
                   help="keep docker build container [%default]")
-    _o.add_option("-K", "--makecheck", action="count", default=0,
+    cmdline.add_option("-K", "--makecheck", action="count", default=0,
                   help="make checks in every testbuild [%default]")
-    _o.add_option("--buildprogress", action="count", default=0,
+    cmdline.add_option("--buildprogress", action="count", default=0,
                   help="show intermediate steps of build [%default]")
-    _o.add_option("--buildcentos7", action="count", default=0,
+    cmdline.add_option("--buildcentos7", action="count", default=0,
                   help="do not skip centos7 builds [%default]")
-    _o.add_option("-f", "--force", action="count", default=0,
+    cmdline.add_option("-f", "--force", action="count", default=0,
                   help="force the rebuild steps [%default]")
-    _o.add_option("-x", "--no-cache", action="count", default=0,
+    cmdline.add_option("-x", "--no-cache", action="count", default=0,
                   help="force docker build --no-cache [%default]")
-    _o.add_option("-l", "--logfile", metavar="FILE", default="",
+    cmdline.add_option("-l", "--logfile", metavar="FILE", default="",
                   help="additionally save the output log to a file [%default]")
-    _o.add_option("--failfast", action="store_true", default=False,
+    cmdline.add_option("--failfast", action="store_true", default=False,
                   help="Stop the test run on the first error or failure. [%default]")
-    _o.add_option("--xmlresults", metavar="FILE", default=None,
+    cmdline.add_option("--xmlresults", metavar="FILE", default=None,
                   help="capture results as a junit xml file [%default]")
-    opt, args = _o.parse_args()
-    logging.basicConfig(level=logging.WARNING - opt.verbose * 5)
+    opt, args = cmdline.parse_args()
+    logging.basicConfig(level=logging.WARNING - 5 * opt.verbose + 10 * opt.quiet)
+    if opt.version:
+        print("version:", __version__)
+        print("contact:", __contact__)
+        print("authors:", __copyright__)
+        return EX_OK
     #
     _python = opt.python
     GIT = opt.git
@@ -4755,7 +4759,11 @@ if __name__ == "__main__":
         Runner = unittest.TextTestRunner
         result = Runner(verbosity=opt.verbose, failfast=opt.failfast).run(suite)
     if not result.wasSuccessful():
-        sys.exit(1)
+        return EX_DATAERR
     if not KEEP and result.testsRun and args == ["test_*"]:
         run_clean()
     logg.log(DONE, "OK - ran %s tests", result.testsRun)
+    return EX_OK
+
+if __name__ == "__main__":
+    sys.exit(main())
