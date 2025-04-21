@@ -33,7 +33,7 @@ zzipdbk2htm = "zzipdoc.dbk2htm:main"
 
 [tool.setuptools]
 package-dir = {"zzipdoc" = "docs/zzipdoc", "zzipdoctool" = "docs/zzipdoctool" }
-script-files = [ "testbuilds.py", "test/zziptests.py", "docs/zzipdoctooltests.py", "docs/zzipmakedocs.py" ]
+script-files = [ "zzipbuildtests.py", "test/zziptests.py", "docs/zzipdoctooltests.py", "docs/zzipmakedocs.py" ]
 
 [tool.pycodestyle]
 max-line-length = 188 

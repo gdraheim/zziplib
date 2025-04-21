@@ -79,12 +79,12 @@ am:
 
 # testing
 
-tests:  ; $(PYTHON3) testbuilds.py -vv $V
-testss:  ; $(PYTHON3) testbuilds.py -vv $V --failfast --local 
-testbuilds: ; $(PYTHON3) testbuilds.py -vv $V --no-cache
-k_%: ; $(PYTHON3) testbuilds.py $@ -vv $V --no-cache --keep
-b_%: ; $(PYTHON3) testbuilds.py $@ -vv $V --no-cache --failfast --local
-x_%: ; $(PYTHON3) testbuilds.py $@ -vv $V --no-cache --failfast --nonlocal
+tests:  ; $(PYTHON3) zzipbuildtests.py -vv $V
+testss:  ; $(PYTHON3) zzipbuildtests.py -vv $V --failfast --local 
+testbuilds: ; $(PYTHON3) zzipbuildtests.py -vv $V --no-cache
+k_%: ; $(PYTHON3) zzipbuildtests.py $@ -vv $V --no-cache --keep
+b_%: ; $(PYTHON3) zzipbuildtests.py $@ -vv $V --no-cache --failfast --local
+x_%: ; $(PYTHON3) zzipbuildtests.py $@ -vv $V --no-cache --failfast --nonlocal
 t_%: ;    cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py $@ -vv $V
 
 test_1%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py $@ -vv $V 
@@ -103,12 +103,12 @@ test_7%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py $@ -vv $V
 est_7%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py t$@ -vv $V --keep
 test_8%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py $@ -vv $V 
 est_8%: ; cd $(BUILD)/test && $(PYTHON3) ../../test/zziptests.py t$@ -vv $V --keep
-test_9%: ; $(PYTHON3) testbuilds.py $@ -vv $V 
-est_9%: ; $(PYTHON3) testbuilds.py t$@ -vv $V --keep
+test_9%: ; $(PYTHON3) zzipbuildtests.py $@ -vv $V 
+est_9%: ; $(PYTHON3) zzipbuildtests.py t$@ -vv $V --keep
 test_0%: ; cd docs && $(PYTHON3) zzipdoctooltests.py $@ -vv $V 
 est_0%: ; cd docs && $(PYTHON3) zzipdoctooltests.py t$@ -vv $V --keep
 
-b: ; grep "def test_" testbuilds.py | sed -e "s/ *def test_/make b_/" -e "s/(self).*//"
+b: ; grep "def test_" zzipbuildtests.py | sed -e "s/ *def test_/make b_/" -e "s/(self).*//"
 t: ; grep "def test_" test/zziptests.py | sed -e "s/ *def test_/make t_/" -e "s/(self).*//"
 
 rms: ; docker images --format '{{.Repository}} {{.ID}}' | grep localhost:5000/systemctl/ | cut -d ' ' -f 2 | xargs --no-run-if-empty docker rmi -f
@@ -130,7 +130,7 @@ nextversion:
 	; newv=`echo $$oldv | sed -e "s:[.]$$oldr\$$:.$$newr:"` \
 	; echo "$$oldv -> $$newv" \
 	; sed -i -e "s:$$oldv:$$newv:" setup.cfg \
-	; sed -i -e "s:$$oldv:$$newv:" zziplib.spec testbuilds.py \
+	; sed -i -e "s:$$oldv:$$newv:" zziplib.spec zzipbuildtests.py \
 	; sed -i -e "s:$$oldv:$$newv:" */CMakeLists.txt \
 	; sed -i -e "s:$$oldv:$$newv:" CMakeLists.txt \
 	; $(GIT) --no-pager diff -U0
@@ -184,10 +184,10 @@ AUTOPEP8_ASDIFF= --diff
 	$(AUTOPEP8) $(AUTOPEP8_OPTIONS) $(@:.pep8=) $(AUTOPEP8_INPLACE)
 	$(GIT) --no-pager diff $(@:.pep8=)
 
-PY1 = testbuilds.py
+PY1 = zzipbuildtests.py
 PY2 = test/zziptests.py
-PY3 = docs/tools/md2dbk.py
-PY4 = docs/toolstests.py
+PY3 = docs/zzipdoctool/md2dbk.py
+PY4 = docs/zzipdoctooltests.py
 type:  ; $(MAKE) $(PY1).type $(PY2).type $(PY3).type $(PY4).type
 style: ; $(MAKE) $(PY1).pep8 $(PY2).pep8 $(PY3).pep8 $(PY4).pep8
 pep1:  ; $(MAKE) $(PY1).pep1 $(PY2).pep1 $(PY3).pep1 $(PY4).pep1
