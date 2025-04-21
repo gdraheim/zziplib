@@ -362,8 +362,12 @@ def main() -> int:
                 continue
             testclass = globals()[classname]
             for method in sorted(dir(testclass)):
-                if "*" not in arg: arg += "*"
-                if arg.startswith("_"): arg = arg[1:]
+                if arg.endswith("/"):
+                    arg = arg[:-1]
+                if "*" not in arg:
+                    arg += "*"
+                if len(arg) > 2 and arg[1] == "_":
+                    arg = "test_" + arg[2:]
                 if matches(method, arg):
                     suite.addTest(testclass(method))
     xmlresults = opt.xmlresults
