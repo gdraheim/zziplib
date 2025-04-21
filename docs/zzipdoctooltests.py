@@ -1,8 +1,10 @@
 #! /usr/bin/python3
 import sys
 import os.path
-sys.path = ["."] + sys.path
-from tools import md2dbk
+
+zzipdocdir = os.path.dirname(__file__)
+sys.path = [zzipdocdir] + sys.path
+from zzipdoctool import md2dbk
 from unittest import TestCase, TestSuite, TextTestRunner, main
 from fnmatch import fnmatchcase as matches
 

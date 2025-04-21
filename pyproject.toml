@@ -32,8 +32,8 @@ issues = "https://github.com/gdraheim/zziplib/issues"
 zzipdbk2htm = "zzipdoc.dbk2htm:main"
 
 [tool.setuptools]
-package-dir = {"zzipdoc" = "docs/zzipdoc"}
-script-files = [ "testbuilds.py", "test/zziptests.py", "docs/toolstests.py", "docs/zzipmakedocs.py" ]
+package-dir = {"zzipdoc" = "docs/zzipdoc", "zzipdoctool" = "docs/zzipdoctool" }
+script-files = [ "testbuilds.py", "test/zziptests.py", "docs/zzipdoctooltests.py", "docs/zzipmakedocs.py" ]
 
 [tool.pycodestyle]
 max-line-length = 188 
