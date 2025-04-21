@@ -264,6 +264,9 @@ dd:
 	diff -U0 $A/build/docs/zziplib.docbook $B/build/docs/zziplib.docbook
 
 # extras ..............................
+setupconan:
+	$(PYTHON3) -m pip install -y conan
+	$(PYTHON3) -m pip install -y conan-stubs
 conan:
 	conan create . --build=missing
 
