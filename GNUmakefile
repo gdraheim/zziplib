@@ -244,7 +244,7 @@ A = .
 B = ../zziplib_master
 mm:
 	mkdir -p $A/build/docs
-	cd $A && $(PYTHON3) docs/makedocs.py $(zziplibsrc) --package=zziplib --version=0.13.80 --onlymainheader=zzip/lib.h --output=build/docs/zziplib
+	cd $A && $(PYTHON3) docs/zzipmakedocs.py $(zziplibsrc) --package=zziplib --version=0.13.80 --onlymainheader=zzip/lib.h --output=build/docs/zziplib
 	cd $A/build/docs && cp zziplib.docbook zziplib.xml
 	cd $A/build/docs && $(PYTHON3) ../../docs/tools/dbk2man.py -o man3 man zziplib.xml -vv
 

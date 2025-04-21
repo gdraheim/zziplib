@@ -36,7 +36,7 @@ EXTRA_DIST = $(doc_FILES) $(htm_md_FILES) $(SDL_RWOPS) \
 CLEANFILES = *.pc *.omf *.tar *.html *.xml changes.htm
 DISTCLEANFILES = zziplib.spec 
 
-zzipdoc_FILES = makedocs.py               zzipdoc/__init__.py \
+zzipdoc_FILES = zzipmakedocs.py           zzipdoc/__init__.py \
 	zzipdoc/commentmarkup.py          zzipdoc/match.py    \
 	zzipdoc/dbk2htm.py                zzipdoc/htm2dbk.py  \
 	zzipdoc/functionheader.py         zzipdoc/options.py  \
@@ -65,24 +65,24 @@ docu :
 zziplib.html: zziplib.xml
 zziplib.xml: zziplib.spec $(srcdir)/Makefile.am \
                  $(srcdir)/zzipdoc/*.py \
-                 $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c
-	$(PYRUN) $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c $(zziplib) \
+                 $(srcdir)/zzipmakedocs.py @top_srcdir@/zzip/*.c
+	$(PYRUN) $(srcdir)/zzipmakedocs.py @top_srcdir@/zzip/*.c $(zziplib) \
                    "--package=$(PACKAGE)" "--version=$(VERSION)" \
                    "--onlymainheader=zzip/lib.h" "--output=zziplib"
 	test -s zziplib.docbook && mv zziplib.docbook zziplib.xml
 zzipmmapped.html: zzipmmapped.xml 
 zzipmmapped.xml: zziplib.spec $(srcdir)/Makefile.am \
                  $(srcdir)/zzipdoc/*.py \
-                 $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c
-	$(PYRUN) $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c $(zziplib) \
+                 $(srcdir)/zzipmakedocs.py @top_srcdir@/zzip/*.c
+	$(PYRUN) $(srcdir)/zzipmakedocs.py @top_srcdir@/zzip/*.c $(zziplib) \
                    "--package=$(PACKAGE)" "--version=$(VERSION)" \
                    "--onlymainheader=zzip/mmapped.h" "--output=zzipmmapped"
 	test -s zzipmmapped.docbook && mv zzipmmapped.docbook zzipmmapped.xml
 zzipfseeko.html: zzipfseeko.xml 
 zzipfseeko.xml: zziplib.spec $(srcdir)/Makefile.am \
                  $(srcdir)/zzipdoc/*.py \
-                 $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c
-	$(PYRUN) $(srcdir)/makedocs.py @top_srcdir@/zzip/*.c $(zziplib) \
+                 $(srcdir)/zzipmakedocs.py @top_srcdir@/zzip/*.c
+	$(PYRUN) $(srcdir)/zzipmakedocs.py @top_srcdir@/zzip/*.c $(zziplib) \
                    "--package=$(PACKAGE)" "--version=$(VERSION)" \
                    "--onlymainheader=zzip/fseeko.h" "--output=zzipfseeko"
 	test -s zzipfseeko.docbook && mv zzipfseeko.docbook zzipfseeko.xml
