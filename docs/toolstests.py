@@ -1,223 +1,224 @@
 #! /usr/bin/python3
-import toolstestpath  # noqa
+import sys
+import os.path
+sys.path = ["."] + sys.path
 from tools import md2dbk
 from unittest import TestCase, TestSuite, TextTestRunner, main
 from fnmatch import fnmatchcase as matches
 
 import os
-import sys
 import logging
 logg = logging.getLogger("TOOLS")
 
 class md2dbkTests(TestCase):
     def test_1000(self) -> None:
-        b = md2dbk.blocks("")
+        b = md2dbk.blocks4("")
         self.assertEqual(b, [])
     def test_1001(self) -> None:
-        b = md2dbk.blocks("a")
+        b = md2dbk.blocks4("a")
         self.assertEqual(b, ["a\n"])
     def test_1002(self) -> None:
-        b = md2dbk.blocks("a\n")
+        b = md2dbk.blocks4("a\n")
         self.assertEqual(b, ["a\n"])
     def test_1003(self) -> None:
-        b = md2dbk.blocks("a\nb")
+        b = md2dbk.blocks4("a\nb")
         self.assertEqual(b, ["a\nb\n"])
     def test_1004(self) -> None:
-        b = md2dbk.blocks("a\nb\n")
+        b = md2dbk.blocks4("a\nb\n")
         self.assertEqual(b, ["a\nb\n"])
     def test_1005(self) -> None:
-        b = md2dbk.blocks("a\nb\n\nc")
+        b = md2dbk.blocks4("a\nb\n\nc")
         self.assertEqual(b, ["a\nb\n", "c\n"])
     def test_1006(self) -> None:
-        b = md2dbk.blocks("a\nb\n\nc\n")
+        b = md2dbk.blocks4("a\nb\n\nc\n")
         self.assertEqual(b, ["a\nb\n", "c\n"])
     def test_1007(self) -> None:
-        b = md2dbk.blocks("a\nb\n\n\nc")
+        b = md2dbk.blocks4("a\nb\n\n\nc")
         self.assertEqual(b, ["a\nb\n", "c\n"])
     def test_1008(self) -> None:
-        b = md2dbk.blocks("a\nb\n\n\nc\n")
+        b = md2dbk.blocks4("a\nb\n\n\nc\n")
         self.assertEqual(b, ["a\nb\n", "c\n"])
     def test_1009(self) -> None:
-        b = md2dbk.blocks("a\nb\n\n\nc\n\n")
+        b = md2dbk.blocks4("a\nb\n\n\nc\n\n")
         self.assertEqual(b, ["a\nb\n", "c\n"])
     def test_1010(self) -> None:
-        b = md2dbk.blocks("a *xx*\nb\n\n\nc\n\n")
+        b = md2dbk.blocks4("a *xx*\nb\n\n\nc\n\n")
         self.assertEqual(b, ["a *xx*\nb\n", "c\n"])
     def test_1011(self) -> None:
-        b = md2dbk.blocks("a **xx**\nb\n\n\nc\n\n")
+        b = md2dbk.blocks4("a **xx**\nb\n\n\nc\n\n")
         self.assertEqual(b, ["a **xx**\nb\n", "c\n"])
     def test_1012(self) -> None:
-        b = md2dbk.blocks("a _xx_\nb\n\n\nc\n\n")
+        b = md2dbk.blocks4("a _xx_\nb\n\n\nc\n\n")
         self.assertEqual(b, ["a _xx_\nb\n", "c\n"])
     def test_1013(self) -> None:
-        b = md2dbk.blocks("a __xx__\nb\n\n\nc\n\n")
+        b = md2dbk.blocks4("a __xx__\nb\n\n\nc\n\n")
         self.assertEqual(b, ["a __xx__\nb\n", "c\n"])
     def test_1014(self) -> None:
-        b = md2dbk.blocks("a `xx`\nb\n\n\nc\n\n")
+        b = md2dbk.blocks4("a `xx`\nb\n\n\nc\n\n")
         self.assertEqual(b, ["a `xx`\nb\n", "c\n"])
     def test_1015(self) -> None:
-        b = md2dbk.blocks("a ``xx``\nb\n\n\nc\n\n")
+        b = md2dbk.blocks4("a ``xx``\nb\n\n\nc\n\n")
         self.assertEqual(b, ["a ``xx``\nb\n", "c\n"])
     def test_1016(self) -> None:
-        b = md2dbk.blocks("a [xx]\nb\n\n\nc\n\n")
+        b = md2dbk.blocks4("a [xx]\nb\n\n\nc\n\n")
         self.assertEqual(b, ["a [xx]\nb\n", "c\n"])
     def test_1017(self) -> None:
-        b = md2dbk.blocks("a [xx](foo)\nb\n\n\nc\n\n")
+        b = md2dbk.blocks4("a [xx](foo)\nb\n\n\nc\n\n")
         self.assertEqual(b, ["a [xx](foo)\nb\n", "c\n"])
     def test_1101(self) -> None:
-        b = md2dbk.blocks("# a")
+        b = md2dbk.blocks4("# a")
         self.assertEqual(b, ["# a\n"])
     def test_1102(self) -> None:
-        b = md2dbk.blocks("## a")
+        b = md2dbk.blocks4("## a")
         self.assertEqual(b, ["## a\n"])
     def test_1103(self) -> None:
-        b = md2dbk.blocks("### a")
+        b = md2dbk.blocks4("### a")
         self.assertEqual(b, ["### a\n"])
     def test_1104(self) -> None:
-        b = md2dbk.blocks("#### a")
+        b = md2dbk.blocks4("#### a")
         self.assertEqual(b, ["#### a\n"])
     def test_1105(self) -> None:
-        b = md2dbk.blocks("##### a")
+        b = md2dbk.blocks4("##### a")
         self.assertEqual(b, ["##### a\n"])
     def test_1106(self) -> None:
-        b = md2dbk.blocks("###### a")
+        b = md2dbk.blocks4("###### a")
         self.assertEqual(b, ["###### a\n"])
     def test_1111(self) -> None:
-        b = md2dbk.blocks("# a\n# b")
+        b = md2dbk.blocks4("# a\n# b")
         self.assertEqual(b, ["# a\n# b\n"])
     def test_1112(self) -> None:
-        b = md2dbk.blocks("## a\n## b")
+        b = md2dbk.blocks4("## a\n## b")
         self.assertEqual(b, ["## a\n## b\n"])
     def test_1113(self) -> None:
-        b = md2dbk.blocks("### a\n## b")
+        b = md2dbk.blocks4("### a\n## b")
         self.assertEqual(b, ["### a\n## b\n"])
     def test_1114(self) -> None:
-        b = md2dbk.blocks("#### a\n## b")
+        b = md2dbk.blocks4("#### a\n## b")
         self.assertEqual(b, ["#### a\n## b\n"])
     def test_1115(self) -> None:
-        b = md2dbk.blocks("##### a\n## b")
+        b = md2dbk.blocks4("##### a\n## b")
         self.assertEqual(b, ["##### a\n## b\n"])
     def test_1116(self) -> None:
-        b = md2dbk.blocks("###### a\n## b")
+        b = md2dbk.blocks4("###### a\n## b")
         self.assertEqual(b, ["###### a\n## b\n"])
     def test_1121(self) -> None:
-        b = md2dbk.blocks("# a\n b")
+        b = md2dbk.blocks4("# a\n b")
         self.assertEqual(b, ["# a\n b\n"])
     def test_1122(self) -> None:
-        b = md2dbk.blocks("## a\n b")
+        b = md2dbk.blocks4("## a\n b")
         self.assertEqual(b, ["## a\n b\n"])
     def test_1123(self) -> None:
-        b = md2dbk.blocks("### a\n b")
+        b = md2dbk.blocks4("### a\n b")
         self.assertEqual(b, ["### a\n b\n"])
     def test_1124(self) -> None:
-        b = md2dbk.blocks("#### a\n b")
+        b = md2dbk.blocks4("#### a\n b")
         self.assertEqual(b, ["#### a\n b\n"])
     def test_1125(self) -> None:
-        b = md2dbk.blocks("##### a\n b")
+        b = md2dbk.blocks4("##### a\n b")
         self.assertEqual(b, ["##### a\n b\n"])
     def test_1126(self) -> None:
-        b = md2dbk.blocks("###### a\n b")
+        b = md2dbk.blocks4("###### a\n b")
         self.assertEqual(b, ["###### a\n b\n"])
     def test_1131(self) -> None:
-        b = md2dbk.blocks("a\n===")
+        b = md2dbk.blocks4("a\n===")
         self.assertEqual(b, ["# a\n"])
     def test_1132(self) -> None:
-        b = md2dbk.blocks("a\n---")
+        b = md2dbk.blocks4("a\n---")
         self.assertEqual(b, ["## a\n"])
     def test_1133(self) -> None:
-        b = md2dbk.blocks("a\n===\nb")
+        b = md2dbk.blocks4("a\n===\nb")
         self.assertEqual(b, ["# a\nb\n"])
     def test_1134(self) -> None:
-        b = md2dbk.blocks("a\n---\nb")
+        b = md2dbk.blocks4("a\n---\nb")
         self.assertEqual(b, ["## a\nb\n"])
     def test_1135(self) -> None:
-        b = md2dbk.blocks("a\n===\n## b")
+        b = md2dbk.blocks4("a\n===\n## b")
         self.assertEqual(b, ["# a\n## b\n"])
     def test_1136(self) -> None:
-        b = md2dbk.blocks("a\n---\n## b")
+        b = md2dbk.blocks4("a\n---\n## b")
         self.assertEqual(b, ["## a\n## b\n"])
     def test_1141(self) -> None:
-        b = md2dbk.blocks("a\n===\n\n")
+        b = md2dbk.blocks4("a\n===\n\n")
         self.assertEqual(b, ["# a\n"])
     def test_1142(self) -> None:
-        b = md2dbk.blocks("a\n---\n\n")
+        b = md2dbk.blocks4("a\n---\n\n")
         self.assertEqual(b, ["## a\n"])
     def test_1143(self) -> None:
-        b = md2dbk.blocks("a\n===\n\n\nb")
+        b = md2dbk.blocks4("a\n===\n\n\nb")
         self.assertEqual(b, ["# a\n", "b\n"])
     def test_1144(self) -> None:
-        b = md2dbk.blocks("a\n---\n\n\nb")
+        b = md2dbk.blocks4("a\n---\n\n\nb")
         self.assertEqual(b, ["## a\n", "b\n"])
     def test_1145(self) -> None:
-        b = md2dbk.blocks("a\n===\n\n\n## b")
+        b = md2dbk.blocks4("a\n===\n\n\n## b")
         self.assertEqual(b, ["# a\n", "## b\n"])
     def test_1146(self) -> None:
-        b = md2dbk.blocks("a\n---\n\n\n## b")
+        b = md2dbk.blocks4("a\n---\n\n\n## b")
         self.assertEqual(b, ["## a\n", "## b\n"])
     def test_1151(self) -> None:
-        b = md2dbk.blocks("# a\n\n\nb")
+        b = md2dbk.blocks4("# a\n\n\nb")
         self.assertEqual(b, ["# a\n", "b\n"])
     def test_1152(self) -> None:
-        b = md2dbk.blocks("## a\n\nb")
+        b = md2dbk.blocks4("## a\n\nb")
         self.assertEqual(b, ["## a\n", "b\n"])
     def test_1153(self) -> None:
-        b = md2dbk.blocks("### a\n\n\n\nb")
+        b = md2dbk.blocks4("### a\n\n\n\nb")
         self.assertEqual(b, ["### a\n", "b\n"])
     def test_1154(self) -> None:
-        b = md2dbk.blocks("#### a\n\n\nb")
+        b = md2dbk.blocks4("#### a\n\n\nb")
         self.assertEqual(b, ["#### a\n", "b\n"])
     def test_1155(self) -> None:
-        b = md2dbk.blocks("##### a\n\n\n## b")
+        b = md2dbk.blocks4("##### a\n\n\n## b")
         self.assertEqual(b, ["##### a\n", "## b\n"])
     def test_1156(self) -> None:
-        b = md2dbk.blocks("###### a\n\n\n## b")
+        b = md2dbk.blocks4("###### a\n\n\n## b")
         self.assertEqual(b, ["###### a\n", "## b\n"])
     def test_1201(self) -> None:
-        b = md2dbk.blocks("* a\n\n\n")
+        b = md2dbk.blocks4("* a\n\n\n")
         self.assertEqual(b, ["<itemizedlist>", "<listitem>", "* a\n",
                              "</listitem>", "</itemizedlist>"])
     def test_1202(self) -> None:
-        b = md2dbk.blocks("* a\n\n\nb")
+        b = md2dbk.blocks4("* a\n\n\nb")
         self.assertEqual(b, ["<itemizedlist>", "<listitem>", "* a\n",
                              "</listitem>", "</itemizedlist>",
                              "b\n"])
     def test_1203(self) -> None:
-        b = md2dbk.blocks("* a\n\n\nb\n* c")
+        b = md2dbk.blocks4("* a\n\n\nb\n* c")
         self.assertEqual(b, ["<itemizedlist>", "<listitem>", "* a\n",
                              "</listitem>", "</itemizedlist>", "b\n",
                              "<itemizedlist>", "<listitem>", "* c\n",
                              "</listitem>", "</itemizedlist>"])
     def test_1211(self) -> None:
-        b = md2dbk.blocks("* a\n* x\n\n")
+        b = md2dbk.blocks4("* a\n* x\n\n")
         self.assertEqual(b, ["<itemizedlist>", "<listitem>", "* a\n",
                              "</listitem><listitem>", "* x\n",
                              "</listitem>", "</itemizedlist>"])
     def test_1212(self) -> None:
-        b = md2dbk.blocks("* a\n* x\n\nb")
+        b = md2dbk.blocks4("* a\n* x\n\nb")
         self.assertEqual(b, ["<itemizedlist>", "<listitem>", "* a\n",
                              "</listitem><listitem>", "* x\n",
                              "</listitem>", "</itemizedlist>", "b\n"])
     def test_1213(self) -> None:
-        b = md2dbk.blocks("* a\n* x\n\nb\n* c")
+        b = md2dbk.blocks4("* a\n* x\n\nb\n* c")
         self.assertEqual(b, ["<itemizedlist>", "<listitem>", "* a\n",
                              "</listitem><listitem>", "* x\n",
                              "</listitem>", "</itemizedlist>", "b\n",
                              "<itemizedlist>", "<listitem>", "* c\n",
                              "</listitem>", "</itemizedlist>"])
     def test_1221(self) -> None:
-        b = md2dbk.blocks("* a\n** x\n\n")
+        b = md2dbk.blocks4("* a\n** x\n\n")
         self.assertEqual(b, ["<itemizedlist>", "<listitem>", "* a\n",
                              "<itemizedlist>", "<listitem>", "** x\n",
                              "</listitem>", "</itemizedlist>",
                              "</listitem>", "</itemizedlist>"])
     def test_1222(self) -> None:
-        b = md2dbk.blocks("* a\n** x\n\nb")
+        b = md2dbk.blocks4("* a\n** x\n\nb")
         self.assertEqual(b, ["<itemizedlist>", "<listitem>", "* a\n",
                              "<itemizedlist>", "<listitem>", "** x\n",
                              "</listitem>", "</itemizedlist>",
                              "</listitem>", "</itemizedlist>", "b\n"])
     def test_1223(self) -> None:
-        b = md2dbk.blocks("* a\n** x\n\nb\n* c")
+        b = md2dbk.blocks4("* a\n** x\n\nb\n* c")
         self.assertEqual(b, ["<itemizedlist>", "<listitem>", "* a\n",
                              "<itemizedlist>", "<listitem>", "** x\n",
                              "</listitem>", "</itemizedlist>",
@@ -225,7 +226,7 @@ class md2dbkTests(TestCase):
                              "<itemizedlist>", "<listitem>", "* c\n",
                              "</listitem>", "</itemizedlist>"])
     def test_1224(self) -> None:
-        b = md2dbk.blocks("* a\n** x\n*** y\nb\n* c")
+        b = md2dbk.blocks4("* a\n** x\n*** y\nb\n* c")
         self.assertEqual(b, ["<itemizedlist>", "<listitem>", "* a\n",
                              "<itemizedlist>", "<listitem>", "** x\n",
                              "<itemizedlist>", "<listitem>", "*** y\n",
@@ -235,7 +236,7 @@ class md2dbkTests(TestCase):
                              "<itemizedlist>", "<listitem>", "* c\n",
                              "</listitem>", "</itemizedlist>"])
     def test_1225(self) -> None:
-        b = md2dbk.blocks("* a\n** x\n** y\nb\n* c")
+        b = md2dbk.blocks4("* a\n** x\n** y\nb\n* c")
         self.assertEqual(b, ["<itemizedlist>", "<listitem>", "* a\n",
                              "<itemizedlist>", "<listitem>", "** x\n",
                              "</listitem><listitem>", "** y\n",
@@ -244,13 +245,13 @@ class md2dbkTests(TestCase):
                              "<itemizedlist>", "<listitem>", "* c\n",
                              "</listitem>", "</itemizedlist>"])
     def test_1226(self) -> None:
-        b = md2dbk.blocks("* a\n** x\n* y\n\nb")
+        b = md2dbk.blocks4("* a\n** x\n* y\n\nb")
         self.assertEqual(b, ["<itemizedlist>", "<listitem>", "* a\n",
                              "<itemizedlist>", "<listitem>", "** x\n",
                              "</listitem>", "</itemizedlist>", "<listitem>", "* y\n",
                              "</listitem>", "</itemizedlist>", "b\n"])
     def test_1227(self) -> None:
-        b = md2dbk.blocks("* a\n** x\n* y\n* z\n\nb")
+        b = md2dbk.blocks4("* a\n** x\n* y\n* z\n\nb")
         self.assertEqual(b, ["<itemizedlist>", "<listitem>", "* a\n",
                              "<itemizedlist>", "<listitem>", "** x\n",
                              "</listitem>", "</itemizedlist>",
@@ -258,7 +259,7 @@ class md2dbkTests(TestCase):
                              "</listitem><listitem>", "* z\n",
                              "</listitem>", "</itemizedlist>", "b\n"])
     def test_1228(self) -> None:
-        b = md2dbk.blocks("* a\n** x\n* y\n** z\n\nb")
+        b = md2dbk.blocks4("* a\n** x\n* y\n** z\n\nb")
         self.assertEqual(b, ["<itemizedlist>", "<listitem>", "* a\n",
                              "<itemizedlist>", "<listitem>", "** x\n",
                              "</listitem>", "</itemizedlist>", "<listitem>", "* y\n",
@@ -266,75 +267,75 @@ class md2dbkTests(TestCase):
                              "</listitem>", "</itemizedlist>",
                              "</listitem>", "</itemizedlist>", "b\n"])
     def test_2000(self) -> None:
-        b = md2dbk.blocks("")
+        b = md2dbk.blocks4("")
         self.assertEqual(b, [])
     def test_2001(self) -> None:
-        b = md2dbk.blocks("> a")
+        b = md2dbk.blocks4("> a")
         self.assertEqual(b, ["<blockquote>", "a\n", "</blockquote>"])
     def test_2002(self) -> None:
-        b = md2dbk.blocks("> a\n")
+        b = md2dbk.blocks4("> a\n")
         self.assertEqual(b, ["<blockquote>", "a\n", "</blockquote>"])
     def test_2003(self) -> None:
-        b = md2dbk.blocks("> a\n> b")
+        b = md2dbk.blocks4("> a\n> b")
         self.assertEqual(b, ["<blockquote>", "a\nb\n", "</blockquote>"])
     def test_2004(self) -> None:
-        b = md2dbk.blocks("> a\n> b\n")
+        b = md2dbk.blocks4("> a\n> b\n")
         self.assertEqual(b, ["<blockquote>", "a\nb\n", "</blockquote>"])
     def test_2005(self) -> None:
-        b = md2dbk.blocks("> a\n> b\n\n> c")
+        b = md2dbk.blocks4("> a\n> b\n\n> c")
         self.assertEqual(b, ["<blockquote>", "a\nb\n", "</blockquote>",
                              "<blockquote>", "c\n", "</blockquote>"])
     def test_2006(self) -> None:
-        b = md2dbk.blocks("> a\n> b\n\n> c\n")
+        b = md2dbk.blocks4("> a\n> b\n\n> c\n")
         self.assertEqual(b, ["<blockquote>", "a\nb\n", "</blockquote>",
                              "<blockquote>", "c\n", "</blockquote>"])
     def test_2007(self) -> None:
-        b = md2dbk.blocks("> a\n> b\n\n\n> c")
+        b = md2dbk.blocks4("> a\n> b\n\n\n> c")
         self.assertEqual(b, ["<blockquote>", "a\nb\n", "</blockquote>",
                              "<blockquote>", "c\n", "</blockquote>"])
     def test_2008(self) -> None:
-        b = md2dbk.blocks("> a\n> b\n\n\n> c\n")
+        b = md2dbk.blocks4("> a\n> b\n\n\n> c\n")
         self.assertEqual(b, ["<blockquote>", "a\nb\n", "</blockquote>",
                              "<blockquote>", "c\n", "</blockquote>"])
     def test_2009(self) -> None:
-        b = md2dbk.blocks("> a\n> b\n\n\n> c\n\n")
+        b = md2dbk.blocks4("> a\n> b\n\n\n> c\n\n")
         self.assertEqual(b, ["<blockquote>", "a\nb\n", "</blockquote>",
                              "<blockquote>", "c\n", "</blockquote>"])
     def test_2101(self) -> None:
-        b = md2dbk.blocks("> # a")
+        b = md2dbk.blocks4("> # a")
         self.assertEqual(b, ["<blockquote>", "# a\n", "</blockquote>"])
     def test_2102(self) -> None:
-        b = md2dbk.blocks("> ## a")
+        b = md2dbk.blocks4("> ## a")
         self.assertEqual(b, ["<blockquote>", "## a\n", "</blockquote>"])
     def test_2111(self) -> None:
-        b = md2dbk.blocks("> # a\n> # b")
+        b = md2dbk.blocks4("> # a\n> # b")
         self.assertEqual(b, ["<blockquote>", "# a\n# b\n", "</blockquote>"])
     def test_2112(self) -> None:
-        b = md2dbk.blocks("> ## a\n> ## b")
+        b = md2dbk.blocks4("> ## a\n> ## b")
         self.assertEqual(b, ["<blockquote>", "## a\n## b\n", "</blockquote>"])
     def test_2131(self) -> None:
-        b = md2dbk.blocks("> a\n> ===")
+        b = md2dbk.blocks4("> a\n> ===")
         self.assertEqual(b, ["<blockquote>", "# a\n", "</blockquote>"])
     def test_2132(self) -> None:
-        b = md2dbk.blocks("> a\n> ---")
+        b = md2dbk.blocks4("> a\n> ---")
         self.assertEqual(b, ["<blockquote>", "## a\n", "</blockquote>"])
     def test_2151(self) -> None:
-        b = md2dbk.blocks("> # a\n>\n>\n> b")
+        b = md2dbk.blocks4("> # a\n>\n>\n> b")
         self.assertEqual(b, ["<blockquote>", "# a\n", "b\n", "</blockquote>"])
     def test_2152(self) -> None:
-        b = md2dbk.blocks("> ## a\n>\n> b")
+        b = md2dbk.blocks4("> ## a\n>\n> b")
         self.assertEqual(b, ["<blockquote>", "## a\n", "b\n", "</blockquote>"])
     def test_2153(self) -> None:
-        b = md2dbk.blocks("> ### a\n>\n>\n>\n> b")
+        b = md2dbk.blocks4("> ### a\n>\n>\n>\n> b")
         self.assertEqual(b, ["<blockquote>", "### a\n", "b\n", "</blockquote>"])
     def test_2154(self) -> None:
-        b = md2dbk.blocks("> #### a\n>\n>\n> b")
+        b = md2dbk.blocks4("> #### a\n>\n>\n> b")
         self.assertEqual(b, ["<blockquote>", "#### a\n", "b\n", "</blockquote>"])
     def test_2155(self) -> None:
-        b = md2dbk.blocks("> ##### a\n>\n>\n> ## b")
+        b = md2dbk.blocks4("> ##### a\n>\n>\n> ## b")
         self.assertEqual(b, ["<blockquote>", "##### a\n", "## b\n", "</blockquote>"])
     def test_2156(self) -> None:
-        b = md2dbk.blocks("> ###### a\n>\n>\n> ## b")
+        b = md2dbk.blocks4("> ###### a\n>\n>\n> ## b")
         self.assertEqual(b, ["<blockquote>", "###### a\n", "## b\n", "</blockquote>"])
 
 if __name__ == "__main__":
