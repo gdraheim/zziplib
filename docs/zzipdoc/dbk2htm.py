@@ -1,3 +1,6 @@
+#! /usr/bin/env python3
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
+
 from zzipdoc.match import Match
 
 class dbk2htm_conversion:
@@ -7,8 +10,8 @@ class dbk2htm_conversion:
     def __init__(self) -> None:
         pass
     def section2html(self, text: str) -> str:
-        for str in self.mapping:
-            text = text.replace(str, self.mapping[str])
+        for markup, replace in self.mapping.items():
+            text = text.replace(markup, replace)
         return text
     def paramdef2html(self, text: str) -> str:
         s = Match()

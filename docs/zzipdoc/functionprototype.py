@@ -1,3 +1,6 @@
+#! /usr/bin/env python3
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
+
 from typing import Optional
 from zzipdoc.match import Match
 from zzipdoc.functionheader import FunctionHeader

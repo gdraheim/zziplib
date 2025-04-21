@@ -1,4 +1,7 @@
-from typing import Optional, List, Union
+#! /usr/bin/env python3
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
+
+from typing import Optional
 from zzipdoc.match import Match
 from zzipdoc.textfileheader import TextFileHeader
 from zzipdoc.functionheader import FunctionHeader
@@ -20,7 +23,6 @@ class CommentMarkupSource:
         return None
     def get_filename(self) -> Optional[str]:
         return None
-    
 
 class CommentMarkup:
     """ using a structure having a '.comment' item - it does pick it up

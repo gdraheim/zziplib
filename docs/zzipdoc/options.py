@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
+from typing import Optional, Dict
 
 from zzipdoc.match import Match
-from typing import Optional, Dict
 
 # use as o.optionname to check for commandline options.
 class Options:

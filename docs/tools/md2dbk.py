@@ -1,6 +1,6 @@
-#! /usr/bin/python3
-
-from __future__ import print_function, absolute_import, division
+#! /usr/bin/env python3
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements,line-too-long
+# pylint: disable=consider-using-f-string,invalid-name,unspecified-encoding
 
 __copyright__ = "(C) 2021 Guido Draheim"
 __contact__ = "https://github.com/gdraheim/zziplib"
@@ -9,11 +9,13 @@ __version__ = "0.13.72"
 
 from typing import List, Generator, Optional
 import re
+import sys
 from html import escape
 
 import logging
 logg = logging.getLogger("MD2DBK")
 
+OK = True
 SingleUnderscore = False
 SingleAsterisk = False
 
@@ -42,7 +44,7 @@ class ContainerMarkup:
     preHR2 = "--- "
     preHR3 = "--- "
 
-def blocks(text: str) -> List[str]:
+def blocks4(text: str) -> List[str]:
     logg.debug(">> (%i)", len(text))
     blocks: List[str] = []
     for block in _blocks(text):
@@ -122,7 +124,7 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
                 if _newlist1 or _newlist2:
                     yield mark.newLI or "<%s>" % mark.LI
             else:
-                if True:
+                if OK:
                     if text:
                         yield text
                         text = ""
@@ -459,7 +461,7 @@ def _xmlblocks(block: str) -> List[str]:
                 return ["<para>" + block + "</para>"]
         tag = re.match("(</?(\\w+) [ ]*\\w+=[^<>]*>)", line)
         if tag:
-            if True:
+            if OK:
                 return [block]
     # indended code needs to be escaped
     if re.match("^    .*", line):
@@ -506,7 +508,7 @@ def _xmlblocks(block: str) -> List[str]:
         if result:
             return [result + "</screen>\n"]
         return []
-    if True:
+    if OK:
         # thematic breaks allow a lot of space characters in GFM
         if re.match(" ? ? ?[*] *[*] *[*] *[* ]*$", line):
             return ["<hr />"]
@@ -516,14 +518,14 @@ def _xmlblocks(block: str) -> List[str]:
             return ["<hr width=\"80%\" align=\"center\" />"]
     #################################################
     blocks = []
-    if re.match("\\[\w[-\w]*\\]:", line):
+    if re.match("\\[\\w[-\\w]*\\]:", line):
         text = ""
         remainder = ""
         for line in block.splitlines():
             if remainder:
                 remainder += line + "\n"
                 continue
-            m = re.match("\\[(\w[-\w]*)]: +(\\S+) +(\\S.*)", line)
+            m = re.match("\\[(\\w[-\\w]*)]: +(\\S+) +(\\S.*)", line)
             if m:
                 if m.group(2) in ["#"] and m.group(1) in ["date"]:
                     text += "<%s>%s</%s>" % (m.group(1), escape(m.group(3)), m.group(1))
@@ -532,12 +534,12 @@ def _xmlblocks(block: str) -> List[str]:
                         m.group(1), escape(m.group(2)), escape(m.group(3)))
                 blocks += [text]
                 continue
-            m = re.match("\\[(\w[-\w]*)]: +(\\S+)", line)
+            m = re.match("\\[(\\w[-\\w]*)]: +(\\S+)", line)
             if m:
                 text += "<meta name=\"%s\" href=\"%s\" content=\"%s\" />" % (m.group(1), escape(m.group(2)), m.group(1))
                 blocks += [text]
                 continue
-            m = re.match("\\[(\w[-\w]*)]:", line)
+            m = re.match("\\[(\\w[-\\w]*)]:", line)
             if m:
                 text += "<a name=\"%s\" />" % (m.group(1))
                 blocks += [text]
@@ -574,8 +576,8 @@ def _xmlblocks(block: str) -> List[str]:
         # decompose a tight block
         lines = list(block.splitlines())
         endblock = ""
-        for n in range(len(lines)):
-            line_0 = lines[n]
+        for n, line_0 in enumerate(lines):
+            # line_0 = lines[n]
             line_1 = ""
             if n + 1 < len(lines): line_1 = lines[n + 1]
             _li0 = re.match(" ? ? ?([*][*]*) *(.*)", line_0)
@@ -611,7 +613,7 @@ descaping = dict([(name, char) for char, name in escaping.items()])
 def formatting(block: str) -> str:
     return descapes(inlines(escapes(block)))
 def descapes(block: str) -> str:
-    return re.sub("(&(\w+);)", lambda m: ((m.group(2) in descaping) and descaping[m.group(2)] or m.group(1)), block)
+    return re.sub("(&(\\w+);)", lambda m: ((m.group(2) in descaping) and descaping[m.group(2)] or m.group(1)), block)
 def keeping(block: str) -> str:
     return re.sub("(.)", lambda m: ((m.group(1) in escaping) and ("&%s;" % escaping[m.group(1)]) or m.group(1)), block)
 def escapes(block: str) -> str:
@@ -752,11 +754,11 @@ def inlines(block: str) -> str:
                       text)
     return text
 
-if __name__ == "__main__":
-    from optparse import OptionParser
+def main() -> int:
+    from optparse import OptionParser # pylint: disable=deprecated-module,import-outside-toplevel
     _o = OptionParser("%prog [-options] filename...")
-    _o.add_option("-v", "--verbose", action="count", default=0,
-                  help="increase logging level")
+    _o.add_option("-v", "--verbose", action="count", default=0, help="more logging")
+    _o.add_option("-^", "--quiet", action="count", default=0, help="less logging")
     _o.add_option("-b", "--blocks", action="store_true", default=0,
                   help="show block structure")
     _o.add_option("-c", "--xmlblocks", action="store_true", default=0,
@@ -764,11 +766,11 @@ if __name__ == "__main__":
     _o.add_option("-r", "--htm", action="store_true", default=0,
                   help="returns as htm text")
     opt, args = _o.parse_args()
-    logging.basicConfig(level=logging.ERROR - 10 * opt.verbose)
+    logging.basicConfig(level=max(0, logging.WARNING - 10 * opt.verbose + 10 * opt.quiet))
     document: List[str] = []
     for arg in args:
         logg.info(">> %s", arg)
-        document += blocks(open(arg, "r").read())
+        document += blocks4(open(arg, "r").read())
     if opt.blocks:
         for block in document:
             show = "| " + block.replace("\n", "\n| ")
@@ -825,3 +827,7 @@ if __name__ == "__main__":
         for block in document:
             for part in _xmlblocks(block):
                 print(part)
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())

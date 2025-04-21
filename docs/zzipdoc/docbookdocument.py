@@ -1,9 +1,15 @@
 #! /usr/bin/env python3
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
+# pylint: disable=broad-exception-caught,unspecified-encoding
 
-from typing import Optional, List, Any
+from typing import Optional, List
+import logging
+
 from zzipdoc.match import Match
 from zzipdoc.options import DocOptions
 from zzipdoc.functionlistreference import FunctionListReference
+
+logg = logging.getLogger(__name__)
 
 class DocbookDocument:
     """ binds some xml content page with additional markup - in this
@@ -30,15 +36,19 @@ class DocbookDocument:
         return self
     def get_title(self) -> Optional[str]:
         if self.title: return self.title
-        try:   return self.text[0].get_title()
-        except Exception as e: pass
+        try:   
+            return self.text[0].get_title()
+        except Exception as e:
+            logg.info("could not get title: %s", e)
         return self.title
     def _xml_doctype(self, rootnode: str) -> str:
         return "<!DOCTYPE "+rootnode+self.docbook_dtd+">"
     def _xml_text(self, xml: FunctionListReference) -> str:
         """ accepts adapter objects with .xml_text() """
-        try:   return xml.xml_text()
-        except Exception as e: print("DocbookDocument/text " + str(e)); pass
+        try:
+            return xml.xml_text()
+        except Exception as e:
+            logg.error("DocbookDocument/text %s", e)
         return str(xml)
     def _fetch_rootnode(self, text: str) -> str:
         fetch = Match(r"^[^<>]*<(\w+)\b")

@@ -1,4 +1,6 @@
-#! /usr/bin/python3
+#! /usr/bin/env python3
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements,line-too-long
+# pylint: disable=consider-using-f-string,unused-argument,unspecified-encoding
 
 """ Converts an xml-file with docbook elements into troff manual pages.
     The conversion uses etree expecting <refentry> elements in the input.
@@ -7,7 +9,7 @@
 
 __author__ = "Guido U. Draheim"
 
-from typing import Optional, List, Dict, Union, Iterator
+from typing import List, Dict, Union, Optional
 import logging
 import os.path
 import re
@@ -16,16 +18,22 @@ import xml.etree.ElementTree as ET
 
 logg = logging.getLogger("dbk2man")
 
-def decodes(text: Union[bytes, str]) -> str:
-    if not text: 
-        return ""
-    try:
-        return text.decode("utf-8") # type: ignore[union-attr]
-    except:
+NIX = ""
+OK = True
+TODO = False
+
+def decodes(text: Union[bytes, str, None]) -> str:
+    if not text:
+        return NIX
+    if isinstance(text, bytes):
         try:
-            return text.decode("latin-1") # type: ignore[union-attr]
-        except:
-            return str(text)
+            return text.decode("utf-8") # type: ignore[union-attr]
+        except UnicodeEncodeError:
+            try:
+                return text.decode("latin-1") # type: ignore[union-attr]
+            except UnicodeDecodeError:
+                return str(text)
+    return text
 
 def esc(text: str) -> str:
     text = decodes(text)
@@ -47,15 +55,14 @@ def htm(text: str) -> str:
     text = text.replace('"', '&quot;')
     return text
 def mailhref(text: str) -> str:
-    return re.sub("<([^<>]*@[^<>]*)>", 
-        lambda x: '&lt;<a href="mailto:%s">%s</a>&gt;' % (x.group(1), x.group(1)), 
-        text)
+    return re.sub("<([^<>]*@[^<>]*)>",
+        lambda x: '&lt;<a href="mailto:%s">%s</a>&gt;' % (x.group(1), x.group(1)), text)
 
-def textof(elem: ET.Element, defaults: str = "") -> str:
+def textof(elem: ET.Element, defaults: str = NIX) -> str:
     try:
         return elem.text or defaults
-    except:
-        return ""
+    except AttributeError:
+        return defaults
 
 
 OverviewEntry = collections.namedtuple("OverviewEntry", ["manpage", "manvolnum", "refpurpose"])
@@ -122,10 +129,10 @@ def refentryinfo2(man: str, refentry: ET.Element, title: str) -> str:
         return text + "\n"
     else:
         text = "<html><head><title>"
-        if productname or title: 
+        if productname or title:
             text += "%s: " % htm(productname or title)
         text += htm(refentrytitle)
-        if manvolnum: 
+        if manvolnum:
             text += "(%s)" % htm(manvolnum)
         text += "</title>"
         text += "\n" + '<meta name="product" content="%s" />' % htm(productname or title)
@@ -147,9 +154,9 @@ def refentrytitle2(man: str, refentry: ET.Element, title: str = "") -> str:
         found = section.find("refpurpose")
         if found is not None: refpurpose = textof(found)
         for found in section.findall("refname"):
-             refname = textof(found)
-             if refname not in refentries:
-                 refentries.append(refname)
+            refname = textof(found)
+            if refname not in refentries:
+                refentries.append(refname)
     if not refentrytitle:
         logg.warning("no <refentrytitle> found")
         return ""
@@ -198,7 +205,7 @@ def refsynopsisdiv2man(refsynopsisdiv: ET.Element, title: str = "") -> str:
             item = decodes(ET.tostring(funcprototype))
             item = item.replace("<funcprototype>","")
             item = item.replace("</funcprototype>","")
-            if False:
+            if TODO:
                 item = item.replace("\n", " ")
                 item = item.replace("<funcdef>","")
                 item = item.replace("</funcdef>","")
@@ -211,7 +218,7 @@ def refsynopsisdiv2man(refsynopsisdiv: ET.Element, title: str = "") -> str:
                 item = re.sub(r"([_\w]+)</funcdef>", lambda x: "\\fI%s\\fR" % x.group(1), item)
                 item = item.replace("<paramdef>",'')
                 item = item.replace("</paramdef>",'')
-                text += item 
+                text += item
             text += "\n"
             funcs += 1
         if not funcs:
@@ -245,7 +252,7 @@ def refsynopsisdiv2htm(refsynopsisdiv: ET.Element, title: str = "") -> str:
             item = re.sub(r"([_\w]+)</funcdef>", lambda x: "<b>%s</b>" % x.group(1), item)
             item = item.replace("<paramdef>",'')
             item = item.replace("</paramdef>",'')
-            text += item 
+            text += item
             text += "\n"
             funcs += 1
         if not funcs:
@@ -269,8 +276,8 @@ def refsect2man(refsect: ET.Element, title: str = "") -> str:
     text = ""
     head = refsect.find("title")
     if head is not None:
-       text += '.SH "%s"' % (esc(textof(head).upper()))
-       text += "\n"
+        text += '.SH "%s"' % (esc(textof(head).upper()))
+        text += "\n"
     for para in list(refsect):
         if para.tag == 'title':
             continue
@@ -290,8 +297,8 @@ def refsect2htm(refsect: ET.Element, title: str = "") -> str:
     text = ""
     head = refsect.find("title")
     if head is not None:
-       text += '<h3>%s</h3>' % htm(textof(head))
-       text += "\n"
+        text += '<h3>%s</h3>' % htm(textof(head))
+        text += "\n"
     for para in list(refsect):
         if para.tag == 'title':
             continue
@@ -310,39 +317,39 @@ def refsect2htm(refsect: ET.Element, title: str = "") -> str:
     return text
 
 def para2man(para: ET.Element) -> str:
-   item = unescape(decodes(ET.tostring(para)))
-   item = item.replace("\n", " ")
-   item = item.replace("  ", " ")
-   item = item.replace("  ", " ")
-   item = item.replace("  ", " ")
-   item = item.replace("  ", " ")
-   item = item.replace("<listitem>", "")
-   item = item.replace("</listitem>", "")
-   item = item.replace("<para>", "")
-   item = item.replace("</para>", "")
-   item = item.replace("<function>", "\\fI")
-   item = item.replace("</function>", "\\fP")
-   item = item.replace("<literal>", "\\fI")
-   item = item.replace("</literal>", "\\fP")
-   return item
+    item = unescape(decodes(ET.tostring(para)))
+    item = item.replace("\n", " ")
+    item = item.replace("  ", " ")
+    item = item.replace("  ", " ")
+    item = item.replace("  ", " ")
+    item = item.replace("  ", " ")
+    item = item.replace("<listitem>", "")
+    item = item.replace("</listitem>", "")
+    item = item.replace("<para>", "")
+    item = item.replace("</para>", "")
+    item = item.replace("<function>", "\\fI")
+    item = item.replace("</function>", "\\fP")
+    item = item.replace("<literal>", "\\fI")
+    item = item.replace("</literal>", "\\fP")
+    return item
 
 def para2htm(para: ET.Element) -> str:
-   item = unescape(decodes(ET.tostring(para)))
-   item = item.replace("\n", " ")
-   item = item.replace("  ", " ")
-   item = item.replace("  ", " ")
-   item = item.replace("  ", " ")
-   item = item.replace("  ", " ")
-   item = item.replace("<listitem>", "")
-   item = item.replace("</listitem>", "")
-   item = item.replace("<para>", "")
-   item = item.replace("</para>", "")
-   item = item.replace("<function>", "<em><code>")
-   item = item.replace("</function>", "</code></em>")
-   item = item.replace("<literal>", "<code>")
-   item = item.replace("</literal>", "</code>")
-   item = mailhref(item)
-   return item
+    item = unescape(decodes(ET.tostring(para)))
+    item = item.replace("\n", " ")
+    item = item.replace("  ", " ")
+    item = item.replace("  ", " ")
+    item = item.replace("  ", " ")
+    item = item.replace("  ", " ")
+    item = item.replace("<listitem>", "")
+    item = item.replace("</listitem>", "")
+    item = item.replace("<para>", "")
+    item = item.replace("</para>", "")
+    item = item.replace("<function>", "<em><code>")
+    item = item.replace("</function>", "</code></em>")
+    item = item.replace("<literal>", "<code>")
+    item = item.replace("</literal>", "</code>")
+    item = mailhref(item)
+    return item
 
 def styleinfo2(man: str) -> str:
     if man:
@@ -387,7 +394,8 @@ def refentry2(man: str, refentry: ET.Element, subdirectory: str = ".", title: st
     section = refentry.find("refnamediv")
     if section is None:
         logg.warning("no <refnamediv> found in <refentry> for '%s', bad docbook?", refentrytitle)
-        if not refentrytitle: raise Exception("not even a refentrytitle")
+        if not refentrytitle:
+            raise ValueError("not even a refentrytitle")
         manpages = [ refentrytitle ]
     else:
         manpages = [ textof(refname) for refname in section.findall("refname") ]
@@ -424,7 +432,7 @@ def refentry2(man: str, refentry: ET.Element, subdirectory: str = ".", title: st
 
 def splitname(filename: str) -> str:
     base = os.path.basename(filename)
-    name, ext = os.path.splitext(base)
+    name, _ = os.path.splitext(base)
     return name
 
 def overview2(man: str, overview: Dict[str, OverviewEntry], subdirectory: str, docbook_filename: str) -> None:
@@ -456,20 +464,25 @@ def writefile(filename: str, manpagetext: str) -> None:
         f.write(manpagetext)
     logg.debug("written %s [%s]", filename, manpagetext.split("\n", 1)[0])
 
-if __name__ == "__main__":
-    from optparse import OptionParser
-    _o = OptionParser("%prog [options] docbookfiles...")
-    _o.add_option("-o","--into", metavar="DIR", default=".",
+def main(doc: Optional[str] = None) -> int:
+    import optparse # pylint: disable=deprecated-module,import-outside-toplevel
+    cmdline = optparse.OptionParser("%prog [options] docbookfiles...", epilog=doc)
+    cmdline.add_option("-v","--verbose", action="count", default=0, help="more logging")
+    cmdline.add_option("-^","--quiet", action="count", default=0, help="less logging")
+    cmdline.add_option("-o","--into", metavar="DIR", default=".",
         help="specify base directory for output [%default]")
-    _o.add_option("-t","--make", metavar="DIR", default="man",
+    cmdline.add_option("-t","--make", metavar="DIR", default="man",
         help="make 'man'/'html' output pages [%default]")
-    _o.add_option("-v","--verbose", action="count", default=0,
-        help="increase logging level [%default]")
-    opt, args = _o.parse_args()
-    logging.basicConfig(level = max(0, logging.WARNING - 10 * opt.verbose))
+    opt, args = cmdline.parse_args()
+    logging.basicConfig(level = max(0, logging.WARNING - 10 * opt.verbose + 10 * opt.quiet))
     # ensure commandline is compatible with "xmlto -o DIR TYPE INPUTFILE"
     make = opt.make
     if args and args[0] in ("man", "html"):
-       make = args[0]
-       args = args[1:]
+        make = args[0]
+        args = args[1:]
     dbk2(make == 'man', args, opt.into)
+    return 0
+
+if __name__ == "__main__":
+    import sys
+    sys.exit(main(__doc__))

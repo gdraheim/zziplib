@@ -1,15 +1,19 @@
-#! /usr/bin/python3
-from __future__ import print_function
+#! /usr/bin/env python3
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
+# pylint: disable=invalid-name,unspecified-encoding
+""" use pygments.lexer.CLexer to scan for C comment blocks and convert to basic markdown format """
 
-from typing import Optional, Iterator, Tuple
-import pygments.lexers.compiled as lexer
-import optparse
+from typing import Iterator, Tuple, Optional
 import re
-from pygments.token import Token
+import sys
 import logging
+import pygments.lexers.compiled as lexer
 
-logg = logging.getLogger(__name__)
+from pygments.token import Token
 
+logg = logging.getLogger("CPP2MD")
+
+OK = True
 FileComment = "FileComment"
 FileInclude = "FileInclude"
 FunctionComment = "FunctionComment"
@@ -51,7 +55,7 @@ class CppToMarkdown:
     def functionblock(self, text: str) -> str:
         empty = re.compile(r"(?s)\n[ \t]*(?=\n)")
         text = "    " + text.replace("\n", "\n    ")
-        text = empty.sub("", text) 
+        text = empty.sub("", text)
         return text
     def functionname(self, text: str) -> str:
         check1 = re.compile(r"^[^()=]*(\b\w+)\s*[(=]")
@@ -93,7 +97,7 @@ class CppToMarkdown:
                     print(token + " " + text.replace("\n", "\n  "))
     def isexported_function(self) -> bool:
         function = self.function_text.strip().replace("\n"," ")
-        logg.debug("@ --------------------------------------") 
+        logg.debug("@ --------------------------------------")
         logg.debug("@ ALLDEFINITIONS %s", self.alldefinitions)
         if function.startswith("static ") and self.alldefinitions < 3:
             logg.debug("@ ONLY INTERNAL %s", function)
@@ -103,7 +107,7 @@ class CppToMarkdown:
                 logg.info("@ NO COMMENT ON %s", function)
                 return False
             else:
-                logg.warn("@ NO COMMENT ON %s", function)
+                logg.warning("@ NO COMMENT ON %s", function)
         text = self.comment_text
         if text.startswith("/**"): return True
         if text.startswith("/*!"): return True
@@ -123,6 +127,7 @@ class CppToMarkdown:
             logg.debug("|| %s %s", token, text.replace("\n", "\n |"))
             # completion
             if token != Token.Comment.Preproc and self.fileinclude_done == "no":
+                if OK:
                     yield FileInclude, self.fileinclude_text
                     if self.filecomment_text:
                         yield FileComment, self.filecomment_text
@@ -142,10 +147,11 @@ class CppToMarkdown:
                     self.fileinclude_text += text
                     self.comment_text = ""
             elif token == Token.Comment.Preproc and self.fileinclude_done == "no":
-                if not "\n" in self.fileinclude_text:
+                if "\n" not in self.fileinclude_text:
                     self.fileinclude_text += text
                 self.comment_text = ""
             elif token == Token.Comment.Preproc:
+                if OK:
                     self.comment_text = ""
                     self.function_text = ""
             elif token == Token.Operator and text == "=":
@@ -175,25 +181,25 @@ class CppToMarkdown:
                     self.function_text += text
                 else:
                     pass # yield "|",text
-                
 
-if __name__ == "__main__":
-    _o = optparse.OptionParser()
-    _o.add_option("-v", "--verbose", action="count", default=0)
-    _o.add_option("-a", "--all", action="count", default=0,
+
+def main(doc: Optional[str] = None) -> int:
+    import optparse # pylint: disable=deprecated-module,import-outside-toplevel
+    cmdline = optparse.OptionParser("%prog files..", epilog=doc)
+    cmdline.add_option("-v", "--verbose", action="count", default=0, help="more logging")
+    cmdline.add_option("-^", "--quiet", action="count", default=0, help="less logging")
+    cmdline.add_option("-a", "--all", action="count", default=0,
                   help="include all definitions in the output (not only /**)")
-    opt, args = _o.parse_args()
-
+    opt, cmdline_args = cmdline.parse_args()
+    logging.basicConfig(level = max(0, logging.WARNING - 10 * opt.verbose + 10 * opt.quiet))
     logg.addHandler(logging.StreamHandler())
-    if opt.verbose:
-        logg.setLevel(logging.WARN - 10 * opt.verbose)
-    
+
     c = CppToMarkdown()
     if opt.all:
         c.alldefinitions = opt.all
-    for arg in args:
+    for arg in cmdline_args:
         c.run(arg)
-    
-    
+    return 0
 
-
+if __name__ == "__main__":
+    sys.exit(main(__doc__))

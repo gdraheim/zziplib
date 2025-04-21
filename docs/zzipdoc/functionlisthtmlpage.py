@@ -1,14 +1,18 @@
-from __future__ import print_function
-
-from typing import Optional, List
-from zzipdoc.options import *
-from zzipdoc.match import Match
-from zzipdoc.options import DocOptions
-from zzipdoc.functionprototype import FunctionPrototype
-from zzipdoc.htmldoctypes import RefDocPart
+#! /usr/bin/env python3
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
+# pylint: disable=broad-exception-caught
 
 import os
 import os.path
+import logging
+
+from typing import Optional, List
+from zzipdoc.match import Match
+from zzipdoc.options import DocOptions
+from zzipdoc.htmldoctypes import RefDocPart
+
+logg = logging.getLogger(__name__)
+
 
 def short(filename: str) -> str:
     while filename.startswith("../"):
@@ -65,10 +69,10 @@ class FunctionListHtmlPage:
             callspec = entry.head_get_callspec() or ""
             namespec = entry.head_get_namespec() or ""
             if namespec:
-                 head_text = ("<code><b><function>"+namespec+"</function></b>"
+                head_text = ("<code><b><function>"+namespec+"</function></b>"
                          +callspec+" : "+prespec+"</code>")
         except Exception as e:
-            pass
+            logg.info("unable to add entry: %s", e)
         try:
             extraline = ""
             title = entry.get_title()
@@ -81,12 +85,12 @@ class FunctionListHtmlPage:
                              '</td></table>' + "\n")
             body_text = extraline + body_text
         except Exception as e:
-            pass
+            logg.info("unable-to add entry: %s", e)
         def link(text: str) -> str:
-            return (text & Match("<function>(\w*)</function>")
+            return (text & Match("<function>(\\w*)</function>")
                     >> "<link>\\1</link>")
         def here(text: str) -> str:
-            has_function = Match("<function>(\w*)</function>")
+            has_function = Match("<function>(\\w*)</function>")
             if text & has_function:
                 func = has_function[1]
                 self.anchors += [ func ]
@@ -123,12 +127,12 @@ class FunctionListHtmlPage:
             return "<p><big><b><code>"+include+"</code></b></big></p>"
         return ""
     def resolve_links(self, text: str) -> str:
-        text &= (Match("(?s)<link>([^<>]*)(\(\d\))</link>")
+        text &= (Match("(?s)<link>([^<>]*)(\\(\\d\\))</link>")
                  >> (lambda x: self.resolve_external(x.group(1), x.group(2))))
-        text &= (Match("(?s)<link>(\w+)</link>")
+        text &= (Match("(?s)<link>(\\w+)</link>")
                  >> (lambda x: self.resolve_internal(x.group(1))))
-        if len(self.not_found_in_anchors):
-            print("not found in anchors: {}".format(self.not_found_in_anchors))
+        if self.not_found_in_anchors:
+            logg.error("not found in anchors: %s", self.not_found_in_anchors)
         return (text & Match("(?s)<link>([^<>]*)</link>")
                 >> "<code>\\1</code>")
     def resolve_external(self, func: str, sect: str) -> str:
@@ -149,7 +153,6 @@ class FunctionListHtmlPage:
     def sane(self, text: Optional[str]) -> str:
         if not text:
             return ""
-        return (text 
+        return (text
                 .replace("<function>", "<code>")
                 .replace("</function>", "</code>"))
-                

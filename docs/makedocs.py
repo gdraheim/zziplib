@@ -2,6 +2,9 @@
 from typing import Optional, List, Dict
 
 import sys
+import os.path
+
+sys.path = [ os.path.dirname(__file__) ] + sys.path
 from zzipdoc.match import *
 from zzipdoc.options import *
 from zzipdoc.textfile import *

@@ -1,11 +1,13 @@
-#! /usr/bin/python3
+#! /usr/bin/env python3
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
+# pylint: disable=unspecified-encoding,consider-using-f-string
 
 """ Searches through a directory and creates an index page for it
 """
 
 __author__ = "Guido U. Draheim"
 
-from typing import Optional, List, Iterator
+from typing import List, Iterator, Optional
 import logging
 import os.path
 import re
@@ -31,7 +33,7 @@ def htm(text: str) -> str:
     return text
 def splitname(filename: str) -> str:
     base = os.path.basename(filename)
-    name, ext = os.path.splitext(base)
+    name, _ = os.path.splitext(base)
     if name.endswith(".3"): name = name[:-2]
     return name
 
@@ -47,7 +49,7 @@ def zzip_sorted(filenames: List[str]) -> Iterator[str]:
         if "zziplib" not in name:
             yield name
 
-def dir2(man: str, dirs: List[str], into: str) -> None:
+def dir2(man: str, dirs: List[str], into: str) -> None: # pylint: disable=unused-argument
     text = "<html><body>" + "\n"
     file2name = {}
     file2text = {}
@@ -58,8 +60,8 @@ def dir2(man: str, dirs: List[str], into: str) -> None:
             file2text[filename] = open(filepath).read()
     # find the overview filenames and generate the pages order
     overviews = []
-    for filename in file2text:
-        if " overview</title>" in file2text[filename]:
+    for filename, filetext in file2text.items():
+        if " overview</title>" in filetext:
             overviews.append(filename)
     logg.warning("overviews = %s", overviews)
     logg.warning("overviews = %s", [file2name[f] for f in overviews])
@@ -104,9 +106,9 @@ def writefile(filename: str, manpagetext: str) -> None:
         f.write(manpagetext)
     logg.debug("written %s [%s]", filename, manpagetext.split("\n", 1)[0])
 
-if __name__ == "__main__":
-    from optparse import OptionParser
-    _o = OptionParser("%prog [options] directories...")
+def main(doc: Optional[str] = None) -> int:
+    from optparse import OptionParser # pylint: disable=deprecated-module,import-outside-toplevel
+    _o = OptionParser("%prog [options] directories...", epilog=doc)
     _o.add_option("-o","--into", metavar="DIR", default=".",
         help="specify base directory for output [%default]")
     _o.add_option("-t","--make", metavar="DIR", default="man",
@@ -117,4 +119,9 @@ if __name__ == "__main__":
     logging.basicConfig(level = max(0, logging.WARNING - 10 * opt.verbose))
     # ensure commandline is compatible with "xmlto -o DIR TYPE INPUTFILE"
     make = opt.make
-    dir2(make == 'man', args, opt.into)
+    dir2(make == 'man', args, opt.into) # only "html" mode is implemented
+    return 0
+
+if __name__ == "__main__":
+    import sys
+    sys.exit(main(__doc__))

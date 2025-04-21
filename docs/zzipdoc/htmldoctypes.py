@@ -1,28 +1,31 @@
+#! /usr/bin/env python3
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
+
 from typing import Optional, List
 
 class HtmlDocPart:
-        def xml_text(self) -> Optional[str]:
-                return None
-        def html_text(self) ->  Optional[str]:
-                return None
-        def get_title(self) -> str:
-                return ""
-        
+    def xml_text(self) -> Optional[str]:
+        return None
+    def html_text(self) ->  Optional[str]:
+        return None
+    def get_title(self) -> str:
+        return ""
+
 
 class HtmlStylePart:
-        def xml_style(self) -> str:
-                return ""
-        def html_style(self) -> str:
-                return ""
-        
-class HtmlMetaPart:
-        def html_meta(self) -> str:
-                return ""
+    def xml_style(self) -> str:
+        return ""
+    def html_style(self) -> str:
+        return ""
 
-class RefDocPart:        
+class HtmlMetaPart:
+    def html_meta(self) -> str:
+        return ""
+
+class RefDocPart:
     def head_xml_text(self) -> Optional[str]:
         return None
-    def body_xml_text(self, name: Optional[str]) -> Optional[str]:
+    def body_xml_text(self, name: Optional[str]) -> Optional[str]: # pylint: disable=unused-argument
         return None
     def get_name(self) -> Optional[str]:
         return None
