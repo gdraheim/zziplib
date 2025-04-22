@@ -15,7 +15,7 @@ RUN test ! -f src/old.configure || mv src/old.configure src/configure
 RUN test ! -f src/old.configure.ac || mv src/old.configure.ac src/configure.ac
 COPY uses src/uses
 
-COPY CMakeLists.txt README COPYING.LIB ChangeLog src/
+COPY CMakeLists.txt COPYING.LIB ChangeLog src/
 COPY CMakeScripts src/CMakeScripts
 COPY bins src/bins
 COPY docs src/docs

@@ -8,7 +8,7 @@ RUN yum install -y gcc zlib-devel python3 cmake3 make unzip zip gzip tar
 RUN cmake3 --version
 
 RUN mkdir src
-COPY CMakeLists.txt README COPYING.LIB ChangeLog src/
+COPY CMakeLists.txt COPYING.LIB ChangeLog src/
 COPY CMakeScripts src/CMakeScripts
 COPY bins src/bins
 COPY docs src/docs

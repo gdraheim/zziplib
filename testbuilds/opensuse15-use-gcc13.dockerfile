@@ -10,7 +10,7 @@ RUN zypper install -y zlib-devel python3 cmake unzip zip gzip tar  libSDL2-devel
 # RUN rpm -q --list gcc8; exit 1
 
 RUN mkdir src
-COPY CMakeLists.txt README COPYING.LIB ChangeLog src/
+COPY CMakeLists.txt COPYING.LIB ChangeLog src/
 COPY CMakeScripts src/CMakeScripts
 COPY bins src/bins
 COPY docs src/docs

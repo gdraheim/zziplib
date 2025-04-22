@@ -11,7 +11,7 @@ RUN apt-get install -y libsdl2-dev
 ## libsdl2-dev is on "universe"
 
 RUN mkdir src
-COPY README COPYING.LIB ChangeLog src/
+COPY COPYING.LIB ChangeLog src/
 COPY CMakeLists.txt src/
 COPY CMakeScripts src/CMakeScripts
 COPY bins src/bins

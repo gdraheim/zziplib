@@ -17,7 +17,7 @@ RUN ln -sf /usr/bin/clang.sh /etc/alternatives/clang
 RUN zypper $GPG install -y wget
 
 RUN mkdir -p $src
-COPY CMakeLists.txt README COPYING.LIB ChangeLog $src/
+COPY CMakeLists.txt COPYING.LIB ChangeLog $src/
 COPY CMakeScripts $src/CMakeScripts
 COPY bins $src/bins
 COPY docs $src/docs
