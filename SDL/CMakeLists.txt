@@ -71,7 +71,7 @@ add_custom_command(OUTPUT SDL_rwops_zzip.pc
 add_custom_target(pkgconfig-sdl ALL DEPENDS SDL_rwops_zzip.pc)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SDL_rwops_zzip.pc
-        DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig" )
+        DESTINATION "${CMAKE_INSTALL_DATADIR}/pkgconfig" )
 endif(ZZIP_PKGCONFIG)
 endif(SDL_FOUND)
 

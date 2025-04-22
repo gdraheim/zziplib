@@ -33,7 +33,7 @@ install-sdl : install-data # and not the binary
 CLEANFILES = *.pc *.omf
 # ----------------------------------------------------------------------
 # we do not install a library, so this about equivalent to some SDL.pc
-pkgconfigdir=$(libdir)/pkgconfig
+pkgconfigdir=$(datarootdir)/pkgconfig
 pkgconfig_HEADERS= SDL_rwops_zzip.pc
 ERRNULL= 2>/dev/null
 
