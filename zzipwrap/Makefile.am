@@ -35,7 +35,7 @@ zzipwrap_LDFLAGS =  @ZZIPLIB_LDFLAGS@
 zzipwrap_LDADD = libzzipwrap.la @RESOLVES@ ../zzip/libzzip.la -lz
 
 # ----------------------------------------------------------------------
-pkgconfigdir=$(libdir)/pkgconfig
+pkgconfigdir=$(datarootdir)/pkgconfig
 pkgconfig_HEADERS= zzipwrap.pc
 
 zzipwrap.pc : Makefile
