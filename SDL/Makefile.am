@@ -10,8 +10,8 @@ check_PROGRAMS = zzcatsdl
 zzcatsdl_SOURCES = SDL_rwops_zzcat.c SDL_rwops_zzip.c
 ZZIP_CFLAGS= `export PKG_CONFIG_PATH=../zzip; $(PKG_CONFIG) zziplib --cflags` 
 ZZIP_LIBS= `export PKG_CONFIG_PATH=../zzip; $(PKG_CONFIG) zziplib --libs`
-SDL_CFLAGS= `export PKG_CONFIG_PATH=.; $(PKG_CONFIG) sdl --cflags` 
-SDL_LIBS= `export PKG_CONFIG_PATH=.; $(PKG_CONFIG) sdl --libs`
+SDL_CFLAGS= `export PKG_CONFIG_PATH=.; $(PKG_CONFIG) sdl2 --cflags` 
+SDL_LIBS= `export PKG_CONFIG_PATH=.; $(PKG_CONFIG) sdl2 --libs`
 CFLAGS= -I$(srcdir) $(ZZIP_CFLAGS) $(SDL_CFLAGS)
 LIBS= $(ZZIP_LIBS) $(SDL_LIBS)
 
@@ -44,14 +44,14 @@ SDL_rwops_zzip.pc : Makefile
 	@ echo "Name: SDL_rwops_zzip" >>$@
 	@ echo "Version: $(VERSION)" >>$@
 	@ echo "Description: SDL_rwops for ZZipLib" >>$@
-	echo 'Requires: sdl, zziplib' >>$@
+	echo 'Requires: sdl2, zziplib' >>$@
 	echo 'Cflags: -I$${zzipsdldir}' >>$@
 
-sdl-pc : sdl-uninstalled.pc
-sdl-uninstalled.pc : Makefile
-	@ echo "prefix=`sdl-config --prefix`" >$@
-	@ echo "Name: sdl" >>$@
-	@ echo "Version: `sdl-config --version`" >>$@
-	@ echo "Description: sdl - Simple DirectMedia Layer" >>$@
-	echo "Libs: `sdl-config --libs`" >> $@
-	echo "Cflags: `sdl-config --cflags`" >>$@
+sdl2-pc : sdl2-uninstalled.pc
+sdl2-uninstalled.pc : Makefile
+	@ echo "prefix=`sdl2-config --prefix`" >$@
+	@ echo "Name: sdl2" >>$@
+	@ echo "Version: `sdl2-config --version`" >>$@
+	@ echo "Description: sdl2 - Simple DirectMedia Layer" >>$@
+	echo "Libs: `sdl2-config --libs`" >> $@
+	echo "Cflags: `sdl2-config --cflags`" >>$@
