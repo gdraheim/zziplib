@@ -3176,7 +3176,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_90818_ubuntu18_am_cm_dockerfile(self) -> None:
+    def test_91218_ubuntu18_am_cm_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3250,7 +3250,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_90820_ubuntu20_am_cm_dockerfile(self) -> None:
+    def test_91220_ubuntu20_am_cm_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3324,7 +3324,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_90822_ubuntu22_am_cm_dockerfile(self) -> None:
+    def test_91222_ubuntu22_am_cm_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3398,7 +3398,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_90824_ubuntu24_am_cm_dockerfile(self) -> None:
+    def test_91224_ubuntu24_am_cm_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3472,7 +3472,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_90830_ubuntu18_am_cm_sdl2_dockerfile(self) -> None:
+    def test_91318_ubuntu18_am_cm_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3546,7 +3546,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_90831_ubuntu20_am_cm_sdl2_dockerfile(self) -> None:
+    def test_91320_ubuntu20_am_cm_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3620,7 +3620,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_90832_ubuntu22_am_cm_sdl2_dockerfile(self) -> None:
+    def test_91322_ubuntu22_am_cm_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3694,7 +3694,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_90834_ubuntu24_am_cm_sdl2_dockerfile(self) -> None:
+    def test_91324_ubuntu24_am_cm_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3768,7 +3768,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_90842_ubuntu18_am_cm_32bit_largefile64_dockerfile(self) -> None:
+    def test_91242_ubuntu18_am_cm_32bit_largefile64_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3842,7 +3842,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_90844_ubuntu18_am_cm_32bit_largefile64_dockerfile(self) -> None:
+    def test_91244_ubuntu18_am_cm_32bit_largefile64_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -3919,7 +3919,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_90870_centos7_am_cm_dockerfile(self) -> None:
+    def test_91270_centos7_am_cm_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         if not BUILDCENTOS7: self.skipTest("end of life - centos7")
         self.rm_old()
@@ -3994,7 +3994,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_90890_almalinux9_am_cm_dockerfile(self) -> None:
+    def test_91290_almalinux9_am_cm_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -4068,7 +4068,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_90937_centos7_am_cm_sdl2_dockerfile(self) -> None:
+    def test_91370_centos7_am_cm_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         if not BUILDCENTOS7: self.skipTest("end of life - centos7")
         self.rm_old()
@@ -4143,7 +4143,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_90939_almalinux9_am_cm_sdl2_dockerfile(self) -> None:
+    def test_91390_almalinux9_am_cm_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -4217,7 +4217,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_90947_centos7_cm_sdl2_or_destdir_dockerfile(self) -> None:
+    def test_91471_centos7_cm_sdl2_or_destdir_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         if not BUILDCENTOS7: self.skipTest("end of life - centos7")
         self.rm_old()
@@ -4275,7 +4275,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_90949_almalinux9_cm_sdl2_or_destdir_dockerfile(self) -> None:
+    def test_91491_almalinux9_cm_sdl2_or_destdir_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -4332,7 +4332,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_90965_opensuse_cm_or_nj_sdl2_dockerfile(self) -> None:
+    def test_91450_opensuse_cm_or_nj_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -4384,7 +4384,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_90977_centos7_am_cm_docs_dockerfile(self) -> None:
+    def test_91707_centos7_am_cm_docs_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         if not BUILDCENTOS7: self.skipTest("end of life - centos7")
         self.rm_old()
@@ -4393,8 +4393,8 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname2 = self.testname() + "_cm"
         testdir = self.testdir()
         docker = DOCKER
-        dockerfile1 = "testbuilds/centos7-am-docs.dockerfile"
-        dockerfile2 = "testbuilds/centos7-cm-docs.dockerfile"
+        dockerfile1 = "testbuilds/centos7-am-docs.dockerfile" # 707
+        dockerfile2 = "testbuilds/centos7-cm-docs.dockerfile" # 717
         addhosts = self.local_addhosts(dockerfile1)
         savename1 = docname(dockerfile1)
         savename2 = docname(dockerfile2)
@@ -4446,7 +4446,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_90998_almalinux9_objdump_symbols(self) -> None:
+    def test_92390_almalinux9_objdump_symbols(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -4456,7 +4456,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname2 = self.testname() + "_2"
         testdir = self.testdir()
         docker = DOCKER
-        dockerfile = "testbuilds/almalinux9-cm-sdl2.dockerfile"
+        dockerfile = "testbuilds/almalinux9-cm-sdl2.dockerfile" # 391
         savename = docname(dockerfile)
         addhosts = self.local_addhosts(dockerfile)
         saveto = SAVETO
@@ -4530,7 +4530,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_90999_almalinux9_objdump_symbols(self) -> None:
+    def test_92391_almalinux9_objdump_symbols(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
         self.rm_testdir()
@@ -4541,7 +4541,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname2 = self.testname() + "_2"
         testdir = self.testdir()
         docker = DOCKER
-        dockerfile = "testbuilds/almalinux9-cm-sdl2.dockerfile"
+        dockerfile = "testbuilds/almalinux9-cm-sdl2.dockerfile" # 391
         savename = docname(dockerfile)
         addhosts = self.local_addhosts(dockerfile)
         saveto = SAVETO
