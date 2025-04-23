@@ -9,18 +9,18 @@ ENV version ${version}
 
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
-RUN apt-get install -y gcc ${pythonx} ${pythonx}-pip
-RUN ${python} --version
-RUN ${python} -m pip --version
-RUN ${python} -m pip --version| { read n ver x; [ 24 -le ${ver%%.*} ] || echo "need atleast pip 24 (have pip $ver)" >&2; }
+RUN apt-get install -y gcc pipx
+RUN :
+RUN pipx --version
+RUN pipx --help
+RUN pipx install --help
 
 RUN mkdir src
 COPY pyproject.toml zzipbuildtests.py src/
 COPY docs src/docs
 COPY test src/test
 
-RUN cd src && ${python} -m pip install . --no-compile --user --break-system-packages
-RUN ${python} -m pip show --files zzipmakedocs
+RUN cd src && pipx install .
 RUN PATH="${PATH}:$HOME/.local/bin" zzipmakedocs.py --version
 RUN PATH="${PATH}:$HOME/.local/bin" zzip-dbk2man --version
 

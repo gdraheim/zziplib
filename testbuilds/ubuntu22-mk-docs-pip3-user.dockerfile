@@ -1,5 +1,5 @@
-# FROM ubuntu:24.04
-FROM ubuntu:noble-20240530
+# FROM ubuntu:22.04
+FROM ubuntu:jammy-20220428
 ARG no_check=false
 ARG no_install=false
 ENV python python3
@@ -10,7 +10,7 @@ ENV version ${version}
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
 RUN apt-get install -y gcc ${pythonx} ${pythonx}-pip
-RUN ${python} --version
+RUN :
 RUN ${python} -m pip --version
 RUN ${python} -m pip --version| { read n ver x; [ 24 -le ${ver%%.*} ] || echo "need atleast pip 24 (have pip $ver)" >&2; }
 
@@ -19,7 +19,8 @@ COPY pyproject.toml zzipbuildtests.py src/
 COPY docs src/docs
 COPY test src/test
 
-RUN cd src && ${python} -m pip install . --no-compile --user --break-system-packages
+RUN cd src && ${python} -m pip config set global.break-system-packages true
+RUN cd src && ${python} -m pip install . --no-compile --user --use-pep517
 RUN ${python} -m pip show --files zzipmakedocs
 RUN PATH="${PATH}:$HOME/.local/bin" zzipmakedocs.py --version
 RUN PATH="${PATH}:$HOME/.local/bin" zzip-dbk2man --version

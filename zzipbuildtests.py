@@ -30,6 +30,7 @@ logging.addLevelName(NOTE, "NOTE")
 
 logg = logging.getLogger("TESTING")
 _python = "/usr/bin/python"
+NIX = ""
 OK = True
 TODO = False
 
@@ -3230,14 +3231,29 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
-    def test_90524_ubuntu24_mk_docs_pip_user_dockerfile(self) -> None:
+    @unittest.expectedFailure
+    def test_90522_ubuntu24_mk_docs_pip3_user_dockerfile(self) -> None:
+        """ here pip 22 finds UNKNOWN package from pyproject.toml - need atleast pip 24"""
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        testname = self.testname()
+        dockerfile = "testbuilds/ubuntu22-mk-docs-pip3-user.dockerfile"
+        self.mk_docs_pipx_dockerfile(testname, dockerfile)
+    def test_90524_ubuntu24_mk_docs_pip3_user_dockerfile(self) -> None:
+        """ runs pip 24 under python 3.12 -- good enough for pyproject.toml --use-pep517"""
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        testname = self.testname()
+        dockerfile = "testbuilds/ubuntu24-mk-docs-pip3-user.dockerfile"
+        self.mk_docs_pipx_dockerfile(testname, dockerfile)
+    def test_90525_ubuntu24_mk_docs_pipx_dockerfile(self, testname: str = NIX, dockerfile: str = NIX) -> None:
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        testname = self.testname()
+        dockerfile = "testbuilds/ubuntu24-mk-docs-pip3-user.dockerfile"
+        self.mk_docs_pipx_dockerfile(testname, dockerfile)
+    def mk_docs_pipx_dockerfile(self, testname: str, dockerfile: str) -> None:
         self.rm_old()
         self.rm_testdir()
-        testname = self.testname()
         testdir = self.testdir()
         docker = DOCKER
-        dockerfile = "testbuilds/ubuntu24-mk-docs-pip3-user.dockerfile"
         addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
         saveto = SAVETO
