@@ -2888,6 +2888,93 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
+    def test_90407_centos7_automake_docs_dockerfile(self) -> None:
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        if not BUILDCENTOS7: self.skipTest("end of life - centos7")
+        self.rm_old()
+        self.rm_testdir()
+        testname = self.testname()
+        testdir = self.testdir()
+        docker = DOCKER
+        dockerfile = "testbuilds/centos7-am-docs.dockerfile"
+        addhosts = self.local_addhosts(dockerfile)
+        savename = docname(dockerfile)
+        saveto = SAVETO
+        images = IMAGES
+        build = "build --build-arg=no_build=true" + self.buildprogress() + self.no_check() + self.nocache()
+        cmd = "{docker} {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} rm --force {testname}"
+        sx____(cmd.format(**locals()))
+        cmd = "{docker} run -d --name {testname} {images}:{testname} sleep 60"
+        sh____(cmd.format(**locals()))
+        #:# container = self.ip_container(testname)
+        cmd = "{docker} exec {testname} ls -l /usr/local/bin"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} find /usr/local/include -type f"
+        sh____(cmd.format(**locals()))
+        #
+        cmd = "{docker} exec {testname} bash -c 'test ! -d /usr/local/include/zzip/types.h'"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} bash -c 'test -d /usr/local/share/doc/zziplib'"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} bash -c 'test -f /usr/local/share/man/man3/zzip_opendir.3'"
+        sh____(cmd.format(**locals()))
+        #
+        if not KEEP:
+            cmd = "{docker} rm --force {testname}"
+            sx____(cmd.format(**locals()))
+        cmd = "{docker} rmi {saveto}/{savename}:latest"
+        sx____(cmd.format(**locals()))
+        cmd = "{docker} tag {images}:{testname} {saveto}/{savename}:latest"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} rmi {images}:{testname}"
+        sx____(cmd.format(**locals()))
+        self.rm_testdir()
+    def test_90417_centos7_cmake_docs_dockerfile(self) -> None:
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        if not BUILDCENTOS7: self.skipTest("end of life - centos7")
+        self.rm_old()
+        self.rm_testdir()
+        testname = self.testname()
+        testdir = self.testdir()
+        docker = DOCKER
+        dockerfile = "testbuilds/centos7-cm-docs.dockerfile"
+        addhosts = self.local_addhosts(dockerfile)
+        savename = docname(dockerfile)
+        saveto = SAVETO
+        images = IMAGES
+        build = "build --build-arg=no_build=true" + self.buildprogress() + self.no_check() + self.nocache()
+        build += self.nocache()
+        cmd = "{docker} {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} rm --force {testname}"
+        sx____(cmd.format(**locals()))
+        cmd = "{docker} run -d --name {testname} {images}:{testname} sleep 600"
+        sh____(cmd.format(**locals()))
+        #:# container = self.ip_container(testname)
+        cmd = "{docker} exec {testname} ls -l /usr/local/bin"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} find /usr/local/include -type f"
+        sh____(cmd.format(**locals()))
+        #
+        cmd = "{docker} exec {testname} bash -c 'test ! -d /usr/local/include/zzip/types.h'"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} bash -c 'test -d /usr/local/share/doc/zziplib'"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname} bash -c 'test -f /usr/local/share/man/man3/zzip_opendir.3'"
+        sh____(cmd.format(**locals()))
+        #
+        if not KEEP:
+            cmd = "{docker} rm --force {testname}"
+            sx____(cmd.format(**locals()))
+        cmd = "{docker} rmi {saveto}/{savename}:latest"
+        sx____(cmd.format(**locals()))
+        cmd = "{docker} tag {images}:{testname} {saveto}/{savename}:latest"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} rmi {images}:{testname}"
+        sx____(cmd.format(**locals()))
+        self.rm_testdir()
     def test_90450_opensuse15_ninja_sdl2_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
@@ -3077,93 +3164,6 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         #
         cmd = "{docker} exec {testname} bash -c 'test -d /new/usr/local/include/SDL_rwops_zzip'"
-        sh____(cmd.format(**locals()))
-        #
-        if not KEEP:
-            cmd = "{docker} rm --force {testname}"
-            sx____(cmd.format(**locals()))
-        cmd = "{docker} rmi {saveto}/{savename}:latest"
-        sx____(cmd.format(**locals()))
-        cmd = "{docker} tag {images}:{testname} {saveto}/{savename}:latest"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} rmi {images}:{testname}"
-        sx____(cmd.format(**locals()))
-        self.rm_testdir()
-    def test_90707_centos7_automake_docs_dockerfile(self) -> None:
-        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
-        if not BUILDCENTOS7: self.skipTest("end of life - centos7")
-        self.rm_old()
-        self.rm_testdir()
-        testname = self.testname()
-        testdir = self.testdir()
-        docker = DOCKER
-        dockerfile = "testbuilds/centos7-am-docs.dockerfile"
-        addhosts = self.local_addhosts(dockerfile)
-        savename = docname(dockerfile)
-        saveto = SAVETO
-        images = IMAGES
-        build = "build --build-arg=no_build=true" + self.buildprogress() + self.no_check() + self.nocache()
-        cmd = "{docker} {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} rm --force {testname}"
-        sx____(cmd.format(**locals()))
-        cmd = "{docker} run -d --name {testname} {images}:{testname} sleep 60"
-        sh____(cmd.format(**locals()))
-        #:# container = self.ip_container(testname)
-        cmd = "{docker} exec {testname} ls -l /usr/local/bin"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} find /usr/local/include -type f"
-        sh____(cmd.format(**locals()))
-        #
-        cmd = "{docker} exec {testname} bash -c 'test ! -d /usr/local/include/zzip/types.h'"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c 'test -d /usr/local/share/doc/zziplib'"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c 'test -f /usr/local/share/man/man3/zzip_opendir.3'"
-        sh____(cmd.format(**locals()))
-        #
-        if not KEEP:
-            cmd = "{docker} rm --force {testname}"
-            sx____(cmd.format(**locals()))
-        cmd = "{docker} rmi {saveto}/{savename}:latest"
-        sx____(cmd.format(**locals()))
-        cmd = "{docker} tag {images}:{testname} {saveto}/{savename}:latest"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} rmi {images}:{testname}"
-        sx____(cmd.format(**locals()))
-        self.rm_testdir()
-    def test_90717_centos7_cmake_docs_dockerfile(self) -> None:
-        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
-        if not BUILDCENTOS7: self.skipTest("end of life - centos7")
-        self.rm_old()
-        self.rm_testdir()
-        testname = self.testname()
-        testdir = self.testdir()
-        docker = DOCKER
-        dockerfile = "testbuilds/centos7-cm-docs.dockerfile"
-        addhosts = self.local_addhosts(dockerfile)
-        savename = docname(dockerfile)
-        saveto = SAVETO
-        images = IMAGES
-        build = "build --build-arg=no_build=true" + self.buildprogress() + self.no_check() + self.nocache()
-        build += self.nocache()
-        cmd = "{docker} {build} . -f {dockerfile} {addhosts} --tag {images}:{testname}"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} rm --force {testname}"
-        sx____(cmd.format(**locals()))
-        cmd = "{docker} run -d --name {testname} {images}:{testname} sleep 600"
-        sh____(cmd.format(**locals()))
-        #:# container = self.ip_container(testname)
-        cmd = "{docker} exec {testname} ls -l /usr/local/bin"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} find /usr/local/include -type f"
-        sh____(cmd.format(**locals()))
-        #
-        cmd = "{docker} exec {testname} bash -c 'test ! -d /usr/local/include/zzip/types.h'"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c 'test -d /usr/local/share/doc/zziplib'"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname} bash -c 'test -f /usr/local/share/man/man3/zzip_opendir.3'"
         sh____(cmd.format(**locals()))
         #
         if not KEEP:
@@ -4217,6 +4217,120 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rm --force {testname2}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
+    def test_91407_centos7_am_cm_docs_dockerfile(self) -> None:
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        if not BUILDCENTOS7: self.skipTest("end of life - centos7")
+        self.rm_old()
+        self.rm_testdir()
+        testname1 = self.testname() + "_am"
+        testname2 = self.testname() + "_cm"
+        testdir = self.testdir()
+        docker = DOCKER
+        dockerfile1 = "testbuilds/centos7-am-docs.dockerfile" # 407
+        dockerfile2 = "testbuilds/centos7-cm-docs.dockerfile" # 417
+        addhosts = self.local_addhosts(dockerfile1)
+        savename1 = docname(dockerfile1)
+        savename2 = docname(dockerfile2)
+        saveto = SAVETO
+        images = IMAGES
+        cmd = "{docker} rm --force {testname1}"
+        sx____(cmd.format(**locals()))
+        cmd = "{docker} rm --force {testname2}"
+        sx____(cmd.format(**locals()))
+        cmd = "{docker} run -d --name {testname1} {addhosts} {saveto}/{savename1} sleep 600"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} run -d --name {testname2} {addhosts} {saveto}/{savename2} sleep 600"
+        #
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname2} bash -c 'cd /usr/local && tar czvf /local.tgz .'"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} cp {testname2}:/local.tgz tmp.local.tgz"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} cp tmp.local.tgz {testname1}:/local.tgz"
+        sh____(cmd.format(**locals()))
+        cmd = "rm tmp.local.tgz"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname1} mkdir -p /new/local"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname1} bash -c 'cd /new/local && tar xzvf /local.tgz'"
+        sh____(cmd.format(**locals()))
+        #
+        cmd = "{docker} exec {testname1} bash -c 'cd /usr/local/share/doc/zziplib && mv man/html .'"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname1} bash -c 'cd /usr/local/share/doc/zziplib && rm -rf man'"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname1} bash -c 'cd /usr/local/share/doc/zziplib && mv html man'"
+        sh____(cmd.format(**locals()))
+        item = "{}"
+        end = "\\;"
+        cmd = "{docker} exec {testname1} diff -urw --no-dereference --brief /usr/local /new/local"
+        sx____(cmd.format(**locals()))
+        out = output(cmd.format(**locals()))
+        if "---" in out or "Only" in out:
+            logg.warning("out>>\n%s", out)
+        self.assertFalse(greps(out, "---"))
+        self.assertFalse(greps(out, "Only"))
+        #
+        cmd = "{docker} exec {testname1} diff -urw --no-dereference /usr/local /new/local"
+        sx____(cmd.format(**locals()))
+        #
+        cmd = "{docker} rm --force {testname1}"
+        sx____(cmd.format(**locals()))
+        cmd = "{docker} rm --force {testname2}"
+        sx____(cmd.format(**locals()))
+        self.rm_testdir()
+    def test_91450_opensuse_cm_or_nj_sdl2_dockerfile(self) -> None:
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        self.rm_old()
+        self.rm_testdir()
+        testname1 = self.testname() + "_cm"
+        testname2 = self.testname() + "_nj"
+        testdir = self.testdir()
+        docker = DOCKER
+        dockerfile1 = "testbuilds/opensuse15-cm-sdl2.dockerfile"  # make st_350
+        dockerfile2 = "testbuilds/opensuse15-nj-sdl2.dockerfile"  # make st_450
+        addhosts = self.local_addhosts(dockerfile1)
+        savename1 = docname(dockerfile1)
+        savename2 = docname(dockerfile2)
+        saveto = SAVETO
+        images = IMAGES
+        cmd = "{docker} rm --force {testname1}"
+        sx____(cmd.format(**locals()))
+        cmd = "{docker} rm --force {testname2}"
+        sx____(cmd.format(**locals()))
+        cmd = "{docker} run -d --name {testname1} {addhosts} {saveto}/{savename1} sleep 600"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} run -d --name {testname2} {addhosts} {saveto}/{savename2} sleep 600"
+        #
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname2} bash -c 'cd /usr/local && tar czvf /local.tgz .'"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} cp {testname2}:/local.tgz tmp.local.tgz"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} cp tmp.local.tgz {testname1}:/local.tgz"
+        sh____(cmd.format(**locals()))
+        cmd = "rm tmp.local.tgz"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname1} mkdir -p /new/local"
+        sh____(cmd.format(**locals()))
+        cmd = "{docker} exec {testname1} bash -c 'cd /new/local && tar xzvf /local.tgz'"
+        sh____(cmd.format(**locals()))
+        #
+        item = "{}"
+        end = "\\;"
+        cmd = "{docker} exec {testname1} diff -urw --no-dereference /usr/local /new/local"
+        sx____(cmd.format(**locals()))
+        out = output(cmd.format(**locals()))
+        if "---" in out or "Only" in out:
+            logg.warning("out>>\n%s", out)
+        self.assertFalse(greps(out, "---"))
+        self.assertFalse(greps(out, "Only"))
+        #
+        cmd = "{docker} rm --force {testname1}"
+        sx____(cmd.format(**locals()))
+        cmd = "{docker} rm --force {testname2}"
+        sx____(cmd.format(**locals()))
+        self.rm_testdir()
     def test_91471_centos7_cm_sdl2_or_destdir_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         if not BUILDCENTOS7: self.skipTest("end of life - centos7")
@@ -4326,120 +4440,6 @@ class ZZiplibBuildTest(unittest.TestCase):
             logg.warning("out>>\n%s", out)
         self.assertFalse(greps(out, "---"))
         self.assertFalse(greps(out, "Only"))
-        #
-        cmd = "{docker} rm --force {testname1}"
-        sx____(cmd.format(**locals()))
-        cmd = "{docker} rm --force {testname2}"
-        sx____(cmd.format(**locals()))
-        self.rm_testdir()
-    def test_91450_opensuse_cm_or_nj_sdl2_dockerfile(self) -> None:
-        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
-        self.rm_old()
-        self.rm_testdir()
-        testname1 = self.testname() + "_cm"
-        testname2 = self.testname() + "_nj"
-        testdir = self.testdir()
-        docker = DOCKER
-        dockerfile1 = "testbuilds/opensuse15-cm-sdl2.dockerfile"  # make st_350
-        dockerfile2 = "testbuilds/opensuse15-nj-sdl2.dockerfile"  # make st_450
-        addhosts = self.local_addhosts(dockerfile1)
-        savename1 = docname(dockerfile1)
-        savename2 = docname(dockerfile2)
-        saveto = SAVETO
-        images = IMAGES
-        cmd = "{docker} rm --force {testname1}"
-        sx____(cmd.format(**locals()))
-        cmd = "{docker} rm --force {testname2}"
-        sx____(cmd.format(**locals()))
-        cmd = "{docker} run -d --name {testname1} {addhosts} {saveto}/{savename1} sleep 600"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} run -d --name {testname2} {addhosts} {saveto}/{savename2} sleep 600"
-        #
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname2} bash -c 'cd /usr/local && tar czvf /local.tgz .'"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} cp {testname2}:/local.tgz tmp.local.tgz"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} cp tmp.local.tgz {testname1}:/local.tgz"
-        sh____(cmd.format(**locals()))
-        cmd = "rm tmp.local.tgz"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname1} mkdir -p /new/local"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname1} bash -c 'cd /new/local && tar xzvf /local.tgz'"
-        sh____(cmd.format(**locals()))
-        #
-        item = "{}"
-        end = "\\;"
-        cmd = "{docker} exec {testname1} diff -urw --no-dereference /usr/local /new/local"
-        sx____(cmd.format(**locals()))
-        out = output(cmd.format(**locals()))
-        if "---" in out or "Only" in out:
-            logg.warning("out>>\n%s", out)
-        self.assertFalse(greps(out, "---"))
-        self.assertFalse(greps(out, "Only"))
-        #
-        cmd = "{docker} rm --force {testname1}"
-        sx____(cmd.format(**locals()))
-        cmd = "{docker} rm --force {testname2}"
-        sx____(cmd.format(**locals()))
-        self.rm_testdir()
-    def test_91707_centos7_am_cm_docs_dockerfile(self) -> None:
-        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
-        if not BUILDCENTOS7: self.skipTest("end of life - centos7")
-        self.rm_old()
-        self.rm_testdir()
-        testname1 = self.testname() + "_am"
-        testname2 = self.testname() + "_cm"
-        testdir = self.testdir()
-        docker = DOCKER
-        dockerfile1 = "testbuilds/centos7-am-docs.dockerfile" # 707
-        dockerfile2 = "testbuilds/centos7-cm-docs.dockerfile" # 717
-        addhosts = self.local_addhosts(dockerfile1)
-        savename1 = docname(dockerfile1)
-        savename2 = docname(dockerfile2)
-        saveto = SAVETO
-        images = IMAGES
-        cmd = "{docker} rm --force {testname1}"
-        sx____(cmd.format(**locals()))
-        cmd = "{docker} rm --force {testname2}"
-        sx____(cmd.format(**locals()))
-        cmd = "{docker} run -d --name {testname1} {addhosts} {saveto}/{savename1} sleep 600"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} run -d --name {testname2} {addhosts} {saveto}/{savename2} sleep 600"
-        #
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname2} bash -c 'cd /usr/local && tar czvf /local.tgz .'"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} cp {testname2}:/local.tgz tmp.local.tgz"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} cp tmp.local.tgz {testname1}:/local.tgz"
-        sh____(cmd.format(**locals()))
-        cmd = "rm tmp.local.tgz"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname1} mkdir -p /new/local"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname1} bash -c 'cd /new/local && tar xzvf /local.tgz'"
-        sh____(cmd.format(**locals()))
-        #
-        cmd = "{docker} exec {testname1} bash -c 'cd /usr/local/share/doc/zziplib && mv man/html .'"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname1} bash -c 'cd /usr/local/share/doc/zziplib && rm -rf man'"
-        sh____(cmd.format(**locals()))
-        cmd = "{docker} exec {testname1} bash -c 'cd /usr/local/share/doc/zziplib && mv html man'"
-        sh____(cmd.format(**locals()))
-        item = "{}"
-        end = "\\;"
-        cmd = "{docker} exec {testname1} diff -urw --no-dereference --brief /usr/local /new/local"
-        sx____(cmd.format(**locals()))
-        out = output(cmd.format(**locals()))
-        if "---" in out or "Only" in out:
-            logg.warning("out>>\n%s", out)
-        self.assertFalse(greps(out, "---"))
-        self.assertFalse(greps(out, "Only"))
-        #
-        cmd = "{docker} exec {testname1} diff -urw --no-dereference /usr/local /new/local"
-        sx____(cmd.format(**locals()))
         #
         cmd = "{docker} rm --force {testname1}"
         sx____(cmd.format(**locals()))

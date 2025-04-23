@@ -292,4 +292,5 @@ clean:
 	- rm -r docs/zzipdoc/__pycache__
 	- rm -r docs/zzipdoc/*.pyc
 	- rm -r autom4te.cache
+	- rm -r *.egg-info
 	- rm *~
