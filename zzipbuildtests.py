@@ -3255,10 +3255,10 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname = self.testname()
         dockerfile = "testbuilds/ubuntu24-mk-docs-pip3-user.dockerfile"
         self.mk_docs_pipx_dockerfile(testname, dockerfile)
-    def mk_docs_pipx_dockerfile(self, testname: str, dockerfile: str) -> None:
-        self.rm_old()
-        self.rm_testdir()
-        testdir = self.testdir()
+    def mk_docs_pipx_dockerfile(self, testname: str, dockerfile: str) -> None: 
+        self.rm_old(testname)
+        self.rm_testdir(testname)
+        testdir = self.testdir(testname)
         docker = DOCKER
         addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
@@ -3290,7 +3290,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         sh____(cmd.format(**locals()))
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
-        self.rm_testdir()
+        self.rm_testdir(testname)
     def test_91218_ubuntu18_am_cm_dockerfile(self) -> None:
         if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
         self.rm_old()
