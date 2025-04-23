@@ -3231,6 +3231,12 @@ class ZZiplibBuildTest(unittest.TestCase):
         cmd = "{docker} rmi {images}:{testname}"
         sx____(cmd.format(**locals()))
         self.rm_testdir()
+    def test_90515_opensuse15_mk_docs_pip311_user_dockerfile(self) -> None:
+        """ here pip 22 works fine for pyproject.toml - based on python3.11 (python3-pip fails)"""
+        if not os.path.exists(DOCKER_SOCKET): self.skipTest("docker-based test")
+        testname = self.testname()
+        dockerfile = "testbuilds/opensuse15-mk-docs-pip311-user.dockerfile"
+        self.mk_docs_pipx_dockerfile(testname, dockerfile)
     @unittest.expectedFailure
     def test_90522_ubuntu24_mk_docs_pip3_user_dockerfile(self) -> None:
         """ here pip 22 finds UNKNOWN package from pyproject.toml - need atleast pip 24"""
