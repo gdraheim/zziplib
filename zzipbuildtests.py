@@ -3237,7 +3237,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         testname = self.testname()
         testdir = self.testdir()
         docker = DOCKER
-        dockerfile = "testbuilds/ubuntu24-mk-docs-pip-user.dockerfile"
+        dockerfile = "testbuilds/ubuntu24-mk-docs-pip3-user.dockerfile"
         addhosts = self.local_addhosts(dockerfile)
         savename = docname(dockerfile)
         saveto = SAVETO
@@ -4381,7 +4381,7 @@ class ZZiplibBuildTest(unittest.TestCase):
         testdir = self.testdir()
         docker = DOCKER
         dockerfile1 = "testbuilds/ubuntu24-cm-docs.dockerfile" # 424
-        dockerfile2 = "testbuilds/ubuntu24-mk-docs-pip-user.docckerfile" # 524
+        dockerfile2 = "testbuilds/ubuntu24-mk-docs-pip3-user.docckerfile" # 524
         addhosts = self.local_addhosts(dockerfile1)
         savename1 = docname(dockerfile1)
         savename2 = docname(dockerfile2)
