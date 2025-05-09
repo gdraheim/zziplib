@@ -84,7 +84,7 @@ set(outdir ${CMAKE_CURRENT_BINARY_DIR})
 
 if(ZZIP_PKGCONFIG)
 install(FILES ${outdir}/zzipwrap.pc 
-    DESTINATION "${CMAKE_INSTALL_DATADIR}/pkgconfig" )
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig" )
 endif()
 
 install(FILES ${libzzipwrap_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/zzip )

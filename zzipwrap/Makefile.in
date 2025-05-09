@@ -381,7 +381,7 @@ pkgconfig_libdir = @pkgconfig_libdir@
 pkgconfig_libfile = @pkgconfig_libfile@
 
 # ----------------------------------------------------------------------
-pkgconfigdir = $(datarootdir)/pkgconfig
+pkgconfigdir = $(libdir)/pkgconfig
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
