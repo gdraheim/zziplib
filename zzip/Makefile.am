@@ -156,7 +156,7 @@ i:
 	; cp $(file) $(srcdir)/$$f
 
 # ----------------------------------------------------------------------
-pkgconfigdir=$(datarootdir)/pkgconfig
+pkgconfigdir=$(libdir)/pkgconfig
 pkgconfig_HEADERS= zzip-zlib-config.pc zziplib.pc \
                     zzipmmapped.pc zzipfseeko.pc
 
