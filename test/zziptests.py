@@ -227,7 +227,7 @@ class ZZipTest(unittest.TestCase):
     def s(self) -> str:
         return topsrcdir
     def src(self, name: str) -> str:
-        return os.path.join(self.s, name)
+        return os.path.join(self.s, "test", name)
     def assertErrorMessage(self, errors: str, errno: int) -> None: # pylint: disable=redefined-outer-name
         self.assertIn(': ' + os.strerror(errno), errors)
     def readme(self) -> str:

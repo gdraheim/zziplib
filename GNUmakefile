@@ -77,6 +77,8 @@ am:
 	cd $(BUILD) && $(MAKE) all
 	test -L configure && rm -v configure
 
+check1: check
+check2: checks
 # testing
 
 tests:  ; $(PYTHON3) zzipbuildtests.py -vv $V
