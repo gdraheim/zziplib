@@ -4967,8 +4967,7 @@ def run_help() -> None:
 
 
 def main() -> int:
-    # pylint: disable=global-statement
-    global _python, GIT, BUILDPROGRESS, BUILDCENTOS7, DOCKER, MIRROR, LOCAL, NONLOCAL, OLDER, KEEP, FORCE, NOCACHE, MAKECHECK
+    global _python, GIT, BUILDPROGRESS, BUILDCENTOS7, DOCKER, MIRROR, LOCAL, NONLOCAL, OLDER, KEEP, FORCE, NOCACHE, MAKECHECK # pylint: disable=global-statement
     import optparse # pylint: disable=deprecated-module,import-outside-toplevel
     cmdline = optparse.OptionParser("%prog [options] test*",
                                     epilog=__doc__.strip().split("\n", 1)[0])
@@ -5047,7 +5046,8 @@ def main() -> int:
     #
     # unittest.main()
     suite = unittest.TestSuite()
-    if not args: args = ["test_*"]
+    if not args:
+        args = ["test_*"]
     for arg in args:
         run_function = F"run_{arg}"
         if run_function in globals():
