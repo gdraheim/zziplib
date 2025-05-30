@@ -1,3 +1,37 @@
+2025-05-30
+   * change zzip/fetch.h to zzip_byte_t* 'to_extras' as reported by afl compiler warning
+   * fix ((A & B) == B) as reported by afl compiler warning
+   * include conanfile.py and vcproj.pkg in version update
+   * fix regression as test file was moved to test/README
+   * integrate patches to move '*.pc' files back to $libdir
+   * release v0.13.80
+
+2025-04-25
+   * renumber tests to make room for new tests
+   * add vcpkg.json plus test scenario to ensure c++ package manager
+
+2025-04-21
+   * add conanfile.py plus test sceanrio to ensure c++ package manager
+   * add pyproject.toml plus test scenario to ensure pypi distribution for doctool
+   * sdl test based on sdl2-config #171
+   * switch to lintcheck.yml as used by vscode built lint tool
+   * rename to docs/zzipdoctool to include py.typed and ready for pypi distribution
+   * fix all lint problems in python and include proper author/version headers
+   * drop older setup.cfg for python tools (it had never been distributed)
+   * drop unused '.cdtproject' and '.pydevproject'
+   * fix brokne update for ubuntu and add tests for sizeto_end
+
+2025-04-18
+   * release v0.13.79
+   * check correct afl setup with opensuse15-cm-build-afl.dockerfile
+   * fix afl problem reports #173 #174 #175
+  
+2024-08-21
+   * test needs sdl2 rather than sdl (problem with sdl3 being around)
+   * add zziptestdownloads to help with disconnected setups
+   * tests to compare ABI symbol compability back v0.13.71
+   * rename to zzip_io_size_off_t
+
 2024-08-13
    * create ubuntu18 automake testbuilds, including am32-bit and am3264-largefile
    * created automake testbuilds with external 32-bit and 64on32-largefile binaries
