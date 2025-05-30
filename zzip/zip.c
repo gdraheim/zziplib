@@ -409,7 +409,7 @@ __zzip_parse_root_directory(int fd, struct _disk_trailer* trailer, struct zzip_d
     uint16_t*                   p_reclen = 0;
     zzip_off64_t                entries;
     zzip_off64_t                zz_offset; /* offset from start of root directory */
-    char*                       fd_map      = 0;
+    zzip_byte_t*                fd_map      = 0;
     zzip_off64_t                zz_fd_gap   = 0;
     zzip_off64_t                zz_entries  = _disk_trailer_localentries(trailer);
     zzip_off64_t                zz_rootsize = _disk_trailer_rootsize(trailer);
