@@ -144,8 +144,10 @@ tag:
 	@ ver=`sed -e '/zziplib.VERSION/!d' -e 's:.*zziplib.VERSION."::' -e 's:".*::' CMakeLists.txt` \
 	; rev=`$(GIT) rev-parse --short HEAD` \
 	; if test -f tmp.changes.txt \
-        ; then echo ": ${GIT} tag -F tmp.changes.txt $$ver $$rev" \
-        ; else echo ": ${GIT} tag $$ver $$rev"; fi 
+        ; then echo ": ${GIT} tag -F tmp.changes.txt v$$ver $$rev" \
+	; elif test -f tmp.release.txt \
+        ; then echo ": ${GIT} tag -F tmp.release.txt v$$ver $$rev" \
+        ; else echo ": ${GIT} tag v$$ver $$rev"; fi 
 
 # format ..............................
 CLANG_FORMAT=clang-format
