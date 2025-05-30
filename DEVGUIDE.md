@@ -136,6 +136,7 @@ if they have some patch that should be integrated. Here are some links:
 * `make testbuilds` # run some different build variants automatically
 * `make new check coverage` 
 * update README.md with the result from coverage
+* update ChangeLog from latest git log
 * `git push` # if necessary
 * wait for github workflows to be okay
 * prepare a tmp.changes.txt
