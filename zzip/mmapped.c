@@ -662,7 +662,7 @@ zzip_disk_entry_fopen(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry)
         }
     }
 
-    if (((unsigned long) start) & 0xFFFFu == 0xFFFFu) {
+    if ((((unsigned long) start) & 0xFFFFu) == 0xFFFFu) {
         /* actually the ZIP64 rootseek in the central directory should have updated the
            header start with the data portion to follow right behind it. The usage of
            this field in a local file header is wrong on a number of levels. Specifically
