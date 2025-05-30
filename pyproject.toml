@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "zzipmakedocs"
-version = "0.13.79"
+version = "0.13.80"
 description = "generate troff manpages and htm manual pages from C source comments via docbook reference and markdown parts"
 readme = { "file" = "docs/zzipmakedocs.md", content-type = "text/markdown" }
 license = "Zlib" # SPDX standard license

@@ -12,7 +12,7 @@ class ZZipLibRecipe(ConanFile):
     # generators = "CMakeToolchain", "CMakeDeps"
     settings = "os", "compiler", "build_type", "arch"
     name = "zziplib"
-    version = "0.13.79"
+    version = "0.13.80"
     URL = "https://github.com/gdraheim/zziplib/"
     license = "NA"
 

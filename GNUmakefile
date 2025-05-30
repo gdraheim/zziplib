@@ -132,6 +132,7 @@ nextversion:
 	; newv=`echo $$oldv | sed -e "s:[.]$$oldr\$$:.$$newr:"` \
 	; echo "$$oldv -> $$newv" \
 	; sed -i -e "s:$$oldv:$$newv:" pyproject.toml \
+	; sed -i -e "s:$$oldv:$$newv:" vcpkg.json conanfile.py \
 	; sed -i -e "s:$$oldv:$$newv:" zziplib.spec zzipbuildtests.py \
 	; sed -i -e "s:$$oldv:$$newv:" docs/*.py docs/zzipdoc/*.py docs/zzipdoctool/*.py \
 	; sed -i -e "s:$$oldv:$$newv:" */CMakeLists.txt \

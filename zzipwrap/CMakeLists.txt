@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project(zzipwrap VERSION "0.13.79" LANGUAGES C)
+project(zzipwrap VERSION "0.13.80" LANGUAGES C)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMakeScripts")
 

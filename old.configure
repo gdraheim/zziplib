@@ -15081,6 +15081,7 @@ elif test ".$with_largefile" != ".no" ; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: compiles library as 64bit off_t variant - and renaming some function names" >&5
 $as_echo "compiles library as 64bit off_t variant - and renaming some function names" >&6; }
   LARGEFILE_CFLAGS="$LARGEFILE_CFLAGS -D_LARGEFILE_SOURCE"
+  # AC-SYS-LARGEFILE does not add to CFLAGS (anymore)
   if test 64 = "$ac_cv_sys_file_offset_bits"; then
      LARGEFILE_CFLAGS="$LARGEFILE_CFLAGS -D_FILE_OFFSET_BITS=64"
   fi
@@ -15385,7 +15386,7 @@ else
       if test -z "$enable_sdl2"; then
         enable_sdl3=`sdl2-config --version 2>/dev/null`
         SDL_GENERATE="sdl2-uninstalled.pc"
-        enable_sdl="$enable_sdl3 (sdl-config)"
+        enable_sdl="$enable_sdl3 (sdl2-config)"
       else
         enable_sdl="$enable_sdl2 (pkgconfig sdl2)"
       fi

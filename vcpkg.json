@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
   "name": "zziplib",
-  "version": "0.13.79",
+  "version": "0.13.80",
   "description": "The zziplib provides read access to zipped files in a zip-archive, using compression based solely on free algorithms provided by zlib",
   "homepage": "https://github.com/gdraheim/zziplib",
   "license": "LGPL-2.0",

@@ -6,7 +6,7 @@
 """ Testcases for zziplib build system """
 
 __copyright__ = "(C) Guido Draheim, all rights reserved"""
-__version__ = "0.13.79"
+__version__ = "0.13.80"
 __contact__ = "https://github.com/gdraheim/zziplib"
 
 from typing import Union, Optional, Tuple, List, Iterator, NamedTuple, Mapping, Sequence
