@@ -229,7 +229,7 @@ __zzip_set64(zzip_byte_t* s, uint64_t v);
 
 #define zzip_file_header_to_filename(__p) ((char*) ((char*) (__p) + zzip_file_header_headerlength))
 #define zzip_file_header_to_extras(__p)                                                            \
-    ((char*) (zzip_file_header_to_filename(__p) + zzip_file_header_namlen(__p)))
+    ((zzip_byte_t*) (zzip_file_header_to_filename(__p) + zzip_file_header_namlen(__p)))
 #define zzip_file_header_to_data(__p)                                                              \
     ((zzip_byte_t*) (zzip_file_header_to_extras(__p) + zzip_file_header_extras(__p)))
 #define zzip_file_header_to_trailer(__p)                                                           \
@@ -262,7 +262,7 @@ __zzip_set64(zzip_byte_t* s, uint64_t v);
 
 #define zzip_disk_entry_to_filename(__p) ((char*) ((char*) (__p) + zzip_disk_entry_headerlength))
 #define zzip_disk_entry_to_extras(__p)                                                             \
-    ((char*) (zzip_disk_entry_to_filename(__p) + zzip_disk_entry_namlen(__p)))
+    ((zzip_byte_t*) (zzip_disk_entry_to_filename(__p) + zzip_disk_entry_namlen(__p)))
 #define zzip_disk_entry_to_comment(__p)                                                            \
     ((char*) (zzip_disk_entry_to_extras(__p) + zzip_disk_entry_extras(__p)))
 #define zzip_disk_entry_to_next_entry(__p)                                                         \

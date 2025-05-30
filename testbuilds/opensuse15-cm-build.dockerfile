@@ -8,7 +8,7 @@ RUN zypper install -r repo-oss -y gcc zlib-devel python3 cmake unzip zip gzip ta
 RUN cmake --version
 
 RUN mkdir src
-COPY CMakeLists.txt README COPYING.LIB ChangeLog src/
+COPY CMakeLists.txt COPYING.LIB ChangeLog src/
 COPY CMakeScripts src/CMakeScripts
 COPY bins src/bins
 COPY docs src/docs

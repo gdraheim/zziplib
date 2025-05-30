@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project(zzipwrap VERSION "0.13.79" LANGUAGES C)
+project(zzipwrap VERSION "0.13.80" LANGUAGES C)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMakeScripts")
 
@@ -84,7 +84,7 @@ set(outdir ${CMAKE_CURRENT_BINARY_DIR})
 
 if(ZZIP_PKGCONFIG)
 install(FILES ${outdir}/zzipwrap.pc 
-        DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig" )
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig" )
 endif()
 
 install(FILES ${libzzipwrap_HDRS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/zzip )

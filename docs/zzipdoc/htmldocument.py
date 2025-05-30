@@ -1,11 +1,20 @@
 #! /usr/bin/env python3
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
+# pylint: disable=broad-exception-caught,unnecessary-pass,unspecified-encoding,no-else-return
 
-from __future__ import print_function
+__copyright__ = "(C) 2021 Guido Draheim"
+__contact__ = "https://github.com/gdraheim/zziplib"
+__license__ = "CC0 Creative Commons Zero (Public Domain)"
+__version__ = "0.13.80"
 
 from typing import Optional, List
+import logging
+
 from zzipdoc.match import Match
-from zzipdoc.options import DocOptions
+from zzipdoc.htmldoctypes import DocOptions
 from zzipdoc.htmldoctypes import HtmlDocPart, HtmlStylePart, HtmlMetaPart
+
+logg = logging.getLogger(__name__)
 
 class HtmlDocument:
     """ binds some html content page with additional markup - in this
@@ -41,56 +50,71 @@ class HtmlDocument:
     def get_title(self) -> str:
         if self.title: return self.title
         try:   return self.text[0].get_title()
-        except Exception as e: pass
+        except Exception as e:
+            logg.info("can not get title: %s", e)
         return self.title
     def _html_meta(self, meta: HtmlMetaPart) -> str:
         """ accepts adapter objects with .html_meta() """
         try:   return meta.html_meta()
-        except Exception as e: pass
+        except Exception as e:
+            logg.info("can not get meta: %s", e)
         return str(meta)
     def _html_style(self, style: HtmlStylePart) -> str:
         """ accepts adapter objects with .html_style() and .xml_style() """
-        ee = None
-        try:   return style.html_style()
-        except Exception as e: ee = e; pass
-        try:   return style.xml_style()
-        except Exception as e: print("HtmlDocument/style {} {}".format(ee, e)); pass
-        try:   return str(style)
-        except Exception as e: print("HtmlDocument/style {}".format(e)); return ""
+        ee: Optional[Exception] = None
+        try:
+            return style.html_style()
+        except Exception as e:
+            ee = e
+        try:
+            return style.xml_style()
+        except Exception as e:
+            logg.error("HtmlDocument/style %s %s", ee, e)
+        try:
+            return str(style)
+        except Exception as e:
+            logg.error("HtmlDocument/style %s", e)
+        return ""
     def _html_text(self, html: HtmlDocPart) -> Optional[str]:
         """ accepts adapter objects with .html_text() and .xml_text() """
         ee = None
-        try:   return html.html_text()
-        except Exception as e: ee = e; pass
-        try:   return html.xml_text()
-        except Exception as e: print("HtmlDocument/text {} {}".format(ee, e)); pass
-        try:   return str(html)
-        except Exception as e: print("HtmlDocument/text {}".format(e)); return "&nbsp;"
+        try:
+            return html.html_text()
+        except Exception as e:
+            ee = e
+        try:
+            return html.xml_text()
+        except Exception as e:
+            logg.error("HtmlDocument/text %s %s", ee, e)
+        try:
+            return str(html)
+        except Exception as e:
+            logg.error("HtmlDocument/text %s", e)
+            return "&nbsp;"
         return None
     def navigation(self) -> Optional[str]:
         if self.navi:
             return self.navi
         if self.o.body:
             try:
-                fd = open(self.o.body, "r")
-                self.navi = fd.read()
-                fd.close()
+                with open(self.o.body, "r") as fd:
+                    self.navi = fd.read()
                 return self.navi
             except Exception as e:
-                pass
+                logg.info("can not read body: %s", e)
         return None
     def html_header(self) -> str:
         navi = self.navigation()
         if not navi:
-            T = "<html><head>"
+            text = "<html><head>"
             title = self.get_title()
             if title:
-                T += "<title>"+title+"</title>"
-            T += "\n"
+                text += "<title>"+title+"</title>"
+            text += "\n"
             for style in self.stylelist:
-                T += self._html_style(style)
-                T += "\n"
-            return T+"</head><body>"
+                text += self._html_style(style)
+                text += "\n"
+            return text+"</head><body>"
         else:
             title = self.get_title()
             version: str = self.o.version # type: ignore[assignment]
@@ -118,15 +142,14 @@ class HtmlDocument:
         return filename
     def save(self, filename: Optional[str] = None) -> bool:
         filename = self._filename(filename)
-        print("writing '"+filename+"'")
+        logg.info("writing '%s'", filename)
         try:
-            fd = open(filename, "w")
-            print(self.html_header(), file=fd)
-            for text in self.text:
-                print(self._html_text(text), file=fd)
-            print(self.html_footer(), file=fd)
-            fd.close()
+            with  open(filename, "w") as fd:
+                print(self.html_header(), file=fd)
+                for text in self.text:
+                    print(self._html_text(text), file=fd)
+                print(self.html_footer(), file=fd)
             return True
         except IOError as e:
-            print("could not open '"+filename+"'file {}".format(e))
+            logg.error("could not open '%s': %s", filename, e)
             return False

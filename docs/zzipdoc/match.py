@@ -1,14 +1,19 @@
 #! /usr/bin/env python3
-from typing import Optional, Union, Iterator, Callable, Any, AnyStr, Generic, TypeVar
-import re
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements,line-too-long
+# pylint: disable=too-few-public-methods
 
-try:
-    basestring # type: ignore[used-before-def]
-except NameError:
-    basestring = str
+__copyright__ = "(C) 2021 Guido Draheim"
+__contact__ = "https://github.com/gdraheim/zziplib"
+__license__ = "CC0 Creative Commons Zero (Public Domain)"
+__version__ = "0.13.80"
+
+
+from typing import Optional, Union, Iterator, Callable, Generic, TypeVar
+import re
 
 # The specific re.Types were introduced in Python3.7
 # However generics were only introduced in Python3.9
+# while Generic/TypeVar comes already with Python3.5
 
 T = TypeVar('T')
 
@@ -18,7 +23,6 @@ try:
 except (AttributeError, TypeError):
     class RegexPattern(Generic[T]):  # type: ignore[no-redef]
         pattern: T
-        pass
 
 try:
     RegexMatch = re.Match
@@ -26,23 +30,23 @@ try:
 except (AttributeError, TypeError):
     class RegexMatch(Generic[T]):  # type: ignore[no-redef]
         pattern: T
-        pass
 
 # ---------------------------------------------------------- Regex Match()
 # beware, stupid python interprets backslashes in replace-parts only partially!
 class MatchReplace:
     """ A MatchReplace is a mix of a Python Pattern and a Replace-Template """
+    count: int
     matching: "Match"
-    template: Union[str, Callable[[Any], str]]
-    def __init__(self, matching: Union[str, "Match"], template: Union[None, str, Callable[[Any], str]], count: int = 0, flags: Optional[str] = None) -> None:
+    template: Union[str, Callable[[RegexMatch[str]], str]]
+    def __init__(self, matching: Union[str, "Match"], template: Union[None, str, Callable[[RegexMatch[str]], str]], count: int = 0, flags: Optional[str] = None) -> None:
         """ setup a substition from regex 'matching' into 'template',
             the replacement count default of 0 will replace all occurrences.
             The first argument may be a Match object or it is a string that
             will be turned into one by using Match(matching, flags). """
         MatchReplace.__call__(self, matching, template, count, flags)
-    def __call__(self, matching: Union[str, "Match"], template: Union[None, str, Callable[[Any], str]] = None, count: int = 0, flags: Optional[str] = None) -> None:
+    def __call__(self, matching: Union[str, "Match"], template: Union[None, str, Callable[[RegexMatch[str]], str]] = None, count: int = 0, flags: Optional[str] = None) -> None:
         """ other than __init__ the template may be left off to be unchanged"""
-        if isinstance(count, basestring): # count/flags swapped over?
+        if isinstance(count, str): # count/flags swapped over?
             flags = count; count = 0
         if isinstance(matching, Match):
             self.matching = matching
@@ -105,9 +109,9 @@ class Match:
     def __rand__(self, string: str) -> bool:
         self.found = self.regex.search(string)
         return self.__truth__()
-    def __rshift__(self, template: Union[str, Callable[[Any], str]]) -> MatchReplace:
+    def __rshift__(self, template: Union[str, Callable[[RegexMatch[str]], str]]) -> MatchReplace:
         return MatchReplace(self, template)
-    def __rlshift__(self, template: Union[str, Callable[[Any], str]]) -> MatchReplace:
+    def __rlshift__(self, template: Union[str, Callable[[RegexMatch[str]], str]]) -> MatchReplace:
         return MatchReplace(self, template)
     def __getitem__(self, index: int) -> str:
         return self.group(index)

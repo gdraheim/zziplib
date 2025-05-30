@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project(zziptest VERSION "0.13.79" LANGUAGES C)
+project(zziptest VERSION "0.13.80" LANGUAGES C)
 
 if(NOT CMAKE_BUILD_TYPE) 
     set(CMAKE_BUILD_TYPE Release)
@@ -34,7 +34,7 @@ find_program ( MKZIP zip)
 find_program ( UNZIP unzip)
 
 set(EXEEXT ${CMAKE_EXECUTABLE_SUFFIX})
-set(README ${CMAKE_SOURCE_DIR}/README)
+set(README ${CMAKE_CURRENT_SOURCE_DIR}/README)
 set(PY ${PYTHON_EXECUTABLE})
 set(outdir ${CMAKE_CURRENT_BINARY_DIR})
 set(srcdir ${CMAKE_CURRENT_SOURCE_DIR})

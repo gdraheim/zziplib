@@ -10,7 +10,7 @@ RUN apt-get install -y gcc-14 zlib1g-dev python3 cmake unzip zip gzip tar pkg-co
 ## and gcc-14 is on "universe"
 
 RUN mkdir src
-COPY README COPYING.LIB ChangeLog src/
+COPY COPYING.LIB ChangeLog src/
 COPY CMakeLists.txt src/
 COPY CMakeScripts src/CMakeScripts
 COPY bins src/bins

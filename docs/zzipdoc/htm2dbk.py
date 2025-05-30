@@ -1,110 +1,107 @@
 #! /usr/bin/env python3
-
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements,line-too-long
+# pylint: disable=unspecified-encoding,invalid-name,consider-using-with,too-few-public-methods
 """
 this file converts simple html text into a docbook xml variant. 
 The mapping of markups and links is far from perfect. But all we
 want is the docbook-to-pdf converter and similar technology being
 present in the world of docbook-to-anything converters. """
 
-from typing import Iterable
-from datetime import date
-from zzipdoc.match import Match
+__copyright__ = "(C) 2021 Guido Draheim"
+__contact__ = "https://github.com/gdraheim/zziplib"
+__license__ = "CC0 Creative Commons Zero (Public Domain)"
+__version__ = "0.13.80"
+
 import sys
 
-m = Match
+from typing import Iterable
+from zzipdoc.match import Match
+
+M = Match
 
 class htm2dbk_conversion_base:
     regexlist = [
-        m()("</[hH]2>(.*)", "m") >> "</title>\n<subtitle>\\1</subtitle>",
-        m()("<[hH]2>") >> "<sect1 id=\"--filename--\"><title>",
-        m()("<[Pp]([> ])","m") >> "<para\\1",
-        m()("</[Pp]>") >> "</para>",
-        m()("<(pre|PRE)>") >> "<screen>",
-        m()("</(pre|PRE)>") >> "</screen>",
-        m()("<[hH]3>") >> "<sect2><title>",
-        m()("</[hH]3>((?:.(?!<sect2>))*.?)", "s") >> "</title>\\1</sect2>",
-        m()("<!doctype [^<>]*>","s") >> "",
-        m()("<!DOCTYPE [^<>]*>","s") >> "",
-        m()("(<\w+\b[^<>]*\swidth=)(\d+\%)","s") >> "\\1\"\\2\"",
-        m()("(<\w+\b[^<>]*\s\w+=)(\d+)","s") >> "\\1\"\\2\"",
-        m()("&&") >> "\&amp\;\&amp\;",
-        m()("\$\<") >> "\$\&lt\;",
-        m()("&(\w+[\),])") >> "\&amp\;\\1",
-        m()("(</?)span(\s[^<>]*)?>","s") >> "\\1phrase\\2>",
-        m()("(</?)small(\s[^<>]*)?>","s") >> "\\1note\\2>",
-        m()("(</?)(b|em|i)>")>> "\\1emphasis>",
-        m()("(</?)(li)>") >> "\\1listitem>",
-        m()("(</?)(ul)>") >> "\\1itemizedlist>",
-        m()("(</?)(ol)>") >> "\\1orderedlist>",
-        m()("(</?)(dl)>") >> "\\1variablelist>",
-        m()("<dt\b([^<>]*)>","s") >> "<varlistentry\\1><term>",
-        m()("</dt\b([^<>]*)>","s") >> "</term>",
-        m()("<dd\b([^<>]*)>","s") >> "<listitem\\1>",
-        m()("</dd\b([^<>]*)>","s") >> "</listitem></varlistentry>",
-        m()("<table\b([^<>]*)>","s")
-        >> "<informaltable\\1><tgroup cols=\"2\"><tbody>",
-        m()("</table\b([^<>]*)>","s") >> "</tbody></tgroup></informaltable>",
-        m()("(</?)tr(\s[^<>]*)?>","s") >> "\\1row\\2>",
-        m()("(</?)td(\s[^<>]*)?>","s") >> "\\1entry\\2>",
-        m()("<informaltable\b[^<>]*>\s*<tgroup\b[^<>]*>\s*<tbody>"+
-          "\s*<row\b[^<>]*>\s*<entry\b[^<>]*>\s*<informaltable\b","s")
-        >> "<informaltable",
-        m()("</informaltable>\s*</entry>\s*</row>"+
-          "\s*</tbody>\s*</tgroup>\s*</informaltable>", "s")
-        >> "</informaltable>",
-        m()("(<informaltable[^<>]*\swidth=\"100\%\")","s") >> "\\1 pgwide=\"1\"",
-        m()("(<tbody>\s*<row[^<>]*>\s*<entry[^<>]*\s)(width=\"50\%\")","s")
-        >> "<colspec colwidth=\"1*\" /><colspec colwidth=\"1*\" />\n\\1\\2",
-        m()("<nobr>([\'\`]*)<tt>") >> "<cmdsynopsis>\\1",
-        m()("</tt>([\'\`]*)</nobr>") >> "\\1</cmdsynopsis>",
-        m()("<nobr><(?:tt|code)>([\`\"\'])") >> "<cmdsynopsis>\\1",
-        m()("<(?:tt|code)><nobr>([\`\"\'])") >> "<cmdsynopsis>\\1",
-        m()("([\`\"\'])</(?:tt|code)></nobr>") >> "\\1</cmdsynopsis>",
-        m()("([\`\"\'])</nobr></(?:tt|code)>") >> "\\1</cmdsynopsis>",
-        m()("(</?)tt>") >> "\\1constant>",
-        m()("(</?)code>") >> "\\1literal>",
-        m()(">([^<>]+)<br>","s") >> "><highlights>\\1</highlights>",
-        m()("<br>") >> "<br />",
+        M()("</[hH]2>(.*)", "m") >> "</title>\n<subtitle>\\1</subtitle>",
+        M()("<[hH]2>") >> "<sect1 id=\"--filename--\"><title>",
+        M()("<[Pp]([> ])","m") >> "<para\\1",
+        M()("</[Pp]>") >> "</para>",
+        M()("<(pre|PRE)>") >> "<screen>",
+        M()("</(pre|PRE)>") >> "</screen>",
+        M()("<[hH]3>") >> "<sect2><title>",
+        M()("</[hH]3>((?:.(?!<sect2>))*.?)", "s") >> "</title>\\1</sect2>",
+        M()("<!doctype [^<>]*>","s") >> "",
+        M()("<!DOCTYPE [^<>]*>","s") >> "",
+        M()("(<\\w+\\b[^<>]*\\swidth=)(\\d+\\%)","s") >> "\\1\"\\2\"",
+        M()("(<\\w+\\b[^<>]*\\s\\w+=)(\\d+)","s") >> "\\1\"\\2\"",
+        M()("&&") >> "\\&amp\\;\\&amp\\;",
+        M()("\\$\\<") >> "\\$\\&lt\\;",
+        M()("&(\\w+[\\),])") >> "\\&amp\\;\\1",
+        M()("(</?)span(\\s[^<>]*)?>","s") >> "\\1phrase\\2>",
+        M()("(</?)small(\\s[^<>]*)?>","s") >> "\\1note\\2>",
+        M()("(</?)(b|em|i)>")>> "\\1emphasis>",
+        M()("(</?)(li)>") >> "\\1listitem>",
+        M()("(</?)(ul)>") >> "\\1itemizedlist>",
+        M()("(</?)(ol)>") >> "\\1orderedlist>",
+        M()("(</?)(dl)>") >> "\\1variablelist>",
+        M()("<dt\\b([^<>]*)>","s") >> "<varlistentry\\1><term>",
+        M()("</dt\\b([^<>]*)>","s") >> "</term>",
+        M()("<dd\\b([^<>]*)>","s") >> "<listitem\\1>",
+        M()("</dd\\b([^<>]*)>","s") >> "</listitem></varlistentry>",
+        M()("<table\\b([^<>]*)>","s") >> "<informaltable\\1><tgroup cols=\"2\"><tbody>",
+        M()("</table\\b([^<>]*)>","s") >> "</tbody></tgroup></informaltable>",
+        M()("(</?)tr(\\s[^<>]*)?>","s") >> "\\1row\\2>",
+        M()("(</?)td(\\s[^<>]*)?>","s") >> "\\1entry\\2>",
+        M()("<informaltable\\b[^<>]*>\\s*<tgroup\\b[^<>]*>\\s*<tbody>"+
+          "\\s*<row\\b[^<>]*>\\s*<entry\\b[^<>]*>\\s*<informaltable\\b","s") >> "<informaltable",
+        M()("</informaltable>\\s*</entry>\\s*</row>"+
+          "\\s*</tbody>\\s*</tgroup>\\s*</informaltable>", "s") >> "</informaltable>",
+        M()("(<informaltable[^<>]*\\swidth=\"100\\%\")","s") >> "\\1 pgwide=\"1\"",
+        M()("(<tbody>\\s*<row[^<>]*>\\s*<entry[^<>]*\\s)(width=\"50\\%\")","s") >> "<colspec colwidth=\"1*\" /><colspec colwidth=\"1*\" />\n\\1\\2",
+        M()("<nobr>(['`]*)<tt>") >> "<cmdsynopsis>\\1",
+        M()("</tt>(['`]*)</nobr>") >> "\\1</cmdsynopsis>",
+        M()("<nobr><(?:tt|code)>([`'\"])") >> "<cmdsynopsis>\\1",
+        M()("<(?:tt|code)><nobr>([`'\"])") >> "<cmdsynopsis>\\1",
+        M()("([`'\"])</(?:tt|code)></nobr>") >> "\\1</cmdsynopsis>",
+        M()("([`'\"])</nobr></(?:tt|code)>") >> "\\1</cmdsynopsis>",
+        M()("(</?)tt>") >> "\\1constant>",
+        M()("(</?)code>") >> "\\1literal>",
+        M()(">([^<>]+)<br>","s") >> "><highlights>\\1</highlights>",
+        M()("<br>") >> "<br />",
         #        m()("<date>") >> "<sect1info><date>",
         #        m()("</date>") >> "</date></sect1info>",
-        m()("<reference>") >> "<reference id=\"reference\">" >> 1,
-        m()("<a\s+href=\"((?:http|ftp|mailto):[^<>]+)\"\s*>((?:.(?!</a>))*.)</a>"
-          ,"s") >> "<ulink url=\"\\1\">\\2</ulink>",
-        m()("<a\s+href=\"zziplib.html\#([\w_]+)\"\s*>((?:.(?!</a>))*.)</a>","s")
-        >> "<link linkend=\"$1\">$2</link>",
-        m()("<a\s+href=\"(zziplib.html)\"\s*>((?:.(?!</a>))*.)</a>","s")
-        >> "<link linkend=\"reference\">$2</link>",
-        m()("<a\s+href=\"([\w-]+[.]html)\"\s*>((?:.(?!</a>))*.)</a>","s")
-        >> "<link linkend=\"\\1\">\\2</link>",
-        m()("<a\s+href=\"([\w-]+[.](?:h|c|am|txt))\"\s*>((?:.(?!</a>))*.)</a>"
-          ,"s") >> "<ulink url=\"file:\\1\">\\2</ulink>",
-        m()("<a\s+href=\"([A-Z0-9]+[.][A-Z0-9]+)\"\s*>((?:.(?!</a>))*.)</a>","s")
+        M()("<reference>") >> "<reference id=\"reference\">" >> 1,
+        M()("<a\\s+href=\"((?:http|ftp|mailto):[^<>]+)\"\\s*>((?:.(?!</a>))*.)</a>","s") >> "<ulink url=\"\\1\">\\2</ulink>",
+        M()("<a\\s+href=\"zziplib.html\\#([\\w_]+)\"\\s*>((?:.(?!</a>))*.)</a>","s") >> "<link linkend=\"$1\">$2</link>",
+        M()("<a\\s+href=\"(zziplib.html)\"\\s*>((?:.(?!</a>))*.)</a>","s") >> "<link linkend=\"reference\">$2</link>",
+        M()("<a\\s+href=\"([\\w-]+[.]html)\"\\s*>((?:.(?!</a>))*.)</a>","s") >> "<link linkend=\"\\1\">\\2</link>",
+        M()("<a\\s+href=\"([\\w-]+[.](?:h|c|am|txt))\"\\s*>((?:.(?!</a>))*.)</a>","s") >> "<ulink url=\"file:\\1\">\\2</ulink>",
+        M()("<a\\s+href=\"([A-Z0-9]+[.][A-Z0-9]+)\"\\s*>((?:.(?!</a>))*.)</a>","s")
         >> "<ulink url=\"file:\\1\">\\2</ulink>"
         # m()("(</?)subtitle>") >> "\\1para>"
         # $_ .= "</sect1>" if /<sect1[> ]/
         ]
     regexlist2 = [
-        m()(r"<br\s*/?>") >> "",
-        m()(r"(</?)em>") >> r"\1emphasis>",
-        m()(r"<code>") >> "<userinput>",
-        m()(r"</code>") >> "</userinput>",
-        m()(r"<link>") >> "<function>",
-        m()(r"</link>") >> "</function>",
-        m()(r"(?s)\s*</screen>") >> "</screen>",
+        M()(r"<br\s*/?>") >> "",
+        M()(r"(</?)em>") >> r"\1emphasis>",
+        M()(r"<code>") >> "<userinput>",
+        M()(r"</code>") >> "</userinput>",
+        M()(r"<link>") >> "<function>",
+        M()(r"</link>") >> "</function>",
+        M()(r"(?s)\s*</screen>") >> "</screen>",
         # m()(r"<ul>") >> "</para><programlisting>\n",
         # m()(r"</ul>") >> "</programlisting><para>",
-        m()(r"<ul>") >> "<itemizedlist>",
-        m()(r"</ul>") >> "</itemizedlist>",
+        M()(r"<ul>") >> "<itemizedlist>",
+        M()(r"</ul>") >> "</itemizedlist>",
         # m()(r"<li>") >> "",
         # m()(r"</li>") >> ""
-        m()(r"<li>") >> "<listitem><para>",
-        m()(r"</li>") >> "</para></listitem>\n",
+        M()(r"<li>") >> "<listitem><para>",
+        M()(r"</li>") >> "</para></listitem>\n",
         ]
 class htm2dbk_conversion(htm2dbk_conversion_base):
     def __init__(self) -> None:
         self.version = "" # str(date.today)
         self.filename = "."
-    def convert(self,text: str) -> str: # $text
+    def convert(self, text: str) -> str: # $text
         txt = text.replace("<!--VERSION-->", self.version)
         for conv in self.regexlist:
             txt &= conv
@@ -129,12 +126,12 @@ class htm2dbk_document(htm2dbk_conversion):
         htm2dbk_conversion.__init__(self)
         self.text = self.doctype + self.book_start
     def add(self,text: str) -> None:
-        if self.text & m()("<reference"):
+        if self.text & M()("<reference"):
             self.text += self.book_end_chapters ; self.book_end_chapters = ""
         self.text += self.convert(text).replace(
             "<br />","") & (
-            m()("<link>([^<>]*)</link>") >> "<function>\\1</function>") & (
-            m()("(?s)(<refentryinfo>\s*)<sect1info>" +
+            M()("<link>([^<>]*)</link>") >> "<function>\\1</function>") & (
+            M()("(?s)(<refentryinfo>\\s*)<sect1info>" +
                 "(<date>[^<>]*</date>)</sect1info>") >> "\\1\\2")
     def value(self) -> str:
         return self.text + self.book_end_chapters + self.book_end
@@ -155,16 +152,18 @@ def html2docbook(text: str) -> str:
     """ the C comment may contain html markup - simulate with docbook tags """
     return htm2dbk_conversion().convert2(text)
 
-if __name__ == "__main__":
-    from optparse import OptionParser
-    cmdline = OptionParser("%prog [options] files...")
+def main() -> int:
+    import optparse # pylint: disable=deprecated-module,import-outside-toplevel
+    cmdline = optparse.OptionParser("%prog [options] files...")
     cmdline.add_option("-o", "--into", metavar="FILE", default="")
-    opt, args = cmdline.parse_args()
-    result = htm2dbk_files(args)
+    opt, cmdline_args = cmdline.parse_args()
+    result = htm2dbk_files(cmdline_args)
     if not opt.into:
         print(result)
     else:
-        f = open(opt.into, "w")
-        f.write(result)
-        f.close()
+        with open(opt.into, "w") as _into:
+            _into.write(result)
+    return 0
 
+if __name__ == "__main__":
+    sys.exit(main())

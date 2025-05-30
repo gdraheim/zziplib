@@ -1,0 +1,33 @@
+name: pylint
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop, master ]
+  workflow_dispatch:
+
+jobs:
+  pylint:
+    name: pylint check
+    runs-on: 'ubuntu-24.04'
+    steps:
+    - name: checkout software
+      uses: actions/checkout@v2
+      with:
+        path: software
+    - name: 'refresh install'
+      run: |
+        sudo apt-get update --fix-missing
+    - name: 'install python3 pylint'
+      run: |
+        sudo apt-get install --fix-broken --ignore-missing pylint
+    - name: 'show pylint directories'
+      run: |
+        find . -type d
+        pylint --version
+    - name: 'make lint (pylint static source code checking)'
+      id: check
+      run: |
+        make lint -C software PYTHON=python3.12 PYLINT=pylint PYLINT_OPTIONS=--disable=unknown-option-value
+    

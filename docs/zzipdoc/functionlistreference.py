@@ -1,12 +1,21 @@
 #! /usr/bin/env python3
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
+# pylint: disable=too-many-instance-attributes
 
-from __future__ import print_function
+
+__copyright__ = "(C) 2021 Guido Draheim"
+__contact__ = "https://github.com/gdraheim/zziplib"
+__license__ = "CC0 Creative Commons Zero (Public Domain)"
+__version__ = "0.13.80"
+
 from typing import Optional, List
-from zzipdoc.match import Match
-from zzipdoc.htm2dbk import *
-from zzipdoc.options import DocOptions
-from zzipdoc.functionprototype import FunctionPrototype
+import logging
+
+from zzipdoc.htm2dbk import html2docbook
+from zzipdoc.htmldoctypes import DocOptions
 from zzipdoc.htmldoctypes import RefDocPart
+
+logg = logging.getLogger(__name__)
 
 class FunctionListReference:
     """ Creating a docbook-style <reference> list of <refentry> parts
@@ -48,13 +57,15 @@ class FunctionListReference:
     def get_title(self) -> str:
         return self.o.package+" Function List"
     def xml_text(self) -> str:
-        T = "<reference><title>"+self.get_title()+"</title>\n"
+        xml = "<reference><title>"+self.get_title()+"</title>\n"
         for item in self.pages:
             text = item.refentry_text()
-            if not text: "OOPS, no text for", item.name ; continue
-            T += self.sane(text)
-        T += "</reference>\n"
-        return T
+            if not text:
+                logg.warning("OOPS, no text for %s", item.name)
+                continue
+            xml += self.sane(text)
+        xml += "</reference>\n"
+        return xml
     def sane(self, text: str) -> str:
         return (html2docbook(text)
                 .replace("<link>","<function>")
@@ -66,9 +77,9 @@ class FunctionListReference:
                 .replace("<fu:namespec>","")
                 .replace("</fu:namespec>","</funcdef>")
                 .replace("</fu:callspec>","</paramdef>")
-                .replace("<fu:callspec>","<paramdef>")) 
+                .replace("<fu:callspec>","<paramdef>"))
 
-    
+
 class FunctionListRefEntry:
     refhint: Optional[str]
     refentry: Optional[str]
@@ -134,14 +145,14 @@ class FunctionListRefEntry:
             for item in func.list_seealso():
                 self.seealso_list += [ item ]
         self.file_authors = None
-        authors = func.get_authors()
-        if authors:
-            self.file_authors = authors
+        func_authors = func.get_authors()
+        if func_authors:
+            self.file_authors = func_authors
             self.authors_list += [ self.file_authors ]
         self.file_copyright = None
-        copyright = func.get_copyright()
-        if copyright:
-            self.file_copyright = copyright
+        func_copyright = func.get_copyright()
+        if func_copyright:
+            self.file_copyright = func_copyright
             self.copyright_list += [ self.file_copyright ]
     #fu
     def refentryinfo_text(self) -> str:
@@ -185,44 +196,44 @@ class FunctionListRefEntry:
             return ("\n <refname>"+self.refname+'</refname>'+
                     "\n <refpurpose>"+self.refpurpose+" </refpurpose>")
         if self.refpurpose and self.refname_list:
-            T = ""
+            text = ""
             for refname in self.refname_list:
-                T += "\n <refname>"+refname+'</refname>'
-            T += "\n <refpurpose>"+self.refpurpose+" </refpurpose>"
-            return T
+                text += "\n <refname>"+refname+'</refname>'
+            text += "\n <refpurpose>"+self.refpurpose+" </refpurpose>"
+            return text
         return ""
     def funcsynopsisdiv_text(self) -> str:
         """ refsynopsisdiv shall be between the manvol mangemaent information
             and the reference page description blocks """
-        T=""
+        text=""
         if self.funcsynopsis:
-            T += "\n<funcsynopsis>"
+            text += "\n<funcsynopsis>"
             if self.funcsynopsisinfo:
-                T += "\n<funcsynopsisinfo>"+    self.funcsynopsisinfo + \
+                text += "\n<funcsynopsisinfo>"+    self.funcsynopsisinfo + \
                      "\n</funcsynopsisinfo>\n"
-            T += self.funcsynopsis + \
+            text += self.funcsynopsis + \
                  "\n</funcsynopsis>\n"
         if self.funcsynopsis_list:
-            T += "\n<funcsynopsis>"
+            text += "\n<funcsynopsis>"
             if self.funcsynopsisinfo:
-                T += "\n<funcsynopsisinfo>"+    self.funcsynopsisinfo + \
+                text += "\n<funcsynopsisinfo>"+    self.funcsynopsisinfo + \
                      "\n</funcsynopsisinfo>\n"
             for funcsynopsis in self.funcsynopsis_list:
-                T += funcsynopsis
-            T += "\n</funcsynopsis>\n"
+                text += funcsynopsis
+            text += "\n</funcsynopsis>\n"
         #fi
-        return T
+        return text
     def description_text(self) -> str:
         """ the description section on a manpage is the main part. Here
             it is generated from the per-function comment area. """
         if self.description:
             return self.description
         if self.description_list:
-            T = ""
+            text = ""
             for description in self.description_list:
                 if not description: continue
-                T += description
-            if T.strip() != "": return T
+                text += description
+            if text.strip() != "": return text
         return "<para>(missing description)</para>"
     def authors_text(self) -> str:
         """ part of the footer sections on a manpage and a description of
@@ -231,15 +242,15 @@ class FunctionListRefEntry:
         if self.authors:
             return self.authors
         if self.authors_list:
-            T = "<itemizedlist>"
+            text = "<itemizedlist>"
             previous=""
             for authors in self.authors_list:
                 if not authors: continue
                 if previous == authors: continue
-                T += "\n <listitem><para>"+authors+"</para></listitem>"
+                text += "\n <listitem><para>"+authors+"</para></listitem>"
                 previous = authors
-            T += "</itemizedlist>"
-            return T
+            text += "</itemizedlist>"
+            return text
         if self.authors:
             return self.authors
         return ""
@@ -248,12 +259,11 @@ class FunctionListRefEntry:
             optional. We list the part of the per-file copyright info """
         if self.copyright:
             return self.copyright
-        """ we only return the first valid instead of merging them """
+        # we only return the first valid instead of merging them
         if self.copyright_list:
-            T = ""
-            for copyright in self.copyright_list:
-                if copyright:
-                    return copyright # !!!
+            for copyright1 in self.copyright_list:
+                if copyright1:
+                    return copyright1 # !!!
         return ""
     def seealso_text(self) -> str:
         """ the last section on a manpage is called 'SEE ALSO' usually and
@@ -262,48 +272,48 @@ class FunctionListRefEntry:
         if self.seealso:
             return self.seealso
         if self.seealso_list:
-            T = ""
+            text = ""
             for seealso in self.seealso_list:
                 if not seealso: continue
-                if T: T += ", "
-                T += seealso
-            if T: return T
+                if text: text += ", "
+                text += seealso
+            if text: return text
         return ""
     def refentry_text(self, ref: Optional[str]=None) -> str:
         """ combine fields into a proper docbook refentry """
         if ref is None:
             ref = self.refentry
         if ref:
-            T = '<refentry id="'+ref+'">'
+            text = '<refentry id="'+ref+'">'
         else:
-            T = '<refentry>' # this is an error
-           
+            text = '<refentry>' # this is an error
+
         if self.refentryinfo_text():
-            T += "\n<refentryinfo>"+       self.refentryinfo_text()+ \
+            text += "\n<refentryinfo>"+       self.refentryinfo_text()+ \
                  "\n</refentryinfo>\n"
         if self.refmeta_text():
-            T += "\n<refmeta>"+            self.refmeta_text() + \
+            text += "\n<refmeta>"+            self.refmeta_text() + \
                  "\n</refmeta>\n" 
         if self.refnamediv_text():
-            T += "\n<refnamediv>"+         self.refnamediv_text() + \
+            text += "\n<refnamediv>"+         self.refnamediv_text() + \
                  "\n</refnamediv>\n"
-        if self.funcsynopsisdiv_text():     
-            T += "\n<refsynopsisdiv>\n"+   self.funcsynopsisdiv_text()+ \
+        if self.funcsynopsisdiv_text():
+            text += "\n<refsynopsisdiv>\n"+   self.funcsynopsisdiv_text()+ \
                  "\n</refsynopsisdiv>\n"
         if self.description_text():
-            T += "\n<refsect1><title>Description</title> " + \
+            text += "\n<refsect1><title>Description</title> " + \
                  self.description_text() + "\n</refsect1>"
         if self.authors_text():
-            T += "\n<refsect1><title>Author</title> " + \
+            text += "\n<refsect1><title>Author</title> " + \
                  self.authors_text() + "\n</refsect1>"
         if self.copyright_text():
-            T += "\n<refsect1><title>Copyright</title> " + \
+            text += "\n<refsect1><title>Copyright</title> " + \
                  self.copyright_text() + "\n</refsect1>\n"
         if self.seealso_text():
-            T += "\n<refsect1><title>See Also</title><para> " + \
+            text += "\n<refsect1><title>See Also</title><para> " + \
                  self.seealso_text() + "\n</para></refsect1>\n"
 
-        T +=  "\n</refentry>\n"
-        return T
+        text +=  "\n</refentry>\n"
+        return text
     #fu
 #end

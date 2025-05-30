@@ -1,14 +1,25 @@
 #! /usr/bin/python3
+# pylint: disable-all
+
+__copyright__ = "(C) 2021 Guido Draheim"
+__contact__ = "https://github.com/gdraheim/zziplib"
+__license__ = "CC0 Creative Commons Zero (Public Domain)"
+__version__ = "0.13.80"
+
 from __future__ import print_function
 
 from typing import Optional, Iterator, Tuple
 import pygments.lexers.compiled as lexer
 import optparse
 import re
+import sys
 from pygments.token import Token
 import logging
 
 logg = logging.getLogger(__name__)
+
+if sys.version[0] == "3":
+    xrange = range
 
 FileComment = "FileComment"
 FileInclude = "FileInclude"
@@ -30,8 +41,54 @@ class CppToMarkdown:
         self.comment_text = ""
         self.function_text = ""
         self.nesting = 0
+    def split_copyright(self, text: str) -> Tuple[str, str]:
+        # there are two modes - the copyright starts in the first line
+        # and the source description follows or the other way round.
+        lines = text.split("\n")
+        if len(lines) <= 2:
+            return "", text
+        introtext = [lines[0]]
+        copyright = [lines[0]]
+        check1 = re.compile(r"^\s[*]\s+[(][c][C][)]")
+        check2 = re.compile(r"^\s[*]\s+\b[Cc]opyright\b")
+        empty1 = re.compile(r"^\s[*]\s*$")
+        state = "intro"
+        for i in xrange(1,len(lines)-1):
+            line = lines[i]
+            if state == "intro":
+                if empty1.match(line):
+                    introtext += [ line ]
+                    continue
+                if check1.match(line) or check2.match(line):
+                    state = "copyrightfirst"
+                    copyright += [ line ]
+                else:
+                    state = "introtextfirst"
+                    introtext += [ line ]
+            elif state == "copyrightfirst":
+                if empty1.match(line):
+                    state = "introtextlast"
+                    introtext += [ line ]
+                else:
+                    copyright += [ line ]
+            elif state == "introtextfirst":
+                if check1.match(line) or check2.match(line):
+                    state = "copyrightlast"
+                    copyright += [ line ]
+                else:
+                    introtext += [ line ]
+            elif state == "copyrightlast":
+                copyright += [ line ]
+            elif state == "introtextlast":
+                introtext += [ line ]
+            else:
+                logg.fatal("UNKNOWN STATE %s", state)
+        introtext += [lines[-1]]
+        copyright += [lines[-1]]
+        logg.debug("@ COPYRIGHT\n %s", copyright)
+        logg.debug("@ INTROTEXT\n %s", introtext)
+        return "\n".join(copyright), "\n".join(introtext)
     def commentblock(self, text: str) -> str:
-        emptyprefix = re.compile(r"(?s)^\s*[/][*]+[ \t]*(?=\n)")
         prefix = re.compile(r"(?s)^\s*[/][*]+([^\n]*)(?=\n)")
         suffix = re.compile(r"(?s)\n [*][/]\s*")
         empty = re.compile(r"(?s)\n [*][ \t]*(?=\n)")
@@ -40,7 +97,6 @@ class CppToMarkdown:
         lines3 = re.compile(r"(?s)\n [*][\t][\t]")
         lines4 = re.compile(r"(?s)\n [*][\t]")
         text = suffix.sub("\n", text)
-        text = emptyprefix.sub("", text)
         text = prefix.sub("> \\1\n", text)
         text = empty.sub("\n", text)
         text = lines1.sub("\n     ", text)
@@ -67,18 +123,22 @@ class CppToMarkdown:
         filetext = open(filename).read()
         for line in self.process(filetext, filename):
             print(line)
-    def process(self, filetext:str, filename: str ="") -> Iterator[str]:
+    def process(self, filetext: str, filename: str ="") -> Iterator[str]:
+        section_ruler = "-----------------------------------------"
+        copyright = ""
         for token, text in self.parse(filetext):
             if token == FileInclude:
                 yield "## SOURCE " + filename.replace("../", "")
                 yield "    #" + text.replace("\n", "\n    ")
             elif token == FileComment:
-                yield "## INTRODUCTION"
-                yield self.commentblock(text)
+                yield "### INTRODUCTION"
+                copyright, introduction = self.split_copyright(text)
+                yield self.commentblock(introduction)
             elif token == FunctionPrototype:
                 name = self.functionname(text)
-                yield "-----------------------------------------"
+                yield section_ruler
                 yield "### " + name
+                # yield '<a id="%s"></a>' % name
                 yield "#### NAME"
                 yield "    " + name
                 yield "#### SYNOPSIS"
@@ -91,6 +151,10 @@ class CppToMarkdown:
                 if text:
                     yield "#### NOTES"
                     print(token + " " + text.replace("\n", "\n  "))
+        if copyright:
+            yield section_ruler
+            yield "### COPYRIGHT"
+            yield self.commentblock(copyright)            
     def isexported_function(self) -> bool:
         function = self.function_text.strip().replace("\n"," ")
         logg.debug("@ --------------------------------------") 
@@ -117,7 +181,7 @@ class CppToMarkdown:
         logg.debug("@ NO ** COMMENT %s", self.function_text.strip())
         defs = self.function_text
         return False
-    def parse(self, filetext: str) -> Iterator[Tuple[str,str]]:
+    def parse(self, filetext: str) -> Iterator[Tuple[str, str]]:
         c = lexer.CLexer()
         for token, text in c.get_tokens(filetext):
             logg.debug("|| %s %s", token, text.replace("\n", "\n |"))

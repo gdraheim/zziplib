@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project(zzipsdl VERSION "0.13.79" LANGUAGES C)
+project(zzipsdl VERSION "0.13.80" LANGUAGES C)
 
 if(NOT CMAKE_BUILD_TYPE) 
     set(CMAKE_BUILD_TYPE Release)
@@ -65,13 +65,13 @@ add_custom_command(OUTPUT SDL_rwops_zzip.pc
    COMMAND ${BASH} -c "echo 'Name: SDL_rwops_zzip' >> SDL_rwops_zzip.pc"
    COMMAND ${BASH} -c "echo 'Version: ${PROJECT_VERSION}' >> SDL_rwops_zzip.pc"
    COMMAND ${BASH} -c "echo 'Description: SDL_rwops for ZZipLib' >> SDL_rwops_zzip.pc"
-   COMMAND ${BASH} -c "echo 'Requires: sdl, zziplib' >> SDL_rwops_zzip.pc"
+   COMMAND ${BASH} -c "echo 'Requires: sdl2, zziplib' >> SDL_rwops_zzip.pc"
    COMMAND ${BASH} -c "echo 'Cflags: -I\${zzipsdldir}' >> SDL_rwops_zzip.pc"
    VERBATIM)
 add_custom_target(pkgconfig-sdl ALL DEPENDS SDL_rwops_zzip.pc)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SDL_rwops_zzip.pc
-        DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig" )
+        DESTINATION "${CMAKE_INSTALL_DATADIR}/pkgconfig" )
 endif(ZZIP_PKGCONFIG)
 endif(SDL_FOUND)
 

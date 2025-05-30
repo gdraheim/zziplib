@@ -9,7 +9,7 @@ RUN zypper install -r repo-oss -y gcc8 zlib-devel python3 cmake unzip zip gzip t
 # RUN rpm -q --list gcc8; exit 1
 
 RUN mkdir src
-COPY CMakeLists.txt README COPYING.LIB ChangeLog src/
+COPY CMakeLists.txt COPYING.LIB ChangeLog src/
 COPY CMakeScripts src/CMakeScripts
 COPY bins src/bins
 COPY docs src/docs

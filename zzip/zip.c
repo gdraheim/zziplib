@@ -409,7 +409,7 @@ __zzip_parse_root_directory(int fd, struct _disk_trailer* trailer, struct zzip_d
     uint16_t*                   p_reclen = 0;
     zzip_off64_t                entries;
     zzip_off64_t                zz_offset; /* offset from start of root directory */
-    char*                       fd_map      = 0;
+    zzip_byte_t*                fd_map      = 0;
     zzip_off64_t                zz_fd_gap   = 0;
     zzip_off64_t                zz_entries  = _disk_trailer_localentries(trailer);
     zzip_off64_t                zz_rootsize = _disk_trailer_rootsize(trailer);
@@ -532,7 +532,7 @@ __zzip_parse_root_directory(int fd, struct _disk_trailer* trailer, struct zzip_d
 #define __sizeof_z_diskstart64 4
         /* looking for ZIP64 extras when csize on intmax */
         if (u_extras >= (sizeof(struct zzip_extra_zip64) - __sizeof_z_diskstart64) &&
-            (hdr->d_csize & 0xFFFFu == 0xFFFFu)) {
+            ((hdr->d_csize & 0xFFFFu) == 0xFFFFu)) {
             DBG3("%i extras bytes (%i)", u_extras, sizeof(struct zzip_extra_zip64));
             zzip_off64_t zz_extras = zz_offset + sizeof(*d) + u_namlen;
             zzip_byte_t* extras_ptr;

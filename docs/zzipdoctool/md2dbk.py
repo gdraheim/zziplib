@@ -1,19 +1,23 @@
-#! /usr/bin/python3
-
-from __future__ import print_function, absolute_import, division
+#! /usr/bin/env python3
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements,line-too-long
+# pylint: disable=too-many-branches,too-many-statements,too-many-return-statements,too-many-locals,too-few-public-methods,no-else-return
+# pylint: disable=consider-using-f-string,invalid-name,unspecified-encoding,consider-using-with,use-yield-from
 
 __copyright__ = "(C) 2021 Guido Draheim"
 __contact__ = "https://github.com/gdraheim/zziplib"
 __license__ = "CC0 Creative Commons Zero (Public Domain)"
-__version__ = "0.13.72"
+__version__ = "0.13.80"
 
 from typing import List, Generator, Optional
 import re
+import os
+import sys
 from html import escape
 
 import logging
 logg = logging.getLogger("MD2DBK")
 
+OK = True
 SingleUnderscore = False
 SingleAsterisk = False
 
@@ -42,13 +46,13 @@ class ContainerMarkup:
     preHR2 = "--- "
     preHR3 = "--- "
 
-def blocks(text: str) -> List[str]:
+def blocks4(text: str) -> List[str]:
     logg.debug(">> (%i)", len(text))
     blocks: List[str] = []
     for block in _blocks(text):
         blocks.append(block)
     return blocks
-def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str, None, None]:
+def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str, None, None]: # pylint: disable=redefined-builtin
     """ this function cuts the input string into text blocks.
     The original text content is not modified but some additional
     container blocks are generated which return the single-line 
@@ -76,11 +80,11 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
             if fenced:
                 pass
             elif blockquote.count(">") < newblock.count(">"):
-                for newdepth in range(blockquote.count(">"), newblock.count(">")):
+                for _ in range(blockquote.count(">"), newblock.count(">")):
                     yield mark.newBQ or "<%s>" % mark.BQ
                 blockquote = newblock
             elif newblock.count(">") < blockquote.count(">"):
-                for newdepth in range(newblock.count(">"), blockquote.count(">")):
+                for _ in range(newblock.count(">"), blockquote.count(">")):
                     if text:
                         yield text
                         text = ""
@@ -104,7 +108,7 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
             elif fenced:
                 pass
             elif listblock.count("*") < newblock.count("*"):
-                for newdepth in range(listblock.count("*"), newblock.count("*")):
+                for _ in range(listblock.count("*"), newblock.count("*")):
                     if text:
                         yield text
                         text = ""
@@ -112,7 +116,7 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
                     yield mark.newLI or "<%s>" % mark.LI
                 listblock = newblock
             elif newblock.count("*") < listblock.count("*"):
-                for newdepth in range(newblock.count("*"), listblock.count("*")):
+                for _ in range(newblock.count("*"), listblock.count("*")):
                     if text:
                         yield text
                         text = ""
@@ -122,7 +126,7 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
                 if _newlist1 or _newlist2:
                     yield mark.newLI or "<%s>" % mark.LI
             else:
-                if True:
+                if OK:
                     if text:
                         yield text
                         text = ""
@@ -351,11 +355,11 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
                 line = _blockquote2.group(2)
             # assert not fenced
             if blockquote.count(">") < newblock.count(">"):
-                for newdepth in range(blockquote.count(">"), newblock.count(">")):
+                for _ in range(blockquote.count(">"), newblock.count(">")):
                     yield mark.newBQ or "<%s>" % mark.BQ
                 blockquote = newblock
             elif newblock.count(">") < blockquote.count(">"):
-                for newdepth in range(newblock.count(">"), blockquote.count(">")):
+                for _ in range(newblock.count(">"), blockquote.count(">")):
                     if text:
                         yield text
                         text = ""
@@ -371,7 +375,7 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
                 newblock = _newlist2.group(1)
             # assert not fenced
             if listblock.count("*") < newblock.count("*"):
-                for newdepth in range(listblock.count("*"), newblock.count("*")):
+                for _ in range(listblock.count("*"), newblock.count("*")):
                     if text:
                         yield text
                         text = ""
@@ -379,7 +383,7 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
                     yield mark.newLI or "<%s>" % mark.LI
                 listblock = newblock
             elif newblock.count("*") < listblock.count("*"):
-                for newdepth in range(newblock.count("*"), listblock.count("*")):
+                for _ in range(newblock.count("*"), listblock.count("*")):
                     if text:
                         yield text
                         text = ""
@@ -405,11 +409,11 @@ def _blocks(input: str, mark: Optional[ContainerMarkup] = None) -> Generator[str
     if text:
         yield text
         text = ""
-    for olddepth in range(listblock.count("*")):
+    for _ in range(listblock.count("*")):
         yield mark.endLI or "</%s>" % mark.LI
         yield mark.endUL or "</%s>" % mark.UL
         listblock = ""
-    for olddepth in range(blockquote.count(">")):
+    for _ in range(blockquote.count(">")):
         yield mark.endBQ or "</%s>" % mark.BQ
         blockquote = ""
 
@@ -459,7 +463,7 @@ def _xmlblocks(block: str) -> List[str]:
                 return ["<para>" + block + "</para>"]
         tag = re.match("(</?(\\w+) [ ]*\\w+=[^<>]*>)", line)
         if tag:
-            if True:
+            if OK:
                 return [block]
     # indended code needs to be escaped
     if re.match("^    .*", line):
@@ -468,7 +472,7 @@ def _xmlblocks(block: str) -> List[str]:
         result = ""
         x = line.find("`")
         y = line.rfind("`")
-        indent = line[x]
+        indent = line[:x]
         fenced = line[:y + 1]
         for nextline in block.splitlines():
             if not result:  # first line
@@ -481,7 +485,7 @@ def _xmlblocks(block: str) -> List[str]:
                 continue
             if nextline.startswith(fenced):
                 break
-            result += escape(nextline[x:]) + "\n"
+            result += escape(nextline[len(indent):] if nextline.startswith(indent) else nextline) + "\n"
         if result:
             return [result + "</screen>\n"]
         return []
@@ -506,7 +510,7 @@ def _xmlblocks(block: str) -> List[str]:
         if result:
             return [result + "</screen>\n"]
         return []
-    if True:
+    if OK:
         # thematic breaks allow a lot of space characters in GFM
         if re.match(" ? ? ?[*] *[*] *[*] *[* ]*$", line):
             return ["<hr />"]
@@ -516,14 +520,14 @@ def _xmlblocks(block: str) -> List[str]:
             return ["<hr width=\"80%\" align=\"center\" />"]
     #################################################
     blocks = []
-    if re.match("\\[\w[-\w]*\\]:", line):
+    if re.match("\\[\\w[-\\w]*\\]:", line):
         text = ""
         remainder = ""
         for line in block.splitlines():
             if remainder:
                 remainder += line + "\n"
                 continue
-            m = re.match("\\[(\w[-\w]*)]: +(\\S+) +(\\S.*)", line)
+            m = re.match("\\[(\\w[-\\w]*)]: +(\\S+) +(\\S.*)", line)
             if m:
                 if m.group(2) in ["#"] and m.group(1) in ["date"]:
                     text += "<%s>%s</%s>" % (m.group(1), escape(m.group(3)), m.group(1))
@@ -532,12 +536,12 @@ def _xmlblocks(block: str) -> List[str]:
                         m.group(1), escape(m.group(2)), escape(m.group(3)))
                 blocks += [text]
                 continue
-            m = re.match("\\[(\w[-\w]*)]: +(\\S+)", line)
+            m = re.match("\\[(\\w[-\\w]*)]: +(\\S+)", line)
             if m:
                 text += "<meta name=\"%s\" href=\"%s\" content=\"%s\" />" % (m.group(1), escape(m.group(2)), m.group(1))
                 blocks += [text]
                 continue
-            m = re.match("\\[(\w[-\w]*)]:", line)
+            m = re.match("\\[(\\w[-\\w]*)]:", line)
             if m:
                 text += "<a name=\"%s\" />" % (m.group(1))
                 blocks += [text]
@@ -574,8 +578,8 @@ def _xmlblocks(block: str) -> List[str]:
         # decompose a tight block
         lines = list(block.splitlines())
         endblock = ""
-        for n in range(len(lines)):
-            line_0 = lines[n]
+        for n, line_0 in enumerate(lines):
+            # line_0 = lines[n]
             line_1 = ""
             if n + 1 < len(lines): line_1 = lines[n + 1]
             _li0 = re.match(" ? ? ?([*][*]*) *(.*)", line_0)
@@ -606,12 +610,12 @@ def _xmlblocks(block: str) -> List[str]:
     return blocks
 
 escaping = {"*": "ast", "[": "lbra", "]": "rbra", "(": "lpar", ")": "rpar", "\n<br />": "br"}
-descaping = dict([(name, char) for char, name in escaping.items()])
+descaping = dict({name: char for char, name in escaping.items()}) # dict-comprehension
 
 def formatting(block: str) -> str:
     return descapes(inlines(escapes(block)))
 def descapes(block: str) -> str:
-    return re.sub("(&(\w+);)", lambda m: ((m.group(2) in descaping) and descaping[m.group(2)] or m.group(1)), block)
+    return re.sub("(&(\\w+);)", lambda m: ((m.group(2) in descaping) and descaping[m.group(2)] or m.group(1)), block)
 def keeping(block: str) -> str:
     return re.sub("(.)", lambda m: ((m.group(1) in escaping) and ("&%s;" % escaping[m.group(1)]) or m.group(1)), block)
 def escapes(block: str) -> str:
@@ -752,23 +756,30 @@ def inlines(block: str) -> str:
                       text)
     return text
 
-if __name__ == "__main__":
-    from optparse import OptionParser
-    _o = OptionParser("%prog [-options] filename...")
-    _o.add_option("-v", "--verbose", action="count", default=0,
-                  help="increase logging level")
-    _o.add_option("-b", "--blocks", action="store_true", default=0,
-                  help="show block structure")
-    _o.add_option("-c", "--xmlblocks", action="store_true", default=0,
-                  help="show xml block structure")
-    _o.add_option("-r", "--htm", action="store_true", default=0,
-                  help="returns as htm text")
-    opt, args = _o.parse_args()
-    logging.basicConfig(level=logging.ERROR - 10 * opt.verbose)
+def main() -> int:
+    from optparse import OptionParser # pylint: disable=deprecated-module,import-outside-toplevel
+    cmdline = OptionParser("%prog [-options] filename...")
+    cmdline.add_option("-v", "--verbose", action="count", default=0, help="more logging")
+    cmdline.add_option("-^", "--quiet", action="count", default=0, help="less logging")
+    cmdline.add_option("-?", "--version", action="count", default=0, help="version info")
+    cmdline.add_option("-b", "--blocks", action="store_true", default=0,
+                       help="show block structure")
+    cmdline.add_option("-c", "--xmlblocks", action="store_true", default=0,
+                       help="show xml block structure")
+    cmdline.add_option("-r", "--htm", action="store_true", default=0,
+                       help="returns as htm text")
+    opt, args = cmdline.parse_args()
+    logging.basicConfig(level=max(0, logging.WARNING - 10 * opt.verbose + 10 * opt.quiet))
+    if opt.version:
+        print("version:", __version__)
+        print("contact:", __contact__)
+        print("license:", __license__)
+        print("authors:", __copyright__)
+        return os.EX_OK
     document: List[str] = []
     for arg in args:
         logg.info(">> %s", arg)
-        document += blocks(open(arg, "r").read())
+        document += blocks4(open(arg, "r").read())
     if opt.blocks:
         for block in document:
             show = "| " + block.replace("\n", "\n| ")
@@ -825,3 +836,7 @@ if __name__ == "__main__":
         for block in document:
             for part in _xmlblocks(block):
                 print(part)
+    return os.EX_OK
+
+if __name__ == "__main__":
+    sys.exit(main())

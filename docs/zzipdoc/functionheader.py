@@ -1,3 +1,11 @@
+#! /usr/bin/env python3
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements,line-too-long
+
+__copyright__ = "(C) 2021 Guido Draheim"
+__contact__ = "https://github.com/gdraheim/zziplib"
+__license__ = "CC0 Creative Commons Zero (Public Domain)"
+__version__ = "0.13.80"
+
 from typing import Optional, List
 from zzipdoc.match import Match
 from zzipdoc.textfileheader import TextFileHeader
@@ -61,7 +69,6 @@ class FunctionHeader:
             self.titleline = line[:x]
             for also in line[x+5:].split(","):
                 self.alsolist += [ also.strip() ]
-        self._alsolist = self.alsolist
         return True
     def get_alsolist(self) -> List[str]:
         """ gets the see-also notes from the firstline """
@@ -81,7 +88,7 @@ class FunctionHeader:
         return titleline
     def get_prototype(self) -> Optional[str]:
         return self.prototype
-    
+
 class FunctionHeaderList:
     """ scan for comment blocks in the source file that are followed by
     something quite like a C definition (probably a function definition).

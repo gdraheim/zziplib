@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project(zzipbins VERSION "0.13.79" LANGUAGES C)
+project(zzipbins VERSION "0.13.80" LANGUAGES C)
 
 include ( GNUInstallDirs )
 include ( FindPkgConfig )
@@ -57,7 +57,7 @@ set(htm_md_FILES zzip-index.htm.md zzip-zip.htm.md zzip-file.htm.md zzip-sdl-rwo
             functions.htm.md zip-php.htm.md)
 set(bins_FILES ${bins}/zzdir.c ${bins}/zzcat.c ${bins}/zzobfuscated.c ${bins}/zziptest.c ${bins}/zzxordir.c ${bins}/zzxorcat.c ${bins}/zzxorcopy.c )
 set(SDLs_FILES ${SDLs}/SDL_rwops_zzcat.c ${SDLs}/SDL_rwops_zzip.c ${SDLs}/SDL_rwops_zzip.h )
-set(zzipdoc_FILES makedocs.py          zzipdoc/__init__.py
+set(zzipdoc_FILES zzipmakedocs.py     zzipdoc/__init__.py
     zzipdoc/commentmarkup.py          zzipdoc/match.py
     zzipdoc/dbk2htm.py                zzipdoc/htm2dbk.py
     zzipdoc/functionheader.py         zzipdoc/options.py
@@ -83,9 +83,9 @@ add_custom_command(OUTPUT site/site.html
     # COMMAND ${CP} "${htm_FILES}" ${outdir}/site/
     COMMAND ${BASH} -c "cp -v ${srcdir}/*.md ${outdir}/site/"
     COMMAND ${BASH} -c "cp -v ${srcdir}/*.css ${outdir}/site/"
-    COMMAND ${BASH} -c "cd ${outdir}/site; for i in *.md; do ${PYTHON} ${srcdir}/tools/md2dbk.py $i --htm > `basename $i .md`; done"
+    COMMAND ${BASH} -c "cd ${outdir}/site; for i in *.md; do ${PYTHON} ${srcdir}/zzipdoctool/md2dbk.py $i --htm > `basename $i .md`; done"
     COMMAND ${BASH} -c "cd ${outdir}/site && ${BASH} ${srcdir}/mksite.sh --VERSION=${PROJECT_VERSION} --xml --print site.htm"
-    DEPENDS ${htm_md_FILES} changes.htm ${srcdir}/tools/md2dbk.py
+    DEPENDS ${htm_md_FILES} changes.htm ${srcdir}/zzipdoctool/md2dbk.py
     VERBATIM)
 add_custom_target(site DEPENDS site/site.html)
 
@@ -131,24 +131,24 @@ endif()
 
 ####
 
-set(docinfo --package=zziplib --version=${PROJECT_VERSION})
+set(docinfo --package=zziplib --release=${PROJECT_VERSION})
 file(GLOB zzip_sources "${topdir}/zzip/*.c")
 add_custom_command(OUTPUT zziplib.xml
-    COMMAND ${PY} ${srcdir}/makedocs.py ${zzip_sources} ${docinfo} --onlymainheader=zzip/lib.h --output=zziplib
+    COMMAND ${PY} ${srcdir}/zzipmakedocs.py ${zzip_sources} ${docinfo} --onlymainheader=zzip/lib.h --output=zziplib
     COMMAND ${MV} zziplib.docbook zziplib.xml
     DEPENDS libzzip
     BYPRODUCTS zziplib.html
     VERBATIM)
 add_custom_target(zziplib_xml DEPENDS zziplib.xml) # prevent race codition
 add_custom_command(OUTPUT zzipmmapped.xml
-    COMMAND ${PY} ${srcdir}/makedocs.py ${zzip_sources} ${docinfo} --onlymainheader=zzip/mmapped.h --output=zzipmmapped
+    COMMAND ${PY} ${srcdir}/zzipmakedocs.py ${zzip_sources} ${docinfo} --onlymainheader=zzip/mmapped.h --output=zzipmmapped
     COMMAND ${MV} zzipmmapped.docbook zzipmmapped.xml
     DEPENDS libzzipmmapped
     BYPRODUCTS zzipmmapped.html
     VERBATIM)
 add_custom_target(zzipmmapped_xml DEPENDS zzipmmapped.xml) # prevent race codition
 add_custom_command(OUTPUT zzipfseeko.xml
-    COMMAND ${PY} ${srcdir}/makedocs.py ${zzip_sources} ${docinfo} --onlymainheader=zzip/fseeko.h --output=zzipfseeko
+    COMMAND ${PY} ${srcdir}/zzipmakedocs.py ${zzip_sources} ${docinfo} --onlymainheader=zzip/fseeko.h --output=zzipfseeko
     COMMAND ${MV} zzipfseeko.docbook zzipfseeko.xml
     DEPENDS libzzipfseeko
     BYPRODUCTS zzipfseeko.html
@@ -156,9 +156,9 @@ add_custom_command(OUTPUT zzipfseeko.xml
 add_custom_target(zzipfseeko_xml DEPENDS zzipfseeko.xml) # prevent race codition
 add_custom_command(OUTPUT manpages.tar
     COMMAND ${BASH} -c "test -d man3 && rm -rf man3; mkdir man3"
-    COMMAND ${PY} ${srcdir}/tools/dbk2man.py -o man3 man zziplib.xml $<$<BOOL:VERBOSE>:-vv>
-    COMMAND ${PY} ${srcdir}/tools/dbk2man.py -o man3 man zzipmmapped.xml $<$<BOOL:VERBOSE>:-vv>
-    COMMAND ${PY} ${srcdir}/tools/dbk2man.py -o man3 man zzipfseeko.xml $<$<BOOL:VERBOSE>:-vv>
+    COMMAND ${PY} ${srcdir}/zzipdoctool/dbk2man.py -o man3 man zziplib.xml $<$<BOOL:VERBOSE>:-vv>
+    COMMAND ${PY} ${srcdir}/zzipdoctool/dbk2man.py -o man3 man zzipmmapped.xml $<$<BOOL:VERBOSE>:-vv>
+    COMMAND ${PY} ${srcdir}/zzipdoctool/dbk2man.py -o man3 man zzipfseeko.xml $<$<BOOL:VERBOSE>:-vv>
     COMMAND ${BASH} -c "test -d man3/man3 && mv man3 man3_; test -d man3_/man3 && mv man3_/man3 .; rm -rf man3_"
     COMMAND ${BASH} -c "chmod 664 man3/*.3"
     COMMAND ${BASH} -c "tar cf manpages.tar man3"
@@ -167,10 +167,10 @@ add_custom_command(OUTPUT manpages.tar
     VERBATIM)
 add_custom_command(OUTPUT htmpages.tar
     COMMAND ${BASH} -c "test -d html && rm -rf html; mkdir html"
-    COMMAND ${PY} ${srcdir}/tools/dbk2man.py -o html html zziplib.xml $<$<BOOL:VERBOSE>:-vv>
-    COMMAND ${PY} ${srcdir}/tools/dbk2man.py -o html html zzipmmapped.xml $<$<BOOL:VERBOSE>:-vv>
-    COMMAND ${PY} ${srcdir}/tools/dbk2man.py -o html html zzipfseeko.xml $<$<BOOL:VERBOSE>:-vv>
-    COMMAND ${PY} ${srcdir}/tools/dir2index.py -o html html
+    COMMAND ${PY} ${srcdir}/zzipdoctool/dbk2man.py -o html html zziplib.xml $<$<BOOL:VERBOSE>:-vv>
+    COMMAND ${PY} ${srcdir}/zzipdoctool/dbk2man.py -o html html zzipmmapped.xml $<$<BOOL:VERBOSE>:-vv>
+    COMMAND ${PY} ${srcdir}/zzipdoctool/dbk2man.py -o html html zzipfseeko.xml $<$<BOOL:VERBOSE>:-vv>
+    COMMAND ${PY} ${srcdir}/zzipdoctool/dir2index.py -o html html
     COMMAND ${BASH} -c "tar cf htmpages.tar html/*.*"
     COMMAND ${BASH} -c "ls -l `pwd`/htmpages.tar || true"
     DEPENDS zziplib_xml zzipmmapped_xml zzipfseeko_xml

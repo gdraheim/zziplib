@@ -1,19 +1,34 @@
 #! /usr/bin/python3
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
+# pylint: disable=too-few-public-methods,consider-using-with
+
+__copyright__ = "(C) 2021 Guido Draheim"
+__contact__ = "https://github.com/gdraheim/zziplib"
+__license__ = "CC0 Creative Commons Zero (Public Domain)"
+__version__ = "0.13.80"
+
 from typing import Union, Optional
+import logging
+
+logg = logging.getLogger(__name__)
+
+NIX = ""
 
 def _src_to_xml(text: str) -> str:
     return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt")
 
-def decodes(text: Union[bytes, str]) -> str:
-    if not text: 
-        return ""
-    try:
-        return text.decode("utf-8") # type: ignore[union-attr]
-    except:
+def decodes(text: Union[bytes, str, None]) -> str:
+    if not text:
+        return NIX
+    if isinstance(text, bytes):
         try:
-            return text.decode("latin-1") # type: ignore[union-attr]
-        except:
-            return str(text)
+            return text.decode("utf-8") # type: ignore[union-attr]
+        except UnicodeDecodeError:
+            try:
+                return text.decode("latin-1") # type: ignore[union-attr]
+            except UnicodeDecodeError:
+                return str(text)
+    return text
 
 class TextFile:
     filename: Optional[str]
@@ -34,7 +49,7 @@ class TextFile:
             fd.close()
             return True
         except IOError as e:
-            pass
+            logg.info("could not write '%s': %s", self.filename, e)
         return False
     def assert_src_text(self) -> bool:
         if self.src_text: return True
@@ -67,5 +82,3 @@ class TextFile:
             if text[x] == "\n":
                 line += 1
         return line
-            
-

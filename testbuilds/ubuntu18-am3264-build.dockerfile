@@ -9,7 +9,7 @@ RUN apt-get update
 RUN apt-get install -y gcc zlib1g-dev python3 cmake unzip zip gzip tar pkg-config
 
 RUN mkdir src
-COPY README COPYING.LIB ChangeLog src/
+COPY COPYING.LIB ChangeLog src/
 COPY Makefile.am Makefile.in old.configure.ac old.configure config.h.in zziplib.spec src/
 RUN test ! -f src/old.configure || mv src/old.configure src/configure
 RUN test ! -f src/old.configure.ac || mv src/old.configure.ac src/configure.ac

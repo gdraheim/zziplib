@@ -1,11 +1,17 @@
-#! /usr/bin/python3
+#! /usr/bin/env python3
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,multiple-statements
+# pylint: disable=too-many-branches,too-many-locals
+# pylint: disable=unspecified-encoding,consider-using-f-string,consider-using-with
 
 """ Searches through a directory and creates an index page for it
 """
 
-__author__ = "Guido U. Draheim"
+__copyright__ = "(C) 2021 Guido Draheim"
+__contact__ = "https://github.com/gdraheim/zziplib"
+__license__ = "CC0 Creative Commons Zero (Public Domain)"
+__version__ = "0.13.80"
 
-from typing import Optional, List, Iterator
+from typing import List, Iterator, Optional
 import logging
 import os.path
 import re
@@ -31,7 +37,7 @@ def htm(text: str) -> str:
     return text
 def splitname(filename: str) -> str:
     base = os.path.basename(filename)
-    name, ext = os.path.splitext(base)
+    name, _ = os.path.splitext(base)
     if name.endswith(".3"): name = name[:-2]
     return name
 
@@ -47,7 +53,7 @@ def zzip_sorted(filenames: List[str]) -> Iterator[str]:
         if "zziplib" not in name:
             yield name
 
-def dir2(man: str, dirs: List[str], into: str) -> None:
+def dir2(man: str, dirs: List[str], into: str) -> None: # pylint: disable=unused-argument
     text = "<html><body>" + "\n"
     file2name = {}
     file2text = {}
@@ -58,8 +64,8 @@ def dir2(man: str, dirs: List[str], into: str) -> None:
             file2text[filename] = open(filepath).read()
     # find the overview filenames and generate the pages order
     overviews = []
-    for filename in file2text:
-        if " overview</title>" in file2text[filename]:
+    for filename, filetext in file2text.items():
+        if " overview</title>" in filetext:
             overviews.append(filename)
     logg.warning("overviews = %s", overviews)
     logg.warning("overviews = %s", [file2name[f] for f in overviews])
@@ -104,17 +110,29 @@ def writefile(filename: str, manpagetext: str) -> None:
         f.write(manpagetext)
     logg.debug("written %s [%s]", filename, manpagetext.split("\n", 1)[0])
 
-if __name__ == "__main__":
-    from optparse import OptionParser
-    _o = OptionParser("%prog [options] directories...")
-    _o.add_option("-o","--into", metavar="DIR", default=".",
+def main(doc: Optional[str] = None) -> int:
+    from optparse import OptionParser # pylint: disable=deprecated-module,import-outside-toplevel
+    cmdline = OptionParser("%prog [options] directories...", epilog=doc)
+    cmdline.add_option("-v","--verbose", action="count", default=0, help="more logging")
+    cmdline.add_option("-^","--quiet", action="count", default=0, help="less logging")
+    cmdline.add_option("-?","--version", action="count", default=0, help="version info")
+    cmdline.add_option("-o","--into", metavar="DIR", default=".",
         help="specify base directory for output [%default]")
-    _o.add_option("-t","--make", metavar="DIR", default="man",
+    cmdline.add_option("-t","--make", metavar="DIR", default="man",
         help="make 'man'/'html' output pages [%default]")
-    _o.add_option("-v","--verbose", action="count", default=0,
-        help="increase logging level [%default]")
-    opt, args = _o.parse_args()
-    logging.basicConfig(level = max(0, logging.WARNING - 10 * opt.verbose))
+    opt, args = cmdline.parse_args()
+    logging.basicConfig(level = max(0, logging.WARNING - 10 * opt.verbose + 10 * opt.quiet))
+    if opt.version:
+        print("version:", __version__)
+        print("contact:", __contact__)
+        print("license:", __license__)
+        print("authors:", __copyright__)
+        return os.EX_OK
     # ensure commandline is compatible with "xmlto -o DIR TYPE INPUTFILE"
     make = opt.make
-    dir2(make == 'man', args, opt.into)
+    dir2(make == 'man', args, opt.into) # only "html" mode is implemented
+    return os.EX_OK
+
+if __name__ == "__main__":
+    import sys
+    sys.exit(main(__doc__))

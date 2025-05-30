@@ -18,7 +18,7 @@ COPY uses src/uses
 # RUN mkdir src
 # COPY CMakeLists.txt src/
 # COPY CMakeScripts src/CMakeScripts
-COPY README COPYING.LIB ChangeLog src/
+COPY COPYING.LIB ChangeLog src/
 COPY bins src/bins
 COPY docs src/docs
 COPY test src/test
