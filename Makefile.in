@@ -188,10 +188,9 @@ am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
 	$(top_srcdir)/uses/compile $(top_srcdir)/uses/config.guess \
 	$(top_srcdir)/uses/config.sub $(top_srcdir)/uses/install-sh \
 	$(top_srcdir)/uses/ltmain.sh $(top_srcdir)/uses/missing \
-	$(top_srcdir)/uses/mkinstalldirs COPYING.LIB ChangeLog README \
-	TODO uses/compile uses/config.guess uses/config.sub \
-	uses/depcomp uses/install-sh uses/ltmain.sh uses/missing \
-	uses/mkinstalldirs
+	$(top_srcdir)/uses/mkinstalldirs COPYING.LIB ChangeLog TODO \
+	uses/compile uses/config.guess uses/config.sub uses/depcomp \
+	uses/install-sh uses/ltmain.sh uses/missing uses/mkinstalldirs
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
