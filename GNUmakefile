@@ -141,7 +141,7 @@ nextversion:
 checkversion versions:
 	@ $(GIT) --no-pager diff -U0
 tag:
-	@ ver=`grep "version.*=" setup.cfg | sed -e "s/version *= */v/"` \
+	@ ver=`sed -e '/zziplib.VERSION/!d' -e 's:.*zziplib.VERSION."::' -e 's:".*::' CMakeLists.txt` \
 	; rev=`$(GIT) rev-parse --short HEAD` \
 	; if test -f tmp.changes.txt \
         ; then echo ": ${GIT} tag -F tmp.changes.txt $$ver $$rev" \
