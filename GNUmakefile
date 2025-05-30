@@ -78,7 +78,7 @@ am:
 	test -L configure && rm -v configure
 
 check1: check
-check2: checks
+check2: testbuilds
 # testing
 
 tests:  ; $(PYTHON3) zzipbuildtests.py -vv $V
