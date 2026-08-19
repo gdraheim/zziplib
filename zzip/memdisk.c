@@ -521,6 +521,7 @@ zzip_mem_entry_fopen(ZZIP_MEM_DISK* dir, ZZIP_MEM_ENTRY* entry)
 
     return file;
 error:
+    free(file);
     errno = EBADMSG;
     return NULL;
 }
