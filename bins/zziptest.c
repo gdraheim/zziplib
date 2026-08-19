@@ -30,20 +30,6 @@
 #define O_BINARY 0
 #endif
 
-#if __GNUC__ + 0 >= 3 && __GNUC_MINOR__ + 0 >= 3
-#ifdef DEBUG
-#warning suppress a warning where the compiler should have optimized instead.
-#endif
-#define I_(_T, _L, _R)                                                                             \
-    do {                                                                                           \
-        _T _l = (_T) _L;                                                                           \
-        _l _R;                                                                                     \
-        _L = (typeof(_L)) _l;                                                                      \
-    } while (0)
-#else
-#define I_(_T, _L, _R) _L _R
-#endif
-
 #define BASENAME(x) (strchr((x), '/') ? strrchr((x), '/') + 1 : (x))
 
 static int
@@ -130,7 +116,7 @@ main(int argc, char** argv)
 
                 if (hdr->d_reclen == 0)
                     break;
-                I_(char*, hdr, += hdr->d_reclen);
+                hdr = (struct zzip_dir_hdr*) ((char*) hdr + hdr->d_reclen);
                 if (! quick)
                     sleep(1);
             }
