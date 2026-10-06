@@ -71,7 +71,7 @@ unzzip_list(int argc, char** argv, int verbose)
             else {
                 long long   csize = entry->zz_csize;
                 unsigned    compr = entry->zz_compr;
-                const char* defl  = (compr < sizeof(comprlevel)) ? comprlevel[compr] : "(redu)";
+                const char* defl  = (compr < (sizeof(comprlevel) / sizeof(comprlevel[0]))) ? comprlevel[compr] : "(redu)";
                 printf("%lli/%lli %s %s\n", csize, usize, defl, name);
             }
         }
@@ -87,7 +87,7 @@ unzzip_list(int argc, char** argv, int verbose)
             else {
                 long long   csize = entry->zz_csize;
                 unsigned    compr = entry->zz_compr;
-                const char* defl  = (compr < sizeof(comprlevel)) ? comprlevel[compr] : "(redu)";
+                const char* defl  = (compr < (sizeof(comprlevel) / sizeof(comprlevel[0]))) ? comprlevel[compr] : "(redu)";
                 printf("%lli/%lli %s %s\n", csize, usize, defl, name);
             }
         }
@@ -108,7 +108,7 @@ unzzip_list(int argc, char** argv, int verbose)
                         long long   csize = entry->zz_csize;
                         unsigned    compr = entry->zz_compr;
                         const char* defl =
-                            (compr < sizeof(comprlevel)) ? comprlevel[compr] : "(redu)";
+                            (compr < (sizeof(comprlevel) / sizeof(comprlevel[0]))) ? comprlevel[compr] : "(redu)";
                         printf("%lli/%lli %s %s\n", csize, usize, defl, name);
                     }
                     break; /* match loop */

@@ -44,7 +44,7 @@ unzzip_list(int argc, char** argv, int verbose)
         for (; entry; entry = zzip_entry_findnext(entry)) {
             char*       name  = zzip_entry_strdup_name(entry);
             unsigned    compr = zzip_entry_compr(entry);
-            const char* defl  = (compr < sizeof(comprlevel)) ? comprlevel[compr] : "(redu)";
+            const char* defl  = (compr < (sizeof(comprlevel) / sizeof(comprlevel[0]))) ? comprlevel[compr] : "(redu)";
             printf(" %s %s\n", defl, name);
             free(name);
         }
@@ -57,7 +57,7 @@ unzzip_list(int argc, char** argv, int verbose)
         for (; entry; entry = zzip_entry_findnext(entry)) {
             char*       name  = zzip_entry_strdup_name(entry);
             unsigned    compr = zzip_entry_compr(entry);
-            const char* defl  = (compr < sizeof(comprlevel)) ? comprlevel[compr] : "(redu)";
+            const char* defl  = (compr < (sizeof(comprlevel) / sizeof(comprlevel[0]))) ? comprlevel[compr] : "(redu)";
             printf(" %s %s\n", defl, name);
             free(name);
         }
