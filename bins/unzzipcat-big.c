@@ -84,6 +84,7 @@ unzzip_cat(int argc, char** argv, int extract)
             if (! out) {
                 if (errno != EISDIR)
                     done = EXIT_ERRORS;
+                free(name);
                 continue;
             }
             unzzip_cat_file(disk, name, out);
@@ -116,11 +117,14 @@ unzzip_cat(int argc, char** argv, int extract)
                 if (! out) {
                     if (errno != EISDIR)
                         done = EXIT_ERRORS;
+                    free(name);
                     continue;
                 }
                 unzzip_cat_file(disk, name, out);
                 if (extract)
                     fclose(out);
+                free(name);
+                zzip_entry_free(entry);
                 break; /* match loop */
             }
             free(name);

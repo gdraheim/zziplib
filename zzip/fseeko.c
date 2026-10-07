@@ -551,6 +551,7 @@ zzip_entry_findfile(FILE* disk, char* filename, ZZIP_ENTRY* _zzip_restrict entry
         /* filenames within zip files are often not null-terminated! */
         char* realname = zzip_entry_strdup_name(entry);
         if (! realname) {
+            zzip_entry_free(entry);
             return 0; /* ENOMEM|EBADMSG */
         }
         if (! compare(filename, realname)) {
@@ -600,6 +601,7 @@ zzip_entry_findmatch(FILE* disk, char* filespec, ZZIP_ENTRY* _zzip_restrict entr
         /* filenames within zip files are often not null-terminated! */
         char* realname = zzip_entry_strdup_name(entry);
         if (! realname) {
+            zzip_entry_free(entry);
             return 0; /* ENOMEM|EBADMSG */
         }
         if (! compare(filespec, realname, flags)) {
