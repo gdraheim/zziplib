@@ -52,6 +52,7 @@ rezzip_make(int argc, char** argv)
             if (! output) {
                 fprintf(stderr, "|did not open %s: \n", argv[argn]);
                 fprintf(stderr, "|%s: %s\n", argv[argn], zzip_strerror_of(dir));
+                close(input);
                 continue;
             }
 

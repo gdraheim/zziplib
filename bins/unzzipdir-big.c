@@ -48,7 +48,7 @@ unzzip_list(int argc, char** argv, int verbose)
             printf(" %s %s\n", defl, name);
             free(name);
         }
-        return 0;
+        goto cleanup;
     }
 
     for (argn = 1; argn < argc;
@@ -62,6 +62,8 @@ unzzip_list(int argc, char** argv, int verbose)
             free(name);
         }
     }
+cleanup:
+    fclose(disk);
     return 0;
 }
 

@@ -91,7 +91,7 @@ unzzip_cat(int argc, char** argv, int extract)
                 fclose(out);
             free(name);
         }
-        return done;
+        goto cleanup;
     }
 
     if (argc == 3 && ! extract) { /* list from one spec */
@@ -99,7 +99,7 @@ unzzip_cat(int argc, char** argv, int extract)
         while ((entry = zzip_entry_findmatch(disk, argv[2], entry, 0, 0))) {
             unzzip_big_entry_fprint(entry, stdout);
         }
-        return 0;
+        goto cleanup;
     }
 
     for (argn = 1; argn < argc;
@@ -126,6 +126,9 @@ unzzip_cat(int argc, char** argv, int extract)
             free(name);
         }
     }
+
+cleanup:
+    fclose(disk);
     return done;
 }
 

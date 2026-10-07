@@ -142,9 +142,11 @@ zzip_memory_open(const char* pathname, int flags)
     else {
         /* Get filesize */
         if (fstat(fd, &stat_buffer) < 0) {
+            close(fd);
             return (-1);
         }
         if (stat_buffer.st_size < 1) {
+            close(fd);
             return (-1);
         }
         /* Store filesize */

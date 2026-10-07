@@ -137,6 +137,9 @@ main(int argc, char** argv)
                 exitcode = EX_IOERR;
                 perror(argv[argn]);
             }
+
+            fclose(iF);
+            fclose(oF);
         }
     }
 
