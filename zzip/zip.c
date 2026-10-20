@@ -535,19 +535,29 @@ __zzip_parse_root_directory(int fd, struct _disk_trailer* trailer, struct zzip_d
             ((hdr->d_csize & 0xFFFFu) == 0xFFFFu)) {
             DBG3("%i extras bytes (%i)", u_extras, sizeof(struct zzip_extra_zip64));
             zzip_off64_t zz_extras = zz_offset + sizeof(*d) + u_namlen;
+            zzip_size_t  min_zip64 = sizeof(struct zzip_extra_zip64) - __sizeof_z_diskstart64;
             zzip_byte_t* extras_ptr;
+
+            if (zz_extras + min_zip64 > zz_rootsize || zz_extras + min_zip64 < zz_extras) {
+                WARN1("ZIP64 corrupted file header");
+                free(hdr0);
+                return ZZIP_CORRUPTED;
+            }
+
             if (fd_map) {
                 extras_ptr = fd_map + zz_fd_gap + zz_extras;
-                if (extras_ptr >
-                    fd_map + zz_rootsize + zz_fd_gap + sizeof(struct zzip_extra_zip64)) {
-                    WARN1("ZIP64 corrupted file header");
-                    free(hdr0);
-                    return ZZIP_CORRUPTED;
-                }
             }
             else {
                 extras_ptr = malloc(u_extras);
-                io->fd.read(fd, extras_ptr, u_extras);
+                if (! extras_ptr) {
+                    free(hdr0);
+                    return ZZIP_OUTOFMEM;
+                }
+                if (io->fd.read(fd, extras_ptr, u_extras) < (zzip_ssize_t) min_zip64) {
+                    free(extras_ptr);
+                    free(hdr0);
+                    return ZZIP_CORRUPTED;
+                }
             }
             if (ZZIP_EXTRA_ZIP64_CHECK(extras_ptr)) {
                 struct zzip_extra_zip64* zip64 = (struct zzip_extra_zip64*) extras_ptr;

@@ -59,6 +59,9 @@
 #define ____ }
 #endif
 
+/* a zip64 extra block without the (optional) diskstart field */
+#define ZZIP_FILE_ZIP64_MIN (sizeof(struct zzip_extra_zip64) - 4)
+
 /* clang-format off */
 #define DEBUG 1
 #ifdef DEBUG
@@ -273,10 +276,20 @@ zzip_disk_entry_to_data(ZZIP_DISK* disk, struct zzip_disk_entry* entry)
 struct zzip_file_header*
 zzip_disk_entry_to_file_header(ZZIP_DISK* disk, struct zzip_disk_entry* entry)
 {
+    if (! disk || ! entry) {
+        errno = EINVAL;
+        return 0;
+    }
+    if ((zzip_byte_t*) entry < disk->buffer ||
+        (zzip_byte_t*) entry > disk->endbuf - sizeof(*entry)) {
+        errno = EBADMSG;
+        return 0;
+    }
     zzip_off64_t offset = zzip_disk_entry_fileoffset(entry);
     if ((offset & 0xFFFFu) == 0xFFFFu) {
         zzip_byte_t* extras_ptr = zzip_disk_entry_to_extras(entry);
-        if (extras_ptr + sizeof(struct zzip_extra_zip64) > disk->endbuf) {
+        if (extras_ptr < disk->buffer ||
+            extras_ptr > disk->endbuf - sizeof(struct zzip_extra_zip64)) {
             debug1("ZIP64 corrupted file header");
             errno = EBADMSG;
             return 0;
@@ -322,13 +335,20 @@ zzip_disk_entry_to_file_header(ZZIP_DISK* disk, struct zzip_disk_entry* entry)
 zzip__new__ char*
 zzip_disk_entry_strdup_name(ZZIP_DISK* disk, struct zzip_disk_entry* entry)
 {
+    ___ char*   name = 0;
+    zzip_size_t len;
+
     if (! disk || ! entry) {
         errno = EINVAL;
         return 0;
     }
+    if ((zzip_byte_t*) entry < disk->buffer ||
+        (zzip_byte_t*) entry > disk->endbuf - sizeof(*entry)) {
+        errno = EBADMSG;
+        return 0;
+    }
 
-    ___ char*   name = 0;
-    zzip_size_t len = len = zzip_disk_entry_namlen(entry);
+    len = zzip_disk_entry_namlen(entry);
     if (len) {
         name = zzip_disk_entry_to_filename(entry);
     }
@@ -346,7 +366,8 @@ zzip_disk_entry_strdup_name(ZZIP_DISK* disk, struct zzip_disk_entry* entry)
     }
 
     if ((zzip_byte_t*) name < disk->buffer || /* .. */
-        (zzip_byte_t*) name + len > disk->endbuf) {
+        (zzip_byte_t*) name > disk->endbuf ||
+        len > (zzip_size_t)(disk->endbuf - (zzip_byte_t*) name)) {
         errno = EBADMSG;
         return 0;
     }
@@ -369,6 +390,11 @@ zzip_disk_entry_strdup_comment(ZZIP_DISK* disk, struct zzip_disk_entry* entry)
         errno = EINVAL;
         return 0;
     }
+    if ((zzip_byte_t*) entry < disk->buffer ||
+        (zzip_byte_t*) entry > disk->endbuf - sizeof(*entry)) {
+        errno = EBADMSG;
+        return 0;
+    }
 
     ___ zzip_size_t len = zzip_disk_entry_comment(entry);
     if (! len) {
@@ -376,7 +402,9 @@ zzip_disk_entry_strdup_comment(ZZIP_DISK* disk, struct zzip_disk_entry* entry)
     }
 
     ___ char* text = zzip_disk_entry_to_comment(entry);
-    if ((zzip_byte_t*) text < disk->buffer || (zzip_byte_t*) text + len > disk->endbuf) {
+    if ((zzip_byte_t*) text < disk->buffer ||
+        (zzip_byte_t*) text > disk->endbuf ||
+        len > (zzip_size_t)(disk->endbuf - (zzip_byte_t*) text)) {
         errno = EBADMSG;
         return 0;
     }
@@ -481,7 +509,9 @@ zzip_disk_findfirst(ZZIP_DISK* disk)
             errno = EBADMSG;
             return 0;
         }
-        if (root >= disk->endbuf || (root + rootsize) >= disk->endbuf) {
+        if (root > disk->endbuf - sizeof(struct zzip_disk_entry) ||
+            rootsize > (zzip_size_t)(disk->endbuf - root) ||
+            zzip_disk_entry_skipto_end((struct zzip_disk_entry*)root) > disk->endbuf) {
             DBG1("root behind endbuf should be impossible");
             errno = EBADMSG;
             return 0;
@@ -657,6 +687,9 @@ zzip_disk_entry_fopen(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry)
         DBG1("need zip64 extras");
         struct zzip_extra_zip64* zip64 =
             (struct zzip_extra_zip64*) zzip_file_header_to_extras(header);
+        if ((zzip_byte_t*) zip64 < disk->buffer || (zzip_byte_t*) zip64 > disk->endbuf ||
+            ZZIP_FILE_ZIP64_MIN > (zzip_size_t) (disk->endbuf - (zzip_byte_t*) zip64))
+            goto error;
         if (ZZIP_EXTRA_ZIP64_CHECK(zip64)) {
             csize = zzip_extra_zip64_csize(zip64);
         }
@@ -670,6 +703,9 @@ zzip_disk_entry_fopen(ZZIP_DISK* disk, ZZIP_DISK_ENTRY* entry)
            actually used to point to the actual data portion instead. Disabled by default. */
         struct zzip_extra_zip64* zip64 =
             (struct zzip_extra_zip64*) zzip_file_header_to_extras(header);
+        if ((zzip_byte_t*) zip64 < disk->buffer || (zzip_byte_t*) zip64 > disk->endbuf ||
+            ZZIP_FILE_ZIP64_MIN > (zzip_size_t) (disk->endbuf - (zzip_byte_t*) zip64))
+            goto error;
         if (ZZIP_EXTRA_ZIP64_CHECK(zip64)) {
             zzip_off64_t offset =
                 zzip_extra_zip64_offset(zip64); /* offset of local header record */
